@@ -1,0 +1,114 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  gap: var(--oi-spacing-zero);
+}
+
+/* Sliding pill behind the selected segment. JS writes offsetLeft /
+   offsetWidth inline; CSS owns the tween. Sits below the segments so labels
+   and icons read above it. */
+.pill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  border-radius: var(--oi-border-radius-l);
+  background-color: var(--oi-background-color-secondary);
+  transform: translateX(0);
+  transition:
+    transform var(--oi-motion-duration-default) var(--oi-motion-ease-emphasized),
+    width var(--oi-motion-duration-default) var(--oi-motion-ease-emphasized);
+  will-change: transform, width;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill {
+    transition: none;
+  }
+}
+
+.item {
+  position: relative;
+  z-index: 1;
+  width: 76px;
+  height: 48px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--oi-spacing-xs);
+  border-radius: var(--oi-border-radius-default);
+  background-color: transparent;
+  color: var(--oi-content-color-tertiary);
+  padding: var(--oi-spacing-xs);
+  transition:
+    color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+.item:hover {
+  color: var(--oi-content-color-primary);
+}
+
+.selected,
+.selected:hover {
+  color: var(--oi-content-color-primary);
+}
+
+.label {
+  font-size: var(--oi-text-caption-strong-font-size);
+  line-height: var(--oi-text-caption-strong-line-height);
+  font-weight: var(--oi-text-caption-strong-font-weight);
+}
+
+/* Particle-burst celebration ------------------------------------------------
+   Opt-in per item via `celebrate`. The icon keeps the standard default/active
+   colours; only the particle spray is added on select. Tunables scoped here so
+   they don't leak to :root. */
+.root {
+  --like-particle-dur: 600ms;
+  --like-particle-size: 2.5px;
+}
+
+/* Anchors the absolutely-positioned particles over the icon. */
+.iconWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.particles {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  color: var(--oi-base-color-error);
+}
+
+.particles i {
+  position: absolute;
+  left: calc(var(--like-particle-size) * var(--psize, 1) / -2);
+  top: calc(var(--like-particle-size) * var(--psize, 1) / -2);
+  width: calc(var(--like-particle-size) * var(--psize, 1));
+  height: calc(var(--like-particle-size) * var(--psize, 1));
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  animation: sc-like-burst var(--pdur, var(--like-particle-dur)) ease-out var(--pdelay, 0ms) forwards;
+}
+
+@keyframes sc-like-burst {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.4); }
+  20% { opacity: 1; transform: translate(calc(var(--px) * 0.25), calc(var(--py) * 0.25)) scale(1); }
+  100% { opacity: 0; transform: translate(var(--px), var(--py)) scale(var(--p-end-scale, 0.6)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .particles i {
+    animation: none !important;
+  }
+}

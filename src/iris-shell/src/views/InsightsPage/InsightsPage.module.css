@@ -1,0 +1,180 @@
+.page {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-l);
+  padding: var(--oi-spacing-l);
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--oi-spacing-m);
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: var(--oi-text-heading-04-font-size);
+  line-height: var(--oi-text-heading-04-line-height);
+  font-weight: var(--oi-text-heading-04-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--oi-spacing-m);
+  flex-wrap: wrap;
+  margin-top: var(--oi-spacing-m);
+}
+
+.filtersLeft,
+.filtersRight {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-6);
+}
+
+.filtersGhostAction.filtersGhostAction,
+.filtersGhostAction.filtersGhostAction:hover:not(:disabled),
+.filtersGhostAction.filtersGhostAction:active:not(:disabled) {
+  border-color: transparent;
+  color: var(--oi-content-color-secondary);
+}
+
+.cardsGridGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+  /* Staggered card reveal tokens (transitions-dev motion scale). */
+  --reveal-dur: 500ms; /* --duration-very-slow */
+  --reveal-distance: 12px; /* --distance-medium */
+  --reveal-step: 40ms; /* --duration-stagger */
+  --reveal-blur: 3px; /* --blur-medium */
+  --reveal-ease: cubic-bezier(0.22, 1, 0.36, 1); /* --ease-smooth-out */
+}
+
+.noShadowCard {
+  box-shadow: none;
+}
+
+/* Staggered card loading — adapted from transitions-dev "texts reveal":
+   each card rises + unblurs into place, delayed one stagger step after
+   the last. Total offset (5 x 40ms = 200ms) stays under the ~300ms
+   stagger budget. The .isShown toggle on the group plays the entrance. */
+.revealCard {
+  opacity: 0;
+  transform: translateY(var(--reveal-distance));
+  filter: blur(var(--reveal-blur));
+  transition:
+    opacity var(--reveal-dur) var(--reveal-ease),
+    transform var(--reveal-dur) var(--reveal-ease),
+    filter var(--reveal-dur) var(--reveal-ease);
+  will-change: transform, opacity, filter;
+}
+
+.cardsGridGroup.isShown .revealCard {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.statGrid .revealCard:nth-child(2) {
+  transition-delay: calc(var(--reveal-step) * 1);
+}
+.statGrid .revealCard:nth-child(3) {
+  transition-delay: calc(var(--reveal-step) * 2);
+}
+.chartGrid .revealCard:nth-child(1) {
+  transition-delay: calc(var(--reveal-step) * 3);
+}
+.chartGrid .revealCard:nth-child(2) {
+  transition-delay: calc(var(--reveal-step) * 4);
+}
+.chartGrid .revealCard:nth-child(3) {
+  transition-delay: calc(var(--reveal-step) * 5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .revealCard {
+    transition: none !important;
+  }
+}
+
+/* Object Distribution card only: clip the legend so a very narrow card
+   (e.g. side sheet open) never bleeds chips past the card edge. The
+   DonutChart's own container-query reflow handles most cases; this is
+   the final guard. */
+.distributionCard {
+  overflow: hidden;
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--oi-spacing-m);
+}
+
+.chartGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--oi-spacing-m);
+}
+
+.empty {
+  margin: 0;
+  color: var(--oi-content-color-tertiary);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+/* Recent Users — same heading + helper as Card, but no container chrome. */
+.recent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-l);
+  margin-top: var(--oi-spacing-m);
+}
+
+.recentHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+}
+
+.recentTitle {
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.recentHelper {
+  margin: 0;
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+  font-weight: var(--oi-text-caption-font-weight);
+  color: var(--oi-content-color-secondary);
+}
+
+@media (max-width: 1100px) {
+  .statGrid,
+  .chartGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .statGrid,
+  .chartGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

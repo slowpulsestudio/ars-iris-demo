@@ -1,0 +1,925 @@
+{
+  "version": 1,
+  "files": {
+    "src/iris-shell/.gitattributes": {
+      "upstream": "26b8b325f5a152db8bbe5aa13ec08b994a224d0b252a4037975b17abf49619c6",
+      "written": "26b8b325f5a152db8bbe5aa13ec08b994a224d0b252a4037975b17abf49619c6"
+    },
+    "src/iris-shell/.github/workflows/deploy-github-pages.yml": {
+      "upstream": "1a7ab0ce6b3ef7a6f75d65eb598c4aa9ba0808dc72271d3b7c8b4e0f03e26dc6",
+      "written": "1a7ab0ce6b3ef7a6f75d65eb598c4aa9ba0808dc72271d3b7c8b4e0f03e26dc6"
+    },
+    "src/iris-shell/.gitignore": {
+      "upstream": "89b573cff09ae15edf9b1d6b31fd435907e39093e4831141652c45e5116849f0",
+      "written": "89b573cff09ae15edf9b1d6b31fd435907e39093e4831141652c45e5116849f0"
+    },
+    "src/iris-shell/README.md": {
+      "upstream": "ded76d71e55d26769fc4d45f90356cd22865b27d9637dbe658384afe6e6ed730",
+      "written": "ded76d71e55d26769fc4d45f90356cd22865b27d9637dbe658384afe6e6ed730"
+    },
+    "src/iris-shell/docs/architecture.md": {
+      "upstream": "8ec8b08385a25d9a1b8641a86614f0e24900970daba8c2dcea4ebf9db74125ed",
+      "written": "8ec8b08385a25d9a1b8641a86614f0e24900970daba8c2dcea4ebf9db74125ed"
+    },
+    "src/iris-shell/docs/developer-notes.md": {
+      "upstream": "ff9fb91025bf23e56d239750eaf56b5936988c2c2caf63fe2f32e7ab3777ca0c",
+      "written": "ff9fb91025bf23e56d239750eaf56b5936988c2c2caf63fe2f32e7ab3777ca0c"
+    },
+    "src/iris-shell/docs/flows.md": {
+      "upstream": "665664ff143d9fd4e57d83bc3405e434da084f8d508c75b1e22a15c3ae872727",
+      "written": "665664ff143d9fd4e57d83bc3405e434da084f8d508c75b1e22a15c3ae872727"
+    },
+    "src/iris-shell/docs/product-notes.md": {
+      "upstream": "8ab139c4087fc6583b75fad8acc173e6227eed716690c7a75823b5f2b14a7f22",
+      "written": "8ab139c4087fc6583b75fad8acc173e6227eed716690c7a75823b5f2b14a7f22"
+    },
+    "src/iris-shell/docs/routing.md": {
+      "upstream": "ca9eeda9482a6e0b36c119d050374601ce3f6e0e8491830215f3e33f5beb7600",
+      "written": "ca9eeda9482a6e0b36c119d050374601ce3f6e0e8491830215f3e33f5beb7600"
+    },
+    "src/iris-shell/docs/search-filters-keyboard.md": {
+      "upstream": "429c39d42723c2c680d35185f674c3959fc532cd3a5613451b316fa773efb1e2",
+      "written": "429c39d42723c2c680d35185f674c3959fc532cd3a5613451b316fa773efb1e2"
+    },
+    "src/iris-shell/docs/state.md": {
+      "upstream": "ba5db289f6785d4a00ffc4166e48e9370125b9ccf348670b75c5e83dce885f18",
+      "written": "ba5db289f6785d4a00ffc4166e48e9370125b9ccf348670b75c5e83dce885f18"
+    },
+    "src/iris-shell/index.html": {
+      "upstream": "7187fcb10b64566617dfe089fde9d53e65b5218ce3d4d9c0f3c01fc12b885e04",
+      "written": "8dd07296d40c96b54a8ee44c0d81ba5798526aafad973ac6bf3d9742d73e4cfa"
+    },
+    "src/iris-shell/package.json": {
+      "upstream": "70a7f1b15cde41112bd084a98c9662b95bdb38b5178703f3a6e644a0aaa4e287",
+      "written": "70a7f1b15cde41112bd084a98c9662b95bdb38b5178703f3a6e644a0aaa4e287"
+    },
+    "src/iris-shell/pnpm-lock.yaml": {
+      "upstream": "7647f5578c762d32bc942a867a1e76c4089a0a6ae397abb3328760dea4c10e00",
+      "written": "7647f5578c762d32bc942a867a1e76c4089a0a6ae397abb3328760dea4c10e00"
+    },
+    "src/iris-shell/pnpm-workspace.yaml": {
+      "upstream": "e490e429c0a251bb75ef101bd1825baf3310eb4f8d7c90cbeeb5e5b319dbb8c9",
+      "written": "e490e429c0a251bb75ef101bd1825baf3310eb4f8d7c90cbeeb5e5b319dbb8c9"
+    },
+    "src/iris-shell/public/avatar01.png": {
+      "upstream": "eaa3ec8981dfdf8b163da7ccb3320b80f880d5e3fb63f745f05c07f8d62850b6",
+      "written": "eaa3ec8981dfdf8b163da7ccb3320b80f880d5e3fb63f745f05c07f8d62850b6"
+    },
+    "src/iris-shell/public/avatar02.png": {
+      "upstream": "5582cf24022c9734161c8ff102c8efa4e6db5c622fe482fa0ed8ddfd76f410a1",
+      "written": "5582cf24022c9734161c8ff102c8efa4e6db5c622fe482fa0ed8ddfd76f410a1"
+    },
+    "src/iris-shell/public/logo-dark-512.png": {
+      "upstream": "73bca9d8c56c6e954c7d9ed3d3c8b3934f3d6c03a3613c1dc5b0fd79a1db84c2",
+      "written": "73bca9d8c56c6e954c7d9ed3d3c8b3934f3d6c03a3613c1dc5b0fd79a1db84c2"
+    },
+    "src/iris-shell/public/logo-light-512.png": {
+      "upstream": "80a70b632a36d99b8f0ba416286d2ad078808532828ba873c3cc567031bea48d",
+      "written": "80a70b632a36d99b8f0ba416286d2ad078808532828ba873c3cc567031bea48d"
+    },
+    "src/iris-shell/public/oi-logo.svg": {
+      "upstream": "894c6c7d6a1956f5dc08c8e83794237bfc02d4c99d43add2c49e25d94f84e7ac",
+      "written": "894c6c7d6a1956f5dc08c8e83794237bfc02d4c99d43add2c49e25d94f84e7ac"
+    },
+    "src/iris-shell/public/product-icons/active-roles.svg": {
+      "upstream": "a41b3c43c7699640ade0795b0794e102f7ead15ff08d6fa4e0c5d605d35d199a",
+      "written": "a41b3c43c7699640ade0795b0794e102f7ead15ff08d6fa4e0c5d605d35d199a"
+    },
+    "src/iris-shell/public/product-icons/identity-manager.svg": {
+      "upstream": "928d26c3a057674c03c7bcf9b8f0bfc1ab9b79a6df34fd6dfc4dac800d54e981",
+      "written": "928d26c3a057674c03c7bcf9b8f0bfc1ab9b79a6df34fd6dfc4dac800d54e981"
+    },
+    "src/iris-shell/public/product-icons/safeguard.svg": {
+      "upstream": "cab806d025878efebf0321e0b1d9f6f77c29a41da988f765b307cd695a53e9a6",
+      "written": "cab806d025878efebf0321e0b1d9f6f77c29a41da988f765b307cd695a53e9a6"
+    },
+    "src/iris-shell/public/product-icons/services.svg": {
+      "upstream": "e97b40dc7749cec8a2bb993f7036a8ec24c974b3f9734c62d53cb093b61c8a8c",
+      "written": "e97b40dc7749cec8a2bb993f7036a8ec24c974b3f9734c62d53cb093b61c8a8c"
+    },
+    "src/iris-shell/scripts/a11y-audit.ts": {
+      "upstream": "9bfa9b6760f8a791ab262c486cbf3e0ced5e2b28d2d5853441d27dc34a210a5b",
+      "written": "9bfa9b6760f8a791ab262c486cbf3e0ced5e2b28d2d5853441d27dc34a210a5b"
+    },
+    "src/iris-shell/scripts/a11y-verify.ts": {
+      "upstream": "ba3e2dbfe1d0f27e7e5de9352b91114441df2b5615e2a3c1f423dc5452d22f70",
+      "written": "ba3e2dbfe1d0f27e7e5de9352b91114441df2b5615e2a3c1f423dc5452d22f70"
+    },
+    "src/iris-shell/scripts/motion-lint.ts": {
+      "upstream": "00a73ed00daf07cfbb10d88231b38f8546411a891e50958801b7997c4234e060",
+      "written": "00a73ed00daf07cfbb10d88231b38f8546411a891e50958801b7997c4234e060"
+    },
+    "src/iris-shell/scripts/wcag.ts": {
+      "upstream": "7da2305854647808852d54b4ebf0166010b83f4fd1614edfb64fbf3e9028f8c0",
+      "written": "7da2305854647808852d54b4ebf0166010b83f4fd1614edfb64fbf3e9028f8c0"
+    },
+    "src/iris-shell/skills-lock.json": {
+      "upstream": "26460ba635773bdb2fbd13bfa902f498f569a83d39f54b3267088b30549c27e3",
+      "written": "26460ba635773bdb2fbd13bfa902f498f569a83d39f54b3267088b30549c27e3"
+    },
+    "src/iris-shell/src/App.tsx": {
+      "upstream": "f0aee49ec23ae3211b15f3dfa8825200d7f54af68ff553662161ce8659bc2301",
+      "written": "f0aee49ec23ae3211b15f3dfa8825200d7f54af68ff553662161ce8659bc2301"
+    },
+    "src/iris-shell/src/components/ActionBar/ActionBar.module.css": {
+      "upstream": "6dbc17039efee40b797a2cf024ff57518b4c5e8259c4c95acc208b8ae79dc754",
+      "written": "6dbc17039efee40b797a2cf024ff57518b4c5e8259c4c95acc208b8ae79dc754"
+    },
+    "src/iris-shell/src/components/ActionBar/ActionBar.tsx": {
+      "upstream": "1a4611d2b47860d266287503caab885d13e4a33186d9f238d61d96909468922a",
+      "written": "1a4611d2b47860d266287503caab885d13e4a33186d9f238d61d96909468922a"
+    },
+    "src/iris-shell/src/components/AiPanel/AiPanel.module.css": {
+      "upstream": "8b29089523d70d30d1437df5ae8f2a889b6b9e8ee51b9f36bedc38d0025a6c94",
+      "written": "8b29089523d70d30d1437df5ae8f2a889b6b9e8ee51b9f36bedc38d0025a6c94"
+    },
+    "src/iris-shell/src/components/AiPanel/AiPanel.tsx": {
+      "upstream": "11294ecbeeab46b28f09922dd8aa990dfacf8b44b50397e40ffb3898591938df",
+      "written": "11294ecbeeab46b28f09922dd8aa990dfacf8b44b50397e40ffb3898591938df"
+    },
+    "src/iris-shell/src/components/AppHeader/AppHeader.module.css": {
+      "upstream": "8e2850d2a246f684dcd4337ecca104afc7c8db67c79bd8bf65244b6d66b4ba3f",
+      "written": "8e2850d2a246f684dcd4337ecca104afc7c8db67c79bd8bf65244b6d66b4ba3f"
+    },
+    "src/iris-shell/src/components/AppHeader/AppHeader.tsx": {
+      "upstream": "f224d103be25172dbc7ede38c6a4877d921d6019a53af2b233f105b01e9b6d57",
+      "written": "f224d103be25172dbc7ede38c6a4877d921d6019a53af2b233f105b01e9b6d57"
+    },
+    "src/iris-shell/src/components/AppHeader/SidebarToggleIcons.tsx": {
+      "upstream": "4de5913fd7d13b86966905c4c3a0f2dc92fe44a111ab383205609b7376b62dc5",
+      "written": "4de5913fd7d13b86966905c4c3a0f2dc92fe44a111ab383205609b7376b62dc5"
+    },
+    "src/iris-shell/src/components/Avatar/Avatar.module.css": {
+      "upstream": "52a288ff8be5a21f044b9b6c05c108972fb4e1777e2db3c84701f733a3435d83",
+      "written": "52a288ff8be5a21f044b9b6c05c108972fb4e1777e2db3c84701f733a3435d83"
+    },
+    "src/iris-shell/src/components/Avatar/Avatar.tsx": {
+      "upstream": "1957149575eaf83426f6077e1bf64e4e875362bc10acb1aa549a43e266405af8",
+      "written": "1957149575eaf83426f6077e1bf64e4e875362bc10acb1aa549a43e266405af8"
+    },
+    "src/iris-shell/src/components/Badge/Badge.module.css": {
+      "upstream": "a0bcff05d1dcd3ce4e2b0a40830997b470da9f7025494adcb05a9bd37edbc3cd",
+      "written": "a0bcff05d1dcd3ce4e2b0a40830997b470da9f7025494adcb05a9bd37edbc3cd"
+    },
+    "src/iris-shell/src/components/Badge/Badge.tsx": {
+      "upstream": "a3b91ae98c355a892167bc8122283beedf90b1b8d3cdbc05f301949aee0bdf3f",
+      "written": "a3b91ae98c355a892167bc8122283beedf90b1b8d3cdbc05f301949aee0bdf3f"
+    },
+    "src/iris-shell/src/components/BarChart/BarChart.module.css": {
+      "upstream": "a6a74c144bb55c4f9cfbd01ac25c5fcb7c63301c01c96665eee5c9f5da534c7c",
+      "written": "a6a74c144bb55c4f9cfbd01ac25c5fcb7c63301c01c96665eee5c9f5da534c7c"
+    },
+    "src/iris-shell/src/components/BarChart/BarChart.tsx": {
+      "upstream": "80c79881a733f1f519bd4b24d417978ca4fd188577a643c78b34227e06a378cd",
+      "written": "80c79881a733f1f519bd4b24d417978ca4fd188577a643c78b34227e06a378cd"
+    },
+    "src/iris-shell/src/components/BrandLogo/BrandLogo.tsx": {
+      "upstream": "d72be4c85955e5eced54d72df6add517d0a5cecd1a1096656c2b7ee16114cf89",
+      "written": "d72be4c85955e5eced54d72df6add517d0a5cecd1a1096656c2b7ee16114cf89"
+    },
+    "src/iris-shell/src/components/Button/Button.module.css": {
+      "upstream": "62530c7d1190ceb9150c19260193a9a93b9d4051d43ee2f6934b54ac9c206248",
+      "written": "62530c7d1190ceb9150c19260193a9a93b9d4051d43ee2f6934b54ac9c206248"
+    },
+    "src/iris-shell/src/components/Button/Button.tsx": {
+      "upstream": "682cfb2ecdc2ba4d75ce836e0ce13a063cb568b8ebdca1dd50cebf21888132c1",
+      "written": "682cfb2ecdc2ba4d75ce836e0ce13a063cb568b8ebdca1dd50cebf21888132c1"
+    },
+    "src/iris-shell/src/components/Card/Card.module.css": {
+      "upstream": "92dfd83a5ceae2a7dbdd8f35c29e000bacda67734bc7067359dee5bfae1c745d",
+      "written": "92dfd83a5ceae2a7dbdd8f35c29e000bacda67734bc7067359dee5bfae1c745d"
+    },
+    "src/iris-shell/src/components/Card/Card.tsx": {
+      "upstream": "5abdac88c6ce36a029bcf301890c7cf4f67e17ac3e2fae649df05ef5e369b15e",
+      "written": "5abdac88c6ce36a029bcf301890c7cf4f67e17ac3e2fae649df05ef5e369b15e"
+    },
+    "src/iris-shell/src/components/Checkbox/Checkbox.module.css": {
+      "upstream": "791d6d1e6d1843fd700a6ed90e5dc92805ccb1c03da501a566c89018176266a6",
+      "written": "791d6d1e6d1843fd700a6ed90e5dc92805ccb1c03da501a566c89018176266a6"
+    },
+    "src/iris-shell/src/components/Checkbox/Checkbox.tsx": {
+      "upstream": "f11e45e7b3cc2f931af00301e6bb0df807209323ee3466f63b738485865716b0",
+      "written": "f11e45e7b3cc2f931af00301e6bb0df807209323ee3466f63b738485865716b0"
+    },
+    "src/iris-shell/src/components/CommandPalette/CommandPalette.module.css": {
+      "upstream": "6a9f31ee4e624c4cd5d2cde111b5b081a9b416663de47a21afbcde1fcfed2141",
+      "written": "6a9f31ee4e624c4cd5d2cde111b5b081a9b416663de47a21afbcde1fcfed2141"
+    },
+    "src/iris-shell/src/components/CommandPalette/CommandPalette.tsx": {
+      "upstream": "2a47958883903e618c0c4f68618c19babb498dd5095596ed1744115946ec0abe",
+      "written": "2a47958883903e618c0c4f68618c19babb498dd5095596ed1744115946ec0abe"
+    },
+    "src/iris-shell/src/components/ContentHeader/ContentHeader.module.css": {
+      "upstream": "319feca56c919112ca9d545e328d6992c4784e97bee9785fefcbdae209175172",
+      "written": "319feca56c919112ca9d545e328d6992c4784e97bee9785fefcbdae209175172"
+    },
+    "src/iris-shell/src/components/ContentHeader/ContentHeader.tsx": {
+      "upstream": "968e3b6d5fb24b9697c9977c61f3fdd77765763cb4797e13778bd3d87e20be08",
+      "written": "968e3b6d5fb24b9697c9977c61f3fdd77765763cb4797e13778bd3d87e20be08"
+    },
+    "src/iris-shell/src/components/DataTable/DataTable.module.css": {
+      "upstream": "92b9b586287d78bd168b93951c46dff3227ebd42c48a47220e29472e16a76cf5",
+      "written": "92b9b586287d78bd168b93951c46dff3227ebd42c48a47220e29472e16a76cf5"
+    },
+    "src/iris-shell/src/components/DataTable/DataTable.tsx": {
+      "upstream": "00ca22fa6e5d5f6e2bcdf5e7595dea6394ecb18bab285601c47edfa6b7ef4c54",
+      "written": "00ca22fa6e5d5f6e2bcdf5e7595dea6394ecb18bab285601c47edfa6b7ef4c54"
+    },
+    "src/iris-shell/src/components/DescriptionList/DescriptionList.module.css": {
+      "upstream": "753d017ea608b43e70f0ff52143e866a1230d661ce8b6809c3b04d2df911cfec",
+      "written": "753d017ea608b43e70f0ff52143e866a1230d661ce8b6809c3b04d2df911cfec"
+    },
+    "src/iris-shell/src/components/DescriptionList/DescriptionList.tsx": {
+      "upstream": "aa505674c6e0aeff344860a9673372bd511d9ecda149a17bf1389d489d8a2bf2",
+      "written": "aa505674c6e0aeff344860a9673372bd511d9ecda149a17bf1389d489d8a2bf2"
+    },
+    "src/iris-shell/src/components/DonutChart/DonutChart.module.css": {
+      "upstream": "44894dfb4cd41e11b51370f37bed281354b37864b47eda580c1794686020c340",
+      "written": "44894dfb4cd41e11b51370f37bed281354b37864b47eda580c1794686020c340"
+    },
+    "src/iris-shell/src/components/DonutChart/DonutChart.tsx": {
+      "upstream": "2a63e0f5ff8d0e7a0786fe0c3e26d0d0c6d5bd982a3b76be2551ac1c528fa18b",
+      "written": "2a63e0f5ff8d0e7a0786fe0c3e26d0d0c6d5bd982a3b76be2551ac1c528fa18b"
+    },
+    "src/iris-shell/src/components/EmptyFigure/EmptyFigure.module.css": {
+      "upstream": "991b38c61d55bc1e37bcbf0af0990b87c892f0bb285caf108c1eb38982d7734b",
+      "written": "991b38c61d55bc1e37bcbf0af0990b87c892f0bb285caf108c1eb38982d7734b"
+    },
+    "src/iris-shell/src/components/EmptyFigure/EmptyFigure.tsx": {
+      "upstream": "e3ce69474f6a92fddfe1351212ae51900156d9d53e7932b3464be8c56c2b682c",
+      "written": "e3ce69474f6a92fddfe1351212ae51900156d9d53e7932b3464be8c56c2b682c"
+    },
+    "src/iris-shell/src/components/Filters/AdvancedFilter.module.css": {
+      "upstream": "8e4cd27eb77d7373a209264a1300f69f9ea039b7f19756123119d16b0a6ec691",
+      "written": "8e4cd27eb77d7373a209264a1300f69f9ea039b7f19756123119d16b0a6ec691"
+    },
+    "src/iris-shell/src/components/Filters/AdvancedFilter.tsx": {
+      "upstream": "8019316162df2afe3dd2f2653c2956f753a73f38d8283ba5d0828025f17c8c10",
+      "written": "8019316162df2afe3dd2f2653c2956f753a73f38d8283ba5d0828025f17c8c10"
+    },
+    "src/iris-shell/src/components/Filters/ConditionPill.module.css": {
+      "upstream": "559bf87a3f3073449259f197577bd61037a46818d4ff6d090b57d81aec3285a8",
+      "written": "559bf87a3f3073449259f197577bd61037a46818d4ff6d090b57d81aec3285a8"
+    },
+    "src/iris-shell/src/components/Filters/ConditionPill.tsx": {
+      "upstream": "ec3f9a593e772ff56b69cd0b60275b2e20b85070c0b0d40a7352736e3fc741b9",
+      "written": "ec3f9a593e772ff56b69cd0b60275b2e20b85070c0b0d40a7352736e3fc741b9"
+    },
+    "src/iris-shell/src/components/Filters/FilterBar.module.css": {
+      "upstream": "bb7239e2f85661818959b1a8427abe8a0ab9968a57be25674775d1c432d90f14",
+      "written": "bb7239e2f85661818959b1a8427abe8a0ab9968a57be25674775d1c432d90f14"
+    },
+    "src/iris-shell/src/components/Filters/FilterBar.tsx": {
+      "upstream": "27d53a245e0b8a10b9025b4317e41a3fd3d51633d0aa661d6ee7028bb53049c7",
+      "written": "27d53a245e0b8a10b9025b4317e41a3fd3d51633d0aa661d6ee7028bb53049c7"
+    },
+    "src/iris-shell/src/components/Filters/ValueEditor.tsx": {
+      "upstream": "bf93b84c5b8211a09a4735693af5f21949751031d665e060b4eb00f67bc1a73a",
+      "written": "bf93b84c5b8211a09a4735693af5f21949751031d665e060b4eb00f67bc1a73a"
+    },
+    "src/iris-shell/src/components/Filters/filterModel.ts": {
+      "upstream": "318f21e99d8d8de3389c05f66e542f1f4c12dc5bcd735f506f42561187b80476",
+      "written": "318f21e99d8d8de3389c05f66e542f1f4c12dc5bcd735f506f42561187b80476"
+    },
+    "src/iris-shell/src/components/Filters/index.ts": {
+      "upstream": "cc8135ced6cad1aa79a0885e731301f682ded3c9071697517e6a7d6f37f08a82",
+      "written": "cc8135ced6cad1aa79a0885e731301f682ded3c9071697517e6a7d6f37f08a82"
+    },
+    "src/iris-shell/src/components/Filters/useFilterModel.ts": {
+      "upstream": "2c1b586890d20834956225f0b933afd581b2675f501bd0ca21a5c61919fe7a7b",
+      "written": "2c1b586890d20834956225f0b933afd581b2675f501bd0ca21a5c61919fe7a7b"
+    },
+    "src/iris-shell/src/components/FormField/FormField.module.css": {
+      "upstream": "ec4bdc9bce766cf6f43d5007c5035981ef00d1b80c73169afbbbd9073abca561",
+      "written": "ec4bdc9bce766cf6f43d5007c5035981ef00d1b80c73169afbbbd9073abca561"
+    },
+    "src/iris-shell/src/components/FormField/FormField.tsx": {
+      "upstream": "f3fec17c543837a67d02e37fefb21140e6fbe4d4919280581497c9ffa5b0b620",
+      "written": "f3fec17c543837a67d02e37fefb21140e6fbe4d4919280581497c9ffa5b0b620"
+    },
+    "src/iris-shell/src/components/GlobalSidebar/GlobalSidebar.module.css": {
+      "upstream": "9c4a1da8cb33d02e4b4539ef3aa1dc8f880308de451b41454e4dd9a044708bd1",
+      "written": "9c4a1da8cb33d02e4b4539ef3aa1dc8f880308de451b41454e4dd9a044708bd1"
+    },
+    "src/iris-shell/src/components/GlobalSidebar/GlobalSidebar.tsx": {
+      "upstream": "848768ebf0d469c003b71fadd280bd3c6266148890f42cc01aa9e49b453e6e49",
+      "written": "848768ebf0d469c003b71fadd280bd3c6266148890f42cc01aa9e49b453e6e49"
+    },
+    "src/iris-shell/src/components/Icon/Icon.module.css": {
+      "upstream": "18e4f645b2e6aec66c4c78f2570189dbf7c7d925a14f3e797e03429ed16a17fe",
+      "written": "18e4f645b2e6aec66c4c78f2570189dbf7c7d925a14f3e797e03429ed16a17fe"
+    },
+    "src/iris-shell/src/components/Icon/Icon.tsx": {
+      "upstream": "dd03bd7084f5475ca2b45fde846154c3513d959e686b511f209346bb928c00f3",
+      "written": "dd03bd7084f5475ca2b45fde846154c3513d959e686b511f209346bb928c00f3"
+    },
+    "src/iris-shell/src/components/IconButton/IconButton.module.css": {
+      "upstream": "03d2a1851a52374b70a94b1586f2ffc1012d4c826f568262cc2f784ef38478e2",
+      "written": "03d2a1851a52374b70a94b1586f2ffc1012d4c826f568262cc2f784ef38478e2"
+    },
+    "src/iris-shell/src/components/IconButton/IconButton.tsx": {
+      "upstream": "f0d35edef1123068c76bbbb1868662a4a44e58d34fcfe3a4fabdb872a265fc1a",
+      "written": "f0d35edef1123068c76bbbb1868662a4a44e58d34fcfe3a4fabdb872a265fc1a"
+    },
+    "src/iris-shell/src/components/Link/Link.module.css": {
+      "upstream": "e10284141c63cabfdf1796f8cedb8d52280d8aeda461cf00ec1ddbe58de74b0d",
+      "written": "e10284141c63cabfdf1796f8cedb8d52280d8aeda461cf00ec1ddbe58de74b0d"
+    },
+    "src/iris-shell/src/components/Link/Link.tsx": {
+      "upstream": "943db53ad6ea229c4576dcd4328a4b178b30b04e1799c3a57be881190d1ef59b",
+      "written": "943db53ad6ea229c4576dcd4328a4b178b30b04e1799c3a57be881190d1ef59b"
+    },
+    "src/iris-shell/src/components/ListToolbarActions/ListToolbarActions.module.css": {
+      "upstream": "da31e98b78b9bc6631e7df1ba246973b597bdf24b0b20bf8da536120029c58ea",
+      "written": "da31e98b78b9bc6631e7df1ba246973b597bdf24b0b20bf8da536120029c58ea"
+    },
+    "src/iris-shell/src/components/ListToolbarActions/ListToolbarActions.tsx": {
+      "upstream": "ab0e1b4e00834fe9b774d547a83546fb9d076f2dd4822ebb997e90a43066759f",
+      "written": "ab0e1b4e00834fe9b774d547a83546fb9d076f2dd4822ebb997e90a43066759f"
+    },
+    "src/iris-shell/src/components/Menu/Menu.module.css": {
+      "upstream": "7c90ac317e9d478308134822f4794524e3a3ec3299d991446adea15502780975",
+      "written": "7c90ac317e9d478308134822f4794524e3a3ec3299d991446adea15502780975"
+    },
+    "src/iris-shell/src/components/Menu/Menu.tsx": {
+      "upstream": "ad827fbae2b0ecef127430aa0f332b337bb669bd7d5819e4ba3b4430e9b6a1bf",
+      "written": "ad827fbae2b0ecef127430aa0f332b337bb669bd7d5819e4ba3b4430e9b6a1bf"
+    },
+    "src/iris-shell/src/components/Modal/Modal.module.css": {
+      "upstream": "7f80148998c8d308e31a8121f3dda80ec8d72090622b7109bdaee90cc1c65b72",
+      "written": "7f80148998c8d308e31a8121f3dda80ec8d72090622b7109bdaee90cc1c65b72"
+    },
+    "src/iris-shell/src/components/Modal/Modal.tsx": {
+      "upstream": "8691ee5a2c4e7c82eff7438e448f6f6da213cacba667fd18fa04302a9b2d260d",
+      "written": "8691ee5a2c4e7c82eff7438e448f6f6da213cacba667fd18fa04302a9b2d260d"
+    },
+    "src/iris-shell/src/components/MultiSelect/MultiSelect.module.css": {
+      "upstream": "efd863eb3203ff164a31a15ace99d50b3b343aebce6c41bb3b76238db88d5202",
+      "written": "efd863eb3203ff164a31a15ace99d50b3b343aebce6c41bb3b76238db88d5202"
+    },
+    "src/iris-shell/src/components/MultiSelect/MultiSelect.tsx": {
+      "upstream": "790e868bb8a69ed7de4c17e723229c9598483f1c31908f45b4dd90177edac4e6",
+      "written": "790e868bb8a69ed7de4c17e723229c9598483f1c31908f45b4dd90177edac4e6"
+    },
+    "src/iris-shell/src/components/NavItem/NavItem.module.css": {
+      "upstream": "915a30be5a264895578f1c70bca55437639a19891c750ddcfb88f03c17660cba",
+      "written": "915a30be5a264895578f1c70bca55437639a19891c750ddcfb88f03c17660cba"
+    },
+    "src/iris-shell/src/components/NavItem/NavItem.tsx": {
+      "upstream": "f1963238fa8fb03888ae086fab6c3aa6e8a1059a8431f71d1afec41197b2d1e0",
+      "written": "f1963238fa8fb03888ae086fab6c3aa6e8a1059a8431f71d1afec41197b2d1e0"
+    },
+    "src/iris-shell/src/components/Pagination/Pagination.module.css": {
+      "upstream": "07fb571a1d6a747ec2be5f35b0e51863ccaaf3370070431e90b8379a3bedf17c",
+      "written": "07fb571a1d6a747ec2be5f35b0e51863ccaaf3370070431e90b8379a3bedf17c"
+    },
+    "src/iris-shell/src/components/Pagination/Pagination.tsx": {
+      "upstream": "9895a0ac47d8751c2fcd0132225c841ac2f36bef074d4c159c0b496344f2aa65",
+      "written": "9895a0ac47d8751c2fcd0132225c841ac2f36bef074d4c159c0b496344f2aa65"
+    },
+    "src/iris-shell/src/components/ProductIcon/ProductIcon.tsx": {
+      "upstream": "eda3a7491ecd786204eaf4eaae9abfde674fa3bd3f1e9fd4ce1f1f5d9d15af53",
+      "written": "eda3a7491ecd786204eaf4eaae9abfde674fa3bd3f1e9fd4ce1f1f5d9d15af53"
+    },
+    "src/iris-shell/src/components/ResourceIcon/ResourceIcon.module.css": {
+      "upstream": "de9782c0100de949b3c640943d7e772fbb26304a54a7432b3a12380719ca21b9",
+      "written": "de9782c0100de949b3c640943d7e772fbb26304a54a7432b3a12380719ca21b9"
+    },
+    "src/iris-shell/src/components/ResourceIcon/ResourceIcon.tsx": {
+      "upstream": "14408193afea55d029bbeba4f6f72e9424a0d056d56338249ae681056c985883",
+      "written": "14408193afea55d029bbeba4f6f72e9424a0d056d56338249ae681056c985883"
+    },
+    "src/iris-shell/src/components/SegmentedControl/SegmentedControl.module.css": {
+      "upstream": "5d0d13ed60af239430dff5f4255a741b91b3d5e613f6cca54e7f98e583660733",
+      "written": "5d0d13ed60af239430dff5f4255a741b91b3d5e613f6cca54e7f98e583660733"
+    },
+    "src/iris-shell/src/components/SegmentedControl/SegmentedControl.tsx": {
+      "upstream": "9a35b4b6ac23991f4bc462e3aff53481846659cc1ba920ad64c1c79170373100",
+      "written": "9a35b4b6ac23991f4bc462e3aff53481846659cc1ba920ad64c1c79170373100"
+    },
+    "src/iris-shell/src/components/Select/Select.module.css": {
+      "upstream": "3c704b968634a846bf8f37bd0c93f19dca8faf7658c067cbea0bfefe69aab921",
+      "written": "3c704b968634a846bf8f37bd0c93f19dca8faf7658c067cbea0bfefe69aab921"
+    },
+    "src/iris-shell/src/components/Select/Select.tsx": {
+      "upstream": "0dc38e8f005d3e85f672c4bf667b4e668a347a3ecbb448e591e5fa6120c1028a",
+      "written": "0dc38e8f005d3e85f672c4bf667b4e668a347a3ecbb448e591e5fa6120c1028a"
+    },
+    "src/iris-shell/src/components/SideSheet/SideSheet.module.css": {
+      "upstream": "560a714b59bda91efa8c5f3bc14e62ff6aac12bcf78d20eab0be1c7903966029",
+      "written": "560a714b59bda91efa8c5f3bc14e62ff6aac12bcf78d20eab0be1c7903966029"
+    },
+    "src/iris-shell/src/components/SideSheet/SideSheet.tsx": {
+      "upstream": "c4038f1d233943a90b8671dc317d1f161d32d73c9f34a73843565ce74af75222",
+      "written": "c4038f1d233943a90b8671dc317d1f161d32d73c9f34a73843565ce74af75222"
+    },
+    "src/iris-shell/src/components/Sidebar/Sidebar.module.css": {
+      "upstream": "258383da36d4343e5b02043787b85f319617274d80755fbc3a184be633f098c8",
+      "written": "258383da36d4343e5b02043787b85f319617274d80755fbc3a184be633f098c8"
+    },
+    "src/iris-shell/src/components/Sidebar/Sidebar.tsx": {
+      "upstream": "8c00e4ecbd27eb4e5557ed2e96b3a8253053f79aa627aab1f2ebf8866ef53108",
+      "written": "8c00e4ecbd27eb4e5557ed2e96b3a8253053f79aa627aab1f2ebf8866ef53108"
+    },
+    "src/iris-shell/src/components/Sidebar/Tree.module.css": {
+      "upstream": "d76adaf4a4b4640f7918949aea3af359a3211be381a1041d5d64b134df2cb917",
+      "written": "d76adaf4a4b4640f7918949aea3af359a3211be381a1041d5d64b134df2cb917"
+    },
+    "src/iris-shell/src/components/Sidebar/Tree.tsx": {
+      "upstream": "997cc305d5efbc16481842cd8e2e2d020f4a3f5b699c1a1a2053b0335b89e02f",
+      "written": "997cc305d5efbc16481842cd8e2e2d020f4a3f5b699c1a1a2053b0335b89e02f"
+    },
+    "src/iris-shell/src/components/SplitButton/SplitButton.module.css": {
+      "upstream": "905f508edac900fac8859a9ebc504644ec73190ff6a853e642d01ea64367756a",
+      "written": "905f508edac900fac8859a9ebc504644ec73190ff6a853e642d01ea64367756a"
+    },
+    "src/iris-shell/src/components/SplitButton/SplitButton.tsx": {
+      "upstream": "f04a2928b969f5b54be91aab8d4254770e637c123d46a80e54cf8eb43d18884e",
+      "written": "f04a2928b969f5b54be91aab8d4254770e637c123d46a80e54cf8eb43d18884e"
+    },
+    "src/iris-shell/src/components/StatCard/StatCard.module.css": {
+      "upstream": "59255cd258c6009a3c102ffa7b75655a1bb55d85377a35feb43cabe08a1d4b30",
+      "written": "59255cd258c6009a3c102ffa7b75655a1bb55d85377a35feb43cabe08a1d4b30"
+    },
+    "src/iris-shell/src/components/StatCard/StatCard.tsx": {
+      "upstream": "de1a6ddd575c70dd7d8698f6d33dff98445e9c16b1c7a5087ad26e639b561638",
+      "written": "de1a6ddd575c70dd7d8698f6d33dff98445e9c16b1c7a5087ad26e639b561638"
+    },
+    "src/iris-shell/src/components/Stepper/Stepper.module.css": {
+      "upstream": "4902745a5033c11d9f89dc3965228e510cb1f51af388ab94ddde5bb03303ba11",
+      "written": "4902745a5033c11d9f89dc3965228e510cb1f51af388ab94ddde5bb03303ba11"
+    },
+    "src/iris-shell/src/components/Stepper/Stepper.tsx": {
+      "upstream": "293c0f3c7b483f9a01fce9e71218f3f826220ea2810f8f8b61612735de715066",
+      "written": "293c0f3c7b483f9a01fce9e71218f3f826220ea2810f8f8b61612735de715066"
+    },
+    "src/iris-shell/src/components/Tabs/Tabs.module.css": {
+      "upstream": "93659716c85ed82cc7ac718771be6777235a251a4cd9ccfbbe9835c4cb5016fa",
+      "written": "93659716c85ed82cc7ac718771be6777235a251a4cd9ccfbbe9835c4cb5016fa"
+    },
+    "src/iris-shell/src/components/Tabs/Tabs.tsx": {
+      "upstream": "1b89182959a46d4050215ee64a2d7bbd166b7083e7c5d61f1ffcf4d331502778",
+      "written": "1b89182959a46d4050215ee64a2d7bbd166b7083e7c5d61f1ffcf4d331502778"
+    },
+    "src/iris-shell/src/components/TextInput/TextInput.module.css": {
+      "upstream": "11b191a3c150590a03527802d65e7e20014c6f20ed61fd575ed2dbfa01668a4c",
+      "written": "11b191a3c150590a03527802d65e7e20014c6f20ed61fd575ed2dbfa01668a4c"
+    },
+    "src/iris-shell/src/components/TextInput/TextInput.tsx": {
+      "upstream": "92f37b7b93e6a2537431f3b5620c50b9f86a982f930fb42e1c02106653511cba",
+      "written": "92f37b7b93e6a2537431f3b5620c50b9f86a982f930fb42e1c02106653511cba"
+    },
+    "src/iris-shell/src/components/Textarea/Textarea.module.css": {
+      "upstream": "d2831e6a4a050236c0ea93250f58a68ce16e8872ef8287a06482d6d991caabba",
+      "written": "d2831e6a4a050236c0ea93250f58a68ce16e8872ef8287a06482d6d991caabba"
+    },
+    "src/iris-shell/src/components/Textarea/Textarea.tsx": {
+      "upstream": "24be1bf4f8bc8a0baa0f6fbc232d2520331326c941210bbf6187409c7ca6c4fd",
+      "written": "24be1bf4f8bc8a0baa0f6fbc232d2520331326c941210bbf6187409c7ca6c4fd"
+    },
+    "src/iris-shell/src/components/Toast/Toast.module.css": {
+      "upstream": "2da7eba6cac3f6d8622d321e1409d5917ce9f2ac0e9f3ee2381e38658475ccf2",
+      "written": "2da7eba6cac3f6d8622d321e1409d5917ce9f2ac0e9f3ee2381e38658475ccf2"
+    },
+    "src/iris-shell/src/components/Toast/Toast.tsx": {
+      "upstream": "cba7649f4f4c3d07a22719fb94632c7aeb44e4a154066db773d76d0511dd9bc8",
+      "written": "cba7649f4f4c3d07a22719fb94632c7aeb44e4a154066db773d76d0511dd9bc8"
+    },
+    "src/iris-shell/src/components/Tooltip/Tooltip.module.css": {
+      "upstream": "0da98c9772bcd1190ef95406768fcda24fd10c0ec53ca4f63d10f37ab7b223e5",
+      "written": "0da98c9772bcd1190ef95406768fcda24fd10c0ec53ca4f63d10f37ab7b223e5"
+    },
+    "src/iris-shell/src/components/Tooltip/Tooltip.tsx": {
+      "upstream": "6c943c5e1eb0083ed947ed2c8f1cad2cfed8f6e08fe596fa89a9e6e513f19c80",
+      "written": "6c943c5e1eb0083ed947ed2c8f1cad2cfed8f6e08fe596fa89a9e6e513f19c80"
+    },
+    "src/iris-shell/src/icons/icons/index.cjs": {
+      "upstream": "4154d652284531d6d8e2794612e1e0a0a55bc5ab8cb2110467a946e1529e06a9",
+      "written": "4154d652284531d6d8e2794612e1e0a0a55bc5ab8cb2110467a946e1529e06a9"
+    },
+    "src/iris-shell/src/icons/icons/index.ts": {
+      "upstream": "beb36327a0fa689d2fdeb0d627b0ee93da1489053e740c07fa4606898138b537",
+      "written": "beb36327a0fa689d2fdeb0d627b0ee93da1489053e740c07fa4606898138b537"
+    },
+    "src/iris-shell/src/icons/index.cjs": {
+      "upstream": "51b0f34cebcf6f1b5652bb52fdf8e69980184060ae2dfd421f9976f36094b055",
+      "written": "51b0f34cebcf6f1b5652bb52fdf8e69980184060ae2dfd421f9976f36094b055"
+    },
+    "src/iris-shell/src/icons/index.ts": {
+      "upstream": "ac095b653afce8b9d2ad81454403d2784538127350986887f61d7d7f63194246",
+      "written": "ac095b653afce8b9d2ad81454403d2784538127350986887f61d7d7f63194246"
+    },
+    "src/iris-shell/src/icons/manifest.json": {
+      "upstream": "9bf6e7df1449f3f1195e27ff8288484df5359c80dbe2c9d46d8322863cede368",
+      "written": "9bf6e7df1449f3f1195e27ff8288484df5359c80dbe2c9d46d8322863cede368"
+    },
+    "src/iris-shell/src/lib/aiContext.ts": {
+      "upstream": "e404a72d91cf4d4a49e388a0540025fb240d030b6260656fb3f0ed94bded1600",
+      "written": "e404a72d91cf4d4a49e388a0540025fb240d030b6260656fb3f0ed94bded1600"
+    },
+    "src/iris-shell/src/lib/aiPrompts.ts": {
+      "upstream": "2e5f744a4ec565aae8d3b36c35732ca2f6c2fd1e5c4466c368044071b4b0bfb2",
+      "written": "2e5f744a4ec565aae8d3b36c35732ca2f6c2fd1e5c4466c368044071b4b0bfb2"
+    },
+    "src/iris-shell/src/lib/appShellContext.tsx": {
+      "upstream": "c37789c12a8342a93badb778389d5ef55098005513dbe1430fe5c78e21993131",
+      "written": "c37789c12a8342a93badb778389d5ef55098005513dbe1430fe5c78e21993131"
+    },
+    "src/iris-shell/src/lib/chartColors.ts": {
+      "upstream": "3fe1725758c3773fcf932818a4b85c8991f66a45ede8ea11e81408ca1f544b81",
+      "written": "3fe1725758c3773fcf932818a4b85c8991f66a45ede8ea11e81408ca1f544b81"
+    },
+    "src/iris-shell/src/lib/chatHistoryStore.ts": {
+      "upstream": "3f7e8d00558295823a6d7cbafe002f3c9cb916a45bde71e1d244ac13095fcb1e",
+      "written": "3f7e8d00558295823a6d7cbafe002f3c9cb916a45bde71e1d244ac13095fcb1e"
+    },
+    "src/iris-shell/src/lib/commands.ts": {
+      "upstream": "981669820cb46d127d8ae456d48b811bd7dac9afce673b47c613beb7f291bd23",
+      "written": "981669820cb46d127d8ae456d48b811bd7dac9afce673b47c613beb7f291bd23"
+    },
+    "src/iris-shell/src/lib/currentUser.ts": {
+      "upstream": "4d8b5d884f3d88b2cc62d9f608772dffb68bf5a2e65551a8dc972813fb487361",
+      "written": "4d8b5d884f3d88b2cc62d9f608772dffb68bf5a2e65551a8dc972813fb487361"
+    },
+    "src/iris-shell/src/lib/cx.ts": {
+      "upstream": "b1e2e879112db289550235f60b2aea63faa4ad72580a9c0962f0be5f60f8302f",
+      "written": "b1e2e879112db289550235f60b2aea63faa4ad72580a9c0962f0be5f60f8302f"
+    },
+    "src/iris-shell/src/lib/directoryData.ts": {
+      "upstream": "0d89b32e76aeccff7ce9bda25458c1874180f2b3cfeee6998e008c29d7510ec3",
+      "written": "0d89b32e76aeccff7ce9bda25458c1874180f2b3cfeee6998e008c29d7510ec3"
+    },
+    "src/iris-shell/src/lib/directoryStore.tsx": {
+      "upstream": "d42136b849df0a945fe1c6e524d0df4bdf994c2be4718e91c3e2f194ecd83776",
+      "written": "d42136b849df0a945fe1c6e524d0df4bdf994c2be4718e91c3e2f194ecd83776"
+    },
+    "src/iris-shell/src/lib/identityNav.ts": {
+      "upstream": "eb1523aac86a3d31f6141bb15834766bb74efeffe06f88971b29d4217fa3aa2e",
+      "written": "eb1523aac86a3d31f6141bb15834766bb74efeffe06f88971b29d4217fa3aa2e"
+    },
+    "src/iris-shell/src/lib/keyboard.ts": {
+      "upstream": "075c7bdf531e77296850777b5655e6b521cdeb7a2a6bb37eb82f28d0c23edc38",
+      "written": "075c7bdf531e77296850777b5655e6b521cdeb7a2a6bb37eb82f28d0c23edc38"
+    },
+    "src/iris-shell/src/lib/moreThemes.ts": {
+      "upstream": "0ddc720caef9ff31752cc395b9499d0fcf1c05c829364606e60f7b99307863b5",
+      "written": "0ddc720caef9ff31752cc395b9499d0fcf1c05c829364606e60f7b99307863b5"
+    },
+    "src/iris-shell/src/lib/motion.ts": {
+      "upstream": "eb21104509b8bef772fba8d7c2cff47c4f99cbcd497ba521d4fc01a98672596c",
+      "written": "eb21104509b8bef772fba8d7c2cff47c4f99cbcd497ba521d4fc01a98672596c"
+    },
+    "src/iris-shell/src/lib/productMenu.tsx": {
+      "upstream": "6015f26f2447d1665466ef70e9ce65fd7ac1a9e6407ddc01260097b892733b3e",
+      "written": "6015f26f2447d1665466ef70e9ce65fd7ac1a9e6407ddc01260097b892733b3e"
+    },
+    "src/iris-shell/src/lib/router.ts": {
+      "upstream": "ec1f78ca9a8e3da8d23abad85248dbbddff0000a065cbab54100a696f5f89190",
+      "written": "ec1f78ca9a8e3da8d23abad85248dbbddff0000a065cbab54100a696f5f89190"
+    },
+    "src/iris-shell/src/lib/searchHistoryStore.ts": {
+      "upstream": "14ba4d2996f3b478f6f201ae94a1b9364826440e9b4a551ad9a1ae18d791a73a",
+      "written": "14ba4d2996f3b478f6f201ae94a1b9364826440e9b4a551ad9a1ae18d791a73a"
+    },
+    "src/iris-shell/src/lib/toastStore.ts": {
+      "upstream": "73585e5bd1b0a123b7337d5ce9dbe60c3aa399a8d29005b7f741fb17908e4e6e",
+      "written": "73585e5bd1b0a123b7337d5ce9dbe60c3aa399a8d29005b7f741fb17908e4e6e"
+    },
+    "src/iris-shell/src/lib/useFavorites.ts": {
+      "upstream": "d925adeb7a639d183eac71a3cfba355a4f2295e132e3a59b7676b9d862003f74",
+      "written": "d925adeb7a639d183eac71a3cfba355a4f2295e132e3a59b7676b9d862003f74"
+    },
+    "src/iris-shell/src/lib/useShake.ts": {
+      "upstream": "6e012a0c76126d755a91554546a3c63a44c4ef311d199b2f374e0c6bf1693a70",
+      "written": "6e012a0c76126d755a91554546a3c63a44c4ef311d199b2f374e0c6bf1693a70"
+    },
+    "src/iris-shell/src/lib/useSidebarGroups.ts": {
+      "upstream": "df370542eb9323ed6b30345f0f45466813f2d03c037a25c322fcd7a5325d1676",
+      "written": "df370542eb9323ed6b30345f0f45466813f2d03c037a25c322fcd7a5325d1676"
+    },
+    "src/iris-shell/src/lib/useSidebarPinned.ts": {
+      "upstream": "3760e6134e6b995868616825de1a1009a8023068e9a22f276ce6c9e225022a67",
+      "written": "3760e6134e6b995868616825de1a1009a8023068e9a22f276ce6c9e225022a67"
+    },
+    "src/iris-shell/src/lib/useTheme.ts": {
+      "upstream": "fa6d0f013dab83e033e06155092faece938fd92bcdc8e83f7794c80a7c14744d",
+      "written": "fa6d0f013dab83e033e06155092faece938fd92bcdc8e83f7794c80a7c14744d"
+    },
+    "src/iris-shell/src/lib/usersStore.tsx": {
+      "upstream": "849ac5bf7f69a4f55a4cd27b5019610b37de90b0f5ec50cca661d81e7721b408",
+      "written": "849ac5bf7f69a4f55a4cd27b5019610b37de90b0f5ec50cca661d81e7721b408"
+    },
+    "src/iris-shell/src/lib/verticals.ts": {
+      "upstream": "3d26874ddf57866520a32efbe2aebb96b9daa9f7061c30aa5451d5f66f6005a9",
+      "written": "3d26874ddf57866520a32efbe2aebb96b9daa9f7061c30aa5451d5f66f6005a9"
+    },
+    "src/iris-shell/src/main.tsx": {
+      "upstream": "73474d0a06a6b099c214500312d545eb147b815fa3b1e42e19fd99faa0ea7476",
+      "written": "73474d0a06a6b099c214500312d545eb147b815fa3b1e42e19fd99faa0ea7476"
+    },
+    "src/iris-shell/src/styles/base.css": {
+      "upstream": "b8d5e8762ad93a9112184d1d3d84de94643e45096cdf8f71f42eb743f05ce3ef",
+      "written": "b8d5e8762ad93a9112184d1d3d84de94643e45096cdf8f71f42eb743f05ce3ef"
+    },
+    "src/iris-shell/src/styles/reset.css": {
+      "upstream": "a31ec00a77c73cfee6654770bb3ce8249f49fa3871487221cb06dc6ebd361728",
+      "written": "a31ec00a77c73cfee6654770bb3ce8249f49fa3871487221cb06dc6ebd361728"
+    },
+    "src/iris-shell/src/styles/scroll.css": {
+      "upstream": "e173e85af4c98c7f2c26c25c9cbefd1052b3606df1065ebb8697afb94c5dba14",
+      "written": "e173e85af4c98c7f2c26c25c9cbefd1052b3606df1065ebb8697afb94c5dba14"
+    },
+    "src/iris-shell/src/styles/typography.css": {
+      "upstream": "d79c0c2552f661a3dd81ff5d4837d9a9ac604890ea79c6753c32340e09dc3a27",
+      "written": "d79c0c2552f661a3dd81ff5d4837d9a9ac604890ea79c6753c32340e09dc3a27"
+    },
+    "src/iris-shell/src/tokens/_tokens.custom.scss": {
+      "upstream": "dd6cf2266aa87e184e0b39903022082dedad2e7f8a1c96c0247e6469c2ed5de2",
+      "written": "dd6cf2266aa87e184e0b39903022082dedad2e7f8a1c96c0247e6469c2ed5de2"
+    },
+    "src/iris-shell/src/tokens/_tokens.dark.scss": {
+      "upstream": "59d2e11f5b5d9e373fa54d18cb9e4e397d3966644d96376a1e196c38e86d6291",
+      "written": "59d2e11f5b5d9e373fa54d18cb9e4e397d3966644d96376a1e196c38e86d6291"
+    },
+    "src/iris-shell/src/tokens/_tokens.hc-dark.scss": {
+      "upstream": "a4ad799667f5b83cc04335e2e829a0dbece2f7c3bfc981f6840f8fcf1da56816",
+      "written": "a4ad799667f5b83cc04335e2e829a0dbece2f7c3bfc981f6840f8fcf1da56816"
+    },
+    "src/iris-shell/src/tokens/_tokens.hc-light.scss": {
+      "upstream": "de1b49fa05bb90a4afa918ff6a4e0fd57774e2fb3e68bc5c7873c3fb4665cfd6",
+      "written": "de1b49fa05bb90a4afa918ff6a4e0fd57774e2fb3e68bc5c7873c3fb4665cfd6"
+    },
+    "src/iris-shell/src/tokens/_tokens.light.scss": {
+      "upstream": "b449091cec68f1a2ccbfb67056f615e04b2561082c9ccb3637fefe0ebb046705",
+      "written": "b449091cec68f1a2ccbfb67056f615e04b2561082c9ccb3637fefe0ebb046705"
+    },
+    "src/iris-shell/src/tokens/_tokens.primitives.scss": {
+      "upstream": "8decdf2c125afb78aedfbe617b053ae44ee3e7b8418aa1147ab33fee298ba97f",
+      "written": "8decdf2c125afb78aedfbe617b053ae44ee3e7b8418aa1147ab33fee298ba97f"
+    },
+    "src/iris-shell/src/tokens/charts/tokens.charts.css": {
+      "upstream": "ab1f557cab1cb4fe0669795841bf20116fc899f62a37429908820abc72535465",
+      "written": "ab1f557cab1cb4fe0669795841bf20116fc899f62a37429908820abc72535465"
+    },
+    "src/iris-shell/src/tokens/charts/tokens.charts.more-themes.css": {
+      "upstream": "dbd75d6502b8a6b13e0f61e10061d5fed942b9b10cd1d4600d8d5d1bd3b81b55",
+      "written": "dbd75d6502b8a6b13e0f61e10061d5fed942b9b10cd1d4600d8d5d1bd3b81b55"
+    },
+    "src/iris-shell/src/tokens/more-themes/index.css": {
+      "upstream": "6dae2f987a724628b565cec2d17d86924f0b7faf985c3791ca8099deda197c3e",
+      "written": "6dae2f987a724628b565cec2d17d86924f0b7faf985c3791ca8099deda197c3e"
+    },
+    "src/iris-shell/src/tokens/more-themes/tokens.aura.css": {
+      "upstream": "7135624c57d589da579563f6bc5b5878ee34d596594ec06275e33b8d286ed329",
+      "written": "7135624c57d589da579563f6bc5b5878ee34d596594ec06275e33b8d286ed329"
+    },
+    "src/iris-shell/src/tokens/more-themes/tokens.ayu.css": {
+      "upstream": "8d5262abbecfe232b24c4d0349f46b50c833ff3097e5a463951c96070c2e2b53",
+      "written": "8d5262abbecfe232b24c4d0349f46b50c833ff3097e5a463951c96070c2e2b53"
+    },
+    "src/iris-shell/src/tokens/more-themes/tokens.catppuccin.css": {
+      "upstream": "3debe60987632663c57970032241996615cd359a4c4bb286fc6d622688855222",
+      "written": "3debe60987632663c57970032241996615cd359a4c4bb286fc6d622688855222"
+    },
+    "src/iris-shell/src/tokens/more-themes/tokens.dracula.css": {
+      "upstream": "c661bbe909be2a6bff4e86d1069f811bb934a39429a8aa1c38fa4672f1e7f05b",
+      "written": "c661bbe909be2a6bff4e86d1069f811bb934a39429a8aa1c38fa4672f1e7f05b"
+    },
+    "src/iris-shell/src/tokens/more-themes/tokens.flexoki.css": {
+      "upstream": "25dc0a26eb8d132d01e49099e56b3c34e7f59b5d51095b2d19f894058398b5a9",
+      "written": "25dc0a26eb8d132d01e49099e56b3c34e7f59b5d51095b2d19f894058398b5a9"
+    },
+    "src/iris-shell/src/tokens/more-themes/tokens.monokai.css": {
+      "upstream": "0c4ccc172fe07e45eb3d71ffac0ee9dfd597bf62d90174201ea0ae01c5fef3d1",
+      "written": "0c4ccc172fe07e45eb3d71ffac0ee9dfd597bf62d90174201ea0ae01c5fef3d1"
+    },
+    "src/iris-shell/src/tokens/more-themes/tokens.night-owl.css": {
+      "upstream": "cf3ae703a477de750a57ab67d85f42c57dcf90fc6ccd89bdbdee683879ead713",
+      "written": "cf3ae703a477de750a57ab67d85f42c57dcf90fc6ccd89bdbdee683879ead713"
+    },
+    "src/iris-shell/src/tokens/more-themes/tokens.synthwave.css": {
+      "upstream": "73a6f389c283402a325b205ac43152af81efc95908ed4cc40cf7e370ead56b08",
+      "written": "73a6f389c283402a325b205ac43152af81efc95908ed4cc40cf7e370ead56b08"
+    },
+    "src/iris-shell/src/tokens/more-themes/tokens.tokyo-night.css": {
+      "upstream": "7ffe8db811f2271e3aec9a561d20d9d366e9a0a169f02c5f37488a95efb54bd6",
+      "written": "7ffe8db811f2271e3aec9a561d20d9d366e9a0a169f02c5f37488a95efb54bd6"
+    },
+    "src/iris-shell/src/tokens/tokens.custom.css": {
+      "upstream": "ef3bd22f6a0d53fdca93c65255126e59116d6124f8c81e65af2e160821a71117",
+      "written": "ef3bd22f6a0d53fdca93c65255126e59116d6124f8c81e65af2e160821a71117"
+    },
+    "src/iris-shell/src/tokens/tokens.dark.css": {
+      "upstream": "8628759a99c40e558a5cab48b9785d0a15debd600df6eec7c2d01b2fab0c15ad",
+      "written": "8628759a99c40e558a5cab48b9785d0a15debd600df6eec7c2d01b2fab0c15ad"
+    },
+    "src/iris-shell/src/tokens/tokens.hc-dark.css": {
+      "upstream": "654efa986f13fd50a74eacaccffdc781d2b93a55e8b641661ea7ccfde424e752",
+      "written": "654efa986f13fd50a74eacaccffdc781d2b93a55e8b641661ea7ccfde424e752"
+    },
+    "src/iris-shell/src/tokens/tokens.hc-light.css": {
+      "upstream": "70c1772bf6ca1ed2ec3938550f4d7be5d515bec10e25c01bb16b291b414a85ff",
+      "written": "70c1772bf6ca1ed2ec3938550f4d7be5d515bec10e25c01bb16b291b414a85ff"
+    },
+    "src/iris-shell/src/tokens/tokens.light.css": {
+      "upstream": "206448d39cde9a2920f1e91420b15dfb3f50ddacadd488c73c1435d1b5235a8c",
+      "written": "206448d39cde9a2920f1e91420b15dfb3f50ddacadd488c73c1435d1b5235a8c"
+    },
+    "src/iris-shell/src/tokens/tokens.primitives.css": {
+      "upstream": "e6f7ca1394b2a95c5e49e63ab11b11bd1cd489725f9d3481644c46e738939944",
+      "written": "e6f7ca1394b2a95c5e49e63ab11b11bd1cd489725f9d3481644c46e738939944"
+    },
+    "src/iris-shell/src/types/vite-env.d.ts": {
+      "upstream": "5f55f2dc4ac9e106cad80e9ddec854077ebe9baa51faa4ef65d341860303992b",
+      "written": "5f55f2dc4ac9e106cad80e9ddec854077ebe9baa51faa4ef65d341860303992b"
+    },
+    "src/iris-shell/src/views/AppShell/AppShell.module.css": {
+      "upstream": "7097a70efba4c6544ce3d1c29218a6de4486b36d0615e450feabae2161ac4ccb",
+      "written": "7097a70efba4c6544ce3d1c29218a6de4486b36d0615e450feabae2161ac4ccb"
+    },
+    "src/iris-shell/src/views/AppShell/AppShell.tsx": {
+      "upstream": "d6c4cdf6cf6e1bc0d0d9b1c6cf643245f718d551d003a5bd9834217b01488960",
+      "written": "d6c4cdf6cf6e1bc0d0d9b1c6cf643245f718d551d003a5bd9834217b01488960"
+    },
+    "src/iris-shell/src/views/FavoritesView/FavoritesPage.module.css": {
+      "upstream": "301b9a39cbf3f818b59c518c57dfbb077c39b36ad703aa5484da7446c42bdbf0",
+      "written": "301b9a39cbf3f818b59c518c57dfbb077c39b36ad703aa5484da7446c42bdbf0"
+    },
+    "src/iris-shell/src/views/FavoritesView/FavoritesPage.tsx": {
+      "upstream": "b141b2d0e85c6a5c1626ab85841bce1db00d1c148fc16afe95f756d9102a6be4",
+      "written": "b141b2d0e85c6a5c1626ab85841bce1db00d1c148fc16afe95f756d9102a6be4"
+    },
+    "src/iris-shell/src/views/IdentityManagerPage/HomeLauncher.module.css": {
+      "upstream": "94827cff160cc81767fe302a112ea7c2950332f012dcada2250fc96c36afad27",
+      "written": "94827cff160cc81767fe302a112ea7c2950332f012dcada2250fc96c36afad27"
+    },
+    "src/iris-shell/src/views/IdentityManagerPage/HomeLauncher.tsx": {
+      "upstream": "46313a03ac60c9047484359981efd3a29a7811aa0a7c3ca9019ed3002d64661c",
+      "written": "46313a03ac60c9047484359981efd3a29a7811aa0a7c3ca9019ed3002d64661c"
+    },
+    "src/iris-shell/src/views/IdentityManagerPage/IdentityInsightsPage.module.css": {
+      "upstream": "97ef799bcb0b13107a268647437326bad3c973f278c939739794563d4b2f4164",
+      "written": "97ef799bcb0b13107a268647437326bad3c973f278c939739794563d4b2f4164"
+    },
+    "src/iris-shell/src/views/IdentityManagerPage/IdentityInsightsPage.tsx": {
+      "upstream": "2c8d70f068f9d09aa00632b69397a1fd2cacb9925e8924a04973058ecedf05e8",
+      "written": "2c8d70f068f9d09aa00632b69397a1fd2cacb9925e8924a04973058ecedf05e8"
+    },
+    "src/iris-shell/src/views/IdentityManagerPage/IdentityManagerPage.module.css": {
+      "upstream": "dc779cfcef971af25deb3e31446f42b9f5229114f9430492b4093dbe22dee60a",
+      "written": "dc779cfcef971af25deb3e31446f42b9f5229114f9430492b4093dbe22dee60a"
+    },
+    "src/iris-shell/src/views/IdentityManagerPage/IdentityManagerPage.tsx": {
+      "upstream": "e4a13be8259977c4479c49711723cf852afc51a02f0ff11537207df01bdf1469",
+      "written": "e4a13be8259977c4479c49711723cf852afc51a02f0ff11537207df01bdf1469"
+    },
+    "src/iris-shell/src/views/IdentityManagerPage/IdentityPlaceholder.module.css": {
+      "upstream": "f602f6e71b58126ff8ed0baf22a36b766dcb9a698191004b8ac866b607e0ba96",
+      "written": "f602f6e71b58126ff8ed0baf22a36b766dcb9a698191004b8ac866b607e0ba96"
+    },
+    "src/iris-shell/src/views/IdentityManagerPage/IdentityPlaceholder.tsx": {
+      "upstream": "79051a12092280be0d5c8f6066f3ecc793d70e1df21417072d8d7829cdb2329c",
+      "written": "79051a12092280be0d5c8f6066f3ecc793d70e1df21417072d8d7829cdb2329c"
+    },
+    "src/iris-shell/src/views/IdentityManagerPage/IdentitySectionPage.module.css": {
+      "upstream": "4b993216b6382258ac4e7ec1635dcca3619fa2ad90f5c1f335b4333f92bc2644",
+      "written": "4b993216b6382258ac4e7ec1635dcca3619fa2ad90f5c1f335b4333f92bc2644"
+    },
+    "src/iris-shell/src/views/IdentityManagerPage/IdentitySectionPage.tsx": {
+      "upstream": "d0b099d7943f9f51375ebad555b8f0f9366b57a061edb7e4ae7a067fd1dd26fa",
+      "written": "d0b099d7943f9f51375ebad555b8f0f9366b57a061edb7e4ae7a067fd1dd26fa"
+    },
+    "src/iris-shell/src/views/IdentityManagerPage/InsightsCharts.module.css": {
+      "upstream": "37c1cc8c18cba32aae41ded5dca4d69e418ef965add5096f7daa6e6fffa27423",
+      "written": "37c1cc8c18cba32aae41ded5dca4d69e418ef965add5096f7daa6e6fffa27423"
+    },
+    "src/iris-shell/src/views/IdentityManagerPage/InsightsCharts.tsx": {
+      "upstream": "1b063468620b5176a59161075c57227c8ee0964da21e497f55d57e5e87fe48a2",
+      "written": "1b063468620b5176a59161075c57227c8ee0964da21e497f55d57e5e87fe48a2"
+    },
+    "src/iris-shell/src/views/IdentityManagerPage/mockIdentityHome.ts": {
+      "upstream": "4824efa88c41fb05c4f897c511283b67e261a17b60a8e56509cc9ad1b2b4fa66",
+      "written": "4824efa88c41fb05c4f897c511283b67e261a17b60a8e56509cc9ad1b2b4fa66"
+    },
+    "src/iris-shell/src/views/InsightsPage/InsightsPage.module.css": {
+      "upstream": "ef5e376fe1027281a66bea91ed9f5f15f5b3f8486948458b53c33807f6751f84",
+      "written": "ef5e376fe1027281a66bea91ed9f5f15f5b3f8486948458b53c33807f6751f84"
+    },
+    "src/iris-shell/src/views/InsightsPage/InsightsPage.tsx": {
+      "upstream": "ac802897086d0ff0efa2722c35d7abbc6d1d7a3e161db63170ef85126a945f63",
+      "written": "ac802897086d0ff0efa2722c35d7abbc6d1d7a3e161db63170ef85126a945f63"
+    },
+    "src/iris-shell/src/views/InsightsPage/mockInsights.ts": {
+      "upstream": "d652bb10afe5a8c489ac5466a2d443a4613d5b376715f70df406ac1821c141f7",
+      "written": "d652bb10afe5a8c489ac5466a2d443a4613d5b376715f70df406ac1821c141f7"
+    },
+    "src/iris-shell/src/views/SafeguardPage/SafeguardPage.module.css": {
+      "upstream": "a7ae32d9f2ad1c458175ea6f24d6a8378388ec46c4d5d760b74590242698aad1",
+      "written": "a7ae32d9f2ad1c458175ea6f24d6a8378388ec46c4d5d760b74590242698aad1"
+    },
+    "src/iris-shell/src/views/SafeguardPage/SafeguardPage.tsx": {
+      "upstream": "2a33da683c8df512ca9cc5e49d0097b9f296fce793554702b5821479fb20fe7a",
+      "written": "2a33da683c8df512ca9cc5e49d0097b9f296fce793554702b5821479fb20fe7a"
+    },
+    "src/iris-shell/src/views/ServicesPage/ServicesPage.module.css": {
+      "upstream": "e52d4ec0ea4aa39e9604c57da3b3b4689e9640b31e7ba9b0e26f2a7ea42ce009",
+      "written": "e52d4ec0ea4aa39e9604c57da3b3b4689e9640b31e7ba9b0e26f2a7ea42ce009"
+    },
+    "src/iris-shell/src/views/ServicesPage/ServicesPage.tsx": {
+      "upstream": "7aa8636b9726925b4c387da6844c2f708fc5fa6a8e9fd99fa548f4e3c144847d",
+      "written": "7aa8636b9726925b4c387da6844c2f708fc5fa6a8e9fd99fa548f4e3c144847d"
+    },
+    "src/iris-shell/src/views/ServicesPage/mockServices.ts": {
+      "upstream": "cd9dd13c179cb23409c748524c4c8e0f6a8b9262a225401238f240af890a8751",
+      "written": "cd9dd13c179cb23409c748524c4c8e0f6a8b9262a225401238f240af890a8751"
+    },
+    "src/iris-shell/src/views/TreeView/TreeDetailPage.tsx": {
+      "upstream": "1e390af00c86f5743161eb1028335072e2623ee2ab71e9440dd73beea71e1d40",
+      "written": "1e390af00c86f5743161eb1028335072e2623ee2ab71e9440dd73beea71e1d40"
+    },
+    "src/iris-shell/src/views/TreeView/TreeListPage.tsx": {
+      "upstream": "469d8e613c5c05b32e75848fd640689622b91e811c4b913091ea572fc556a170",
+      "written": "469d8e613c5c05b32e75848fd640689622b91e811c4b913091ea572fc556a170"
+    },
+    "src/iris-shell/src/views/TreeView/TreeView.module.css": {
+      "upstream": "0d268cde977a19a510eb7b1721e77e636052d2287728c1c4dfdfb6304223932e",
+      "written": "0d268cde977a19a510eb7b1721e77e636052d2287728c1c4dfdfb6304223932e"
+    },
+    "src/iris-shell/src/views/TreeView/detailTabs.ts": {
+      "upstream": "a1a20184a21985a56af0afee64e07ca681ef793df9c9a9c7654c5f126179926a",
+      "written": "a1a20184a21985a56af0afee64e07ca681ef793df9c9a9c7654c5f126179926a"
+    },
+    "src/iris-shell/src/views/UserDetailPage/DeleteUserModal/DeleteUserModal.module.css": {
+      "upstream": "2f3823f240b92d05ee3751a4ca270806957d20727bf15e6428e3d2606b57ad37",
+      "written": "2f3823f240b92d05ee3751a4ca270806957d20727bf15e6428e3d2606b57ad37"
+    },
+    "src/iris-shell/src/views/UserDetailPage/DeleteUserModal/DeleteUserModal.tsx": {
+      "upstream": "281bf548f401aa67e9c175c378141eb5a611d409a53f53f7f410c5533664850c",
+      "written": "281bf548f401aa67e9c175c378141eb5a611d409a53f53f7f410c5533664850c"
+    },
+    "src/iris-shell/src/views/UserDetailPage/EditPropertiesSheet.module.css": {
+      "upstream": "591dc39904228d4d6b4bb40755f9670241f23cb3f8811e1d855d9b74f22fb6f7",
+      "written": "591dc39904228d4d6b4bb40755f9670241f23cb3f8811e1d855d9b74f22fb6f7"
+    },
+    "src/iris-shell/src/views/UserDetailPage/EditPropertiesSheet.tsx": {
+      "upstream": "24d554ec9799aee3e7dbf96b7e0a5793b76f22a9340e35b8a7cd3af57d24863c",
+      "written": "24d554ec9799aee3e7dbf96b7e0a5793b76f22a9340e35b8a7cd3af57d24863c"
+    },
+    "src/iris-shell/src/views/UserDetailPage/ResetPasswordModal/ResetPasswordModal.module.css": {
+      "upstream": "2010f91a29679e244925078746477eeb1e63aedc1245bc49aba237cd5bd82d23",
+      "written": "2010f91a29679e244925078746477eeb1e63aedc1245bc49aba237cd5bd82d23"
+    },
+    "src/iris-shell/src/views/UserDetailPage/ResetPasswordModal/ResetPasswordModal.tsx": {
+      "upstream": "3f933beff7b34ab57691a59da92cda29b21d0de86e2e309ad1710c15b21ddfe5",
+      "written": "3f933beff7b34ab57691a59da92cda29b21d0de86e2e309ad1710c15b21ddfe5"
+    },
+    "src/iris-shell/src/views/UserDetailPage/UserDetailPage.module.css": {
+      "upstream": "613ed087060b65bd593cdb4c691de22301a987afd9450e4e68464017f05d40c0",
+      "written": "613ed087060b65bd593cdb4c691de22301a987afd9450e4e68464017f05d40c0"
+    },
+    "src/iris-shell/src/views/UserDetailPage/UserDetailPage.tsx": {
+      "upstream": "75568a837620c8eb2e51356b5d6413f63e4960f55ccfc2a9695ab9674750d4e7",
+      "written": "75568a837620c8eb2e51356b5d6413f63e4960f55ccfc2a9695ab9674750d4e7"
+    },
+    "src/iris-shell/src/views/UsersPage/CreateObjectModal/CreateObjectModal.module.css": {
+      "upstream": "1dbeef530a87cfadf76f8c089d7cff4301093d53efefe879fa5cc2d6d094c0e7",
+      "written": "1dbeef530a87cfadf76f8c089d7cff4301093d53efefe879fa5cc2d6d094c0e7"
+    },
+    "src/iris-shell/src/views/UsersPage/CreateObjectModal/CreateObjectModal.tsx": {
+      "upstream": "f14164f9bdf88ee8e65a42b126ac5548abb17cc64dd911daa4ad4f4e15819213",
+      "written": "f14164f9bdf88ee8e65a42b126ac5548abb17cc64dd911daa4ad4f4e15819213"
+    },
+    "src/iris-shell/src/views/UsersPage/UsersPage.module.css": {
+      "upstream": "7470b0845fbc66fa100916821d903be82c8e25523b2063a4bfec51e15d3fb248",
+      "written": "7470b0845fbc66fa100916821d903be82c8e25523b2063a4bfec51e15d3fb248"
+    },
+    "src/iris-shell/src/views/UsersPage/UsersPage.tsx": {
+      "upstream": "f2ea13437d9596100c25e2ed622f4dd2ddc220e1a57ff4d5023f5387d5062461",
+      "written": "f2ea13437d9596100c25e2ed622f4dd2ddc220e1a57ff4d5023f5387d5062461"
+    },
+    "src/iris-shell/src/views/UsersPage/mockUsers.ts": {
+      "upstream": "03d9a2276770bf1d804e4a51f9aad642a867585f3236f4d44b4ce7a8d8ce19a0",
+      "written": "03d9a2276770bf1d804e4a51f9aad642a867585f3236f4d44b4ce7a8d8ce19a0"
+    },
+    "src/iris-shell/src/views/WipPage/WipPage.module.css": {
+      "upstream": "45d9260d58ba899f40b80c8212dc3a20e5178583939e5f8642749089d1d0ef7e",
+      "written": "45d9260d58ba899f40b80c8212dc3a20e5178583939e5f8642749089d1d0ef7e"
+    },
+    "src/iris-shell/src/views/WipPage/WipPage.tsx": {
+      "upstream": "000483adeb24500df5b8480194c0c9225cb61e5f04ff6e323d529541f92cb4f2",
+      "written": "000483adeb24500df5b8480194c0c9225cb61e5f04ff6e323d529541f92cb4f2"
+    },
+    "src/iris-shell/tsconfig.json": {
+      "upstream": "b08b0315e5edddf752fed2afd0751f6643255cad73a9a1fad5c1bedb8029c635",
+      "written": "b08b0315e5edddf752fed2afd0751f6643255cad73a9a1fad5c1bedb8029c635"
+    },
+    "src/iris-shell/tsconfig.node.json": {
+      "upstream": "6ce6e1217fd7fdc189efcf368f792f2ab7ca34731607a81fc921cc7cbc7f06f1",
+      "written": "6ce6e1217fd7fdc189efcf368f792f2ab7ca34731607a81fc921cc7cbc7f06f1"
+    },
+    "src/iris-shell/vite.config.ts": {
+      "upstream": "6dc0ce25c4170ac9fbadb4dbd19ca5c2ceb57b9c5efc5090b82e2923f53dd679",
+      "written": "6dc0ce25c4170ac9fbadb4dbd19ca5c2ceb57b9c5efc5090b82e2923f53dd679"
+    }
+  }
+}
