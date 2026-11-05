@@ -6,3 +6,5 @@ shell-product = active-roles
 shell-mode = shell
 shell-page = directory
 shell-default-page = #/users
+vercel-setup = done
+figma-build-prompted = no
