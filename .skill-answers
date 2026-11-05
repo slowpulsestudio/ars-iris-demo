@@ -1,0 +1,8 @@
+project-name = ars-iris-demo
+project-description = Active Roles - full product demo of latest design thinking
+workflow-skills = workflow/architecture, workflow/deep-linking, workflow/figma-read-from-mcp, workflow/figma-write-to-canvas, workflow/figma-update-existing-screen, workflow/git, workflow/motion, workflow/testing, workflow/vercel-publish, workflow/vercel-password
+git-remote = https://github.com/slowpulsestudio/ars-iris-demo
+shell-product = active-roles
+shell-mode = shell
+shell-page = directory
+shell-default-page = #/users
