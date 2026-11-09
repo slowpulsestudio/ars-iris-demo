@@ -1,3 +1,4 @@
+import { Fragment, type ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { TableHeadItem } from '../TableHeadItem/TableHeadItem.js';
@@ -8,6 +9,8 @@ export interface TableHeadColumn {
   label: string;
   /** Width from Figma; omit to fill. */
   width?: number;
+  /** Extra item placed right after this column in the row. */
+  trailing?: ReactNode;
 }
 
 export interface TableHeadRowProps {
@@ -37,13 +40,15 @@ export function TableHeadRow({
         />
       </TableHeadItem>
       {columns.map((col) => (
-        <TableHeadItem
-          key={col.label}
-          icon={col.icon}
-          label={col.label}
-          style={col.width != null ? { width: col.width } : undefined}
-          className={col.width == null ? styles.fill : undefined}
-        />
+        <Fragment key={col.label}>
+          <TableHeadItem
+            icon={col.icon}
+            label={col.label}
+            style={col.width != null ? { width: col.width } : undefined}
+            className={col.width == null ? styles.fill : undefined}
+          />
+          {col.trailing}
+        </Fragment>
       ))}
       <TableHeadItem className={styles.actions} aria-label="Actions" />
     </div>

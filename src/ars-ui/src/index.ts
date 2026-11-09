@@ -19,3 +19,9 @@ export {
 } from './components/ARSTableToolbar/ARSTableToolbar.js';
 export { ARSTableConfig, type ARSTableConfigProps } from './components/ARSTableConfig/ARSTableConfig.js';
 export { ARSHeader, type ARSHeaderProps, type ARSHeaderVariant } from './components/ARSHeader/ARSHeader.js';
+export {
+  ARSTable,
+  type ARSTableProps,
+  type ARSTableRow,
+  type ARSTableVariant,
+} from './components/ARSTable/ARSTable.js';

@@ -1,0 +1,65 @@
+.table {
+  display: flex;
+  flex-direction: column;
+  /* Figma spaces the head, rows and pagination 1px apart. */
+  gap: var(--oi-border-width-default);
+  width: 100%;
+}
+
+.filterMark {
+  flex-shrink: 0;
+  align-self: center;
+  color: var(--oi-content-color-tertiary);
+}
+
+.pagination {
+  padding-block: var(--oi-spacing-s);
+}
+
+/* Empty variant: plain-text head between two lines, with the columns button.
+   Label positions from Figma: 60, 233, 320, 814, 1046; button at 1222. */
+.emptyHead {
+  display: grid;
+  grid-template-columns: 60px 173px 87px 494px 232px 1fr var(--oi-size-default);
+  align-items: center;
+  padding-right: var(--oi-spacing-6);
+  /* 38px tall in Figma: 20px label + 8px above and below + two 1px lines. */
+  min-height: calc(var(--oi-line-height-s) + 2 * var(--oi-spacing-s) + 2 * var(--oi-border-width-default));
+  border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-bottom: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+}
+
+.emptyHeadLabel {
+  white-space: nowrap;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+  align-self: center;
+  /* 320px in Figma. */
+  width: 320px;
+  padding: var(--oi-spacing-xl);
+  background-color: var(--oi-background-color-primary);
+}
+
+.emptyTitle {
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.emptyDescription {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-font-weight);
+  color: var(--oi-content-color-secondary);
+}
