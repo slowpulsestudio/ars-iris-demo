@@ -1,0 +1,41 @@
+.root {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: var(--oi-background-color-primary);
+}
+
+/* Split and No create: 32px between groups. */
+.spread {
+  gap: var(--oi-spacing-xxl);
+}
+
+/* Basic and 4: 16px between groups. */
+.tight {
+  gap: var(--oi-spacing-l);
+}
+
+.searchSlot {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* No create: the filter sits at the left of a 96px slot in Figma. */
+.filterSlot {
+  display: flex;
+  flex-shrink: 0;
+  width: calc(var(--oi-size-default) * 3);
+}
+
+/* Iris TextInput adjusted to the Figma search box: 28px tall, 4px padding,
+   default border. Two classes so it wins over the Iris base styles. */
+.root .search {
+  height: var(--oi-size-m);
+  padding-inline: var(--oi-spacing-xs);
+  gap: var(--oi-spacing-6);
+  border-color: var(--oi-border-color-default);
+}
+
+.root .search input {
+  padding-inline: var(--oi-spacing-2);
+}

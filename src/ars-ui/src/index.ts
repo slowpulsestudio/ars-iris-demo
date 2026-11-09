@@ -12,3 +12,10 @@ export {
   type ARSTableHeadSingleObjProps,
 } from './components/ARSTableHeadSingleObj/ARSTableHeadSingleObj.js';
 export { ARSTableRowHeader, type ARSTableRowHeaderProps } from './components/ARSTableRowHeader/ARSTableRowHeader.js';
+export {
+  ARSTableToolbar,
+  type ARSTableToolbarProps,
+  type ARSTableToolbarVariant,
+} from './components/ARSTableToolbar/ARSTableToolbar.js';
+export { ARSTableConfig, type ARSTableConfigProps } from './components/ARSTableConfig/ARSTableConfig.js';
+export { ARSHeader, type ARSHeaderProps, type ARSHeaderVariant } from './components/ARSHeader/ARSHeader.js';

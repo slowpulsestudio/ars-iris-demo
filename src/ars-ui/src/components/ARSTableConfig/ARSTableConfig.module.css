@@ -1,0 +1,14 @@
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  /* 44 × 36 in Figma: the table's action column width and header height. */
+  width: 44px;
+  height: calc(var(--oi-line-height-s) + 2 * var(--oi-spacing-s));
+  background-color: var(--oi-background-color-primary);
+  border-top: var(--oi-border-width-default) var(--oi-border-style-solid)
+    var(--oi-border-color-muted);
+  border-bottom: var(--oi-border-width-default) var(--oi-border-style-solid)
+    var(--oi-border-color-muted);
+}
