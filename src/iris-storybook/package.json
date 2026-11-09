@@ -1,0 +1,27 @@
+{
+  "name": "iris-storybook",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Storybook for the Iris UI components in src/iris-shell.",
+  "scripts": {
+    "storybook": "storybook dev -p 6107 --no-open",
+    "build-storybook": "storybook build",
+    "typecheck": "tsc --noEmit",
+    "check": "node scripts/check-stories.mjs"
+  },
+  "devDependencies": {
+    "@lucasmarkes/hairline": "0.5.1",
+    "@storybook/addon-a11y": "^10.6.5",
+    "@storybook/addon-docs": "^10.6.5",
+    "@storybook/react-vite": "^10.6.5",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "storybook": "^10.6.5",
+    "typescript": "7.0.2",
+    "vite": "8.0.16"
+  }
+}
