@@ -1,9 +1,10 @@
 import { Avatar } from '../../components/Avatar/Avatar.js';
-import { BrandLogo } from '../../components/BrandLogo/BrandLogo.js';
-import { Icon } from '../../components/Icon/Icon.js';
+import { IconButton } from '../../components/IconButton/IconButton.js';
+import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { useAppShell } from '../../lib/appShellContext.js';
 import { PERSONAS, type Persona } from '../../lib/personas.js';
 import { navigate, useRoute } from '../../lib/router.js';
+import { ChoiceCard, ChoicePage } from '../ChoicePage/ChoicePage.js';
 import styles from './WelcomePage.module.css';
 
 /**
@@ -22,38 +23,31 @@ export function WelcomePage() {
   };
 
   return (
-    <div className={styles.page}>
-      <main className={styles.content}>
-        <header className={styles.intro}>
-          <span className={styles.product}>
-            <BrandLogo size="32px" />
-            Active Roles
-          </span>
-          <h1 className={styles.title}>Welcome</h1>
-          <p className={styles.subtitle}>
-            Choose a persona to start. Each one has their own scenario and navigation.
-          </p>
-        </header>
-
-        <ul className={styles.cards} role="list">
-          {PERSONAS.map((persona) => (
-            <li key={persona.id} className={styles.cardItem}>
-              <button type="button" className={styles.card} onClick={() => pick(persona)}>
-                <Avatar name={persona.name} src={persona.avatar} size="l" aria-hidden />
-                <span className={styles.who}>
-                  <span className={styles.name}>{persona.name}</span>
-                  <span className={styles.personaTitle}>{persona.personaTitle}</span>
-                </span>
-                <span className={styles.scenario}>{persona.scenario}</span>
-                <span className={styles.cta}>
-                  Continue as {persona.name.split(' ')[0]}
-                  <Icon name="ArrowRight" size="16px" className={styles.arrow} />
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </main>
-    </div>
+    <ChoicePage
+      title="Welcome"
+      subtitle="Choose a persona to start. Each one has their own scenario and navigation."
+      topEnd={
+        <Tooltip label="Storybooks" placement="bottom">
+          <IconButton
+            icon={<img src="/logos/storybook.svg" alt="" className={styles.storybookLogo} />}
+            ariaLabel="Storybooks"
+            size="l"
+            onClick={() => navigate('#/storybooks')}
+          />
+        </Tooltip>
+      }
+    >
+      {PERSONAS.map((persona) => (
+        <ChoiceCard
+          key={persona.id}
+          visual={<Avatar name={persona.name} src={persona.avatar} size="l" aria-hidden />}
+          title={persona.name}
+          subtitle={persona.personaTitle}
+          description={persona.scenario}
+          cta={`Continue as ${persona.name.split(' ')[0]}`}
+          onClick={() => pick(persona)}
+        />
+      ))}
+    </ChoicePage>
   );
 }

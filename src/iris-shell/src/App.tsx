@@ -20,6 +20,7 @@ import { IdentityPlaceholder } from './views/IdentityManagerPage/IdentityPlaceho
 import { IdentitySectionPage } from './views/IdentityManagerPage/IdentitySectionPage.js';
 import { SafeguardPage } from './views/SafeguardPage/SafeguardPage.js';
 import { WelcomePage } from './views/WelcomePage/WelcomePage.js';
+import { StorybooksPage } from './views/StorybooksPage/StorybooksPage.js';
 
 function renderRoute(route: Route) {
   switch (route.name) {
@@ -89,10 +90,11 @@ function renderRoute(route: Route) {
   }
 }
 
-/** Until a persona is picked, every address shows the persona picker. */
+/** Until a persona is picked, every address shows the persona picker (except the Storybooks page). */
 function RoutedPage() {
   const route = useRoute();
   const { persona } = useAppShell();
+  if (route.name === 'storybooks') return <StorybooksPage />;
   return persona ? renderRoute(route) : <WelcomePage />;
 }
 

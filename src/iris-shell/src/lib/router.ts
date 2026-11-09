@@ -32,6 +32,7 @@ export type Route =
   | { name: 'identitySection'; params: { group: string; item: string } }
   | { name: 'safeguardHome'; params: Record<string, never> }
   | { name: 'welcome'; params: Record<string, never> }
+  | { name: 'storybooks'; params: Record<string, never> }
   | { name: 'userViewHome'; params: Record<string, never> }
   | { name: 'userViewProfile'; params: Record<string, never> }
   | { name: 'userViewApprovals'; params: Record<string, never> }
@@ -67,6 +68,7 @@ const ROUTES: RouteDef[] = [
   { name: 'identityHome', pattern: /^#\/identity$/, keys: [] },
   { name: 'safeguardHome', pattern: /^#\/safeguard$/, keys: [] },
   { name: 'welcome', pattern: /^#\/welcome$/, keys: [] },
+  { name: 'storybooks', pattern: /^#\/storybooks$/, keys: [] },
   { name: 'userViewHome', pattern: /^#\/user-view\/home$/, keys: [] },
   { name: 'userViewProfile', pattern: /^#\/user-view\/profile$/, keys: [] },
   { name: 'userViewApprovals', pattern: /^#\/user-view\/approvals$/, keys: [] },
