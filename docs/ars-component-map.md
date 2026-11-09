@@ -10,7 +10,7 @@ Made on 9 November 2026 by reading Figma only — nothing in Figma was changed. 
 **Also:** the end-user (UserView) pages from a separate Figma file are at the end, under [UserView pages (end user)](#userview-pages-end-user).
 
 **How to read the reference**
-- **ARS components inside** — other current ARS components this one contains.
+- **ARS components inside** — other ARS components on this page that this one contains.
 - **Iris code components** — pieces Figma links straight to Iris code (Button, AppHeader, Select).
 - **Outside pieces** — components that aren't on any page of the ARS file. Figma doesn't say which file they come from; the Iris UI Kit is the only component library linked to the ARS file.
 - Counts add up across all variants of a component.
@@ -47,18 +47,18 @@ ARS_User_Page
 ├─ ARS_User_Page_Header
 └─ ARS_Object_Content
     ├─ ARS_User_Page_Tabs
-    └─ 3 older cards (see problem 1)
+    └─ 3 cards from the Test Area page (see note 1)
 
 ARS_Group_Page
 ├─ ARS_Page_Header (the single one)
 ├─ ARS_Page_Tabs
-└─ ARS_Group_General content (an outside copy, see problem 1)
+└─ ARS_Group_General content (a copy from another file, see note 1)
 
 ARS_Page_Content → ARS_Group_General content, ARS_Page_Action panel
 ARS_Table → ARS_Row, ARS_Pagination, ARS.Table head_Mixed_obj (Mixed only)
 ARS_Group_Table → ARS_Table_Group_Row ×9
 ARS_filter-select → ARS_filter-remove, ARS_object-selected, ARS_object-rule
-ARS_New_Object_Content_Container → ARS_Stepper_with_div (+ an older ARS_New_Object_Content)
+ARS_New_Object_Content_Container → ARS_Stepper_with_div (+ a hidden ARS_New_Object_Content, see note 1)
 ARS_Password_Reset_Entra_User → Reset_Content success
 ```
 
@@ -79,15 +79,17 @@ The other 36 ARS components neither contain nor sit inside another ARS component
 - Other: toast, action bar, stepper, modal footer, tag, avatar, cloud badge, spinner, split button, multi-select item, Delete Object
 - Icons throughout
 
-## Problems found
+## Notes on how Figma links its parts
 
-1. **ARS-named parts linked to the wrong component** — they carry ARS names but aren't the current ARS components:
+These describe Figma as it is. The code follows Figma.
+
+1. **ARS-named parts that link to components outside this page:**
    - ARS_Empty_Content: its ARS_Header and ARS_Table_Toolbar come from another Figma file.
    - ARS_Sub_Tabs_Template: its ARS_Group_Header and ARS_Group_Tabs come from another file. No components with those names exist in the ARS file.
    - ARS_Group_Page: its ARS_Group_General content comes from another file.
-   - ARS_New_Object_Content_Container: uses a hidden older ARS_New_Object_Content.
-   - ARS_Object_Content: its three cards are the older Properties, Job Info and ContactInfo cards on the *Test Area* page. Nothing uses the current ARS_users cards.
-2. **Plain copies instead of components:**
+   - ARS_New_Object_Content_Container: uses a hidden ARS_New_Object_Content, not the one on this page.
+   - ARS_Object_Content: its three cards are the Properties, Job Info and ContactInfo cards on the *Test Area* page, not the ARS_users cards on this page. No component uses the ARS_users cards.
+2. **Plain frames, not linked to a component:**
    - ARS_Action_bar: variants "2" and "Variant3" aren't linked to the action bar component.
    - ARS_Table: the header rows are plain frames; ARS.Table head_single_obj exists but nothing uses it. The Empty variant's header and empty state are plain frames too.
    - ARS_Create_Menu_Button's button and ARS_Pagination's "10 / page" button are plain frames.
@@ -184,7 +186,7 @@ Figma ID 4596:20589
 Figma ID 3423:30769
 
 - **Iris code components:** Button — Secondary · Icon + Text · Default ×1
-- **Outside pieces:** ARS_Header (outside copy, not the current component) ×1, ARS_Table_Toolbar (outside copy, not the current component) ×1
+- **Outside pieces:** ARS_Header (copy from another file) ×1, ARS_Table_Toolbar (copy from another file) ×1
 - **Used inside:** no other ARS component
 
 ### ARS_Entra User Actions
@@ -243,7 +245,7 @@ Figma ID 2944:30704 · 3 variants
 Figma ID 2944:29514
 
 - **ARS components inside:** ARS_Page_Header (single) ×1, ARS_Page_Tabs ×1
-- **Outside pieces:** ARS_Group_General content (outside copy, not the current component) ×1
+- **Outside pieces:** ARS_Group_General content (copy from another file) ×1
 - **Used inside:** no other ARS component
 
 ### ARS_Group_Table
@@ -307,7 +309,7 @@ Figma ID 3493:17061 · 2 variants
 Figma ID 3367:12347
 
 - **ARS components inside:** ARS_Stepper_with_div ×1
-- **Outside pieces:** ARS_New_Object_Content (outside copy, not the current component) ×1
+- **Outside pieces:** ARS_New_Object_Content (hidden copy, not the one on this page) ×1
 - **Used inside:** no other ARS component
 
 ### ARS_New_Object_Template
@@ -327,7 +329,7 @@ Figma ID 4029:38684
 Figma ID 2385:56718 · 2 variants
 
 - **ARS components inside:** ARS_User_Page_Tabs ×2
-- **Outside pieces:** Properties Card (older card on the Test Area page) ×1, ContactInfo Card (older card on the Test Area page) ×1, Job Info Card (older card on the Test Area page) ×1
+- **Outside pieces:** Properties Card (card on the Test Area page) ×1, ContactInfo Card (card on the Test Area page) ×1, Job Info Card (card on the Test Area page) ×1
 - **Used inside:** ARS_User_Page
 
 ### ARS_object-rule
@@ -426,7 +428,7 @@ Figma ID 3367:11939
 Figma ID 4503:19905
 
 - **Iris code components:** Button — Primary · Icon + Text · Default ×1
-- **Outside pieces:** ARS_Group_Header (outside copy, not the current component) ×1, ARS_Group_Tabs (outside copy, not the current component) ×1, Text input ×1
+- **Outside pieces:** ARS_Group_Header (copy from another file) ×1, ARS_Group_Tabs (copy from another file) ×1, Text input ×1
 - **Used inside:** no other ARS component
 
 ### ARS_Table
@@ -606,7 +608,7 @@ Frame Design-1-Approvals-Dashboard · Figma ID 10199:7351 · prototype page `#/u
   - Approve (10199:7454): Iris side sheet header; Button — Secondary ×2 and Primary ×1 (one is named "Escalate Button"); the footer is a plain frame
   - Approved (10199:7498) and Denied (10199:7556): Iris side sheet header, Banner (Info variant) ×1, Button — Secondary ×1; the footer is a plain frame
 - **Pop-up dialogs:** Approve (10199:7617), Deny (10199:7638) and Escalate (10199:7659)
-  - Each has the older Iris dialog header (problem 1), Text area ×1, and Button — Secondary ×1 and Primary ×1. The body and footer are plain frames.
+  - Each has an Iris dialog header version that isn't in the Iris UI Kit today (note 1), Text area ×1, and Button — Secondary ×1 and Primary ×1. The body and footer are plain frames.
   - Escalate also has Text input ×2.
 
 <!-- WIP:userview · My Access · Figma 10199:6654 -->
@@ -615,19 +617,21 @@ Frame my-access-screen-full · Figma ID 10199:6654 · prototype page `#/user-vie
 
 - **Iris code:** Button — Primary ×1 and Secondary ×1, Pagination ×1
 - **Iris UI Kit:** Tabs (Overflow variant) ×1, Table head item ×6, Table cell ×40 (Heading 32, Badge 8)
-- **Toggle ×8:** drawn as flat images, so they can't be traced (problem 4)
+- **Toggle ×8:** drawn as flat images, so they can't be traced (note 4)
 - **Plain frames:** the title row and the four figure tiles
 - **Request side sheet** — frame my-access-request-sidesheet (10199:7056):
   - The page behind it is a different version of My Access: Button ×2, Badge ×4 (Success 2, Warning 2), Toggle ×4 (flat images), and a table built from plain frames.
-  - The side sheet is the older Iris side sheet (problem 1) with the Iris header and footer. Its form is built in the UserView file: Select ×3, Text input ×1, Text area ×1 and an owner card, plus Button ×3 (close, Secondary, Primary).
+  - The side sheet is an Iris side sheet version that isn't in the Iris UI Kit today (note 1), with the Iris header and footer. Its form is built in the UserView file: Select ×3, Text input ×1, Text area ×1 and an owner card, plus Button ×3 (close, Secondary, Primary).
   - Spare copies of this side sheet (10199:7205) and of Form Content (10199:7206) sit beside it.
 
-### UserView problems found
+### UserView notes on how Figma links its parts
 
-1. **Older Iris versions:**
-   - The request side sheet (and its spare copy) uses an older Iris side sheet. Its layers (for example 5042:3021) are hidden in the Iris UI Kit; the current side sheet is 7765:1103.
-   - The three dialogs use an older Iris dialog header. Its close button (4429:265) no longer exists in the kit; the current header is 3689:3298.
-2. **Plain copies instead of components:** the Approve, Approved and Denied side sheets and the three dialogs are plain frames — only their headers are components. Their footers aren't the Iris side sheet footer (4747:718) or the Iris dialog footer (3744:318).
+These describe Figma as it is. The code follows Figma.
+
+1. **Iris versions that aren't in the Iris UI Kit today:**
+   - The request side sheet (and its spare copy) uses a side sheet whose layers (for example 5042:3021) are hidden in the Iris UI Kit. The side sheet on the kit's page is 7765:1103.
+   - The three dialogs use a dialog header whose close button (4429:265) isn't in the kit. The header on the kit's page is 3689:3298.
+2. **Plain frames, not linked to a component:** the Approve, Approved and Denied side sheets and the three dialogs are plain frames — only their headers are components. Their footers aren't the Iris side sheet footer (4747:718) or the Iris dialog footer (3744:318).
 3. **Tables built two ways:** Home, My Access and the Approvals rows use Iris table head items and cells, but the Approvals header row and the table behind the request side sheet are plain frames.
 4. **Can't be traced:** the 12 toggles and the 2 approver photos (Approve and Denied side sheets) are drawn as flat images, so Figma doesn't show which component they come from. The Iris UI Kit has a Toggle (111:255) and an Avatar (107:24).
 5. **User Profile Content not used:** see the note under User Profile.
