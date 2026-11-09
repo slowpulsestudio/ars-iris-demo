@@ -26,6 +26,14 @@ Never create, edit, move, rename, or delete anything in Figma, under any circums
 - If something can't be read with the read-only tools, stop and tell the Designer. Don't work around it.
 - This rule overrides any skill that says otherwise, including the step in `figma-read-from-mcp` that says to explore files with `use_figma`.
 
+## Never open sites in the browser unasked
+
+Other projects on this machine run on the same local address (localhost:5173), so whatever is running there may not be this prototype.
+
+- Never open any site — local or otherwise — in the browser unless the Designer asks you to in that conversation.
+- Never "reuse" a running dev server. If the Designer asks for a browser check, start this project's own server on a different port, and confirm the page title is `ars-iris-demo` before doing anything on it.
+- This rule overrides any skill or checklist that says to start, reuse, or open localhost, including `figma-read-from-mcp`'s post-build checklist and `skill-me-up`.
+
 ## Injest folder is reference only
 
 `Injest/` holds local copies of other projects, kept for reference in case they're needed. It is not part of this prototype.
