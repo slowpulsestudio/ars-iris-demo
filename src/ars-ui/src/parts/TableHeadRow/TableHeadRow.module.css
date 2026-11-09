@@ -1,0 +1,21 @@
+.head {
+  display: flex;
+  align-items: stretch;
+  /* Figma spaces head items 1px apart. */
+  gap: var(--oi-border-width-default);
+  width: 100%;
+  background-color: var(--oi-background-color-primary);
+}
+
+.check {
+  width: 40px;
+  justify-content: center;
+}
+
+.actions {
+  width: 44px;
+}
+
+.fill {
+  flex: 1 1 0;
+}

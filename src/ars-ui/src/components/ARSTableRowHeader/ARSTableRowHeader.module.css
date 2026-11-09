@@ -1,0 +1,28 @@
+.root {
+  display: grid;
+  align-items: center;
+  width: 100%;
+  /* 20px label + 8px above and below, plus the two 1px lines = 38px in Figma. */
+  padding-block: var(--oi-spacing-s);
+  border-top: var(--oi-border-width-default) var(--oi-border-style-solid)
+    var(--oi-border-color-muted);
+  border-bottom: var(--oi-border-width-default) var(--oi-border-style-solid)
+    var(--oi-border-color-muted);
+}
+
+/* Label start positions from Figma (60, 233, 320, 755, 987 / 60, 233, 454, 855). */
+.variant_Users {
+  grid-template-columns: 60px 173px 87px 435px 232px 1fr;
+}
+
+.variant_Mixed {
+  grid-template-columns: 60px 173px 221px 401px 1fr;
+}
+
+.label {
+  white-space: nowrap;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-font-weight);
+  color: var(--oi-content-color-primary);
+}

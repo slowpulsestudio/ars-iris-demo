@@ -1,0 +1,42 @@
+.row {
+  display: flex;
+  align-items: stretch;
+  /* Figma spaces cells 1px apart. */
+  gap: var(--oi-border-width-default);
+  width: 100%;
+  background-color: var(--oi-background-color-primary);
+}
+
+/* Column widths from Figma (no tokens exist for these layout sizes). */
+.check {
+  width: 40px;
+  justify-content: center;
+}
+
+.name {
+  width: 180px;
+}
+
+.status {
+  width: 86px;
+}
+
+.type {
+  width: 220px;
+}
+
+.tagsUser {
+  width: 231px;
+}
+
+.tagsMixed {
+  width: 400px;
+}
+
+.location {
+  width: 180px;
+}
+
+.fill {
+  flex: 1 1 0;
+}
