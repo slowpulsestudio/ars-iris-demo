@@ -6,6 +6,9 @@ Made on 9 November 2026 by reading Figma only — nothing in Figma was changed. 
 
 **Scope:** the 72 components on the file's **Iris UI** page — 69 in the *ARS Components* section and 3 in the *Testing* section (ARS_Modal_Content_Success, ARS_Modal_Content_Delete, ARS_Delete_Confirmation_Modal_Template).
 
+<!-- WIP:userview — the UserView section at the end of this doc is work in progress (its Figma file isn't final). -->
+**Also:** the end-user (UserView) pages from a separate Figma file are at the end, under [UserView pages (end user)](#userview-pages-end-user).
+
 **How to read the reference**
 - **ARS components inside** — other current ARS components this one contains.
 - **Iris code components** — pieces Figma links straight to Iris code (Button, AppHeader, Select).
@@ -558,3 +561,73 @@ Figma ID 4517:19943
 - **Iris code components:** Button — Ghost · Icon only · Default ×17
 - **Outside pieces:** Table head item ×4, Cell item ×60
 - **Used inside:** ARS_Treeview_Master
+
+<!-- WIP:userview — this whole section is work in progress. The UserView Figma file isn't final: re-check every page here against Figma once the design is signed off. Related spots: src/iris-shell/src/App.tsx (placeholder pages, also marked WIP:userview) and src/iris-shell/src/lib/personas/self-service-end-user.json (menu entries marked "wip": true, with each page's Figma ID). -->
+
+## UserView pages (end user)
+
+What the four end-user pages are built from. They come from a separate Figma file, **ARS_WebUI2_User-View-Approvals** (page *Iris*, Figma ID 10199:6651). The link is in `.figma-url`. These pages are on the build list. For now the prototype shows a placeholder for each one in Lisa Fernandez's menu.
+
+Read on 9 November 2026, read-only. Traced by Figma ID like the ARS components: the IDs of the layers inside each piece were checked against the component they belong to.
+
+**Where the pieces come from**
+- **No ARS components:** no piece belongs to any of the 71 ARS components.
+- **Iris code** (Figma links these straight to Iris code): AppHeader, Button, Select, Pagination.
+- **Iris UI Kit** (each match confirmed in the kit): Sidebar, Badge, Table head item, Table cell, Text input, Text area, Tabs, Banner, side sheet header and footer, dialog header.
+- **Made in the UserView file:** User Profile Content (10121:5801) and Form Content (10121:5916), both on its *Ideation* page.
+
+**On every page:** the Iris Sidebar (Active Roles variant, 95:253) with the end-user menu — Home, User Profile, Approvals, My Access, then Settings and Help with — and the Iris AppHeader. There's no directory panel.
+
+<!-- WIP:userview · Home · Figma 10199:6772 -->
+### Home
+Frame home-dashboard · Figma ID 10199:6772 · prototype page `#/user-view/home`
+
+- **Iris code:** Button — Secondary · Text only · Small ×2
+- **Iris UI Kit:** Badge ×5 (Success 1, Warning 2, Info 1, Default 1), Table head item ×4, Table cell ×12
+- **Plain frames:** the "Welcome to Active Roles" row; the four shortcut cards (User Profile, Approvals, My Managed Resources, My Access); the three chart cards (Approvals by Month, Approval Distribution, Response Time); and the Pending Approvals and Access Summary cards
+
+<!-- WIP:userview · User Profile · Figma 10199:7207 -->
+### User Profile
+Frame user-profile-settings · Figma ID 10199:7207 · prototype page `#/user-view/profile`
+
+- **Iris code:** Select ×1, Button — Primary ×1, Button — Ghost ×1
+- **Iris UI Kit:** Text input ×8, Text area ×1, Badge — Success ×1
+- **Plain frames:** the profile header (initials, name, role, email) and the Personal, Work and Account information sections
+- **Note:** the page doesn't use the User Profile Content component placed next to it (copy 10199:7273). That component also has a Published Certificates section with a table, which the page doesn't show.
+
+<!-- WIP:userview · Approvals · Figma 10199:7351 -->
+### Approvals
+Frame Design-1-Approvals-Dashboard · Figma ID 10199:7351 · prototype page `#/user-view/approvals`
+
+- **Iris code:** Button ×3 (the filter buttons: Primary 1, Secondary 2), Pagination ×1
+- **Iris UI Kit:** Table cell ×35 (Heading 25, Badge 10)
+- **Plain frames:** the title bar, the three figure tiles, and the table's header row
+- **Side sheets:**
+  - Approve (10199:7454): Iris side sheet header; Button — Secondary ×2 and Primary ×1 (one is named "Escalate Button"); the footer is a plain frame
+  - Approved (10199:7498) and Denied (10199:7556): Iris side sheet header, Banner (Info variant) ×1, Button — Secondary ×1; the footer is a plain frame
+- **Pop-up dialogs:** Approve (10199:7617), Deny (10199:7638) and Escalate (10199:7659)
+  - Each has the older Iris dialog header (problem 1), Text area ×1, and Button — Secondary ×1 and Primary ×1. The body and footer are plain frames.
+  - Escalate also has Text input ×2.
+
+<!-- WIP:userview · My Access · Figma 10199:6654 -->
+### My Access
+Frame my-access-screen-full · Figma ID 10199:6654 · prototype page `#/user-view/my-access`
+
+- **Iris code:** Button — Primary ×1 and Secondary ×1, Pagination ×1
+- **Iris UI Kit:** Tabs (Overflow variant) ×1, Table head item ×6, Table cell ×40 (Heading 32, Badge 8)
+- **Toggle ×8:** drawn as flat images, so they can't be traced (problem 4)
+- **Plain frames:** the title row and the four figure tiles
+- **Request side sheet** — frame my-access-request-sidesheet (10199:7056):
+  - The page behind it is a different version of My Access: Button ×2, Badge ×4 (Success 2, Warning 2), Toggle ×4 (flat images), and a table built from plain frames.
+  - The side sheet is the older Iris side sheet (problem 1) with the Iris header and footer. Its form is built in the UserView file: Select ×3, Text input ×1, Text area ×1 and an owner card, plus Button ×3 (close, Secondary, Primary).
+  - Spare copies of this side sheet (10199:7205) and of Form Content (10199:7206) sit beside it.
+
+### UserView problems found
+
+1. **Older Iris versions:**
+   - The request side sheet (and its spare copy) uses an older Iris side sheet. Its layers (for example 5042:3021) are hidden in the Iris UI Kit; the current side sheet is 7765:1103.
+   - The three dialogs use an older Iris dialog header. Its close button (4429:265) no longer exists in the kit; the current header is 3689:3298.
+2. **Plain copies instead of components:** the Approve, Approved and Denied side sheets and the three dialogs are plain frames — only their headers are components. Their footers aren't the Iris side sheet footer (4747:718) or the Iris dialog footer (3744:318).
+3. **Tables built two ways:** Home, My Access and the Approvals rows use Iris table head items and cells, but the Approvals header row and the table behind the request side sheet are plain frames.
+4. **Can't be traced:** the 12 toggles and the 2 approver photos (Approve and Denied side sheets) are drawn as flat images, so Figma doesn't show which component they come from. The Iris UI Kit has a Toggle (111:255) and an Avatar (107:24).
+5. **User Profile Content not used:** see the note under User Profile.

@@ -13,6 +13,7 @@ The links to these files are in `.figma-url`:
 | **Main Product Design file** (ARS_WebUI2_CRUD) | The screens being built. It is the source of truth in any conflict. |
 | **ARS Product Specific UI Kit** (ARS - Primary) | Active Roles product-level components. |
 | **Iris Global UI Kit** (Iris UI – UI Kit) | Shared Iris components. |
+| **UserView file** (ARS_WebUI2_User-View-Approvals) — WIP | The end-user (UserView) pages. Not final yet: see the UserView section of `docs/ars-component-map.md`. |
 
 - If the files disagree with each other, the Main Product Design file wins.
 - Get these links from `.figma-url`. This project's `src/iris-shell/src/lib/verticals.ts` doesn't list Figma libraries, so don't look for them there.
