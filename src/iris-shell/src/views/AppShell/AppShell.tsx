@@ -13,7 +13,7 @@ import { useAppShell } from '../../lib/appShellContext.js';
 import { useVertical } from '../../lib/verticals.js';
 import { IDENTITY_ROLES, filterIdentityGroups } from '../../lib/identityNav.js';
 import { isTypingTarget } from '../../lib/keyboard.js';
-import { CURRENT_USER } from '../../lib/currentUser.js';
+import { useCurrentUser } from '../../lib/currentUser.js';
 import styles from './AppShell.module.css';
 
 /** Map global-nav item value → route hash. Items without a mapping are no-op. */
@@ -171,8 +171,8 @@ function handleViewChange(value: string) {
 export interface AppShellProps {
   breadcrumb: Crumb[];
   /**
-   * Signed-in user shown in the header avatar + user menu. Defaults to
-   * {@link CURRENT_USER} so individual pages don't need to repeat it.
+   * Signed-in user shown in the header avatar + user menu. Defaults to the
+   * persona picked on the welcome page so individual pages don't repeat it.
    */
   user?: HeaderUser;
   children?: ReactNode;
@@ -190,7 +190,7 @@ export interface AppShellProps {
  */
 export function AppShell({
   breadcrumb,
-  user = CURRENT_USER,
+  user,
   children,
   activeGlobalItem = 'directory',
   showSecondarySidebar = true,
@@ -201,7 +201,9 @@ export function AppShell({
   // `activeNav` and `aiOpen` are lifted to AppShellContext so they survive
   // page navigations (each page wraps its own AppShell, which would otherwise
   // remount and lose state).
-  const { aiOpen, setAiOpen, setSearchOpen, identityRole, setIdentityRole } = useAppShell();
+  const { aiOpen, setAiOpen, setSearchOpen, identityRole, setIdentityRole, setPersonaId } =
+    useAppShell();
+  const currentUser = useCurrentUser();
   const [pinned, setPinned] = useSidebarPinned();
   const [peeking, setPeeking] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(readInitialSidebarWidth);
@@ -506,6 +508,12 @@ export function AppShell({
   const open = pinned || peeking;
   const mode: SidebarMode = pinned ? 'pinned' : 'peek';
 
+  // Signing out returns to the welcome page to pick another persona.
+  const handleSignOut = () => {
+    setPersonaId(null);
+    navigate('#/welcome');
+  };
+
   const activeRoleLabel =
     IDENTITY_ROLES.find((r) => r.id === identityRole)?.label ?? IDENTITY_ROLES[0].label;
   const roleSwitcher = isIdentity ? (
@@ -591,7 +599,8 @@ export function AppShell({
 
         <AppHeader
           breadcrumb={breadcrumb}
-          user={user}
+          user={user ?? currentUser}
+          onSignOut={handleSignOut}
           onToggleSidebar={handleToggleClick}
           sidebarOpen={pinned}
           onTogglePeekStart={startPeek}

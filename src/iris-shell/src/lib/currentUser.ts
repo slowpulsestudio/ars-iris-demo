@@ -1,11 +1,12 @@
 import type { HeaderUser } from '../components/AppHeader/AppHeader.js';
+import { useAppShell } from './appShellContext.js';
+import { DEFAULT_PERSONA } from './personas.js';
 
 /**
- * Mock signed-in user. Single source of truth for every AppShell instance;
- * also the default value of `AppShellProps.user`.
+ * Signed-in user: the persona picked on the welcome page. Single source of
+ * truth for every AppShell instance (header avatar + user menu).
  */
-export const CURRENT_USER: HeaderUser = {
-  name: 'Sara Ito',
-  src: '/avatar02.png',
-  email: 'sara.ito@example.com',
-};
+export function useCurrentUser(): HeaderUser {
+  const persona = useAppShell().persona ?? DEFAULT_PERSONA;
+  return { name: persona.name, src: persona.avatar, email: persona.email };
+}

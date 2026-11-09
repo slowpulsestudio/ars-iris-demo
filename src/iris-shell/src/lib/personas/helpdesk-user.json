@@ -1,0 +1,40 @@
+{
+  "id": "helpdesk-user",
+  "name": "Werner Schwartz",
+  "email": "werner.schwartz@example.com",
+  "avatar": "/avatars/werner-schwartz.png",
+  "personaTitle": "Helpdesk Admin",
+  "role": "Helpdesk",
+  "scenario": "Works the helpdesk. Handles everyday user, group and asset tasks, and needs to find things fast in the web interface.",
+  "age": 24,
+  "location": "Berlin",
+  "maritalStatus": "Single",
+  "bio": [
+    "I do not get much input on direction of our infrastructure but provide essential feedback on how effective our tools are."
+  ],
+  "needsAndExpectations": [
+    "Our environments are Mainly hybrid, large companies being given repetitive tasks.",
+    "Easily administer Users, assets, groups, policies."
+  ],
+  "motivations": [
+    "Be able to use the WebUI quickly, easily. Better navigation and search. Better WebUI with dashboard.",
+    "Complete repetitive tasks once learned"
+  ],
+  "painPoints": [
+    "Will require training for complex tasks, not suited for using the MMC."
+  ],
+  "navigation": {
+    "defaultRoute": "#/users",
+    "showDirectoryPanel": true,
+    "mainNav": [
+      { "value": "directory", "label": "Directory management", "icon": "TreeView" },
+      { "value": "insights", "label": "Insights", "icon": "PresentationChart" },
+      { "value": "approval", "label": "Approval", "icon": "SealCheck", "disabled": true },
+      { "value": "customization", "label": "Customization", "icon": "Wrench", "disabled": true }
+    ],
+    "otherNav": [
+      { "value": "settings", "label": "Settings", "icon": "GearFine", "disabled": true },
+      { "value": "help", "label": "Help with", "icon": "Question", "disabled": true }
+    ]
+  }
+}

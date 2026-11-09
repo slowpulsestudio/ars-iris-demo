@@ -11,8 +11,10 @@ import {
 } from 'react';
 import type { AiContextItem } from './aiContext.js';
 import { isRoleId, type RoleId } from './identityNav.js';
+import { findPersona, type Persona } from './personas.js';
 
 const IDENTITY_ROLE_STORAGE_KEY = 'ars.identity.role';
+const PERSONA_STORAGE_KEY = 'ars.persona';
 
 function readInitialIdentityRole(): RoleId {
   try {
@@ -20,6 +22,15 @@ function readInitialIdentityRole(): RoleId {
     return isRoleId(raw) ? raw : 'all';
   } catch {
     return 'all';
+  }
+}
+
+function readInitialPersonaId(): string | null {
+  try {
+    const raw = localStorage.getItem(PERSONA_STORAGE_KEY);
+    return findPersona(raw) ? raw : null;
+  } catch {
+    return null;
   }
 }
 
@@ -66,6 +77,12 @@ export interface AppShellContextValue {
   /** Identity Manager "Preview as" role. Scopes the IdM sidebar + Home cards. */
   identityRole: RoleId;
   setIdentityRole: (role: RoleId) => void;
+  /**
+   * Persona picked on the welcome page, or `null` before anyone is picked.
+   * Drives the header user and the Active Roles navigation.
+   */
+  persona: Persona | null;
+  setPersonaId: (id: string | null) => void;
 }
 
 /**
@@ -97,6 +114,8 @@ export function AppShellProvider({ children }: AppShellProviderProps) {
   const clearAiContext = useCallback(() => setAiContext([]), []);
   const [pendingAiPrompt, setPendingAiPrompt] = useState<string | null>(null);
   const [identityRole, setIdentityRole] = useState<RoleId>(readInitialIdentityRole);
+  const [personaId, setPersonaId] = useState<string | null>(readInitialPersonaId);
+  const persona = useMemo(() => findPersona(personaId) ?? null, [personaId]);
 
   useEffect(() => {
     try {
@@ -105,6 +124,15 @@ export function AppShellProvider({ children }: AppShellProviderProps) {
       /* storage unavailable — silently ignore */
     }
   }, [identityRole]);
+
+  useEffect(() => {
+    try {
+      if (personaId) localStorage.setItem(PERSONA_STORAGE_KEY, personaId);
+      else localStorage.removeItem(PERSONA_STORAGE_KEY);
+    } catch {
+      /* storage unavailable — silently ignore */
+    }
+  }, [personaId]);
 
   const value = useMemo<AppShellContextValue>(
     () => ({
@@ -121,8 +149,19 @@ export function AppShellProvider({ children }: AppShellProviderProps) {
       setPendingAiPrompt,
       identityRole,
       setIdentityRole,
+      persona,
+      setPersonaId,
     }),
-    [aiOpen, searchOpen, activeNav, aiContext, clearAiContext, pendingAiPrompt, identityRole],
+    [
+      aiOpen,
+      searchOpen,
+      activeNav,
+      aiContext,
+      clearAiContext,
+      pendingAiPrompt,
+      identityRole,
+      persona,
+    ],
   );
 
   return <AppShellContext.Provider value={value}>{children}</AppShellContext.Provider>;

@@ -1,6 +1,9 @@
+import { useMemo } from 'react';
 import { useRoute, type Route, type RouteName } from './router.js';
 import type { ProductIconName } from '../components/ProductIcon/ProductIcon.js';
 import type { SidebarNavItem } from '../components/Sidebar/Sidebar.js';
+import { useAppShell } from './appShellContext.js';
+import { DEFAULT_PERSONA, type PersonaNavigation } from './personas.js';
 import {
   IDENTITY_HOME_ITEM,
   IDENTITY_INSIGHTS_ITEM,
@@ -78,32 +81,39 @@ const COMMON_OTHER_NAV: VerticalNavEntry[] = [
   { value: 'help', label: 'Help with', icon: 'Question', disabled: true },
 ];
 
-export const ACTIVE_ROLES_VERTICAL: Vertical = {
-  id: 'active-roles',
-  label: 'Active Roles',
-  productIcon: 'active-roles',
-  defaultRoute: '#/users',
-  aiTitle: 'Active Roles AI',
-  mainNav: [
-    { value: 'directory', label: 'Directory management', icon: 'TreeView' },
-    { value: 'insights', label: 'Insights', icon: 'PresentationChart' },
-    { value: 'approval', label: 'Approval', icon: 'SealCheck', disabled: true },
-    { value: 'customization', label: 'Customization', icon: 'Wrench', disabled: true },
+/** Directory panel (second left rail) for personas whose file switches it on. */
+const ACTIVE_ROLES_DIRECTORY_PANEL: VerticalSecondarySidebar = {
+  directoryLabel: 'All directories',
+  navItems: [
+    { value: 'users', label: 'Users', icon: 'Users' },
+    { value: 'groups', label: 'Groups', icon: 'UsersThree' },
+    { value: 'devices', label: 'Devices', icon: 'Devices' },
+    { value: 'agents', label: 'Agents', icon: 'Robot' },
+    { value: 'applications', label: 'Applications', icon: 'Browsers' },
+    { value: 'access-templates', label: 'Access templates', icon: 'UserCircleCheck' },
+    { value: 'management-units', label: 'Management units', icon: 'FolderSimpleStar' },
   ],
-  otherNav: COMMON_OTHER_NAV,
-  secondarySidebar: {
-    directoryLabel: 'All directories',
-    navItems: [
-      { value: 'users', label: 'Users', icon: 'Users' },
-      { value: 'groups', label: 'Groups', icon: 'UsersThree' },
-      { value: 'devices', label: 'Devices', icon: 'Devices' },
-      { value: 'agents', label: 'Agents', icon: 'Robot' },
-      { value: 'applications', label: 'Applications', icon: 'Browsers' },
-      { value: 'access-templates', label: 'Access templates', icon: 'UserCircleCheck' },
-      { value: 'management-units', label: 'Management units', icon: 'FolderSimpleStar' },
-    ],
-  },
 };
+
+/**
+ * Active Roles for one persona. Its navigation lives in the persona files
+ * (src/lib/personas/*.json), so each persona sees its own menu.
+ */
+function activeRolesVerticalFor(nav: PersonaNavigation): Vertical {
+  return {
+    id: 'active-roles',
+    label: 'Active Roles',
+    productIcon: 'active-roles',
+    defaultRoute: nav.defaultRoute,
+    aiTitle: 'Active Roles AI',
+    mainNav: nav.mainNav,
+    otherNav: nav.otherNav,
+    secondarySidebar: nav.showDirectoryPanel ? ACTIVE_ROLES_DIRECTORY_PANEL : undefined,
+  };
+}
+
+/** Active Roles before anyone is picked (uses the default persona's navigation). */
+export const ACTIVE_ROLES_VERTICAL: Vertical = activeRolesVerticalFor(DEFAULT_PERSONA.navigation);
 
 export const SERVICES_VERTICAL: Vertical = {
   id: 'services',
@@ -165,7 +175,18 @@ export function verticalForRoute(route: Route): Vertical {
   return SERVICES_ROUTES.has(route.name) ? SERVICES_VERTICAL : ACTIVE_ROLES_VERTICAL;
 }
 
-/** Hook variant — re-evaluates whenever the active route changes. */
+/**
+ * Hook variant — re-evaluates whenever the active route or the picked persona
+ * changes. Active Roles uses the picked persona's navigation.
+ */
 export function useVertical(): Vertical {
-  return verticalForRoute(useRoute());
+  const vertical = verticalForRoute(useRoute());
+  const { persona } = useAppShell();
+  return useMemo(
+    () =>
+      vertical.id === 'active-roles' && persona
+        ? activeRolesVerticalFor(persona.navigation)
+        : vertical,
+    [vertical, persona],
+  );
 }

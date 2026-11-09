@@ -1,0 +1,44 @@
+{
+  "id": "admin-user",
+  "name": "David Smith",
+  "email": "david.smith@example.com",
+  "avatar": "/avatars/david-smith.png",
+  "personaTitle": "Infrastructure Admin",
+  "role": "Infrastructure Admin",
+  "scenario": "Runs the whole domain. Sets up group policies, automation and workflows, and hands routine tasks to the helpdesk.",
+  "age": 42,
+  "location": "California",
+  "maritalStatus": "Married",
+  "bio": [
+    "I manage the whole domain and make technical propositions to my managers.",
+    "I am qualified and have several years of experience. There is a good chance I started on a helpdesk and understand call centres and tech support structures."
+  ],
+  "needsAndExpectations": [
+    "Our environments are mostly hybrid environment, in large companies. Transitioning from On Prem.",
+    "Able to administer group policies, automation tasks, and workflows,"
+  ],
+  "motivations": [
+    "Object management and automation of tasks that can be delegated whilst I setup more complex policies and workflows",
+    "Easier ways to automate hybrid environment tasks, and provision helpdesk users with ARS.",
+    "Better ways to delegate permissions with active roles.",
+    "Wants RestAPI"
+  ],
+  "painPoints": [
+    "I don’t have time for WebUI to load, or process actions that take seconds in MMC.",
+    "Does not want SaaS to manage B2B B2C."
+  ],
+  "navigation": {
+    "defaultRoute": "#/users",
+    "showDirectoryPanel": true,
+    "mainNav": [
+      { "value": "directory", "label": "Directory management", "icon": "TreeView" },
+      { "value": "insights", "label": "Insights", "icon": "PresentationChart" },
+      { "value": "approval", "label": "Approval", "icon": "SealCheck", "disabled": true },
+      { "value": "customization", "label": "Customization", "icon": "Wrench", "disabled": true }
+    ],
+    "otherNav": [
+      { "value": "settings", "label": "Settings", "icon": "GearFine", "disabled": true },
+      { "value": "help", "label": "Help with", "icon": "Question", "disabled": true }
+    ]
+  }
+}

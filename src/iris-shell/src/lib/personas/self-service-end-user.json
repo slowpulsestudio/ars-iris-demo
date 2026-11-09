@@ -1,0 +1,40 @@
+{
+  "id": "self-service-end-user",
+  "name": "Lisa Fernandez",
+  "email": "lisa.fernandez@example.com",
+  "avatar": "/avatars/lisa-fernandez.png",
+  "personaTitle": "NON-Technical User for UserView",
+  "role": "People Operations Manager",
+  "scenario": "A non-technical employee. Uses self-service to update her own details, check her access and handle approvals without asking IT.",
+  "age": 38,
+  "location": "Chicago, IL",
+  "maritalStatus": "Married",
+  "bio": [
+    "I oversee our employee experience from onboarding to offboarding. My focus is making sure our people feel supported, our policies are clear, and our tools actually help rather than slow us down. I rely on my team leads for input and work closely with department heads on hiring and retention."
+  ],
+  "needsAndExpectations": [
+    "An easy-to-use HRIS that doesn't require IT support for everyday tasks.",
+    "Self-service portals for employees to update their own info and access pay stubs."
+  ],
+  "motivations": [
+    "I want to create a workplace where people genuinely enjoy coming to work and feel valued.",
+    "Streamlining our hiring pipeline so we can fill roles faster without sacrificing quality."
+  ],
+  "painPoints": [
+    "Our current tools are clunky and outdated. I spend more time on data entry and workarounds than on actual people strategy. Reporting is a nightmare — I can never pull the data I need without asking IT for help."
+  ],
+  "navigation": {
+    "defaultRoute": "#/user-view/home",
+    "showDirectoryPanel": false,
+    "mainNav": [
+      { "value": "user-view-home", "label": "Home", "icon": "House", "route": "#/user-view/home", "wip": true, "figmaNode": "10199:6772" },
+      { "value": "user-view-profile", "label": "User Profile", "icon": "User", "route": "#/user-view/profile", "wip": true, "figmaNode": "10199:7207" },
+      { "value": "user-view-approvals", "label": "Approvals", "icon": "Check", "route": "#/user-view/approvals", "wip": true, "figmaNode": "10199:7351" },
+      { "value": "user-view-access", "label": "My Access", "icon": "Key", "route": "#/user-view/my-access", "wip": true, "figmaNode": "10199:6654" }
+    ],
+    "otherNav": [
+      { "value": "settings", "label": "Settings", "icon": "GearFine", "disabled": true },
+      { "value": "help", "label": "Help with", "icon": "Question", "disabled": true }
+    ]
+  }
+}

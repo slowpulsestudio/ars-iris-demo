@@ -51,6 +51,9 @@ export interface AppHeaderProps {
   /** Optional control rendered at the start of the right cluster (e.g. the
    *  Identity Manager "Preview as" role switcher). */
   roleSwitcher?: ReactNode;
+  /** Called when "Sign out" is chosen in the user menu. Without it the item
+   *  is shown but inactive. */
+  onSignOut?: () => void;
   className?: string;
 }
 
@@ -70,6 +73,7 @@ export function AppHeader({
   aiActive = false,
   onSearch,
   roleSwitcher,
+  onSignOut,
   className,
 }: AppHeaderProps) {
   const { theme, setTheme, themes } = useTheme();
@@ -131,7 +135,8 @@ export function AppHeader({
       kind: 'item',
       label: 'Sign out',
       icon: 'SignOut',
-      inactive: true,
+      inactive: !onSignOut,
+      onSelect: onSignOut,
     },
   ];
 

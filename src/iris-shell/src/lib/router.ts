@@ -30,7 +30,12 @@ export type Route =
   | { name: 'identitySettings'; params: Record<string, never> }
   | { name: 'identityHelp'; params: Record<string, never> }
   | { name: 'identitySection'; params: { group: string; item: string } }
-  | { name: 'safeguardHome'; params: Record<string, never> };
+  | { name: 'safeguardHome'; params: Record<string, never> }
+  | { name: 'welcome'; params: Record<string, never> }
+  | { name: 'userViewHome'; params: Record<string, never> }
+  | { name: 'userViewProfile'; params: Record<string, never> }
+  | { name: 'userViewApprovals'; params: Record<string, never> }
+  | { name: 'userViewAccess'; params: Record<string, never> };
 
 export type RouteName = Route['name'];
 
@@ -61,9 +66,15 @@ const ROUTES: RouteDef[] = [
   { name: 'identitySection', pattern: /^#\/identity\/([^/]+)\/([^/]+)$/, keys: ['group', 'item'] },
   { name: 'identityHome', pattern: /^#\/identity$/, keys: [] },
   { name: 'safeguardHome', pattern: /^#\/safeguard$/, keys: [] },
+  { name: 'welcome', pattern: /^#\/welcome$/, keys: [] },
+  { name: 'userViewHome', pattern: /^#\/user-view\/home$/, keys: [] },
+  { name: 'userViewProfile', pattern: /^#\/user-view\/profile$/, keys: [] },
+  { name: 'userViewApprovals', pattern: /^#\/user-view\/approvals$/, keys: [] },
+  { name: 'userViewAccess', pattern: /^#\/user-view\/my-access$/, keys: [] },
 ];
 
-const DEFAULT = '#/insights';
+/** Start page: the welcome page with the persona picker. */
+const DEFAULT = '#/welcome';
 
 function parseHash(hash: string | null | undefined): Route {
   const h = hash || DEFAULT;

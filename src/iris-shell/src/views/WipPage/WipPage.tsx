@@ -17,16 +17,28 @@ export interface WipPageProps {
   title: string;
   /** Glyph shown in the leading ResourceIcon tile. */
   icon: string;
+  /** First breadcrumb crumb. Defaults to the Directory Management section. */
+  section?: string;
+  /** Global-nav entry to highlight (value or route). Defaults to Directory management. */
+  activeGlobalItem?: string;
 }
 
 /**
- * WipPage — placeholder for directory sections that don't have a real view
- * yet. Reuses the UsersPage header treatment (icon + title + page-actions
+ * WipPage — placeholder for sections that don't have a real view yet.
+ * Reuses the UsersPage header treatment (icon + title + page-actions
  * menu) and shows a "WIP" marker in the content area.
  */
-export function WipPage({ title, icon }: WipPageProps) {
+export function WipPage({
+  title,
+  icon,
+  section = 'Directory Management',
+  activeGlobalItem,
+}: WipPageProps) {
   return (
-    <AppShell breadcrumb={[{ label: 'Directory Management' }, { label: title }]}>
+    <AppShell
+      breadcrumb={[{ label: section }, { label: title }]}
+      activeGlobalItem={activeGlobalItem}
+    >
       <ContentHeader
         icon={icon}
         title={title}

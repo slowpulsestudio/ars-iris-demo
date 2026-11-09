@@ -2,7 +2,7 @@ import { useRoute, type Route } from './lib/router.js';
 import { UsersProvider } from './lib/usersStore.js';
 import { DirectoryProvider } from './lib/directoryStore.js';
 import { FIRST_NODE_ID } from './lib/directoryData.js';
-import { AppShellProvider } from './lib/appShellContext.js';
+import { AppShellProvider, useAppShell } from './lib/appShellContext.js';
 import { useToastMessage } from './lib/toastStore.js';
 import { CommandPalette } from './components/CommandPalette/CommandPalette.js';
 import { Toast } from './components/Toast/Toast.js';
@@ -19,6 +19,7 @@ import { IdentityInsightsPage } from './views/IdentityManagerPage/IdentityInsigh
 import { IdentityPlaceholder } from './views/IdentityManagerPage/IdentityPlaceholder.js';
 import { IdentitySectionPage } from './views/IdentityManagerPage/IdentitySectionPage.js';
 import { SafeguardPage } from './views/SafeguardPage/SafeguardPage.js';
+import { WelcomePage } from './views/WelcomePage/WelcomePage.js';
 
 function renderRoute(route: Route) {
   switch (route.name) {
@@ -66,19 +67,42 @@ function renderRoute(route: Route) {
       return <IdentitySectionPage groupId={route.params.group} itemValue={route.params.item} />;
     case 'safeguardHome':
       return <SafeguardPage />;
+    case 'welcome':
+      return <WelcomePage />;
+    // WIP:userview — placeholders until the UserView Figma file is final (docs/ars-component-map.md).
+    case 'userViewHome':
+      return <WipPage title="Home" icon="House" section="Active Roles" activeGlobalItem="#/user-view/home" />;
+    case 'userViewProfile':
+      return (
+        <WipPage title="User Profile" icon="User" section="Active Roles" activeGlobalItem="#/user-view/profile" />
+      );
+    case 'userViewApprovals':
+      return (
+        <WipPage title="Approvals" icon="Check" section="Active Roles" activeGlobalItem="#/user-view/approvals" />
+      );
+    case 'userViewAccess':
+      return (
+        <WipPage title="My Access" icon="Key" section="Active Roles" activeGlobalItem="#/user-view/my-access" />
+      );
     default:
       return null;
   }
 }
 
-export default function App() {
+/** Until a persona is picked, every address shows the persona picker. */
+function RoutedPage() {
   const route = useRoute();
+  const { persona } = useAppShell();
+  return persona ? renderRoute(route) : <WelcomePage />;
+}
+
+export default function App() {
   const toast = useToastMessage();
   return (
     <UsersProvider>
       <DirectoryProvider>
         <AppShellProvider>
-          {renderRoute(route)}
+          <RoutedPage />
           <CommandPalette />
           <Toast message={toast.message} onDismiss={toast.dismiss} />
         </AppShellProvider>
