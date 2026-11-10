@@ -20,7 +20,13 @@ export interface User {
   email: string;
   objectId: string;
   details: UserDetails;
+  /** Shown in the Tags column of the list. */
+  tags: string[];
+  /** Directory path shown in the Location column of the list. */
+  location: string;
 }
+
+type UserSeed = Omit<User, 'tags' | 'location'>;
 
 const LOREM = `Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.`;
 
@@ -56,7 +62,7 @@ function makeDetails(name: string, login: string): UserDetails {
  * Generate a batch of additional filler users so the listing has enough rows
  * to exercise pagination. Names/emails/statuses are varied but deterministic.
  */
-function makeMockUsers(): User[] {
+function makeMockUsers(): UserSeed[] {
   const firstNames = [
     'Aiden', 'Harper', 'Elijah', 'Amelia', 'Benjamin', 'Charlotte', 'James',
     'Evelyn', 'Henry', 'Abigail', 'Alexander', 'Emily', 'Sebastian', 'Elizabeth',
@@ -106,7 +112,27 @@ function makeMockUsers(): User[] {
   });
 }
 
-export const MOCK_USERS: User[] = [
+const TAG_PAIRS = [
+  ['HR', 'Engineering'],
+  ['Global', 'Helpdesk'],
+  ['Platform', 'Security'],
+  ['HR', 'Compliance'],
+  ['Security', 'Helpdesk'],
+  ['Design', 'Marketing'],
+  ['Analytics', 'Finance'],
+];
+const LOCATIONS = ['AD1\\Users', 'Entra', 'AD2\\OU1', 'AD1\\DataAdmin'];
+
+/** Gives each user deterministic list-only fields (tags, location) from its position. */
+function withListFields(seeds: UserSeed[]): User[] {
+  return seeds.map((u, i) => ({
+    ...u,
+    tags: TAG_PAIRS[i % TAG_PAIRS.length],
+    location: LOCATIONS[i % LOCATIONS.length],
+  }));
+}
+
+export const MOCK_USERS: User[] = withListFields([
   {
     id: 'isabella-clark',
     name: 'Isabella Clark',
@@ -209,7 +235,7 @@ export const MOCK_USERS: User[] = [
     details: makeDetails('Mia Foster', 'Mia.Foster'),
   },
   ...makeMockUsers(),
-];
+]);
 
 /** Lookup helpers. */
 export function getUserById(id: string): User | null {

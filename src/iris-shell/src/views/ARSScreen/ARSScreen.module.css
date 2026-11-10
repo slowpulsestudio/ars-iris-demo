@@ -1,0 +1,9 @@
+/* The shell's main surface already draws the card (border, radius, background). */
+.screen {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+}

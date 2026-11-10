@@ -1,12 +1,12 @@
-import type { HTMLAttributes, ReactNode } from 'react';
+import type { HTMLAttributes, MouseEventHandler, ReactNode } from 'react';
 import { cx } from '../../lib/cx.js';
 import { Button } from '../Button/Button.js';
 import { Icon } from '../Icon/Icon.js';
 import styles from './SplitButton.module.css';
 
 export interface SplitButtonProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'onClick'> {
-  onClick?: () => void;
-  onMenuClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  onMenuClick?: MouseEventHandler<HTMLButtonElement>;
   /** Iris UI Kit types: Primary and Ghost (secondary and danger are code extras). */
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   size?: 's' | 'default' | 'l';

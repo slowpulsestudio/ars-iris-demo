@@ -49,6 +49,7 @@ export interface ARSTableProps {
   pages?: (number | PaginationEllipsis)[];
   onPageChange?: (page: number) => void;
   pageSize?: number;
+  pageSizeOptions?: number[];
   onPageSizeChange?: (size: number) => void;
   emptyTitle?: string;
   emptyDescription?: string;
@@ -82,6 +83,7 @@ export function ARSTable({
   pages,
   onPageChange,
   pageSize = 15,
+  pageSizeOptions,
   onPageSizeChange,
   emptyTitle = 'No directory or folder selected.',
   emptyDescription = 'Choose a directory or folder to display its contents here.',
@@ -135,6 +137,7 @@ export function ARSTable({
         pages={pages}
         onPageChange={onPageChange}
         pageSize={pageSize}
+        pageSizeOptions={pageSizeOptions}
         onPageSizeChange={onPageSizeChange}
       />
     </div>

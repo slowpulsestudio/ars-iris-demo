@@ -1,485 +1,156 @@
-import { useEffect, useMemo, useState, type MouseEvent } from 'react';
+import { useMemo, useState } from 'react';
+import {
+  ARSADUserActions,
+  ARSCreateMenu,
+  ARSEntraUserActions,
+  ARSFilterMenu,
+  ARSFlatViewUserContent,
+  ARSPageMenu,
+} from '@ars';
+import { CREATE_MENU } from '@ars/components/ARSCreateMenu/ARSCreateMenu.js';
 import { AppShell } from '../AppShell/AppShell.js';
-import { navigate } from '../../lib/router.js';
 import { useUsers } from '../../lib/usersStore.js';
 import { useAppShell } from '../../lib/appShellContext.js';
-import { isTypingTarget } from '../../lib/keyboard.js';
-import { cx } from '../../lib/cx.js';
-import { TextInput } from '../../components/TextInput/TextInput.js';
-import { IconButton } from '../../components/IconButton/IconButton.js';
-import { Icon } from '../../components/Icon/Icon.js';
-import { Menu, type MenuEntry } from '../../components/Menu/Menu.js';
-import {
-  FilterBar,
-  useFilterModel,
-  type FilterOption,
-  type ParameterDef,
-  type ParamCategory,
-} from '../../components/Filters/index.js';
-import { Button } from '../../components/Button/Button.js';
-import { Badge, type BadgeTone } from '../../components/Badge/Badge.js';
-import { Tooltip } from '../../components/Tooltip/Tooltip.js';
-import { Link } from '../../components/Link/Link.js';
-import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
-import { ListToolbarActions } from '../../components/ListToolbarActions/ListToolbarActions.js';
-import { DataTable, type DataTableColumn, type RowKey } from '../../components/DataTable/DataTable.js';
-import { Pagination } from '../../components/Pagination/Pagination.js';
+import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
+import type { BadgeTone } from '../../components/Badge/Badge.js';
 import { ActionBar } from '../../components/ActionBar/ActionBar.js';
 import { ResetPasswordModal } from '../UserDetailPage/ResetPasswordModal/ResetPasswordModal.js';
 import { DeleteUserModal } from '../UserDetailPage/DeleteUserModal/DeleteUserModal.js';
 import { CreateObjectModal } from './CreateObjectModal/CreateObjectModal.js';
 import type { User } from './mockUsers.js';
-import styles from './UsersPage.module.css';
+import screen from '../ARSScreen/ARSScreen.module.css';
 
-/** Map a status string to its badge tone + icon. Unknown statuses fall back
- *  to a neutral question mark so the column never breaks visually. */
-function statusBadge(status: string): { tone: BadgeTone; icon: string } {
+/** Badge tone for a status string; unknown statuses stay neutral. */
+function statusTone(status: string): BadgeTone {
   switch (status.toLowerCase()) {
     case 'active':
-      return { tone: 'success', icon: 'CheckCircle' };
+      return 'success';
     case 'inactive':
     case 'disabled':
-      return { tone: 'error', icon: 'XCircle' };
+      return 'error';
     case 'unknown':
     case 'pending':
-      return { tone: 'warning', icon: 'WarningCircle' };
+      return 'warning';
     default:
-      return { tone: 'neutral', icon: 'Question' };
+      return 'neutral';
   }
 }
 
-/** Copy → Check icon swap for the Object ID copy action — two icons in one
- *  slot that cross-fade when `copied` flips (mirrors the reset-password and
- *  AI-panel copy affordances). */
-function CopyCheckSwap({ copied }: { copied: boolean }) {
-  return (
-    <span
-      className={styles.copySwap}
-      data-copied={copied ? 'true' : 'false'}
-      aria-hidden="true"
-    >
-      <span className={cx(styles.copySwapLayer, styles.copySwapCopy)}>
-        <Icon name="Copy" size="16px" />
-      </span>
-      <span className={cx(styles.copySwapLayer, styles.copySwapCheck)}>
-        <Icon name="CheckCircle" size="16px" />
-      </span>
-    </span>
-  );
-}
+/** Items-per-page choices offered below the list. */
+const PAGE_SIZE_OPTIONS = [10, 15, 20, 30, 50];
 
-/** Object ID copy button with a transient "copied" confirmation. Lives as its
- *  own component so each row keeps independent copy state (the columns are
- *  defined at module scope and can't hold hooks). */
-function CopyObjectIdButton({ objectId, userName }: { objectId: string; userName: string }) {
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (!copied) return undefined;
-    const t = setTimeout(() => setCopied(false), 2000);
-    return () => clearTimeout(t);
-  }, [copied]);
-
-  const handleCopy = async (e: MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    // Clipboard API first; fall back to a hidden textarea for insecure
-    // contexts. Feedback is best-effort — acknowledge the click regardless.
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(objectId);
-      } else {
-        throw new Error('clipboard-unavailable');
-      }
-    } catch {
-      try {
-        const ta = document.createElement('textarea');
-        ta.value = objectId;
-        ta.setAttribute('readonly', '');
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-      } catch {
-        /* both paths failed */
-      }
-    }
-    setCopied(true);
-  };
-
-  return (
-    <IconButton
-      icon={<CopyCheckSwap copied={copied} />}
-      ariaLabel={copied ? 'Object ID copied' : `Copy Object ID for ${userName}`}
-      size="s"
-      className={cx(styles.copyBtn, copied && styles.copyBtnDone)}
-      onClick={handleCopy}
-    />
-  );
-}
-
-const COLUMNS: DataTableColumn<User>[] = [
-  {
-    key: 'name',
-    header: 'Name',
-    icon: 'IdentificationCard',
-    width: '180px',
-    cell: (u) => (
-      <Link
-        href={`#/users/${u.id}`}
-        className={styles.nameCell}
-        onClick={(e: MouseEvent<HTMLAnchorElement>) => {
-          e.preventDefault();
-          navigate(`#/users/${u.id}`);
-        }}
-      >
-        {u.name}
-      </Link>
-    ),
-  },
-  {
-    key: 'status',
-    header: 'Status',
-    icon: 'UserCircleCheck',
-    width: '128px',
-    cell: (u) => {
-      const { tone, icon } = statusBadge(u.status);
-      return (
-        <Badge tone={tone} icon={icon}>
-          {u.status}
-        </Badge>
-      );
-    },
-  },
-  {
-    key: 'description',
-    header: 'Description',
-    icon: 'ArticleNyTimes',
-    minWidth: '224px',
-    maxWidth: '480px',
-    grow: 2,
-    cell: (u) => <span title={u.description}>{u.description}</span>,
-  },
-  {
-    key: 'email',
-    header: 'Email',
-    icon: 'Envelope',
-    width: '200px',
-    cell: (u) => (
-      <Link href={`mailto:${u.email}`} title={u.email} className={styles.emailCell}>
-        {u.email}
-      </Link>
-    ),
-  },
-  {
-    key: 'objectId',
-    header: 'Object ID',
-    icon: 'Tag',
-    minWidth: '246px',
-    grow: 1,
-    cell: (u) => (
-      <span className={styles.objectIdCell}>
-        <span className={cx(styles.mono, styles.objectIdValue)} title={u.objectId}>
-          {u.objectId}
-        </span>
-        <CopyObjectIdButton objectId={u.objectId} userName={u.name} />
-      </span>
-    ),
-  },
-];
-
-/** Object types a user can filter by, mirroring the Create menu's icons. */
-const OBJECT_TYPE_OPTIONS: FilterOption[] = [
-  { value: 'ou', label: 'Organizational Unit', icon: 'FolderPlus' },
-  { value: 'user', label: 'User', icon: 'User' },
-  { value: 'computer', label: 'Computer', icon: 'Devices' },
-  { value: 'group', label: 'Group', icon: 'UsersThree' },
-  { value: 'sharedFolder', label: 'Shared folder', icon: 'Folders' },
-  { value: 'contact', label: 'Contact', icon: 'AddressBook' },
-  { value: 'gmsa', label: 'Group Management Service Account', icon: 'UserCircle' },
-];
-
-/** Fields the user can filter by (drives the toolbar menu, the builder and the pills). */
-const PARAMETERS: ParameterDef[] = [
-  { id: 'displayName', label: 'Display name', icon: 'TextAa' },
-  { id: 'objectType', label: 'Object type', icon: 'Cube', options: OBJECT_TYPE_OPTIONS },
-  { id: 'tags', label: 'Tags', icon: 'Tag' },
-  { id: 'location', label: 'Location', icon: 'MapPin' },
-  { id: 'dateActive', label: 'Date active', icon: 'CalendarCheck', date: true },
-  { id: 'dateCreated', label: 'Date created', icon: 'CalendarDots', date: true },
-];
-
-/** Parameter groupings for the advanced builder's `+ Filter` popover (§3.8). */
-const PARAM_CATEGORIES: ParamCategory[] = [
-  { label: 'Common', parameterIds: ['displayName', 'objectType', 'tags', 'location'] },
-  { label: 'User', parameterIds: ['dateActive', 'dateCreated'] },
-];
-
-/** Page-level actions shown in the heading's overflow menu. */
-const PAGE_ACTIONS_MENU_ITEMS: MenuEntry[] = [
-  { kind: 'item', label: 'Export CSV', icon: 'Export' },
-  { kind: 'divider' },
-  { kind: 'item', label: 'Customize', icon: 'Pencil' },
-  { kind: 'item', label: 'Add page to favorites', icon: 'Star' },
-];
-
-/** Items-per-page choices offered below the users table. */
-const PAGE_SIZE_OPTIONS = [10, 20, 30, 40, 50];
-
-const ADD_USER_MENU_ITEMS: MenuEntry[] = [
-  { kind: 'item', label: 'User', icon: 'User' },
-  { kind: 'item', label: 'Group', icon: 'UsersThree' },
-  { kind: 'divider' },
-  { kind: 'item', label: 'Computer', icon: 'Devices' },
-  { kind: 'divider' },
-  { kind: 'item', label: 'Organizational Unit', icon: 'FolderPlus' },
-  { kind: 'item', label: 'Shared Folder', icon: 'Folders' },
-  { kind: 'divider' },
-  { kind: 'item', label: 'Contact', icon: 'AddressBook' },
-  { kind: 'item', label: 'Group Management Service Account', icon: 'UserCircle' },
-];
+/** Icon of each Create menu entry, by label. */
+const CREATE_ICONS = new Map(
+  CREATE_MENU.flatMap((row) => (row === 'divider' || !row.icon ? [] : [[row.label, row.icon] as const])),
+);
 
 /**
- * UsersPage — the Directory Management → Users listing view.
+ * UsersPage — Directory Management, Flat view: the Users list
+ * (ARS_Flat View_User_Content) inside the shell's directory layout.
  */
 export function UsersPage() {
   const { users } = useUsers();
   const { setAiOpen, setAiContext } = useAppShell();
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[1]);
-  const [selected, setSelected] = useState<Set<RowKey>>(() => new Set());
-  const { root, actions } = useFilterModel();
-  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
+  const [pageSize, setPageSize] = useState(15);
+  const [selected, setSelected] = useState<Set<string>>(() => new Set());
 
-  // Which user (if any) has a row-action modal open. `null` = closed.
+  // Which user (if any) a row-action modal is open for. `null` = closed.
   const [resetUser, setResetUser] = useState<User | null>(null);
   const [deleteUser, setDeleteUser] = useState<User | null>(null);
   // Which object type the Create flow is building. `null` = closed.
   const [createTarget, setCreateTarget] = useState<{ type: string; icon: string } | null>(null);
 
-  /* ---- ⌘⇧F / Ctrl+Shift+F opens the Add filter menu ---- */
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (
-        !e.repeat &&
-        (e.metaKey || e.ctrlKey) &&
-        e.shiftKey &&
-        e.key.toLowerCase() === 'f'
-      ) {
-        // Don't hijack the key while the user is typing in a field.
-        if (isTypingTarget(e.target)) return;
-        e.preventDefault();
-        setFilterMenuOpen(true);
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
-
-  const addFilter = (parameterId: string) => {
-    actions.addCondition(root.id, { parameterId });
-  };
-  const addAdvancedFilter = () => {
-    actions.addGroup(root.id);
-  };
-
-  // Create-menu entries wired to open the multi-step create modal, keyed off
-  // each item's label + icon.
-  const createMenuItems: MenuEntry[] = ADD_USER_MENU_ITEMS.map((entry) =>
-    entry.kind === 'item'
-      ? {
-          ...entry,
-          onSelect: () => setCreateTarget({ type: entry.label, icon: entry.icon ?? 'User' }),
-        }
-      : entry,
-  );
-
-  // Toolbar Filter menu (§3.6): Advanced filter + Display name / Object type /
-  // Location, and Dates as a grouped submenu.
-  const rootGroupCount = root.children.filter((c) => c.kind === 'group').length;
-  const filterMenuItems: MenuEntry[] = [
-    {
-      kind: 'item',
-      label: 'Advanced filter',
-      icon: 'FunnelSimple',
-      onSelect: addAdvancedFilter,
-      disabled: rootGroupCount >= 6,
-    },
-    { kind: 'divider' },
-    { kind: 'item', label: 'Display name', onSelect: () => addFilter('displayName') },
-    { kind: 'item', label: 'Object type', onSelect: () => addFilter('objectType') },
-    { kind: 'item', label: 'Location', onSelect: () => addFilter('location') },
-    {
-      kind: 'submenu',
-      label: 'Dates',
-      items: [
-        { kind: 'item', label: 'Date active', onSelect: () => addFilter('dateActive') },
-        { kind: 'item', label: 'Date created', onSelect: () => addFilter('dateCreated') },
-      ],
-    },
-  ];
+  const [rowUser, setRowUser] = useState<User | null>(null);
+  const rowMenu = useAnchoredMenu();
+  const filterMenu = useAnchoredMenu();
+  const createMenu = useAnchoredMenu();
+  const pageMenu = useAnchoredMenu();
 
   const rows = useMemo<User[]>(() => {
     const q = query.trim().toLowerCase();
     if (!q) return users;
     return users.filter((u) =>
-      [u.name, u.description, u.email, u.objectId].some((v) =>
-        v.toLowerCase().includes(q),
-      ),
+      [u.name, u.description, u.email, u.objectId].some((v) => v.toLowerCase().includes(q)),
     );
   }, [users, query]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
-  const pageRows = useMemo<User[]>(
+  const pageRows = useMemo(
     () => rows.slice((safePage - 1) * pageSize, safePage * pageSize),
     [rows, safePage, pageSize],
   );
 
-  // Changing the page size keeps the first currently-visible row in view so the
-  // user isn't thrown to an unrelated part of the list (and never stranded on a
-  // now-nonexistent page).
+  // Changing the page size keeps the first visible row in view.
   const handlePageSizeChange = (nextSize: number) => {
     const firstVisibleIndex = (safePage - 1) * pageSize;
     setPageSize(nextSize);
     setPage(Math.floor(firstVisibleIndex / nextSize) + 1);
   };
 
-  // Quick-action menu shown from each row's trailing "more" button. Reset
-  // password and Delete open their respective modals; the rest are PoC no-ops.
-  const rowMenuItems = (u: User): MenuEntry[] => [
-    { kind: 'item', label: 'Reset Password', icon: 'Password', onSelect: () => setResetUser(u) },
-    { kind: 'item', label: 'Copy', icon: 'Copy' },
-    { kind: 'item', label: 'Move', icon: 'Folder' },
-    { kind: 'item', label: 'Properties', icon: 'UserList' },
-    { kind: 'divider' },
-    { kind: 'item', label: 'Connections', icon: 'Plugs' },
-    { kind: 'item', label: 'Managed Units', icon: 'Cube' },
-    { kind: 'item', label: 'Memberships', icon: 'UsersThree' },
-    { kind: 'item', label: 'Roles', icon: 'IdentificationBadge' },
-    { kind: 'divider' },
-    { kind: 'item', label: 'Deprovision', icon: 'Prohibit', danger: true },
-    { kind: 'item', label: 'Deactivate', icon: 'XCircle', danger: true },
-    { kind: 'item', label: 'Delete', icon: 'Trash', danger: true, onSelect: () => setDeleteUser(u) },
-  ];
+  const onRowAction = (label: string) => {
+    if (!rowUser) return;
+    if (label === 'Reset Password') setResetUser(rowUser);
+    if (label === 'Delete') setDeleteUser(rowUser);
+  };
+
+  const onPageAction = (label: string) => {
+    if (label === 'Ask AI') setAiOpen(true);
+  };
+
+  const RowActions = rowUser?.location === 'Entra' ? ARSEntraUserActions : ARSADUserActions;
 
   return (
-    <AppShell
-      breadcrumb={[{ label: 'Directory Management' }, { label: 'Users' }]}
-    >
-      <ContentHeader
-        icon="Users"
-        title="Users"
-        actions={
-          <Menu
-            ariaLabel="Page actions"
-            align="end"
-            items={PAGE_ACTIONS_MENU_ITEMS}
-            trigger={({ ref, onClick, expanded }) => (
-              <Tooltip label="More options">
-                <IconButton
-                  ref={ref as React.Ref<HTMLButtonElement>}
-                  icon="DotsThree"
-                  ariaLabel="Page actions"
-                  aria-haspopup="menu"
-                  aria-expanded={expanded}
-                  onClick={onClick}
-                />
-              </Tooltip>
-            )}
-          />
-        }
-        search={
-          <TextInput
-            iconLead="MagnifyingGlass"
-            placeholder="Search by name, email, object ID etc."
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setPage(1);
-            }}
-            aria-label="Search users"
-          />
-        }
-        toolbarActions={
-          <ListToolbarActions
-            filterMenuItems={filterMenuItems}
-            filterMenuOpen={filterMenuOpen}
-            onFilterOpenChange={setFilterMenuOpen}
-            createMenuItems={createMenuItems}
-            filterActive={root.children.length > 0}
-          />
-        }
-        filters={
-          root.children.length > 0 ? (
-            <FilterBar
-              root={root}
-              parameters={PARAMETERS}
-              categories={PARAM_CATEGORIES}
-              actions={actions}
-              addMenuItems={filterMenuItems}
-            />
-          ) : undefined
-        }
+    <AppShell breadcrumb={[{ label: 'Directory Management' }, { label: 'Users' }]}>
+      <ARSFlatViewUserContent
+        className={screen.screen}
+        header={{ title: 'Users', icon: 'Users', onMore: pageMenu.openAt }}
+        toolbar={{
+          variant: 'Basic',
+          search: query,
+          onSearchChange: (value) => {
+            setQuery(value);
+            setPage(1);
+          },
+          onFilter: filterMenu.openAt,
+          actionLabel: 'Create',
+          onAction: createMenu.openAt,
+        }}
+        table={{
+          rows: pageRows.map((u) => ({
+            id: u.id,
+            name: u.name,
+            href: `#/users/${u.id}`,
+            status: u.status,
+            statusTone: statusTone(u.status),
+            description: u.description,
+            tags: u.tags,
+            location: u.location,
+            onMore: (e) => {
+              setRowUser(u);
+              rowMenu.openAt(e);
+            },
+          })),
+          selected,
+          onSelectionChange: setSelected,
+          page: safePage,
+          pageCount,
+          onPageChange: setPage,
+          pageSize,
+          pageSizeOptions: PAGE_SIZE_OPTIONS,
+          onPageSizeChange: handlePageSizeChange,
+        }}
       />
 
-      <div className={styles.tableWrap}>
-        <DataTable
-          rows={pageRows}
-          columns={COLUMNS}
-          ariaLabel="Users"
-          selected={selected}
-          onSelectionChange={setSelected}
-          rowLabel={(u) => u.name}
-          rowActions={(u) => (
-            <Menu
-              ariaLabel={`Actions for ${u.name}`}
-              align="end"
-              items={rowMenuItems(u)}
-              trigger={({ ref, onClick, expanded }) => (
-                <IconButton
-                  ref={ref as React.Ref<HTMLButtonElement>}
-                  icon="DotsThree"
-                  ariaLabel={`Actions for ${u.name}`}
-                  size="s"
-                  aria-haspopup="menu"
-                  aria-expanded={expanded}
-                  onClick={onClick}
-                />
-              )}
-            />
-          )}
-          emptyState={
-            query
-              ? {
-                  title: 'No matching users',
-                  description: `No users match “${query}”.`,
-                  actionLabel: 'Clear search',
-                  onAction: () => {
-                    setQuery('');
-                    setPage(1);
-                  },
-                }
-              : { title: 'No users yet', description: 'Add your first user to get started.' }
-          }
-        />
-      </div>
-
-      {pageCount > 1 && (
-        <div className={styles.pagination}>
-          <Pagination
-            page={safePage}
-            pageCount={pageCount}
-            onPageChange={setPage}
-            pageSize={pageSize}
-            pageSizeOptions={PAGE_SIZE_OPTIONS}
-            onPageSizeChange={handlePageSizeChange}
-            ariaLabel="Users pages"
-          />
-        </div>
-      )}
+      <RowActions {...rowMenu.menuProps} ariaLabel={`Actions for ${rowUser?.name ?? 'user'}`} onAction={onRowAction} />
+      <ARSFilterMenu {...filterMenu.menuProps} />
+      <ARSPageMenu {...pageMenu.menuProps} onAction={onPageAction} />
+      <ARSCreateMenu
+        {...createMenu.menuProps}
+        onAction={(label) => setCreateTarget({ type: label, icon: CREATE_ICONS.get(label) ?? 'User' })}
+      />
 
       <ActionBar
         open={selected.size > 0}
@@ -526,12 +197,8 @@ export function UsersPage() {
         ]}
       />
 
-      {resetUser && (
-        <ResetPasswordModal open onClose={() => setResetUser(null)} user={resetUser} />
-      )}
-      {deleteUser && (
-        <DeleteUserModal open onClose={() => setDeleteUser(null)} user={deleteUser} />
-      )}
+      {resetUser && <ResetPasswordModal open onClose={() => setResetUser(null)} user={resetUser} />}
+      {deleteUser && <DeleteUserModal open onClose={() => setDeleteUser(null)} user={deleteUser} />}
       {createTarget && (
         <CreateObjectModal
           open

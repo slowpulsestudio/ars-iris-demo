@@ -1,3 +1,4 @@
+import type { MouseEventHandler } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Button } from '@iris/components/Button/Button.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
@@ -21,12 +22,12 @@ export interface ARSTableToolbarProps {
   search?: string;
   onSearchChange?: (value: string) => void;
   searchPlaceholder?: string;
-  onFilter?: () => void;
+  onFilter?: MouseEventHandler<HTMLElement>;
   /** Main action label; defaults to the Figma text for the variant. */
   actionLabel?: string;
-  onAction?: () => void;
+  onAction?: MouseEventHandler<HTMLElement>;
   /** Split variants: the caret beside the main action. */
-  onActionMenu?: () => void;
+  onActionMenu?: MouseEventHandler<HTMLElement>;
   className?: string;
 }
 

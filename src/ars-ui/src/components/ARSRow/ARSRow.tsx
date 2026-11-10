@@ -1,3 +1,4 @@
+import type { MouseEventHandler } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Badge, type BadgeTone } from '@iris/components/Badge/Badge.js';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
@@ -27,7 +28,7 @@ export interface ARSRowProps {
   selected?: boolean;
   onSelectedChange?: (selected: boolean) => void;
   onOpen?: () => void;
-  onMore?: () => void;
+  onMore?: MouseEventHandler<HTMLElement>;
   onRemoveTag?: (tag: string) => void;
   className?: string;
 }
