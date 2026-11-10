@@ -1,0 +1,54 @@
+/* Iris UI Kit "Spinner" (Component / Spinner, 4899:10051). */
+.spinner {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.size_s {
+  width: var(--oi-size-xs);
+  height: var(--oi-size-xs);
+}
+
+.size_default {
+  width: var(--oi-size-s);
+  height: var(--oi-size-s);
+}
+
+.size_l {
+  width: var(--oi-size-l);
+  height: var(--oi-size-l);
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+}
+
+.track {
+  stroke: var(--oi-background-color-info);
+}
+
+.arc {
+  stroke: var(--oi-color-blue-400);
+  transition: stroke-dasharray var(--oi-motion-duration-default) var(--oi-motion-ease-default);
+}
+
+.loop .svg {
+  animation: oi-spinner-turn var(--oi-motion-duration-loop) var(--oi-motion-ease-linear) infinite;
+}
+
+@keyframes oi-spinner-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Reduced motion: keep the loading cue, but turn slowly. */
+@media (prefers-reduced-motion: reduce) {
+  .loop .svg {
+    animation-duration: calc(var(--oi-motion-duration-loop) * 3);
+  }
+  .arc {
+    transition: none;
+  }
+}
