@@ -6,17 +6,18 @@ import styles from './Banner.module.css';
 
 export type BannerTone = 'info' | 'warning' | 'error' | 'success';
 
-// As in the UI Kit: Warning uses WarningCircle and Error uses Warning.
 const TONE_ICONS: Record<BannerTone, string> = {
   info: 'Info',
-  warning: 'WarningCircle',
-  error: 'Warning',
+  warning: 'Warning',
+  error: 'WarningCircle',
   success: 'CheckCircle',
 };
 
 export interface BannerProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   /** Iris UI Kit "Type". */
   tone?: BannerTone;
+  /** Featured icon name; defaults to the tone's icon. */
+  icon?: string;
   /** Iris UI Kit "Colored": tinted surface instead of the plain one. */
   colored?: boolean;
   title: ReactNode;
@@ -35,6 +36,7 @@ export interface BannerProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title
  */
 export function Banner({
   tone = 'info',
+  icon,
   colored = false,
   title,
   children,
@@ -51,7 +53,7 @@ export function Banner({
       {...rest}
     >
       <span className={styles.icon} aria-hidden="true">
-        <Icon name={TONE_ICONS[tone]} size="24px" />
+        <Icon name={icon ?? TONE_ICONS[tone]} size="24px" />
       </span>
       <div className={styles.content}>
         <div className={styles.text}>

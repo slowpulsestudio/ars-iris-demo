@@ -1,4 +1,13 @@
-import { useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type LiHTMLAttributes,
+  type MouseEvent,
+  type ReactNode,
+} from 'react';
 import { cx } from '../../lib/cx.js';
 import { Checkbox } from '../Checkbox/Checkbox.js';
 import { Icon } from '../Icon/Icon.js';
@@ -7,12 +16,15 @@ import styles from './Tree.module.css';
 export interface TreeNode {
   id: string;
   label: string;
-  /** Leading icon name; defaults to Folder / FolderOpen. Pass null for none. */
-  icon?: string | null;
+  /** Leading icon name. */
+  icon?: string;
+  /** Leading icon while expanded, e.g. an open folder. */
   openIcon?: string;
   children?: TreeNode[];
-  /** UI Kit "Trailing Icons" (e.g. more / caret); shown on hover, focus and selection. */
+  /** UI Kit "Trailing Icons"; shown on hover, focus and selection. */
   trailing?: ReactNode;
+  /** Draws a divider row above this node. */
+  separatorBefore?: boolean;
 }
 
 export interface TreeProps {
@@ -27,6 +39,10 @@ export interface TreeProps {
   /** UI Kit "Checkbox=ON" leading icon. */
   checkedIds?: ReadonlySet<string>;
   onCheckedChange?: (id: string, checked: boolean) => void;
+  onContextMenu?: (id: string, event: MouseEvent<HTMLElement>) => void;
+  /** Enables drag and drop: dropping a row onto another calls onMove. */
+  onMove?: (id: string, targetId: string) => void;
+  canMove?: (id: string, targetId: string) => boolean;
   className?: string;
 }
 
@@ -56,8 +72,8 @@ function flatten(nodes: TreeNode[], expanded: ReadonlySet<string>): Row[] {
 
 /**
  * Tree — hierarchical list matching the Iris UI Kit "Tree" (Component / Tree):
- * 24px rows with trail lines, caret, optional checkbox and folder icon, text
- * and trailing icons. Keyboard support follows the WAI-ARIA tree pattern.
+ * 24px rows with trail lines, caret, optional checkbox and icon, text and
+ * trailing icons. Keyboard support follows the WAI-ARIA tree pattern.
  */
 export function Tree({
   nodes,
@@ -69,12 +85,17 @@ export function Tree({
   onExpandedChange,
   checkedIds,
   onCheckedChange,
+  onContextMenu,
+  onMove,
+  canMove,
   className,
 }: TreeProps) {
   const [ownExpanded, setOwnExpanded] = useState<ReadonlySet<string>>(() => new Set(defaultExpandedIds));
   const expanded = expandedIds ?? ownExpanded;
   const rows = useMemo(() => flatten(nodes, expanded), [nodes, expanded]);
   const [focusedId, setFocusedId] = useState<string | null>(null);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [dropTargetId, setDropTargetId] = useState<string | null>(null);
   const rowRefs = useRef(new Map<string, HTMLLIElement>());
 
   const tabStopId =
@@ -97,6 +118,11 @@ export function Tree({
   const focusRow = (id: string) => {
     setFocusedId(id);
     rowRefs.current.get(id)?.focus();
+  };
+
+  const endDrag = () => {
+    setDraggingId(null);
+    setDropTargetId(null);
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLLIElement>, index: number) => {
@@ -142,16 +168,20 @@ export function Tree({
 
   return (
     <ul role="tree" aria-label={ariaLabel} className={cx(styles.tree, className)}>
-      {rows.map((row, index) => {
+      {rows.flatMap((row, index) => {
         const { node, level } = row;
         const hasChildren = !!node.children?.length;
         const isOpen = hasChildren && expanded.has(node.id);
         const isSelected = node.id === selectedId;
-        const icon = node.icon === null ? null : isOpen ? (node.openIcon ?? 'FolderOpen') : (node.icon ?? 'Folder');
-        return (
-          <li
+        const icon = isOpen ? (node.openIcon ?? node.icon) : node.icon;
+        return [
+          node.separatorBefore && (
+            <li key={`${node.id}-separator`} role="separator" className={styles.separator} />
+          ),
+          <TreeRow
             key={node.id}
-            ref={(el) => {
+            selected={isSelected}
+            rowRef={(el) => {
               if (el) rowRefs.current.set(node.id, el);
               else rowRefs.current.delete(node.id);
             }}
@@ -161,12 +191,51 @@ export function Tree({
             aria-selected={isSelected}
             aria-checked={onCheckedChange ? (checkedIds?.has(node.id) ?? false) : undefined}
             tabIndex={node.id === tabStopId ? 0 : -1}
-            className={cx(styles.row, isSelected && styles.selected)}
+            className={cx(
+              styles.row,
+              isSelected && styles.selected,
+              node.id === draggingId && styles.dragging,
+              node.id === dropTargetId && styles.dropTarget,
+            )}
             onClick={() => {
               setFocusedId(node.id);
               onSelect?.(node.id);
             }}
             onKeyDown={(e) => onKeyDown(e, index)}
+            onContextMenu={onContextMenu && ((e) => onContextMenu(node.id, e))}
+            draggable={!!onMove}
+            onDragStart={
+              onMove &&
+              ((e) => {
+                e.dataTransfer.setData('text/plain', node.id);
+                e.dataTransfer.effectAllowed = 'move';
+                setDraggingId(node.id);
+              })
+            }
+            onDragEnd={onMove && endDrag}
+            onDragOver={
+              onMove &&
+              ((e) => {
+                if (!draggingId) return;
+                if (draggingId === node.id || canMove?.(draggingId, node.id) === false) {
+                  e.dataTransfer.dropEffect = 'none';
+                  if (dropTargetId === node.id) setDropTargetId(null);
+                  return;
+                }
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                if (dropTargetId !== node.id) setDropTargetId(node.id);
+              })
+            }
+            onDrop={
+              onMove &&
+              ((e) => {
+                e.preventDefault();
+                const sourceId = draggingId ?? e.dataTransfer.getData('text/plain');
+                if (sourceId && sourceId !== node.id) onMove(sourceId, node.id);
+                endDrag();
+              })
+            }
           >
             {level > 0 && (
               <span className={styles.trailZone} aria-hidden="true">
@@ -198,15 +267,39 @@ export function Tree({
                   />
                 </span>
               )}
-              {icon && <Icon name={icon} size="16px" className={styles.icon} />}
+              {icon && <Icon name={icon} size="16px" />}
             </span>
             <span className={styles.text} title={node.label}>
               {node.label}
             </span>
             {node.trailing && <span className={styles.trailing}>{node.trailing}</span>}
-          </li>
-        );
+          </TreeRow>,
+        ];
       })}
     </ul>
+  );
+}
+
+interface TreeRowProps extends LiHTMLAttributes<HTMLLIElement> {
+  selected: boolean;
+  rowRef: (el: HTMLLIElement | null) => void;
+}
+
+function TreeRow({ selected, rowRef, ...rest }: TreeRowProps) {
+  const ref = useRef<HTMLLIElement | null>(null);
+
+  // Reveal the selected row, including on deep-link arrival once its ancestors expand.
+  useEffect(() => {
+    if (selected) ref.current?.scrollIntoView({ block: 'nearest' });
+  }, [selected]);
+
+  return (
+    <li
+      ref={(el) => {
+        ref.current = el;
+        rowRef(el);
+      }}
+      {...rest}
+    />
   );
 }

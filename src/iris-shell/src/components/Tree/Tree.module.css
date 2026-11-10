@@ -33,6 +33,32 @@
   outline-offset: -1.5px;
 }
 
+.dragging {
+  opacity: 0.5;
+}
+
+.dropTarget {
+  background-color: var(--oi-button-background-secondary-hover);
+  outline: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-focus);
+  outline-offset: calc(-1 * var(--oi-border-width-default));
+}
+
+/* Divider row: 24px with a centred line. */
+.separator {
+  position: relative;
+  flex-shrink: 0;
+  height: var(--oi-size-s);
+}
+
+.separator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+}
+
 /* Active indicator: 2px brand line just outside the row's right edge. */
 .selected::after {
   content: '';
@@ -59,33 +85,29 @@
   width: var(--oi-size-xs);
 }
 
+/* Vertical line, running 4px past the row's top and bottom. */
 .trailLine::before,
-.trailTee::before,
-.trailEnd::before {
+.trailTee::before {
   content: '';
   position: absolute;
-  top: 0;
+  top: calc(-1 * var(--oi-spacing-xs));
+  bottom: calc(-1 * var(--oi-spacing-xs));
   left: 50%;
   border-left: var(--oi-border-width-default) solid var(--oi-border-color-muted);
 }
 
-.trailLine::before,
-.trailTee::before {
-  bottom: 0;
-}
-
-.trailEnd::before {
-  bottom: 50%;
-}
-
+/* Branch: from 4px above the row, curving into the row's centre line. */
 .trailTee::after,
 .trailEnd::after {
   content: '';
   position: absolute;
-  top: 50%;
+  top: calc(-1 * var(--oi-spacing-xs));
   left: 50%;
   right: 0;
-  border-top: var(--oi-border-width-default) solid var(--oi-border-color-muted);
+  height: calc(50% + var(--oi-spacing-xs));
+  border-left: var(--oi-border-width-default) solid var(--oi-border-color-muted);
+  border-bottom: var(--oi-border-width-default) solid var(--oi-border-color-muted);
+  border-bottom-left-radius: var(--oi-border-radius-l);
 }
 
 /* .Tree-Leading Icons */
@@ -106,7 +128,7 @@
   height: var(--oi-size-s);
 }
 
-/* .Tree-Text Zone */
+/* .Tree-Text Zone: the label fades out over the right 36.875% (no ellipsis). */
 .text {
   flex: 1 1 0;
   min-width: 0;
@@ -116,7 +138,7 @@
   line-height: var(--oi-text-caption-line-height);
   color: var(--oi-content-color-primary);
   white-space: nowrap;
-  text-overflow: ellipsis;
+  mask-image: linear-gradient(to left, transparent, #000 36.875%);
 }
 
 .selected .text {

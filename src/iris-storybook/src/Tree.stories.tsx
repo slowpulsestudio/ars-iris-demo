@@ -10,18 +10,28 @@ const trailing = (
   </>
 );
 
-const leaf = (id: string, label: string): TreeNode => ({ id, label, children: [{ id: `${id}-x`, label: 'Placeholder', trailing }], trailing });
+const folder = { icon: 'Folder', openIcon: 'FolderOpen' };
+
+const leaf = (id: string, label: string): TreeNode => ({
+  id,
+  label,
+  ...folder,
+  children: [{ id: `${id}-x`, label: 'Placeholder', ...folder, trailing }],
+  trailing,
+});
 
 // Content of the UI Kit "Tree" example.
 const NODES: TreeNode[] = [
   {
     id: 'ad',
     label: 'Active Directory',
+    ...folder,
     trailing,
     children: [
       {
         id: 'o1d',
         label: 'O1D.local',
+        ...folder,
         trailing,
         children: [
           leaf('builtin', 'Builtin'),
@@ -33,7 +43,7 @@ const NODES: TreeNode[] = [
           leaf('msa', 'Managed Service Accounts'),
           leaf('program-data', 'Program Data'),
           leaf('system', 'System'),
-          { id: 'test-ou', label: 'Test OU', trailing, children: [leaf('users', 'Users')] },
+          { id: 'test-ou', label: 'Test OU', ...folder, trailing, children: [leaf('users', 'Users')] },
         ],
       },
     ],
@@ -47,7 +57,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Hierarchical list (Iris UI Kit "Tree"): trail lines, caret, optional checkbox, folder icon, text and trailing icons. Arrow keys move and expand, Enter selects. Iris code: src/iris-shell/src/components/Tree.',
+          'Hierarchical list (Iris UI Kit "Tree"): trail lines, caret, optional checkbox, icon, text and trailing icons. Labels and icons are content. Arrow keys move and expand, Enter selects. Iris code: src/iris-shell/src/components/Tree.',
       },
     },
   },

@@ -22,6 +22,8 @@ export interface ToastProps {
   onDismiss: () => void;
   /** Iris UI Kit "Type". */
   tone?: ToastTone;
+  /** Featured icon name; defaults to the tone's icon. */
+  icon?: string;
   supportingText?: string;
   /** Up to one action, e.g. a small secondary Button (UI Kit "Actions"). */
   actions?: ReactNode;
@@ -46,6 +48,7 @@ export function Toast({
   message,
   onDismiss,
   tone = 'success',
+  icon,
   supportingText,
   actions,
   durationMs = 5000,
@@ -136,7 +139,7 @@ export function Toast({
       }}
     >
       <span className={styles.icon} aria-hidden="true">
-        <Icon name={TONE_ICONS[tone]} size="20px" />
+        <Icon name={icon ?? TONE_ICONS[tone]} size="20px" />
       </span>
       <div className={styles.content}>
         <div className={styles.text}>
