@@ -456,3 +456,16 @@ export function updateObject(nodeId: string, objectId: string, next: DirectoryOb
   listeners.forEach((l) => l());
   return true;
 }
+
+/** Remove a deleted leaf object and notify subscribers. */
+export function removeObject(nodeId: string, objectId: string): boolean {
+  const node = nodeById.get(nodeId);
+  if (!node) return false;
+  const leaves = getLeaves(node);
+  const i = leaves.findIndex((o) => o.id === objectId);
+  if (i < 0) return false;
+  leaves.splice(i, 1);
+  treeVersion += 1;
+  listeners.forEach((l) => l());
+  return true;
+}

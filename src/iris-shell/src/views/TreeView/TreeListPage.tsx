@@ -18,8 +18,8 @@ import { useFavorites } from '../../lib/useFavorites.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { Button } from '../../components/Button/Button.js';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
-import { ResetPasswordModal } from '../UserDetailPage/ResetPasswordModal/ResetPasswordModal.js';
-import { DeleteUserModal } from '../UserDetailPage/DeleteUserModal/DeleteUserModal.js';
+import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
+import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { CreateObjectModal, type CreateObjectResult } from '../UsersPage/CreateObjectModal/CreateObjectModal.js';
 import {
   announceCreated,
@@ -50,7 +50,7 @@ export interface TreeListPageProps {
  * (Tree_View_AD_Content) inside the shell's directory layout.
  */
 export function TreeListPage({ nodeId }: TreeListPageProps) {
-  const { isContainer, getChildren, getPath, getNodeName, getNodeIcon, addObject } = useDirectory();
+  const { isContainer, getChildren, getPath, getNodeName, getNodeIcon, addObject, removeObject } = useDirectory();
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
 
   const [query, setQuery] = useState('');
@@ -262,10 +262,29 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
       />
 
       {resetTarget && (
-        <ResetPasswordModal open onClose={() => setResetTarget(null)} user={{ name: resetTarget.name }} />
+        <ResetPasswordModal
+          open
+          onClose={() => setResetTarget(null)}
+          user={{ name: resetTarget.details.displayName || resetTarget.name }}
+          location={nodeName ?? 'Directory'}
+        />
       )}
       {deleteTarget && (
-        <DeleteUserModal open onClose={() => setDeleteTarget(null)} user={{ name: deleteTarget.name }} />
+        <DeleteObjectModal
+          open
+          onClose={() => setDeleteTarget(null)}
+          objectClass={OBJECT_TYPE_META[deleteTarget.type].label}
+          name={deleteTarget.name}
+          location={nodeName ?? 'Directory'}
+          onDeleted={() => {
+            removeObject(nodeId, deleteTarget.id);
+            setSelected((s) => {
+              const next = new Set(s);
+              next.delete(deleteTarget.id);
+              return next;
+            });
+          }}
+        />
       )}
       {createTarget && (
         <CreateObjectModal

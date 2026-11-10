@@ -102,9 +102,21 @@ function parseHash(hash: string | null | undefined): Route {
 export function navigate(path: string): void {
   if (typeof window === 'undefined') return;
   if (window.location.hash === path) return;
+  if (guard && !guard(path)) return;
   window.location.hash = path;
   // Always scroll to top on route change for a real-page-navigation feel.
   window.scrollTo(0, 0);
+}
+
+let guard: ((path: string) => boolean) | null = null;
+
+/**
+ * Lets a page hold back `navigate()` (e.g. a form with unsaved changes): the
+ * guard returns false to block, and the page can call `navigate()` again once
+ * it has cleared its guard. Links that only set the hash are not guarded.
+ */
+export function setNavigationGuard(next: ((path: string) => boolean) | null): void {
+  guard = next;
 }
 
 /**

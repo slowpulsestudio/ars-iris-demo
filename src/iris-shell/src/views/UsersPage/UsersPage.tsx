@@ -14,8 +14,8 @@ import { useUsers } from '../../lib/usersStore.js';
 import { useAppShell } from '../../lib/appShellContext.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import type { BadgeTone } from '../../components/Badge/Badge.js';
-import { ResetPasswordModal } from '../UserDetailPage/ResetPasswordModal/ResetPasswordModal.js';
-import { DeleteUserModal } from '../UserDetailPage/DeleteUserModal/DeleteUserModal.js';
+import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
+import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { CreateObjectModal, type CreateObjectResult } from './CreateObjectModal/CreateObjectModal.js';
 import {
   announceCreated,
@@ -23,7 +23,7 @@ import {
   objectTypeFromMenuLabel,
   userFromValues,
 } from './CreateObjectModal/createdObject.js';
-import type { User } from './mockUsers.js';
+import { directoryOf, type User } from './mockUsers.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 
 /** Badge tone for a status string; unknown statuses stay neutral. */
@@ -55,7 +55,7 @@ const CREATE_ICONS = new Map(
  * (ARS_Flat View_User_Content) inside the shell's directory layout.
  */
 export function UsersPage() {
-  const { users, addUser } = useUsers();
+  const { users, addUser, removeUser } = useUsers();
   const { setAiOpen, setAiContext } = useAppShell();
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
@@ -206,8 +206,32 @@ export function UsersPage() {
         }}
       />
 
-      {resetUser && <ResetPasswordModal open onClose={() => setResetUser(null)} user={resetUser} />}
-      {deleteUser && <DeleteUserModal open onClose={() => setDeleteUser(null)} user={deleteUser} />}
+      {resetUser && (
+        <ResetPasswordModal
+          open
+          onClose={() => setResetUser(null)}
+          user={{ name: resetUser.details.displayName }}
+          location={directoryOf(resetUser).slice(1)}
+          entra={resetUser.location === 'Entra'}
+        />
+      )}
+      {deleteUser && (
+        <DeleteObjectModal
+          open
+          onClose={() => setDeleteUser(null)}
+          objectClass="User"
+          name={deleteUser.details.displayName}
+          location={directoryOf(deleteUser).slice(1)}
+          onDeleted={() => {
+            removeUser(deleteUser.id);
+            setSelected((s) => {
+              const next = new Set(s);
+              next.delete(deleteUser.id);
+              return next;
+            });
+          }}
+        />
+      )}
       {createTarget && (
         <CreateObjectModal
           open

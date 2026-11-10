@@ -15,8 +15,8 @@ import { Link, type LinkTone } from '../../components/Link/Link.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { Menu } from '../../components/Menu/Menu.js';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
-import { ResetPasswordModal } from '../UserDetailPage/ResetPasswordModal/ResetPasswordModal.js';
-import { DeleteUserModal } from '../UserDetailPage/DeleteUserModal/DeleteUserModal.js';
+import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
+import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { tabsForType, PRIMARY_TAB } from './detailTabs.js';
 import { UserObjectPage, type UserObjectData } from '../ObjectPage/UserObjectPage.js';
 import styles from './TreeView.module.css';
@@ -63,7 +63,7 @@ export interface TreeDetailPageProps {
  * scaffold with a type-driven tab set + an Object Management side panel.
  */
 export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
-  const { getObject, getSiblings, getPath, getNodeName, updateObject } = useDirectory();
+  const { getObject, getSiblings, getPath, getNodeName, updateObject, removeObject } = useDirectory();
   const object = getObject(nodeId, objectId);
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
 
@@ -157,6 +157,10 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
           })
         }
         onBack={() => navigate(`#/tree/${nodeId}`)}
+        onDeleted={() => {
+          navigate(`#/tree/${nodeId}`);
+          removeObject(nodeId, object.id);
+        }}
         onPrevious={prev ? () => navigate(`#/tree/${nodeId}/${prev.id}`) : undefined}
         onNext={next ? () => navigate(`#/tree/${nodeId}/${next.id}`) : undefined}
         isFavorite={isFavorite(object.id)}
@@ -260,10 +264,25 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
       </div>
 
       {resetOpen && (
-        <ResetPasswordModal open onClose={() => setResetOpen(false)} user={{ name: object.name }} />
+        <ResetPasswordModal
+          open
+          onClose={() => setResetOpen(false)}
+          user={{ name: object.name }}
+          location={pathTail}
+        />
       )}
       {deleteOpen && (
-        <DeleteUserModal open onClose={() => setDeleteOpen(false)} user={{ name: object.name }} />
+        <DeleteObjectModal
+          open
+          onClose={() => setDeleteOpen(false)}
+          objectClass={meta.label}
+          name={object.name}
+          location={pathTail}
+          onDeleted={() => {
+            navigate(`#/tree/${nodeId}`);
+            removeObject(nodeId, object.id);
+          }}
+        />
       )}
     </AppShell>
   );

@@ -13,6 +13,7 @@ import {
   getTreeVersion,
   isContainerNode,
   moveNode,
+  removeObject,
   subscribeDirectory,
   updateObject,
   type DirectoryNodeView,
@@ -52,6 +53,8 @@ export interface DirectoryContextValue {
   addObject: (nodeId: string, object: DirectoryObject) => boolean;
   /** Replace an object with its edited copy. */
   updateObject: (nodeId: string, objectId: string, next: DirectoryObject) => boolean;
+  /** Remove a deleted object. */
+  removeObject: (nodeId: string, objectId: string) => boolean;
 }
 
 const DirectoryContext = createContext<DirectoryContextValue | null>(null);
@@ -73,6 +76,7 @@ export function DirectoryProvider({ children }: { children: ReactNode }) {
       canMoveNode,
       addObject,
       updateObject,
+      removeObject,
     }),
     [version],
   );

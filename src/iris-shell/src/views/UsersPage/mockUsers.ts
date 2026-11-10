@@ -240,6 +240,11 @@ export const MOCK_USERS: User[] = withListFields([
 ]);
 
 /** Lookup helpers. */
+
+/** The directory a user is in, shown after the "@" in the user principal name. */
+export function directoryOf(user: User): string {
+  return user.details.directory ?? (user.location === 'Entra' ? '@Entra1' : '@O1D.Local');
+}
 export function getUserById(id: string): User | null {
   return MOCK_USERS.find((u) => u.id === id) ?? null;
 }

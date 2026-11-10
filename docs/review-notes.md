@@ -36,7 +36,15 @@ Decisions and gaps from building the ARS_WebUI2_CRUD screens ([Figma](https://ww
 - [ ] Tree objects that aren't users (groups, computers, contacts, OUs) still use the old detail page. The CRUD file only draws users.
 - [ ] The Directory dropdown only offers `@Entra1` and `@O1D.Local`.
 
-## Flow 4: delete, password reset, unsaved changes (not built yet)
+## Flow 4: delete, password reset, unsaved changes
 
-- [ ] The old delete, reset-password and unsaved-changes screens are still the Iris versions. The frames to build are `ARS_Delete` ([1755:15058](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1755-15058)), the AD and Entra password reset modals ([3269:35695](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3269-35695), [3269:36076](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3269-36076)) and the unsaved-changes modal and toast ([3534:19369](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3534-19369), [3534:19514](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3534-19514)).
-- [ ] `ARS_CRUD_Delete`, `ARS_CRUD_Delete_Success` and `ARS_Modal_Form_Unsaved` exist only in the CRUD file. They will be added under "Missing from Figma" and the Components to review page when built.
+- [ ] **Delete modal** ([ARS_Delete 1755:15058](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1755-15058)) is new in the kit and listed under "Missing from Figma" and on the Components to review page. The name must be typed to enable "Delete user". Figma draws that button in the primary style, not the danger style, and the app follows Figma.
+- [ ] The wait steps ("Please wait...") last a fixed 1.2 seconds for delete and 1.5 seconds for reset, because there is no real work. Delete can't be closed while it waits.
+- [ ] Delete removes the object when you close the success step, then goes back to the list. Bulk delete from the action bar is still not built (Figma doesn't draw it).
+- [ ] The modal for objects other than users is titled with the object type (for example "Delete Computer"). Figma draws only the user.
+- [ ] **Password reset:** AD users get the form (password, confirm, account options), Reset password enables when both match, then Please wait and the result ([3269:35695](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3269-35695)). Entra users go straight to a generated temporary password ([3269:36076](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3269-36076)).
+- [ ] A user counts as Entra when its Location is `Entra` (Flat view) or its directory is `@Entra1` (user page). The account options are shown but have no effect.
+- [ ] **Unsaved changes** ([3534:19369](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3534-19369)) is new in the kit and listed under "Missing from Figma". It appears when you leave the Properties form with changes through Cancel, a tab, the header arrows and back button, J/K, the breadcrumb or the sidebar. It does not catch the browser's Back button or links that only change the address, such as names in the lists.
+- [ ] The text says "will be discard", as Figma does.
+- [ ] After a successful save, the toast ([3534:19514](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3534-19514)) says "Successfully updated User". Its View button has nothing else to open, because the object page is already showing.
+- [ ] The old Iris delete and reset-password modals are removed. The create flow, delete, reset and unsaved modals now share one scrim (`ModalOverlay`).

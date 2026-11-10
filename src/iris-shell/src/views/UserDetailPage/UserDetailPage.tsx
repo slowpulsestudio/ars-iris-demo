@@ -6,16 +6,11 @@ import { useFavorites } from '../../lib/useFavorites.js';
 import { isTypingTarget } from '../../lib/keyboard.js';
 import { Button } from '../../components/Button/Button.js';
 import { UserObjectPage, type UserObjectData } from '../ObjectPage/UserObjectPage.js';
-import type { User } from '../UsersPage/mockUsers.js';
+import { directoryOf, type User } from '../UsersPage/mockUsers.js';
 import styles from './UserDetailPage.module.css';
 
 export interface UserDetailPageProps {
   userId: string;
-}
-
-/** The directory a user is in, shown after the "@" in the user principal name. */
-function directoryOf(user: User): string {
-  return user.details.directory ?? (user.location === 'Entra' ? '@Entra1' : '@O1D.Local');
 }
 
 function toObjectData(user: User): UserObjectData {
@@ -43,7 +38,7 @@ function toObjectData(user: User): UserObjectData {
  * Falls back to a "not found" panel if the id can't be resolved.
  */
 export function UserDetailPage({ userId }: UserDetailPageProps) {
-  const { users, getUser, getUserIndex, updateUser } = useUsers();
+  const { users, getUser, getUserIndex, updateUser, removeUser } = useUsers();
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
   const user = getUser(userId);
 
@@ -124,6 +119,10 @@ export function UserDetailPage({ userId }: UserDetailPageProps) {
         })
       }
       onBack={() => navigate('#/users')}
+      onDeleted={() => {
+        navigate('#/users');
+        removeUser(user.id);
+      }}
       onPrevious={prevUser ? () => navigate(`#/users/${prevUser.id}`) : undefined}
       onNext={nextUser ? () => navigate(`#/users/${nextUser.id}`) : undefined}
       isFavorite={isFavorite(user.id)}

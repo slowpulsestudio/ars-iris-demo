@@ -11,14 +11,17 @@ import {
 } from '@ars';
 import { AppShell } from '../AppShell/AppShell.js';
 import { useAppShell } from '../../lib/appShellContext.js';
+import { navigate, setNavigationGuard } from '../../lib/router.js';
+import { showToast } from '../../lib/toastStore.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { Banner } from '../../components/Banner/Banner.js';
 import { Button } from '../../components/Button/Button.js';
 import { EmptyFigure } from '../../components/EmptyFigure/EmptyFigure.js';
 import { Dish } from '@lucasmarkes/hairline/react';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
-import { ResetPasswordModal } from '../UserDetailPage/ResetPasswordModal/ResetPasswordModal.js';
-import { DeleteUserModal } from '../UserDetailPage/DeleteUserModal/DeleteUserModal.js';
+import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
+import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
+import { UnsavedChangesModal } from '../ObjectModals/UnsavedChangesModal.js';
 import styles from './UserObjectPage.module.css';
 
 /** What the page shows and edits for a user, whichever store it comes from. */
@@ -113,6 +116,8 @@ export interface UserObjectPageProps {
   /** Whether another user already has this user principal name. */
   isLogonTaken: (login: string, directory: string) => boolean;
   onSave: (patch: UserObjectPatch) => void;
+  /** Called after the user is deleted and the delete modal is closed. */
+  onDeleted: () => void;
   onBack: () => void;
   onPrevious?: () => void;
   onNext?: () => void;
@@ -130,6 +135,7 @@ export function UserObjectPage({
   data,
   isLogonTaken,
   onSave,
+  onDeleted,
   onBack,
   onPrevious,
   onNext,
@@ -145,7 +151,36 @@ export function UserObjectPage({
   const [bannerOpen, setBannerOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  // What the Unsaved changes modal will do on Confirm; null = closed.
+  const [pendingLeave, setPendingLeave] = useState<{ run: () => void } | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
+
+  const dirty = editing && JSON.stringify(draft) !== JSON.stringify(toDraft(data));
+  const directoryName = data.directory.replace(/^@/, '');
+
+  // Leaving a form with changes asks first.
+  const leave = (action: () => void) => {
+    if (dirty) setPendingLeave({ run: action });
+    else action();
+  };
+
+  // Holds back navigation while there are unsaved changes.
+  useEffect(() => {
+    if (!dirty) return undefined;
+    setNavigationGuard((path) => {
+      setPendingLeave({ run: () => navigate(path) });
+      return false;
+    });
+    return () => setNavigationGuard(null);
+  }, [dirty]);
+
+  const confirmLeave = () => {
+    const next = pendingLeave;
+    setNavigationGuard(null);
+    setPendingLeave(null);
+    cancelEditing();
+    next?.run();
+  };
 
   // A different object starts from its own Overview.
   useEffect(() => {
@@ -206,6 +241,10 @@ export function UserObjectPage({
       directory: draft.directory,
     });
     cancelEditing();
+    showToast('Successfully updated User', {
+      supportingText: `Successfully updated properties for User ${draft.displayName.trim()}`,
+      viewHref: window.location.hash,
+    });
   };
 
   // View: take the user to the first field with an error.
@@ -287,7 +326,7 @@ export function UserObjectPage({
           rows={rows}
           fields={fields}
           onEdit={startEditing}
-          onCancel={cancelEditing}
+          onCancel={() => leave(cancelEditing)}
           onSave={save}
         />
       </div>
@@ -306,7 +345,7 @@ export function UserObjectPage({
         objectClass="User"
         objectName={data.location}
         tab={tab}
-        onTabChange={setTab}
+        onTabChange={(next) => leave(() => setTab(next))}
         actionGroups={USER_OBJECT_ACTIONS('Revoke sessions')}
         onBack={onBack}
         onNextItem={onNext}
@@ -325,8 +364,26 @@ export function UserObjectPage({
         }}
       />
 
-      {resetOpen && <ResetPasswordModal open onClose={() => setResetOpen(false)} user={{ name: data.name }} />}
-      {deleteOpen && <DeleteUserModal open onClose={() => setDeleteOpen(false)} user={{ name: data.name }} />}
+      <ResetPasswordModal
+        open={resetOpen}
+        onClose={() => setResetOpen(false)}
+        user={{ name: data.displayName }}
+        location={directoryName}
+        entra={data.directory === '@Entra1'}
+      />
+      <DeleteObjectModal
+        open={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        objectClass="User"
+        name={data.displayName}
+        location={directoryName}
+        onDeleted={onDeleted}
+      />
+      <UnsavedChangesModal
+        open={pendingLeave !== null}
+        onCancel={() => setPendingLeave(null)}
+        onConfirm={confirmLeave}
+      />
     </AppShell>
   );
 }

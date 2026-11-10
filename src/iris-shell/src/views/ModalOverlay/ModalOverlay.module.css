@@ -1,4 +1,4 @@
-/* The ARS_New_Object_Template panel sits in a scrim; the panel draws its own card. */
+/* The ARS modal panels sit in a scrim and draw their own card. */
 .scrim {
   position: fixed;
   inset: 0;
@@ -20,8 +20,7 @@
 .dialog {
   display: flex;
   flex-shrink: 0;
-  width: 100%;
-  max-width: 1186px;
+  max-width: 100%;
   margin: auto;
   opacity: 0;
   transform: translateY(8px) scale(0.96);
