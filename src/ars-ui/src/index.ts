@@ -60,6 +60,8 @@ export {
   type ARSFilterSelectProps,
 } from './components/ARSFilterSelect/ARSFilterSelect.js';
 export type { FormInputProps } from './parts/FormInput/FormInput.js';
+export { DetailsCard, type DetailsCardProps, type DetailsRow } from './parts/DetailsCard/DetailsCard.js';
+export type { PanelAction } from './parts/ActionPanel/ActionPanel.js';
 export {
   ARSUsersPropertiesCard,
   type ARSUsersPropertiesCardProps,
@@ -83,6 +85,7 @@ export { ARSPageActionPanel, type ARSPageActionPanelProps } from './components/A
 export { ARSSubTabsTemplate, type ARSSubTabsTemplateProps } from './components/ARSSubTabsTemplate/ARSSubTabsTemplate.js';
 export {
   ARSObjectContent,
+  USER_OBJECT_ACTIONS,
   type ARSObjectContentProps,
   type ARSObjectContentVariant,
 } from './components/ARSObjectContent/ARSObjectContent.js';
@@ -113,6 +116,8 @@ export {
 } from './components/ARSOwnership/ARSOwnership.js';
 export {
   ARSOverviewTemplate,
+  type ARSOverviewData,
+  type ARSOverviewField,
   type ARSOverviewTemplateProps,
   type ARSOverviewTemplateVariant,
 } from './components/ARSOverviewTemplate/ARSOverviewTemplate.js';

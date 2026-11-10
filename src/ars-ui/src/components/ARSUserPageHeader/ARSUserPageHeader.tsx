@@ -1,3 +1,4 @@
+import type { MouseEventHandler } from 'react';
 import { PageHeader } from '../../parts/PageHeader/PageHeader.js';
 
 export interface ARSUserPageHeaderProps {
@@ -7,7 +8,7 @@ export interface ARSUserPageHeaderProps {
   onBack?: () => void;
   onNextItem?: () => void;
   onPreviousItem?: () => void;
-  onMore?: () => void;
+  onMore?: MouseEventHandler<HTMLElement>;
   className?: string;
 }
 

@@ -6,12 +6,13 @@ import styles from './ARSOverviewTemplate.module.css';
 
 export type ARSOverviewTemplateVariant = 'User' | 'Group' | 'OU';
 
-interface Field {
+export interface ARSOverviewField {
   label: string;
   value: string;
 }
+type Field = ARSOverviewField;
 
-interface Overview {
+export interface ARSOverviewData {
   profile?: { name: string; email: string; badges: { label: string; tone: BadgeTone }[] };
   /** Each entry is one block between dividers; a block can hold fields side by side. */
   details?: Field[][];
@@ -22,7 +23,7 @@ interface Overview {
 
 const OBJECT_ID: Field = { label: 'Object ID', value: 'b8a5d3e9-7f2c-4b1a-9e6d-3c8f20a1b4c7' };
 
-const OVERVIEWS: Record<ARSOverviewTemplateVariant, Overview> = {
+const OVERVIEWS: Record<ARSOverviewTemplateVariant, ARSOverviewData> = {
   User: {
     profile: {
       name: 'Evelyn Park',
@@ -84,6 +85,8 @@ const OVERVIEWS: Record<ARSOverviewTemplateVariant, Overview> = {
 export interface ARSOverviewTemplateProps {
   /** Figma "Variant". */
   variant?: ARSOverviewTemplateVariant;
+  /** Replaces the sample content of the variant. */
+  data?: ARSOverviewData;
   className?: string;
 }
 
@@ -92,8 +95,8 @@ export interface ARSOverviewTemplateProps {
  * summary with key details, then count tiles ("Dashboard Widgets" frames in
  * the ARS file). Figma: 3353:38318.
  */
-export function ARSOverviewTemplate({ variant = 'User', className }: ARSOverviewTemplateProps) {
-  const { profile, details, stats, others } = OVERVIEWS[variant];
+export function ARSOverviewTemplate({ variant = 'User', data, className }: ARSOverviewTemplateProps) {
+  const { profile, details, stats, others } = data ?? OVERVIEWS[variant];
 
   return (
     <div className={cx(styles.root, className)}>

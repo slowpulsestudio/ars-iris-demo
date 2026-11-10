@@ -1,3 +1,4 @@
+import type { MouseEventHandler } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
 import { ObjectIcon } from '../ObjectIcon/ObjectIcon.js';
@@ -14,7 +15,7 @@ export interface PageHeaderProps {
   onBack?: () => void;
   onNextItem?: () => void;
   onPreviousItem?: () => void;
-  onMore?: () => void;
+  onMore?: MouseEventHandler<HTMLElement>;
   className?: string;
 }
 

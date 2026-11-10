@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { ActionPanel, type PanelAction } from '../../parts/ActionPanel/ActionPanel.js';
 import { DetailsCard, type DetailsRow } from '../../parts/DetailsCard/DetailsCard.js';
@@ -18,7 +19,8 @@ const PROPERTIES_ROWS: DetailsRow[] = [
   { label: 'Description', value: 'Duis aute irure dolor in reprehenderit in voluptate velit esse eu fugiat nulla pariatur.' },
 ];
 
-const actions = (revoke: string): PanelAction[][] => [
+/** Object Management as Figma draws it for a user. */
+export const USER_OBJECT_ACTIONS = (revoke: string): PanelAction[][] => [
   [{ label: 'Reset password' }, { label: 'Reset Entra ID MFA' }, { label: revoke }],
   [{ label: 'Move' }, { label: 'Copy' }],
   [
@@ -31,6 +33,13 @@ const actions = (revoke: string): PanelAction[][] => [
 export interface ARSObjectContentProps {
   /** Figma "Variant": General tab, or Variant3 (User Details tab). */
   variant?: ARSObjectContentVariant;
+  /** The selected tab (controlled); without it the tabs follow the variant. */
+  tab?: string;
+  onTabChange?: (tab: string) => void;
+  /** Replaces the cards beside Object Management. */
+  children?: ReactNode;
+  /** Replaces the Object Management actions. */
+  actionGroups?: PanelAction[][];
   onEdit?: () => void;
   /** Called with the label of the action picked in Object Management. */
   onAction?: (label: string) => void;
@@ -38,29 +47,47 @@ export interface ARSObjectContentProps {
 }
 
 /** ARS_Object_Content — a user's tabs, detail cards and Object Management actions. Figma: 2385:56718. */
-export function ARSObjectContent({ variant = 'General', onEdit, onAction, className }: ARSObjectContentProps) {
+export function ARSObjectContent({
+  variant = 'General',
+  tab,
+  onTabChange,
+  children,
+  actionGroups,
+  onEdit,
+  onAction,
+  className,
+}: ARSObjectContentProps) {
   const general = variant === 'General';
   return (
     <div className={cx(styles.root, className)}>
-      <ARSUserPageTabs key={variant} defaultValue={general ? 'General' : 'User Details'} />
+      <ARSUserPageTabs
+        key={tab === undefined ? variant : 'controlled'}
+        defaultValue={general ? 'General' : 'User Details'}
+        value={tab}
+        onChange={onTabChange}
+      />
       <div className={styles.content}>
         <div className={styles.cards}>
-          {general ? (
-            <DetailsCard
-              title="Properties"
-              helper="Manage identity and display names."
-              editing={false}
-              rows={PROPERTIES_ROWS}
-              onEdit={onEdit}
-            />
-          ) : (
-            <>
-              <ARSUsersContactInfoCard onEdit={onEdit} />
-              <ARSUsersJobInfoCard onEdit={onEdit} />
-            </>
-          )}
+          {children ??
+            (general ? (
+              <DetailsCard
+                title="Properties"
+                helper="Manage identity and display names."
+                editing={false}
+                rows={PROPERTIES_ROWS}
+                onEdit={onEdit}
+              />
+            ) : (
+              <>
+                <ARSUsersContactInfoCard onEdit={onEdit} />
+                <ARSUsersJobInfoCard onEdit={onEdit} />
+              </>
+            ))}
         </div>
-        <ActionPanel groups={actions(general ? 'Revoke sessions' : 'Revoke Sessions')} onAction={onAction} />
+        <ActionPanel
+          groups={actionGroups ?? USER_OBJECT_ACTIONS(general ? 'Revoke sessions' : 'Revoke Sessions')}
+          onAction={onAction}
+        />
       </div>
     </div>
   );
