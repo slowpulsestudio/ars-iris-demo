@@ -1,0 +1,8 @@
+.table {
+  display: flex;
+  flex-direction: column;
+  /* Figma spaces the head and rows 1px apart. */
+  gap: var(--oi-border-width-default);
+  width: 100%;
+  border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+}

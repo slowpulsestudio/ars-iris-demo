@@ -94,3 +94,9 @@ export {
 } from './components/ARSGroupGeneralContent/ARSGroupGeneralContent.js';
 export { ARSPageContent, type ARSPageContentProps } from './components/ARSPageContent/ARSPageContent.js';
 export { ARSGroupPage, type ARSGroupPageProps } from './components/ARSGroupPage/ARSGroupPage.js';
+export { ARSTableGroupRow, type ARSTableGroupRowProps } from './components/ARSTableGroupRow/ARSTableGroupRow.js';
+export {
+  ARSGroupTable,
+  type ARSGroupTableProps,
+  type ARSGroupTableRow,
+} from './components/ARSGroupTable/ARSGroupTable.js';

@@ -5,7 +5,8 @@ import { TableHeadItem } from '../TableHeadItem/TableHeadItem.js';
 import styles from './TableHeadRow.module.css';
 
 export interface TableHeadColumn {
-  icon: string;
+  /** Omit for a text-only heading, as in ARS_Group_Table. */
+  icon?: string;
   label: string;
   /** Width from Figma; omit to fill. */
   width?: number;
