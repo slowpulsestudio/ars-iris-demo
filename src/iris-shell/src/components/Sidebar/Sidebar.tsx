@@ -52,7 +52,7 @@ const VIEW_OPTIONS = [
 let lastActiveNav: string | null = null;
 
 /** Directories available in the directory multi-select. */
-const DIRECTORIES: MultiSelectOption[] = [
+export const DIRECTORIES: MultiSelectOption[] = [
   {
     value: 'entra-1',
     title: 'Entra 1',

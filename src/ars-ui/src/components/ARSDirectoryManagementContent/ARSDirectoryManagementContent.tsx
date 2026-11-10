@@ -35,6 +35,9 @@ export interface ARSDirectoryTreeContentProps extends CommonProps {
   defaultExpandedIds?: Iterable<string>;
   expandedIds?: ReadonlySet<string>;
   onExpandedChange?: TreeProps['onExpandedChange'];
+  onContextMenu?: TreeProps['onContextMenu'];
+  onMove?: TreeProps['onMove'];
+  canMove?: TreeProps['canMove'];
 }
 
 /** Favorites: search plus titled sections of Iris NavItems. */
@@ -72,6 +75,9 @@ export function ARSDirectoryManagementContent(props: ARSDirectoryManagementConte
           defaultExpandedIds={props.defaultExpandedIds}
           expandedIds={props.expandedIds}
           onExpandedChange={props.onExpandedChange}
+          onContextMenu={props.onContextMenu}
+          onMove={props.onMove}
+          canMove={props.canMove}
         />
       </div>
     );

@@ -1,0 +1,11 @@
+/* Same frame as the panel in ARS_App_Layout_Flat_View (2385:51281). */
+.panel {
+  display: flex;
+  flex-shrink: 0;
+  min-height: 0;
+}
+
+.panel > * {
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  box-shadow: var(--oi-shadow-low);
+}

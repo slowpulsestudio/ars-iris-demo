@@ -114,7 +114,7 @@ const SECONDARY_NAV_ROUTES: Record<string, string> = {
 };
 
 /** Reverse map: route name → secondary sidebar item value (for the highlight). */
-const ROUTE_TO_SECONDARY_NAV: Record<string, string> = {
+export const ROUTE_TO_SECONDARY_NAV: Record<string, string> = {
   usersList: 'users',
   userDetail: 'users',
   groups: 'groups',
@@ -127,7 +127,7 @@ const ROUTE_TO_SECONDARY_NAV: Record<string, string> = {
 
 /** Route name → directory view segment (Flat/Tree/Favourites). Entity/WIP
  *  routes are children of Flat; tree/favorites routes map to their segment. */
-const ROUTE_TO_VIEW: Record<string, string> = {
+export const ROUTE_TO_VIEW: Record<string, string> = {
   usersList: 'flat',
   userDetail: 'flat',
   groups: 'flat',
@@ -158,12 +158,12 @@ function handleGlobalNavChange(value: string) {
   if (target) navigate(target);
 }
 
-function handleSecondaryNavChange(value: string) {
+export function handleSecondaryNavChange(value: string) {
   const target = SECONDARY_NAV_ROUTES[value];
   if (target) navigate(target);
 }
 
-function handleViewChange(value: string) {
+export function handleViewChange(value: string) {
   const target = VIEW_ROUTES[value];
   if (target) navigate(target);
 }
@@ -201,7 +201,7 @@ export function AppShell({
   // `activeNav` and `aiOpen` are lifted to AppShellContext so they survive
   // page navigations (each page wraps its own AppShell, which would otherwise
   // remount and lose state).
-  const { aiOpen, setAiOpen, setSearchOpen, identityRole, setIdentityRole, setPersonaId } =
+  const { aiOpen, setAiOpen, setSearchOpen, identityRole, setIdentityRole, setPersonaId, directoryPanel } =
     useAppShell();
   const currentUser = useCurrentUser();
   const [pinned, setPinned] = useSidebarPinned();
@@ -612,7 +612,8 @@ export function AppShell({
         />
 
         <div className={styles.body} ref={bodyRef}>
-          {showSecondarySidebar && secondarySidebar && (
+          {showSecondarySidebar && secondarySidebar && directoryPanel}
+          {showSecondarySidebar && secondarySidebar && !directoryPanel && (
             <Sidebar
               navItems={secondarySidebar.navItems}
               activeNav={ROUTE_TO_SECONDARY_NAV[route.name] ?? ''}

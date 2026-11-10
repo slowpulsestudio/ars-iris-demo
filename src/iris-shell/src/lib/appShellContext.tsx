@@ -83,6 +83,8 @@ export interface AppShellContextValue {
    */
   persona: Persona | null;
   setPersonaId: (id: string | null) => void;
+  /** Replaces the built-in directory rail when set (the app passes the ARS directory panel). */
+  directoryPanel: ReactNode;
 }
 
 /**
@@ -101,12 +103,13 @@ const AppShellContext = createContext<AppShellContextValue | null>(null);
 
 interface AppShellProviderProps {
   children: ReactNode;
+  directoryPanel?: ReactNode;
 }
 
 /**
  * AppShellProvider — render once at the App root, above all routed pages.
  */
-export function AppShellProvider({ children }: AppShellProviderProps) {
+export function AppShellProvider({ children, directoryPanel = null }: AppShellProviderProps) {
   const [aiOpen, setAiOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeNav, setActiveNav] = useState('users');
@@ -151,6 +154,7 @@ export function AppShellProvider({ children }: AppShellProviderProps) {
       setIdentityRole,
       persona,
       setPersonaId,
+      directoryPanel,
     }),
     [
       aiOpen,
@@ -161,6 +165,7 @@ export function AppShellProvider({ children }: AppShellProviderProps) {
       pendingAiPrompt,
       identityRole,
       persona,
+      directoryPanel,
     ],
   );
 
