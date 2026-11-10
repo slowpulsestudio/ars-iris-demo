@@ -9,7 +9,7 @@ const meta = {
   },
   args: { children: 'Button' },
   argTypes: {
-    variant: { control: 'inline-radio', options: ['primary', 'secondary', 'danger'] },
+    variant: { control: 'inline-radio', options: ['primary', 'secondary', 'ghost', 'danger'] },
     size: { control: 'inline-radio', options: ['s', 'default', 'l'] },
   },
 } satisfies Meta<typeof Button>;
@@ -20,6 +20,9 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = { args: { variant: 'primary' } };
 
 export const Secondary: Story = { args: { variant: 'secondary' } };
+
+/** Iris UI Kit "Style=Ghost". */
+export const Ghost: Story = { args: { variant: 'ghost' } };
 
 export const Danger: Story = { args: { variant: 'danger', children: 'Delete' } };
 

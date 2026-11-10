@@ -3,7 +3,6 @@ import { Button } from '@iris/components/Button/Button.js';
 import { Card } from '@iris/components/Card/Card.js';
 import { DetailsList, type DetailsRow } from '../../parts/DetailsList/DetailsList.js';
 import { FormInput, type FormInputProps } from '../../parts/FormInput/FormInput.js';
-import { GhostButton } from '../../parts/GhostButton/GhostButton.js';
 import { NotSet, OwnerList, OwnerSection, type OwnerPerson } from '../../parts/OwnerSection/OwnerSection.js';
 import styles from './ARSManagedBy.module.css';
 
@@ -92,9 +91,9 @@ export function ARSManagedBy({
 
   const manager =
     state === 'Add manager' ? (
-      <GhostButton iconLead="Plus" onClick={onAddManager}>
+      <Button variant="ghost" size="s" iconLead="Plus" onClick={onAddManager}>
         Add manager
-      </GhostButton>
+      </Button>
     ) : state === 'Edit mode' || filled ? (
       <OwnerList people={MANAGER} editable={state === 'Edit mode'} showEdit />
     ) : (
@@ -124,9 +123,9 @@ export function ARSManagedBy({
           {editing ? (
             <>
               {state === 'Edit mode' && <OwnerList people={OWNERS} editable />}
-              <GhostButton iconLead="Plus" onClick={onAddOwner}>
+              <Button variant="ghost" size="s" iconLead="Plus" onClick={onAddOwner}>
                 Add owner
-              </GhostButton>
+              </Button>
             </>
           ) : filled ? (
             <OwnerList people={OWNERS} />

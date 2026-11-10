@@ -1,5 +1,5 @@
+import { Button } from '@iris/components/Button/Button.js';
 import { cx } from '@iris/lib/cx.js';
-import { GhostButton } from '../../parts/GhostButton/GhostButton.js';
 import { NotSet, OwnerList, OwnerSection, type OwnerPerson } from '../../parts/OwnerSection/OwnerSection.js';
 import styles from './ARSOwnership.module.css';
 
@@ -50,9 +50,9 @@ export function ARSOwnership({
     />
   );
   const add = (
-    <GhostButton iconLead="Plus" onClick={onAdd}>
+    <Button variant="ghost" size="s" iconLead="Plus" onClick={onAdd}>
       {manager ? 'Add manager' : 'Add owner'}
-    </GhostButton>
+    </Button>
   );
 
   return (

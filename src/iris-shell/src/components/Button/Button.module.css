@@ -77,6 +77,20 @@
   background-color: var(--oi-button-background-secondary-active);
 }
 
+/* Iris UI Kit "Style=Ghost" (Button 2205:2885). */
+.variant_ghost {
+  background-color: transparent;
+  color: var(--oi-content-color-secondary);
+}
+.variant_ghost:hover:not(:disabled) {
+  background-color: var(--oi-button-background-secondary-hover);
+  color: var(--oi-content-color-primary);
+}
+.variant_ghost:active:not(:disabled) {
+  background-color: var(--oi-button-background-secondary-active);
+  color: var(--oi-content-color-primary);
+}
+
 .variant_danger {
   background-color: var(--oi-button-background-danger);
   color: var(--oi-content-color-constant);
