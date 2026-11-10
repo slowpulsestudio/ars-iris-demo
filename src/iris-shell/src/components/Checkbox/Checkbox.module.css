@@ -1,9 +1,21 @@
+/* Iris UI Kit "Checkbox" (Component / Checkbox, 2102:447). */
 .wrap {
   position: relative;
   display: inline-flex;
+  flex-shrink: 0;
+}
+
+.size_small,
+.size_small .box {
   width: var(--oi-size-xs);
   height: var(--oi-size-xs);
-  flex-shrink: 0;
+}
+
+/* UI Kit medium box is 20px (no size token). */
+.size_medium,
+.size_medium .box {
+  width: 20px;
+  height: 20px;
 }
 
 .input {
@@ -17,8 +29,6 @@
 }
 
 .box {
-  width: var(--oi-size-xs);
-  height: var(--oi-size-xs);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -32,10 +42,6 @@
     border-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
 }
 
-.input:hover + .box {
-  border-color: var(--oi-content-color-secondary);
-}
-
 .input:focus-visible + .box {
   box-shadow: var(--oi-focus-ring);
 }
@@ -46,9 +52,62 @@
   border-color: var(--oi-base-color-brand);
 }
 
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.input:disabled + .box {
+  box-shadow: none;
+}
+
+.size_small .input:disabled + .box:not(.checked, .indeterminate) {
+  background-color: var(--oi-border-color-default);
+}
+
+.size_medium .input:disabled + .box,
+.input:disabled + .checked,
+.input:disabled + .indeterminate {
+  background-color: var(--oi-button-background-disabled);
+}
+
+.input:disabled + .checked,
+.size_medium .input:disabled + .indeterminate {
+  border-color: var(--oi-border-color-default);
+}
+
+.size_small .input:disabled + .indeterminate {
+  border-color: var(--oi-border-color-strong);
+}
+
+/* UI Kit check mark: 12px in the small box, 16px in the medium box. */
 .mark {
-  width: 100%;
-  height: 100%;
+  width: 12px;
+  height: 12px;
+}
+
+.size_medium .mark {
+  width: var(--oi-size-xs);
+  height: var(--oi-size-xs);
+}
+
+.field {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--oi-spacing-xs);
+  color: var(--oi-content-color-primary);
+  cursor: pointer;
+}
+
+.field_small {
+  gap: var(--oi-spacing-s);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.field_medium {
+  gap: var(--oi-spacing-m);
+  font-size: var(--oi-font-size-m);
+  line-height: var(--oi-line-height-m);
 }
 
 /* The check draws itself in: the box fills first (background/border on

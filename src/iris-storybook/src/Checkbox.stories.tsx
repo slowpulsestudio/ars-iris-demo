@@ -38,3 +38,21 @@ export const Checked: Story = { args: { checked: true } };
 export const Indeterminate: Story = { args: { indeterminate: true, ariaLabel: 'Select all rows' } };
 
 export const Disabled: Story = { args: { disabled: true } };
+
+/** Iris UI Kit "Size=medium" (20px box, 16px label). */
+export const Medium: Story = { args: { size: 'medium', checked: true, label: 'Checked, Normal' } };
+
+/** Iris UI Kit checkbox with its label. */
+export const WithLabel: Story = { name: 'With label', args: { checked: true, label: 'Checked, Normal' } };
+
+/** Iris UI Kit "State=Disabled" for each value. */
+export const DisabledValues: Story = {
+  name: 'Disabled values',
+  render: (args) => (
+    <div style={{ display: 'flex', gap: 'var(--oi-spacing-l)' }}>
+      <Checkbox {...args} disabled label="Unchecked" />
+      <Checkbox {...args} disabled checked label="Checked" />
+      <Checkbox {...args} disabled indeterminate label="Mixed" />
+    </div>
+  ),
+};
