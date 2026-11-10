@@ -11,3 +11,10 @@
 .field .textarea {
   background-color: var(--oi-background-color-secondary);
 }
+
+/* Focused and error fields are white in the ARS file. */
+.field .input:focus-within,
+.field .textarea:focus-within,
+.field .input:has([aria-invalid='true']) {
+  background-color: var(--oi-background-color-primary);
+}

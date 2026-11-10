@@ -1,0 +1,25 @@
+/* Figma: a 1px top border over a 37px row (no token). */
+.root {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+  height: 37px;
+  border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+}
+
+/* Figma's vertical divider: 380px tall, fading out, 169.5px right of centre (no tokens). */
+.divider {
+  position: absolute;
+  top: calc(-1 * var(--oi-border-width-default));
+  left: calc(50% + 169.5px);
+  width: var(--oi-border-width-default);
+  height: 380px;
+  background: linear-gradient(to bottom, var(--oi-border-color-default), var(--oi-background-color-primary));
+  transform: translateX(-50%);
+}
+
+.stepper {
+  flex: 1 1 0;
+  min-width: 0;
+}

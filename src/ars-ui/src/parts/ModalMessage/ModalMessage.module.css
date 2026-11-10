@@ -1,0 +1,73 @@
+/* Figma: white, top corners 8px. */
+.root {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--oi-spacing-m);
+  padding: var(--oi-spacing-l);
+  overflow: hidden;
+  background-color: var(--oi-background-color-primary);
+  border-top-left-radius: var(--oi-border-radius-l);
+  border-top-right-radius: var(--oi-border-radius-l);
+}
+
+/* Figma "Featured icon": a 20px slot with the 24px icon overhanging by 2px (no size token for 20). */
+.icon {
+  position: relative;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.icon > * {
+  position: absolute;
+  top: calc(-1 * var(--oi-spacing-2));
+  left: calc(-1 * var(--oi-spacing-2));
+}
+
+.error {
+  color: var(--oi-content-color-error);
+}
+
+.success {
+  color: var(--oi-content-color-success);
+}
+
+.text {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+  min-width: 0;
+  padding-right: var(--oi-spacing-xl);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+}
+
+/* Figma's field is a plain copy of the text input: grey fill, secondary text. */
+.input {
+  background-color: var(--oi-background-color-secondary);
+}
+
+.input input {
+  color: var(--oi-content-color-secondary);
+}
+
+/* Figma's "Input feedback messages" at body-small size. */
+.message {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-secondary);
+}

@@ -1,0 +1,14 @@
+.warning {
+  color: var(--oi-content-color-error);
+}
+
+/* Figma ".Modal-Content": the field, then an empty 1px slot, 12px apart. */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+}
+
+.slot {
+  height: var(--oi-border-width-default);
+}

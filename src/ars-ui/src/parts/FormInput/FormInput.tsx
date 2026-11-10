@@ -9,7 +9,13 @@ export interface FormInputProps {
   label: string;
   /** Starting value; the field stays editable. */
   value?: string;
+  placeholder?: string;
   required?: boolean;
+  /** Tooltip text for the label's info icon (Figma "Security/Info"). */
+  info?: string;
+  /** Error message under the field; also marks the field invalid. */
+  error?: string;
+  type?: 'text' | 'password';
   /** Trailing icon, e.g. CaretDown for a picker or Calendar for a date. */
   iconTrail?: string;
   /** Renders Figma's "Text area" instead of "Text input". */
@@ -25,16 +31,35 @@ export interface FormInputProps {
  * Iris FormField + TextInput / Textarea / Select (Iris UI Kit "Text input",
  * "Text area", "Dropdown") with the ARS file's grey fill.
  */
-export function FormInput({ label, value, required, iconTrail, multiline, select, width, className }: FormInputProps) {
+export function FormInput({
+  label,
+  value,
+  placeholder,
+  required,
+  info,
+  error,
+  type,
+  iconTrail,
+  multiline,
+  select,
+  width,
+  className,
+}: FormInputProps) {
   return (
     <div className={cx(styles.root, !width && styles.fill, className)} style={width ? { width } : undefined}>
-      <FormField label={label} required={required} className={styles.field}>
+      <FormField label={label} required={required} helperText={info} error={error} className={styles.field}>
         {select ? (
           <Select label={value ?? ''} />
         ) : multiline ? (
-          <Textarea defaultValue={value} className={styles.textarea} />
+          <Textarea defaultValue={value} placeholder={placeholder} className={styles.textarea} />
         ) : (
-          <TextInput defaultValue={value} iconTrail={iconTrail} className={styles.input} />
+          <TextInput
+            type={type}
+            defaultValue={value}
+            placeholder={placeholder}
+            iconTrail={iconTrail}
+            className={styles.input}
+          />
         )}
       </FormField>
     </div>

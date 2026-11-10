@@ -1,0 +1,21 @@
+/* Figma: 729px tall (no token), 16px sides and bottom, 12px between stepper and form. */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+  height: 729px;
+  padding: 0 var(--oi-spacing-l) var(--oi-spacing-l);
+  overflow: hidden;
+}
+
+/* Figma: the stepper spans the full width (past the side padding) and stays pinned. */
+.stepper {
+  position: sticky;
+  top: 0;
+  margin-inline: calc(-1 * var(--oi-spacing-l));
+}
+
+.content {
+  flex: 1 1 0;
+  min-height: 0;
+}

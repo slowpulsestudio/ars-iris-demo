@@ -1,0 +1,98 @@
+.root {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+/* Figma: a 702px form column (no token). */
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--oi-spacing-l);
+  width: 702px;
+}
+
+.form > * {
+  align-self: stretch;
+}
+
+.form > .folder {
+  align-self: flex-start;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--oi-spacing-l);
+}
+
+.fillRow > * {
+  flex: 1 1 0;
+}
+
+/* Figma: a 371px heading column beside the form (no token). */
+.header {
+  display: flex;
+  align-self: stretch;
+  width: 371px;
+}
+
+.heading {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.description {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-tertiary);
+  white-space: pre-wrap;
+}
+
+/* Figma: 576px account options (no token). */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+  width: 576px;
+}
+
+.optionsLabel {
+  margin: 0;
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+  color: var(--oi-content-color-tertiary);
+}
+
+.checks {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--oi-spacing-s);
+}
+
+/* The hidden copy in ARS_New_Object_Content_Container: two equal columns, heading text 260px wide. */
+.container .form,
+.container .header {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+}
+
+.container .heading {
+  flex: none;
+  width: 260px;
+}

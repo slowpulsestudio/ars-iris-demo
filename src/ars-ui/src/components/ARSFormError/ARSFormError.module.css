@@ -1,0 +1,33 @@
+/* Figma: 715px tall (no token), 12px above the banner. */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-l);
+  height: 715px;
+  padding-top: var(--oi-spacing-m);
+}
+
+/* Figma "ARS_New Object_Properties Card": the card frame with no border, scrolling. */
+.root > .card {
+  flex: 1 1 0;
+  align-items: flex-start;
+  min-height: 0;
+  overflow-y: auto;
+  border: 0;
+}
+
+.card > header {
+  align-self: stretch;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--oi-spacing-l);
+}
