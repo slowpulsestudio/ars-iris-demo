@@ -131,7 +131,7 @@ function StepBody({ status, position, label }: StepBodyProps) {
       <span className={styles.indicator} aria-hidden="true">
         {status === 'completed' ? (
           <span className={styles.checkGlyph}>
-            <Icon name="Check" size="10px" />
+            <Icon name="Check" size="12px" />
           </span>
         ) : status === 'error' ? (
           <span className={styles.errorGlyph}>!</span>

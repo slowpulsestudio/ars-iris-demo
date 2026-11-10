@@ -24,7 +24,7 @@
   align-items: center;
   gap: var(--oi-spacing-s);
   min-height: 36px;
-  padding: var(--oi-spacing-s) var(--oi-spacing-s) var(--oi-spacing-s) var(--oi-spacing-m);
+  padding: var(--oi-spacing-s) var(--oi-spacing-m);
   border: 0;
   border-top: 1px solid var(--oi-content-color-primary);
   background-color: var(--oi-background-color-primary);
@@ -66,17 +66,17 @@ button.stepInner:disabled {
   display: none;
 }
 
-/* ── Indicator (16px circle) ───────────────────────────────────────── */
+/* ── Indicator: Iris UI Kit ".stepper-indicator-item" (18px circle, no size token) ── */
 .indicator {
   flex: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: var(--oi-border-radius-max);
   border: 1px solid var(--oi-border-color-strong);
-  background-color: transparent;
+  background-color: var(--oi-background-color-primary);
   color: var(--oi-content-color-secondary);
   transition:
     background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default),
@@ -84,10 +84,11 @@ button.stepInner:disabled {
     color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
 }
 
+/* UI Kit step number: IBM Plex Mono SemiBold 11px (no type token). */
 .num,
 .errorGlyph {
   font-family: var(--oi-font-family-code);
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1;
   font-weight: var(--oi-font-weight-600);
 }
@@ -120,13 +121,19 @@ button.stepInner:disabled {
   color: var(--oi-content-color-constant);
 }
 
+.completed .indicator {
+  border-color: var(--oi-content-color-primary);
+  color: var(--oi-content-color-primary);
+}
+
 .error .indicator {
-  border-color: var(--oi-base-color-error);
+  border-color: var(--oi-content-color-error);
   color: var(--oi-content-color-error);
 }
 
 /* The active errored step fills its indicator, like current. */
 .isCurrent.error .indicator {
+  border-color: var(--oi-base-color-error);
   background-color: var(--oi-base-color-error);
   color: var(--oi-content-color-constant);
 }
