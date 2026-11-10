@@ -21,6 +21,8 @@ export interface DirectoryObjectDetails {
   firstName?: string;
   lastName?: string;
   displayName?: string;
+  /** User objects: the initials shown on the edit form. */
+  initials?: string;
   userPrincipalName?: string;
   authorizationInfo?: string;
   description: string;
@@ -437,6 +439,19 @@ export function addObject(nodeId: string, object: DirectoryObject): boolean {
   const node = nodeById.get(nodeId);
   if (!node) return false;
   getLeaves(node).unshift(object);
+  treeVersion += 1;
+  listeners.forEach((l) => l());
+  return true;
+}
+
+/** Replace a leaf object with an edited copy and notify subscribers. */
+export function updateObject(nodeId: string, objectId: string, next: DirectoryObject): boolean {
+  const node = nodeById.get(nodeId);
+  if (!node) return false;
+  const leaves = getLeaves(node);
+  const i = leaves.findIndex((o) => o.id === objectId);
+  if (i < 0) return false;
+  leaves[i] = next;
   treeVersion += 1;
   listeners.forEach((l) => l());
   return true;

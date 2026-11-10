@@ -10,6 +10,8 @@ export interface UserDetails {
   login: string;
   type: string;
   managementUnit: string;
+  /** Directory after the "@" in the user principal name; derived from the location when unset. */
+  directory?: string;
 }
 
 export interface User {

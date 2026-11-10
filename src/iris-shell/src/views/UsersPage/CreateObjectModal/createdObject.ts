@@ -61,13 +61,13 @@ export function announceCreated(result: CreateObjectResult, viewHref?: string): 
 export function userFromValues(result: CreateObjectResult): User {
   const { values } = result;
   const name = newObjectName(values, result.objectType);
-  const login = `${values.userLogonName.trim() || name.replace(/\s+/g, '.')}`;
+  const login = (values.userLogonName.trim() || name.replace(/\s+/g, '.')).replace(/@.*$/, '');
   return {
     id: nextId('user'),
     name,
     status: 'Active',
     description: '',
-    email: `${login.toLowerCase().replace(/@.*$/, '')}@acme.io`,
+    email: `${login.toLowerCase()}@acme.io`,
     objectId: crypto.randomUUID(),
     details: {
       ...makeDetails(name, login),
@@ -75,6 +75,7 @@ export function userFromValues(result: CreateObjectResult): User {
       ...(values.lastName.trim() && { lastName: values.lastName.trim() }),
       ...(values.initials.trim() && { initials: values.initials.trim() }),
       displayName: values.displayName.trim() || makeDetails(name, login).displayName,
+      ...(values.suffix && { directory: values.suffix }),
     },
     tags: [],
     location: result.locationLabel,

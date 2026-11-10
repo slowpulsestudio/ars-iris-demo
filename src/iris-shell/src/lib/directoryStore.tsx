@@ -14,6 +14,7 @@ import {
   isContainerNode,
   moveNode,
   subscribeDirectory,
+  updateObject,
   type DirectoryNodeView,
   type DirectoryObject,
 } from './directoryData.js';
@@ -49,6 +50,8 @@ export interface DirectoryContextValue {
   canMoveNode: (nodeId: string, newParentId: string | null) => boolean;
   /** Add a created object to a node's listing. */
   addObject: (nodeId: string, object: DirectoryObject) => boolean;
+  /** Replace an object with its edited copy. */
+  updateObject: (nodeId: string, objectId: string, next: DirectoryObject) => boolean;
 }
 
 const DirectoryContext = createContext<DirectoryContextValue | null>(null);
@@ -69,6 +72,7 @@ export function DirectoryProvider({ children }: { children: ReactNode }) {
       moveNode,
       canMoveNode,
       addObject,
+      updateObject,
     }),
     [version],
   );

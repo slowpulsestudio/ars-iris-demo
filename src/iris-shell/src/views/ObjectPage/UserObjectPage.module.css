@@ -1,0 +1,6 @@
+/* The Properties card with the save-error banner above it (ARS_Form_Error, 3621:46744). */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-l);
+}

@@ -18,7 +18,40 @@ import type { Crumb } from '../../components/AppHeader/AppHeader.js';
 import { ResetPasswordModal } from '../UserDetailPage/ResetPasswordModal/ResetPasswordModal.js';
 import { DeleteUserModal } from '../UserDetailPage/DeleteUserModal/DeleteUserModal.js';
 import { tabsForType, PRIMARY_TAB } from './detailTabs.js';
+import { UserObjectPage, type UserObjectData } from '../ObjectPage/UserObjectPage.js';
 import styles from './TreeView.module.css';
+
+/** A stable UUID-looking id for an object that has none. */
+function objectIdFor(id: string): string {
+  let h = 2166136261;
+  const hex = Array.from({ length: 32 }, (_, i) => {
+    h = Math.imul(h ^ (id.charCodeAt(i % id.length) + i), 16777619) >>> 0;
+    return (h % 16).toString(16);
+  }).join('');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+function userDataFor(object: DirectoryObject, location: string): UserObjectData {
+  const d = object.details;
+  const [login, domain] = (d.userPrincipalName ?? object.name).split('@');
+  const firstName = d.firstName ?? '';
+  const lastName = d.lastName ?? '';
+  return {
+    id: object.id,
+    name: object.name,
+    firstName,
+    lastName,
+    displayName: d.displayName ?? '',
+    initials: d.initials ?? `${firstName[0] ?? ''}${lastName[0] ?? ''}`,
+    description: d.description,
+    login,
+    directory: `@${domain ?? 'O1D.Local'}`,
+    email: `${login.toLowerCase()}@acme.io`,
+    status: 'Active',
+    objectId: objectIdFor(object.id),
+    location,
+  };
+}
 
 export interface TreeDetailPageProps {
   nodeId: string;
@@ -30,7 +63,7 @@ export interface TreeDetailPageProps {
  * scaffold with a type-driven tab set + an Object Management side panel.
  */
 export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
-  const { getObject, getSiblings, getPath, getNodeName } = useDirectory();
+  const { getObject, getSiblings, getPath, getNodeName, updateObject } = useDirectory();
   const object = getObject(nodeId, objectId);
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
 
@@ -95,6 +128,50 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
   const pathTail = getPath(nodeId).slice(-2).map((n) => n.name).join(' / ');
   const tabs = tabsForType(object.type);
   const canReset = object.type === 'user' || object.type === 'contact';
+
+  if (object.type === 'user') {
+    return (
+      <UserObjectPage
+        breadcrumb={breadcrumb}
+        data={userDataFor(object, pathTail)}
+        isLogonTaken={(login, directory) =>
+          siblings.some(
+            (o) =>
+              o.id !== object.id &&
+              o.details.userPrincipalName?.toLowerCase() === `${login}${directory}`.toLowerCase(),
+          )
+        }
+        onSave={(patch) =>
+          updateObject(nodeId, object.id, {
+            ...object,
+            name: `${patch.firstName} ${patch.lastName}`.trim(),
+            details: {
+              ...object.details,
+              firstName: patch.firstName,
+              lastName: patch.lastName,
+              displayName: patch.displayName,
+              initials: patch.initials,
+              userPrincipalName: `${patch.login}${patch.directory}`,
+              description: patch.description,
+            },
+          })
+        }
+        onBack={() => navigate(`#/tree/${nodeId}`)}
+        onPrevious={prev ? () => navigate(`#/tree/${nodeId}/${prev.id}`) : undefined}
+        onNext={next ? () => navigate(`#/tree/${nodeId}/${next.id}`) : undefined}
+        isFavorite={isFavorite(object.id)}
+        onToggleFavorite={() =>
+          toggleFavorite({
+            id: object.id,
+            name: object.name,
+            type: meta.label,
+            description: object.description,
+            href: `#/tree/${nodeId}/${object.id}`,
+          })
+        }
+      />
+    );
+  }
 
   return (
     <AppShell breadcrumb={breadcrumb}>
