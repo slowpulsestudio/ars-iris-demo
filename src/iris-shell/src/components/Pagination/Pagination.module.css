@@ -48,11 +48,11 @@
   cursor: not-allowed;
 }
 
-/* Selected page. */
+/* Selected page: UI Kit "Page action=Active page". */
 .current {
-  background-color: var(--oi-background-color-brand);
-  font-weight: var(--oi-text-body-s-strong-font-weight);
-  color: var(--oi-content-color-primary);
+  background-color: var(--oi-button-background-primary);
+  color: var(--oi-content-color-constant);
+  box-shadow: var(--oi-shadow-low);
   /* Pops when a page button gains the current state (i.e. on page change). */
   animation: pagination-pop var(--oi-motion-duration-default) var(--oi-motion-ease-default);
 }

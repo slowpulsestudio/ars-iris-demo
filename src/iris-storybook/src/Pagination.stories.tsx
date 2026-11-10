@@ -43,6 +43,9 @@ export const FewPages: Story = { name: 'Few pages', args: { pageCount: 3 } };
 
 export const Simplified: Story = { args: { variant: 'simplified' } };
 
+/** Iris UI Kit "Page action=First" and "Page action=Last". */
+export const FirstAndLast: Story = { name: 'First and last', args: { showFirstLast: true } };
+
 export const WithPageSize: Story = {
   name: 'With page size',
   args: { pageSize: 20 },

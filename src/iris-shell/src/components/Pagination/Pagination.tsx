@@ -23,12 +23,20 @@ export interface PaginationProps {
   siblingCount?: number;
   /** Pages always shown at the start and end (default variant). */
   boundaryCount?: number;
+  /** Explicit page slots to show instead of the computed range (default variant). */
+  pages?: (number | PaginationEllipsis)[];
   /** Accessible label for the navigation landmark. */
   ariaLabel?: string;
   /** Label for the previous-page control. */
   previousLabel?: string;
   /** Label for the next-page control. */
   nextLabel?: string;
+  /** Adds the Iris UI Kit "First" and "Last" page actions (default variant). */
+  showFirstLast?: boolean;
+  /** Label for the first-page control. */
+  firstLabel?: string;
+  /** Label for the last-page control. */
+  lastLabel?: string;
   /**
    * Current items-per-page value. Providing this together with
    * `onPageSizeChange` reveals the "N per page" menu on the right-hand side.
@@ -112,9 +120,13 @@ export function Pagination({
   variant = 'default',
   siblingCount = 1,
   boundaryCount = 1,
+  pages,
   ariaLabel = 'Pagination',
   previousLabel = 'Previous',
   nextLabel = 'Next',
+  showFirstLast = false,
+  firstLabel = 'First page',
+  lastLabel = 'Last page',
   pageSize,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   onPageSizeChange,
@@ -209,10 +221,21 @@ export function Pagination({
     );
   }
 
-  const items = getPaginationRange(safePage, pageCount, siblingCount, boundaryCount);
+  const items = pages ?? getPaginationRange(safePage, pageCount, siblingCount, boundaryCount);
 
   const nav = (
     <nav className={cx(styles.root, className)} aria-label={ariaLabel}>
+      {showFirstLast && (
+        <button
+          type="button"
+          className={styles.item}
+          onClick={() => onPageChange(1)}
+          disabled={atStart}
+          aria-label={firstLabel}
+        >
+          <Icon name="CaretDoubleLeft" size="16px" />
+        </button>
+      )}
       <button
         type="button"
         className={styles.item}
@@ -252,6 +275,17 @@ export function Pagination({
       >
         <Icon name="CaretRight" size="16px" />
       </button>
+      {showFirstLast && (
+        <button
+          type="button"
+          className={styles.item}
+          onClick={() => onPageChange(pageCount)}
+          disabled={atEnd}
+          aria-label={lastLabel}
+        >
+          <Icon name="CaretDoubleRight" size="16px" />
+        </button>
+      )}
     </nav>
   );
 

@@ -2,10 +2,7 @@ import type { Ref } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
 import { Menu, type MenuEntry } from '@iris/components/Menu/Menu.js';
-import {
-  getPaginationRange,
-  type PaginationEllipsis,
-} from '@iris/components/Pagination/Pagination.js';
+import { Pagination, type PaginationEllipsis } from '@iris/components/Pagination/Pagination.js';
 import styles from './ARSPagination.module.css';
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [10, 20, 30, 40, 50];
@@ -25,33 +22,10 @@ export interface ARSPaginationProps {
   className?: string;
 }
 
-interface StepButtonProps {
-  icon: string;
-  label: string;
-  target: number;
-  blocked: boolean;
-  onPageChange?: (page: number) => void;
-}
-
-function StepButton({ icon, label, target, blocked, onPageChange }: StepButtonProps) {
-  return (
-    <button
-      type="button"
-      className={styles.item}
-      aria-label={label}
-      aria-disabled={blocked || undefined}
-      onClick={() => {
-        if (!blocked) onPageChange?.(target);
-      }}
-    >
-      <Icon name={icon} size="16px" />
-    </button>
-  );
-}
-
 /**
- * ARS_Pagination — first/previous, page numbers, next/last, and the
- * items-per-page button. Figma: ARS - Primary, 82:31768.
+ * ARS_Pagination — the Iris Pagination's page actions (Iris UI Kit "Page
+ * action", with First and Last) and the ARS file's "10 / page" button.
+ * Figma: ARS - Primary, 82:31768.
  */
 export function ARSPagination({
   page,
@@ -63,39 +37,19 @@ export function ARSPagination({
   onPageSizeChange,
   className,
 }: ARSPaginationProps) {
-  const current = Math.min(Math.max(page, 1), Math.max(pageCount, 1));
-  const slots = pages ?? getPaginationRange(current, pageCount);
-  const atStart = current <= 1;
-  const atEnd = current >= pageCount;
-
   return (
     <div className={cx(styles.root, className)}>
       <span className={styles.spacer} aria-hidden="true" />
 
-      <nav className={styles.pages} aria-label="Pagination">
-        <StepButton icon="CaretDoubleLeft" label="First page" target={1} blocked={atStart} onPageChange={onPageChange} />
-        <StepButton icon="CaretLeft" label="Previous page" target={current - 1} blocked={atStart} onPageChange={onPageChange} />
-        {slots.map((slot, i) =>
-          slot === 'ellipsis' ? (
-            <span key={`ellipsis-${i}`} className={styles.ellipsis} aria-hidden="true">
-              ...
-            </span>
-          ) : (
-            <button
-              key={slot}
-              type="button"
-              className={cx(styles.item, slot === current && styles.current)}
-              aria-label={`Page ${slot}`}
-              aria-current={slot === current ? 'page' : undefined}
-              onClick={() => onPageChange?.(slot)}
-            >
-              {slot}
-            </button>
-          ),
-        )}
-        <StepButton icon="CaretRight" label="Next page" target={current + 1} blocked={atEnd} onPageChange={onPageChange} />
-        <StepButton icon="CaretDoubleRight" label="Last page" target={pageCount} blocked={atEnd} onPageChange={onPageChange} />
-      </nav>
+      <Pagination
+        page={page}
+        pageCount={pageCount}
+        pages={pages}
+        showFirstLast
+        previousLabel="Previous page"
+        nextLabel="Next page"
+        onPageChange={(p) => onPageChange?.(p)}
+      />
 
       <Menu
         ariaLabel="Items per page"
