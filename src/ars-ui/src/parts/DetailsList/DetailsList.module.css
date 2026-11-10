@@ -1,0 +1,31 @@
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.label,
+.value {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-font-weight);
+}
+
+.label {
+  flex: 0 0 var(--label-width);
+  color: var(--oi-content-color-secondary);
+}
+
+.value {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-primary);
+}

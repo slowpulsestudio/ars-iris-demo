@@ -1,0 +1,28 @@
+/* Figma's Variant2 is the read card hovered: grey fill and the Edit button. */
+.readable .edit {
+  visibility: hidden;
+}
+
+.readable:hover .edit,
+.readable:focus-within .edit,
+.hovered .edit {
+  visibility: visible;
+}
+
+section.readable:hover,
+section.readable:focus-within,
+section.hovered {
+  background-color: var(--oi-background-color-secondary);
+}
+
+/* Figma's badge: 14px text with a 0.5px default border. */
+.badge {
+  height: auto;
+  border-width: 0.5px;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.card {
+  width: 100%;
+}

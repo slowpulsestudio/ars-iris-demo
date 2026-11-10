@@ -1,0 +1,11 @@
+.root {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--oi-spacing-l);
+  padding-block: var(--oi-spacing-l);
+}
+
+.card {
+  flex: 1 1 0;
+  min-width: 0;
+}

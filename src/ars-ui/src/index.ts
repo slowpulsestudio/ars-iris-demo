@@ -87,3 +87,10 @@ export {
   type ARSObjectContentVariant,
 } from './components/ARSObjectContent/ARSObjectContent.js';
 export { ARSUserPage, type ARSUserPageProps } from './components/ARSUserPage/ARSUserPage.js';
+export {
+  ARSGroupGeneralContent,
+  type ARSGroupGeneralContentProps,
+  type ARSGroupGeneralContentVariant,
+} from './components/ARSGroupGeneralContent/ARSGroupGeneralContent.js';
+export { ARSPageContent, type ARSPageContentProps } from './components/ARSPageContent/ARSPageContent.js';
+export { ARSGroupPage, type ARSGroupPageProps } from './components/ARSGroupPage/ARSGroupPage.js';

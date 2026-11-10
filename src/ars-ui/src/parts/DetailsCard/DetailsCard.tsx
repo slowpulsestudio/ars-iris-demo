@@ -1,13 +1,12 @@
+import type { ReactNode } from 'react';
 import { Button } from '@iris/components/Button/Button.js';
 import { Card } from '@iris/components/Card/Card.js';
 import { cx } from '@iris/lib/cx.js';
+import { DetailsList, type DetailsRow } from '../DetailsList/DetailsList.js';
 import { FormInput, type FormInputProps } from '../FormInput/FormInput.js';
 import styles from './DetailsCard.module.css';
 
-export interface DetailsRow {
-  label: string;
-  value?: string;
-}
+export type { DetailsRow };
 
 export interface DetailsCardProps {
   title: string;
@@ -17,6 +16,12 @@ export interface DetailsCardProps {
   rows: DetailsRow[];
   /** An inner array puts fields side by side. */
   fields?: (FormInputProps | FormInputProps[])[];
+  /** Replaces the Edit / Cancel + Save buttons. */
+  actions?: ReactNode;
+  /** Label column width in px, passed to DetailsList. */
+  labelWidth?: number;
+  /** 8px between fields instead of 16px, as on the group card. */
+  compactFields?: boolean;
   onEdit?: () => void;
   onCancel?: () => void;
   onSave?: () => void;
@@ -30,12 +35,15 @@ export function DetailsCard({
   editing,
   rows,
   fields = [],
+  actions,
+  labelWidth,
+  compactFields = false,
   onEdit,
   onCancel,
   onSave,
   className,
 }: DetailsCardProps) {
-  const actions = editing ? (
+  const defaultActions = editing ? (
     <div className={styles.actions}>
       <Button variant="secondary" size="s" onClick={onCancel}>
         Cancel
@@ -51,9 +59,14 @@ export function DetailsCard({
   );
 
   return (
-    <Card title={title} helper={helper} actions={actions} className={cx(styles.card, className)}>
+    <Card
+      title={title}
+      helper={helper}
+      actions={actions ?? defaultActions}
+      className={cx(styles.card, className)}
+    >
       {editing ? (
-        <div className={styles.fields}>
+        <div className={cx(styles.fields, compactFields && styles.compact)}>
           {fields.map((field, i) =>
             Array.isArray(field) ? (
               <div key={i} className={styles.fieldRow}>
@@ -67,14 +80,7 @@ export function DetailsCard({
           )}
         </div>
       ) : (
-        <dl className={styles.rows}>
-          {rows.map((row, i) => (
-            <div key={i} className={styles.row}>
-              <dt className={styles.label}>{row.label}</dt>
-              <dd className={styles.value}>{row.value}</dd>
-            </div>
-          ))}
-        </dl>
+        <DetailsList rows={rows} labelWidth={labelWidth} />
       )}
     </Card>
   );
