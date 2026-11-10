@@ -212,7 +212,17 @@ Story helpers are in [src/ars-ui/src/stories](src/ars-ui/src/stories):
   - **Motion/Tokens:** the duration and easing tokens with their live values, each easing's curve, and a Play control that moves a dot on each token.
   - **Motion/Usage:** the side sheet, Ask AI panel, toast, tabs underline and stepper check. Each lists the tokens it uses for enter, exit and reduced motion, above the live Iris component.
 
-All commits up to `5d26a79` are on `origin/main`.
+### 10 Nov: the ARS_WebUI2_CRUD screens
+
+Built flow by flow from the [CRUD file](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1291-39864) after a discrepancy audit. The app now imports the kit through `@ars`; the Iris layers never import it (the shell takes the directory panel through `AppShellProvider`). What still needs checking is in [docs/review-notes.md](docs/review-notes.md).
+
+- **Flow 1, lists** (`0a25494` to `6f03878`): the ARS directory panel, the Users list (`ARS_Flat View_User_Content`), the Tree list (`Tree_View_AD_Content`), the no-selection state (Iris `EmptyFigure`) and the Components to review page.
+- **Flow 2, create** (`50889c1`, `48f0710`, `3a0b56d`): `ARS_Action_bar` for one or several selected rows, the New object modal (`ARS_New_Object_Template`, two steps, Select folder side sheet) and `ARS_New_Object_Toast` with View.
+- **Flow 3, object page** (`ad79aee`, `302b679`): `ARS_User_Page` with Overview and General, the Properties card edited in place, and the save error (required fields and a taken user principal name).
+- **Flow 4, delete, reset, unsaved** (`b5cb0ff`, `bb4677a`): `ARS_Delete` and `ARS_Modal_Form_Unsaved` (CRUD file only, shown under "Missing from Figma" in Storybook and on the Components to review page), the AD and Entra password reset, and a navigation guard for unsaved changes.
+- Not built because the CRUD file doesn't draw them: bulk delete, detail pages for objects other than users, and the other user tabs.
+
+All commits up to `6f03878` are on `origin/main`; the flow 2 to 4 commits are local.
 
 ## Iris files changed since the Iris packages were installed
 
