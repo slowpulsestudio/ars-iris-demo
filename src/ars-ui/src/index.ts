@@ -111,3 +111,8 @@ export {
   type ARSOwnershipState,
   type ARSOwnershipVariant,
 } from './components/ARSOwnership/ARSOwnership.js';
+export {
+  ARSOverviewTemplate,
+  type ARSOverviewTemplateProps,
+  type ARSOverviewTemplateVariant,
+} from './components/ARSOverviewTemplate/ARSOverviewTemplate.js';
