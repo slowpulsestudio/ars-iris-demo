@@ -100,3 +100,8 @@ export {
   type ARSGroupTableProps,
   type ARSGroupTableRow,
 } from './components/ARSGroupTable/ARSGroupTable.js';
+export {
+  ARSManagedBy,
+  type ARSManagedByProps,
+  type ARSManagedByState,
+} from './components/ARSManagedBy/ARSManagedBy.js';

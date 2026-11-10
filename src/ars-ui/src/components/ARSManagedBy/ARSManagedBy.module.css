@@ -1,0 +1,81 @@
+/* Figma's card: 1px muted border. */
+section.card {
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+}
+
+/* Figma's Hover state: the read card fills grey and shows Edit. */
+.readable .edit {
+  visibility: hidden;
+}
+
+.readable:hover .edit,
+.readable:focus-within .edit,
+.hovered .edit {
+  visibility: visible;
+}
+
+section.readable:hover,
+section.readable:focus-within,
+section.hovered {
+  background-color: var(--oi-background-color-secondary);
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-l);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--oi-spacing-s);
+}
+
+.label,
+.fieldLabel,
+.notSet {
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.label {
+  color: var(--oi-content-color-secondary);
+}
+
+.fieldLabel {
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.notSet {
+  align-self: stretch;
+  padding: var(--oi-spacing-s);
+  color: var(--oi-content-color-tertiary);
+}
+
+.people {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+}
+
+/* Figma's person rows and field grid are 576px wide (no token). */
+.person,
+.people {
+  width: 576px;
+  max-width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 280px);
+  gap: var(--oi-spacing-l);
+}

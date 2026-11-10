@@ -1,0 +1,10 @@
+/* Element + class so it wins over the Iris secondary button styles. */
+button.ghost {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+button.ghost:hover:not(:disabled) {
+  background-color: var(--oi-button-background-secondary-hover);
+}
