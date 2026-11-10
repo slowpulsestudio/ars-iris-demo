@@ -58,7 +58,7 @@
   --reveal-distance: 12px; /* --distance-medium */
   --reveal-step: 40ms; /* --duration-stagger */
   --reveal-blur: 3px; /* --blur-medium */
-  --reveal-ease: cubic-bezier(0.22, 1, 0.36, 1); /* --ease-smooth-out */
+  --reveal-ease: var(--oi-motion-ease-enter);
 }
 
 .noShadowCard {
