@@ -1,0 +1,50 @@
+/* Figma: icon, then 16px, then the text column. */
+.root {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--oi-spacing-l);
+}
+
+/* Figma "Featured icon": a 20px slot with the 24px icon overhanging by 2px (no size token for 20). */
+.icon {
+  position: relative;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: var(--oi-content-color-success);
+}
+
+.icon > * {
+  position: absolute;
+  top: calc(-1 * var(--oi-spacing-2));
+  left: calc(-1 * var(--oi-spacing-2));
+}
+
+.content {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  padding-right: var(--oi-spacing-m);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+/* Figma's field is a plain copy of a text input: secondary text. */
+.field input {
+  color: var(--oi-content-color-secondary);
+}
+
+.message {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-secondary);
+}
