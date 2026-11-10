@@ -9,6 +9,7 @@ What was built in this repo, the decisions behind it, and where everything lives
 | The app (Iris Shell for Active Roles) | [src/iris-shell](src/iris-shell) | `pnpm dev --port 5190 --strictPort` (5173 is used by other prototypes) · `pnpm -s typecheck && pnpm -s build` · `pnpm -s motion:lint` |
 | Iris Storybook (one story file per Iris component) | [src/iris-storybook](src/iris-storybook) | `pnpm storybook` (port 6107) · `pnpm -s typecheck && pnpm -s check` |
 | ARS kit (ARS components and their Storybook) | [src/ars-ui](src/ars-ui) | `pnpm storybook` (port 6106) · `pnpm -s typecheck && pnpm -s check && pnpm -s build-storybook --quiet` |
+| Motion section of the ARS Storybook | [src/ars-ui/src/motion](src/ars-ui/src/motion) | Storybook sections Motion/Tokens and Motion/Usage |
 | ARS component audit | [docs/ars-component-map.md](docs/ars-component-map.md) | |
 | Personas | [personas/personas.md](personas/personas.md) | |
 | Project rules for agents | [prototype-specific-agent-instructions.md](prototype-specific-agent-instructions.md) | |
@@ -200,7 +201,18 @@ Story helpers are in [src/ars-ui/src/stories](src/ars-ui/src/stories):
   - the tab underline, as asked;
   - the Checkbox's 80ms delay and the AI shimmer's 2000ms, which have no matching token.
 
-All commits are on `origin/main`.
+### 10 Nov: motion lint and the Motion section
+
+- `fadb86a`: the staggered card reveal on the Insights, Identity Manager and Identity Insights pages.
+  - It used its own copy of a curve, `cubic-bezier(0.22, 1, 0.36, 1)`, which came with the Iris packages.
+  - It now uses `--oi-motion-ease-enter`.
+  - `pnpm -s motion:lint` is clean.
+  - The reveal keeps its 500ms duration and 40ms stagger, which have no matching tokens.
+- `6b1b60e`: a Motion section in the ARS Storybook, beside the ARS section.
+  - **Motion/Tokens:** the duration and easing tokens with their live values, each easing's curve, and a Play control that moves a dot on each token.
+  - **Motion/Usage:** the side sheet, Ask AI panel, toast, tabs underline and stepper check. Each lists the tokens it uses for enter, exit and reduced motion, above the live Iris component.
+
+All commits up to `5d26a79` are on `origin/main`.
 
 ## Iris files changed since the Iris packages were installed
 
@@ -211,20 +223,17 @@ These files differ from the package installed in `c9b4253`, so they will show as
 - **App files:**
   - `App.tsx` and `main.tsx`;
   - lib: `appShellContext`, `currentUser`, `personas` (folder and `personas.ts`), `productMenu`, `router`, `storybooks.ts`, `useSidebarPinned`, `useTheme`, `verticals`;
-  - views: AppShell, ChoicePage, StorybooksPage, WelcomePage, WipPage;
+  - views: AppShell, ChoicePage, IdentityManagerPage (Identity Manager and Identity Insights styles), InsightsPage (styles), StorybooksPage, WelcomePage, WipPage;
   - public: the persona avatars and the Storybook logo.
 
 ## Open items
 
-- `pnpm -s motion:lint` in `src/iris-shell` reports 3 violations that came with the Iris packages (`c9b4253`). They are the forked curve `cubic-bezier(0.22, 1, 0.36, 1)` in:
-  - [InsightsPage.module.css](src/iris-shell/src/views/InsightsPage/InsightsPage.module.css#L61);
-  - [IdentityManagerPage.module.css](src/iris-shell/src/views/IdentityManagerPage/IdentityManagerPage.module.css#L18);
-  - [IdentityInsightsPage.module.css](src/iris-shell/src/views/IdentityManagerPage/IdentityInsightsPage.module.css#L17).
 - The Iris code tokens have no `--oi-content-color-placeholder`, so placeholder text uses the tertiary colour.
 - The audit shows the button in [ARS_Create_Menu_Button 3360:40921](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS---Primary?node-id=3360-40921) as a plain frame. The code uses the Iris SplitButton. Not yet re-checked.
 - In [ARS_Tree_Expand_Content 3563:17385](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS---Primary?node-id=3563-17385), Users has an open caret but no children. The stories note this.
 - In [ARS_Treeview_Master 3367:42088](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS---Primary?node-id=3367-42088), the header is a detached frame. The code uses the Iris AppHeader with the same breadcrumb.
 - Commits from `7a13f1a` onward were checked with type checks, the kit and story checks, and builds. The agent did not review them in a browser.
+- The tokens have no `--oi-motion-ease-move`, although the motion skill lists it.
 
 ## ARS components
 
