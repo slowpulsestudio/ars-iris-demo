@@ -1,0 +1,69 @@
+/* Figma: all three variants are 287px tall (no token). */
+.root {
+  height: 287px;
+}
+
+/* No divider above the footer in Figma. */
+.footer {
+  border-top: 0;
+}
+
+/* The message sits flush in the body, not in its own padded card. */
+.root .message {
+  padding: 0;
+}
+
+.loadBody {
+  align-items: center;
+}
+
+.wait {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.spinner {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+}
+
+/* ARS_CRUD_Delete_Success: a 20px icon slot beside the text. */
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--oi-spacing-l);
+}
+
+.success {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--oi-content-color-success);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.description {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-secondary);
+}

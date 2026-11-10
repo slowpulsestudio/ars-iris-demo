@@ -1,0 +1,58 @@
+/* Figma: a 600px panel (no token), 8px corners, high shadow. */
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  max-width: 100%;
+  overflow: hidden;
+  background-color: var(--oi-background-color-primary);
+  border-radius: var(--oi-border-radius-l);
+  box-shadow: var(--oi-shadow-high);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--oi-spacing-s);
+  padding: var(--oi-spacing-l);
+}
+
+.title {
+  flex: 1 1 0;
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+/* ARS_Modal_Form_Unsaved_Content: icon and text 28px apart (no token). */
+.content {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: var(--oi-spacing-l);
+}
+
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--oi-content-color-error);
+}
+
+.message {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+/* Figma ".Modal-Footer": a divider, then the buttons on the right. */
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--oi-button-gap-default);
+  padding: var(--oi-spacing-l);
+  border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+}

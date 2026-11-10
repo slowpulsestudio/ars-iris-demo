@@ -9,6 +9,9 @@ export interface ModalMessageProps {
   icon: string;
   title: string;
   value: string;
+  /** Makes the field controlled by `value`. */
+  onChange?: (value: string) => void;
+  placeholder?: string;
   type?: 'text' | 'password';
   /** Accessible name for the field (Figma shows no label). */
   inputLabel: string;
@@ -20,7 +23,7 @@ export interface ModalMessageProps {
  * Modal content from the ARS file: featured icon, a bold line, a field and its
  * message (ARS_Modal_Content_Delete, ARS_Modal_Content_Success).
  */
-export function ModalMessage({ tone, icon, title, value, type, inputLabel, message, className }: ModalMessageProps) {
+export function ModalMessage({ tone, icon, title, value, onChange, placeholder, type, inputLabel, message, className }: ModalMessageProps) {
   const messageId = useId();
   return (
     <div className={cx(styles.root, className)}>
@@ -32,7 +35,8 @@ export function ModalMessage({ tone, icon, title, value, type, inputLabel, messa
         <div className={styles.form}>
           <TextInput
             type={type}
-            defaultValue={value}
+            {...(onChange ? { value, onChange: (e) => onChange(e.target.value) } : { defaultValue: value })}
+            placeholder={placeholder}
             aria-label={inputLabel}
             aria-describedby={messageId}
             className={styles.input}

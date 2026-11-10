@@ -11,7 +11,7 @@ import styles from './ARSUserPasswordResetAD.module.css';
 
 export type ARSUserPasswordResetADVariant = 'Empty' | 'Filled' | 'wait' | 'Success';
 
-const ACCOUNT_OPTIONS = [
+export const ARS_PASSWORD_RESET_OPTIONS = [
   'User must change password at next logon',
   'User cannot change password',
   'Password never expires',
@@ -20,11 +20,24 @@ const ACCOUNT_OPTIONS = [
 
 const SAMPLE_PASSWORD = 'Passw0rd!234';
 
+export interface ARSPasswordResetValues {
+  password: string;
+  confirmPassword: string;
+}
+
 export interface ARSUserPasswordResetADProps {
   /** Figma "Property 1": Empty, Filled, wait (resetting) or Success. */
   variant?: ARSUserPasswordResetADVariant;
   userName?: string;
   location?: string;
+  /** Makes the fields controlled; without it Filled shows Figma's sample. */
+  values?: ARSPasswordResetValues;
+  onValuesChange?: (next: ARSPasswordResetValues) => void;
+  /** The ticked account options (controlled). */
+  accountOptions?: ReadonlySet<string>;
+  onAccountOptionsChange?: (next: Set<string>) => void;
+  /** Success: the password to hand over. */
+  resultPassword?: string;
   onClose?: () => void;
   onReset?: () => void;
   className?: string;
@@ -39,13 +52,24 @@ export function ARSUserPasswordResetAD({
   variant = 'Empty',
   userName = '[Username]',
   location = '[Location]',
+  values,
+  onValuesChange,
+  accountOptions,
+  onAccountOptionsChange,
+  resultPassword,
   onClose,
   onReset,
   className,
 }: ARSUserPasswordResetADProps) {
-  const [checked, setChecked] = useState<ReadonlySet<string>>(() => new Set([ACCOUNT_OPTIONS[0]]));
+  const [localOptions, setLocalOptions] = useState<ReadonlySet<string>>(() => new Set([ARS_PASSWORD_RESET_OPTIONS[0]]));
+  const checked = accountOptions ?? localOptions;
   const filled = variant === 'Filled';
   const finished = variant === 'wait' || variant === 'Success';
+
+  const field = (key: keyof ARSPasswordResetValues) =>
+    values
+      ? { value: values[key], onChange: (e: { target: { value: string } }) => onValuesChange?.({ ...values, [key]: e.target.value }) }
+      : { defaultValue: filled ? SAMPLE_PASSWORD : undefined };
 
   return (
     <ModalPanel
@@ -80,35 +104,29 @@ export function ARSUserPasswordResetAD({
           </div>
         </>
       ) : variant === 'Success' ? (
-        <ARSResetContentSuccess />
+        <ARSResetContentSuccess password={resultPassword} />
       ) : (
         <>
           <FormField label="Password" required help="Use 8-16 characters with a mix of numbers and symbols.">
-            <PasswordInput
-              key={variant}
-              copyable
-              placeholder="Enter new passowrd"
-              defaultValue={filled ? SAMPLE_PASSWORD : undefined}
-            />
+            <PasswordInput key={values ? 'controlled' : variant} copyable placeholder="Enter new passowrd" {...field('password')} />
           </FormField>
           <FormField label="Confirm password" required>
-            <PasswordInput key={variant} defaultValue={filled ? SAMPLE_PASSWORD : undefined} />
+            <PasswordInput key={values ? 'controlled' : variant} {...field('confirmPassword')} />
           </FormField>
           <div className={styles.options}>
             <p className={styles.optionsLabel}>Account options</p>
-            {ACCOUNT_OPTIONS.map((option) => (
+            {ARS_PASSWORD_RESET_OPTIONS.map((option) => (
               <Checkbox
                 key={option}
                 label={option}
                 checked={checked.has(option)}
-                onChange={(on) =>
-                  setChecked((prev) => {
-                    const next = new Set(prev);
-                    if (on) next.add(option);
-                    else next.delete(option);
-                    return next;
-                  })
-                }
+                onChange={(on) => {
+                  const next = new Set(checked);
+                  if (on) next.add(option);
+                  else next.delete(option);
+                  setLocalOptions(next);
+                  onAccountOptionsChange?.(next);
+                }}
               />
             ))}
           </div>

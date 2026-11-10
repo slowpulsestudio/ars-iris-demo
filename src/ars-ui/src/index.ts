@@ -165,9 +165,13 @@ export {
 } from './components/ARSPasswordResetEntraUser/ARSPasswordResetEntraUser.js';
 export {
   ARSUserPasswordResetAD,
+  ARS_PASSWORD_RESET_OPTIONS,
+  type ARSPasswordResetValues,
   type ARSUserPasswordResetADProps,
   type ARSUserPasswordResetADVariant,
 } from './components/ARSUserPasswordResetAD/ARSUserPasswordResetAD.js';
+export { ARSDelete, type ARSDeleteProps, type ARSDeleteVariant } from './components/ARSDelete/ARSDelete.js';
+export { ARSModalFormUnsaved, type ARSModalFormUnsavedProps } from './components/ARSModalFormUnsaved/ARSModalFormUnsaved.js';
 export { ARSActionBar, type ARSActionBarProps } from './components/ARSActionBar/ARSActionBar.js';
 export { ARSSidebar, type ARSSidebarProps } from './components/ARSSidebar/ARSSidebar.js';
 export {

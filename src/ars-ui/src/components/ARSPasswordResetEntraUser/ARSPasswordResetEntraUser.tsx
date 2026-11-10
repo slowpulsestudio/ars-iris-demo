@@ -5,6 +5,8 @@ import { ARSResetContentSuccess } from '../ARSResetContentSuccess/ARSResetConten
 export interface ARSPasswordResetEntraUserProps {
   userName?: string;
   location?: string;
+  /** The temporary password shown. */
+  password?: string;
   onClose?: () => void;
   className?: string;
 }
@@ -16,6 +18,7 @@ export interface ARSPasswordResetEntraUserProps {
 export function ARSPasswordResetEntraUser({
   userName = '[Username]',
   location = '[Location]',
+  password,
   onClose,
   className,
 }: ARSPasswordResetEntraUserProps) {
@@ -32,7 +35,7 @@ export function ARSPasswordResetEntraUser({
         </Button>
       }
     >
-      <ARSResetContentSuccess />
+      <ARSResetContentSuccess password={password} />
     </ModalPanel>
   );
 }

@@ -15,6 +15,7 @@ export interface ModalPanelProps {
   children: ReactNode;
   className?: string;
   bodyClassName?: string;
+  footerClassName?: string;
 }
 
 /**
@@ -30,6 +31,7 @@ export function ModalPanel({
   children,
   className,
   bodyClassName,
+  footerClassName,
 }: ModalPanelProps) {
   const titleId = useId();
   return (
@@ -47,7 +49,7 @@ export function ModalPanel({
         <IconButton icon="X" ariaLabel="Close" variant="ghost" size="s" className={styles.close} onClick={onClose} />
       </header>
       <div className={cx(styles.body, bodyClassName)}>{children}</div>
-      <footer className={styles.footer}>{actions}</footer>
+      <footer className={cx(styles.footer, footerClassName)}>{actions}</footer>
     </section>
   );
 }
