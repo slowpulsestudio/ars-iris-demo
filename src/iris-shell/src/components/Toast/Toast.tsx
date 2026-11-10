@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../lib/cx.js';
+import { motionDurationMs, prefersReducedMotion } from '../../lib/motion.js';
 import { Icon } from '../Icon/Icon.js';
 import { IconButton } from '../IconButton/IconButton.js';
 import styles from './Toast.module.css';
@@ -117,7 +118,10 @@ export function Toast({
   useEffect(() => {
     if (message === null) {
       setVisible(false);
-      const id = setTimeout(() => setShown(null), 200);
+      const id = setTimeout(
+        () => setShown(null),
+        prefersReducedMotion() ? 0 : motionDurationMs('--oi-motion-duration-short'),
+      );
       return () => clearTimeout(id);
     }
   }, [message]);

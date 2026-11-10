@@ -28,9 +28,9 @@
   filter: blur(2px);
   will-change: transform, opacity, filter;
   transition:
-    transform var(--oi-motion-duration-short) var(--oi-motion-ease-default),
-    opacity var(--oi-motion-duration-short) var(--oi-motion-ease-default),
-    filter var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+    transform var(--oi-motion-duration-short) var(--oi-motion-ease-exit),
+    opacity var(--oi-motion-duration-short) var(--oi-motion-ease-exit),
+    filter var(--oi-motion-duration-short) var(--oi-motion-ease-exit);
 }
 
 .toast[data-visible='true'] {
@@ -38,9 +38,9 @@
   opacity: 1;
   filter: blur(0);
   transition:
-    transform var(--oi-motion-duration-long) var(--oi-motion-ease-default),
-    opacity var(--oi-motion-duration-long) var(--oi-motion-ease-default),
-    filter var(--oi-motion-duration-long) var(--oi-motion-ease-default);
+    transform var(--oi-motion-duration-long) var(--oi-motion-ease-enter),
+    opacity var(--oi-motion-duration-long) var(--oi-motion-ease-enter),
+    filter var(--oi-motion-duration-long) var(--oi-motion-ease-enter);
 }
 
 /* UI Kit "Featured icon": a round tinted chip per type. */

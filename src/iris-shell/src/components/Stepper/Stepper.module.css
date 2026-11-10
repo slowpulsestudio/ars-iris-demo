@@ -98,7 +98,7 @@ button.stepInner:disabled {
   display: inline-flex;
   transform-origin: center;
   animation: stepCheckIn var(--oi-motion-duration-long)
-    cubic-bezier(0.34, 1.35, 0.64, 1) both;
+    var(--oi-motion-ease-enter) both;
 }
 
 @keyframes stepCheckIn {

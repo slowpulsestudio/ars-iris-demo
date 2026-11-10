@@ -9,6 +9,34 @@
   overflow: visible;
   /* Keep the left boundary line available for a centered resize handle. */
   isolation: isolate;
+  /* Enter: fade and an 8px slide from the right on the enter clock. */
+  animation: ai-panel-in var(--oi-motion-duration-long) var(--oi-motion-ease-enter) both;
+}
+
+/* Exit: the reverse on the shorter exit clock, before unmount. */
+.panel[data-state='closing'] {
+  animation: ai-panel-out var(--oi-motion-duration-default) var(--oi-motion-ease-exit) both;
+}
+
+@keyframes ai-panel-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--oi-spacing-s));
+  }
+}
+
+@keyframes ai-panel-out {
+  to {
+    opacity: 0;
+    transform: translateX(var(--oi-spacing-s));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .panel[data-state='closing'] {
+    animation: none;
+  }
 }
 
 .panelSurface {
@@ -571,7 +599,7 @@
   vertical-align: text-bottom;
   background-color: var(--oi-content-color-primary);
   border-radius: 1px;
-  animation: ai-cursor-blink 1s steps(2, end) infinite;
+  animation: ai-cursor-blink var(--oi-motion-duration-loop) steps(2, end) infinite;
 }
 
 @keyframes ai-cursor-blink {
@@ -829,8 +857,8 @@
   opacity: 0;
   pointer-events: none;
   transition:
-    opacity 150ms var(--oi-motion-ease-default, ease),
-    transform 150ms var(--oi-motion-ease-default, ease);
+    opacity var(--oi-motion-duration-short) var(--oi-motion-ease-default, ease),
+    transform var(--oi-motion-duration-short) var(--oi-motion-ease-default, ease);
 }
 
 .scrollDownVisible {
@@ -871,8 +899,8 @@
     var(--oi-border-color-default);
   border-radius: 1.5rem;
   transition:
-    border-color 150ms var(--oi-motion-ease-default, ease),
-    box-shadow 150ms var(--oi-motion-ease-default, ease);
+    border-color var(--oi-motion-duration-short) var(--oi-motion-ease-default, ease),
+    box-shadow var(--oi-motion-duration-short) var(--oi-motion-ease-default, ease);
 }
 
 /* Focused composer pill — Figma ".AI_TextArea_Input / State=Typing".
@@ -1189,14 +1217,14 @@
   opacity: var(--bar-opacity, 1);
   transform-origin: center;
   transition:
-    height 180ms cubic-bezier(0.2, 0.9, 0.3, 1),
-    opacity 180ms cubic-bezier(0.2, 0.9, 0.3, 1);
+    height var(--oi-motion-duration-default) var(--oi-motion-ease-enter),
+    opacity var(--oi-motion-duration-default) var(--oi-motion-ease-enter);
 }
 
 /* One-shot "pop in" applied only to the newest bar as it enters from the
    right edge of the scrolling buffer. */
 .recordingBarEnter {
-  animation: ai-recording-enter var(--oi-motion-duration-short) ease-out;
+  animation: ai-recording-enter var(--oi-motion-duration-short) var(--oi-motion-ease-enter);
 }
 
 .recordingBarFuture {
@@ -1335,7 +1363,7 @@
 }
 
 .cbtnProcessingIcon {
-  animation: ai-cbtn-spin 1s linear infinite;
+  animation: ai-cbtn-spin var(--oi-motion-duration-loop) var(--oi-motion-ease-none) infinite;
 }
 
 @keyframes ai-cbtn-spin {

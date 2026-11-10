@@ -9,12 +9,23 @@
   display: flex;
   justify-content: flex-end;
   background-color: rgba(2, 6, 24, 0);
+  /* Closing: exit clock (shorter, ease-exit). */
+  transition: background-color var(--oi-motion-duration-default)
+    var(--oi-motion-ease-exit);
+}
+
+/* Opening: drawer clock. @starting-style gives the first frame after mount
+   a closed state to animate from. */
+.rootOpen {
+  background-color: var(--oi-background-color-blanket, rgba(2, 6, 24, 0.4));
   transition: background-color var(--oi-motion-duration-long)
     var(--oi-motion-ease-drawer);
 }
 
-.rootOpen {
-  background-color: var(--oi-background-color-blanket, rgba(2, 6, 24, 0.4));
+@starting-style {
+  .rootOpen {
+    background-color: rgba(2, 6, 24, 0);
+  }
 }
 
 .panel {
@@ -31,12 +42,20 @@
   box-shadow: var(--oi-shadow-mid);
   overflow: hidden;
   transform: translateX(calc(100% + 6px));
-  transition: transform var(--oi-motion-duration-long)
-    var(--oi-motion-ease-drawer);
+  transition: transform var(--oi-motion-duration-default)
+    var(--oi-motion-ease-exit);
 }
 
 .panelOpen {
   transform: translateX(0);
+  transition: transform var(--oi-motion-duration-long)
+    var(--oi-motion-ease-drawer);
+}
+
+@starting-style {
+  .panelOpen {
+    transform: translateX(calc(100% + 6px));
+  }
 }
 
 /* ---------- header ---------- */
@@ -120,7 +139,8 @@
 /* Reduced motion: drop the slide; the backdrop still fades so the overlay
    change stays legible. */
 @media (prefers-reduced-motion: reduce) {
-  .panel {
+  .panel,
+  .panelOpen {
     transition: none;
   }
 }

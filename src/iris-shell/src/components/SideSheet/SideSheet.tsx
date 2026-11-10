@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../lib/cx.js';
+import { motionDurationMs, prefersReducedMotion } from '../../lib/motion.js';
 import { IconButton } from '../IconButton/IconButton.js';
 import styles from './SideSheet.module.css';
 
@@ -58,7 +59,10 @@ export function SideSheet({
       setMounted(true);
       return undefined;
     }
-    const t = setTimeout(() => setMounted(false), 200);
+    const t = setTimeout(
+      () => setMounted(false),
+      prefersReducedMotion() ? 0 : motionDurationMs('--oi-motion-duration-default'),
+    );
     return () => clearTimeout(t);
   }, [open]);
 

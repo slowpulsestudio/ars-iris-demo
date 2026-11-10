@@ -17,6 +17,7 @@ import {
 import { BorderBeam } from 'border-beam';
 import { BotAvatar } from 'bot-avatars';
 import { cx } from '../../lib/cx.js';
+import { motionDurationMs, prefersReducedMotion } from '../../lib/motion.js';
 import { useAppShell } from '../../lib/appShellContext.js';
 import type { AiContextItem } from '../../lib/aiContext.js';
 import { SUGGESTED_PROMPTS, CONTEXT_PROMPTS, type SuggestedPrompt } from '../../lib/aiPrompts.js';
@@ -249,6 +250,25 @@ useEffect(() => {
     setPanelDragging(false);
   }
 }, [open]);
+
+  // Keep the panel mounted while its exit animation plays.
+  const [closing, setClosing] = useState(false);
+  const wasOpenRef = useRef(open);
+  useEffect(() => {
+    const wasOpen = wasOpenRef.current;
+    wasOpenRef.current = open;
+    if (open) {
+      setClosing(false);
+      return undefined;
+    }
+    if (!wasOpen) return undefined;
+    setClosing(true);
+    const t = setTimeout(
+      () => setClosing(false),
+      prefersReducedMotion() ? 0 : motionDurationMs('--oi-motion-duration-default'),
+    );
+    return () => clearTimeout(t);
+  }, [open]);
 
   // Seed the composer once when a caller opens the panel with a pending prompt
   // (e.g. an Identity Home suggestion pill). Fills but does not send, then
@@ -840,11 +860,13 @@ useEffect(() => {
     setView('chat');
   }, [resetConversation]);
 
-  if (!open) return null;
+  if (!open && !closing) return null;
 
   return (
     <aside
       className={cx(styles.panel, panelDragging && styles.panelDragging, className)}
+      data-state={open ? 'open' : 'closing'}
+      inert={!open}
       style={panelStyle}
       aria-label={aiTitle}
     >
