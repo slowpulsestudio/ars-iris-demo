@@ -1,50 +1,105 @@
-# Things to review
+# Design review
 
-Decisions and gaps from building the ARS_WebUI2_CRUD screens ([Figma](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1291-39864)). Tick an item once you've looked at it.
+Design review tasks for the ARS_WebUI2_CRUD screens ([Figma](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1291-39864)), split by flow. Tick an item once you've reviewed it.
 
-**Not checked in a browser.** None of the screens below have been compared with Figma on screen. Start the app with `pnpm dev --port 5191 --strictPort` in `src/iris-shell`.
+**How to review.** Start the app with `pnpm dev --port 5191 --strictPort` in `src/iris-shell` and open http://localhost:5191/. Each flow has two parts: **Compare with Figma** (look at the screen beside its frame) and **Confirm** (design decisions I made where Figma was silent or unclear).
+
+**Not checked on screen.** None of these screens have been compared with Figma in a browser yet. Layout, spacing, type, colour and states are all unchecked.
 
 **Figma annotations.** Figma's own annotations can't be read with the read-only tools. Anything an annotation says that isn't in the layers or the kit's component notes is missing.
 
 ## Flow 1: lists and left panel
 
-- [ ] The Iris filter pills are gone from both lists. The Figma frames show only the filter button, and the old filters never changed the rows. The filter menu items do nothing.
-- [ ] The directory panel is fixed at 254px, as in Figma. The old drag-to-resize handle is gone.
-- [ ] Users have made-up Tags and Location values so the new columns have content (`mockUsers.ts`).
-- [ ] The Flat view row menu follows the Location column: `Entra` rows get the Entra user actions (no Delete), the others get the AD user actions. Figma doesn't say which menu a Flat view row uses.
-- [ ] A folder with no objects shows `ARS_Empty_Content` with the ARS "No data" drawing. `#/tree` shows the Iris `EmptyFigure` (Branches). Choose one empty state style.
-- [ ] The Search frame ([1372:36552](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1372-36552)) was not compared separately.
-- [ ] Open items from earlier: `ARS_Create_Menu_Button` is a plain frame in Figma but uses the Iris SplitButton in code; `--oi-content-color-placeholder` is missing; `--oi-motion-ease-move` is listed in the motion skill but not defined.
+Where: `#/users` (Flat view), `#/tree` and any folder (Tree view), the Favorites tab.
+
+### Compare with Figma
+
+- [ ] Directory panel, Flat view: view switch, directory picker, entity list ([1372:37388](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1372-37388)).
+- [ ] Directory panel, Tree view: tree rows, indent lines, selected row, the right-click menu ([1369:32139](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1369-32139)).
+- [ ] Users list: header, toolbar, the five columns, row height, tags, status badge, pagination ([Flat view 3091:15082](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3091-15082)).
+- [ ] Folder list: header, Split Create button, Name / Object type / Description columns, pagination ([1369:32139](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1369-32139)).
+- [ ] Search results ([1372:36552](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1372-36552)). Not compared separately; it uses the same toolbar search.
+- [ ] No folder selected ([1372:37388](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1372-37388)).
+- [ ] Menus: filter, page "…", create, New object, AD and Entra user actions.
+
+### Confirm
+
+- [ ] **Empty states.** `#/tree` uses the Iris empty figure (Branches). A folder with no objects uses `ARS_Empty_Content` with the ARS "No data" drawing. Pick one style.
+- [ ] **Filter pills dropped.** The Figma frames show only the filter button, so the old filter pills are gone. The filter menu items do nothing.
+- [ ] **Panel width.** Fixed at 254px as in Figma. The old drag-to-resize handle is gone.
+- [ ] **Made-up data.** Users have invented Tags and Location values so the new columns have content.
+- [ ] **Row menus.** Rows with Location `Entra` get the Entra actions menu (no Delete); the rest get the AD actions menu. Figma doesn't say which a Flat view row uses.
+- [ ] **Earlier open items.** `ARS_Create_Menu_Button` is a plain frame in Figma but uses the Iris SplitButton in code. `--oi-content-color-placeholder` is missing. `--oi-motion-ease-move` is listed in the motion skill but not defined.
 
 ## Flow 2: selection bars and create
 
-- [ ] The bar variants come from screenshots: variant 2 for one selected row ([1378:48538](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1378-48538)), the Default bulk bar with "N of total" for several ([1378:49550](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1378-49550)). Check the rule for which one shows.
-- [ ] "Show selected" filters the list to the selected rows. Figma doesn't say what the toggle does.
-- [ ] The "…" button on the single-select bar opens that row's actions menu. Figma doesn't draw a menu for it.
-- [ ] Delete does nothing when several rows are selected, and the Bulk create / invite / delete entries in the New Object menu do nothing.
-- [ ] The Select folder side sheet ([1746:14585](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1746-14585)) is the Iris SideSheet plus the ARS tree, built from a screenshot.
-- [ ] Every object type uses the same two-step form (General, Account), as the old modal did. Figma draws only the user form.
-- [ ] A created user is added to the Users list or the folder. Other types are added to a folder as plain objects, and a non-user created from the Flat view shows the toast without a View button and isn't listed.
-- [ ] Step 1's Save and continue now needs the six required fields, as the Figma footer variants show.
+Where: select rows in either list; Create (Flat view) or Create / New object (Tree view); Select destination folder; create an object and use the toast's View.
+
+### Compare with Figma
+
+- [ ] Action bar for one selected row, with Show selected ([1378:48538](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1378-48538)).
+- [ ] Action bar for several selected rows, "N of total selected" ([1378:49550](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1378-49550)).
+- [ ] New object menu ([1293:49512](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1293-49512)).
+- [ ] New object modal, step 1 General: stepper, fields, dropdown, folder button, footer ([1345:24260](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1345-24260)).
+- [ ] New object modal, step 2 Account ([1345:24274](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1345-24274)).
+- [ ] Footer states: disabled and enabled "Save and continue", then "Create object" ([1378:47487](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1378-47487)).
+- [ ] Select folder side sheet ([1746:14585](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1746-14585)). Built from a screenshot only.
+- [ ] Created toast with View and Dismiss ([1724:13727](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1724-13727)).
+
+### Confirm
+
+- [ ] **Which bar shows.** Variant 2 for one selected row, the Default bulk bar with the total for several. This comes from screenshots.
+- [ ] **Show selected.** It filters the list to the selected rows. Figma doesn't say what it does.
+- [ ] **"…" on the single-select bar.** It opens that row's actions menu. Figma draws no menu for it.
+- [ ] **No-op actions.** Delete with several rows selected, and the Bulk create / invite / delete entries in the New object menu, do nothing.
+- [ ] **One form for every type.** All object types use the same two steps (General, Account). Figma draws only the user form.
+- [ ] **What a created object does.** A user joins the Users list or the folder. Other types join a folder as plain objects. A non-user created from the Flat view shows the toast without View and isn't listed.
+- [ ] **Step 1 gating.** Save and continue needs the six Required fields, as the Figma footer variants show.
 
 ## Flow 3: object page and edit
 
-- [ ] Created on, Last sign-in, the four count tiles and the "Member" badge on the Overview are placeholders. The data has no such fields.
-- [ ] The Figma save-error frame ([1388:57779](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1388-57779)) shows a different field set from the normal edit form (Name, User logon name, Suffix, pre-Windows 2000). The app keeps one form and puts "User logon name already exists." on the User principal name field.
-- [ ] The save error is triggered by a real check (required fields, or another user with the same principal name). Figma doesn't say what causes it.
-- [ ] Tabs other than Overview and General show the Iris empty figure.
-- [ ] Tree objects that aren't users (groups, computers, contacts, OUs) still use the old detail page. The CRUD file only draws users.
-- [ ] The Directory dropdown only offers `@Entra1` and `@O1D.Local`.
+Where: open a user from either list (`#/users/<id>` or a folder), then Edit on the General tab.
+
+### Compare with Figma
+
+- [ ] Page header: back, icon, title, class and location, arrows, "…" ([1369:30614](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1369-30614)).
+- [ ] Tabs row (eleven tabs).
+- [ ] Overview: profile, details, four count tiles ([3500:18134](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3500-18134), [1378:51604](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1378-51604)).
+- [ ] General, read mode: Properties card and Object Management panel ([1378:55162](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1378-55162)).
+- [ ] General, edit mode: field widths, required marks, Directory dropdown, description box, Cancel and Save ([1378:54606](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1378-54606)).
+- [ ] Save error: banner above the card and the field error ([1388:57779](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1388-57779)).
+
+### Confirm
+
+- [ ] **Placeholder content.** Created on, Last sign-in, the four count tiles and the "Member" badge on the Overview are placeholders.
+- [ ] **Two different forms in Figma.** The save-error frame shows other fields (Name, User logon name, Suffix, pre-Windows 2000) from the normal edit form. I kept one form and put "User logon name already exists." on the User principal name field.
+- [ ] **What triggers the error.** A required field left empty, or another user with the same principal name. Figma doesn't say.
+- [ ] **Other tabs.** Every tab except Overview and General shows the Iris empty figure.
+- [ ] **Objects that aren't users.** Groups, computers, contacts and OUs in the Tree view still use the old detail page. The CRUD file only draws users.
+- [ ] **Directory dropdown.** Only `@Entra1` and `@O1D.Local`.
 
 ## Flow 4: delete, password reset, unsaved changes
 
-- [ ] **Delete modal** ([ARS_Delete 1755:15058](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1755-15058)) is new in the kit and listed under "Missing from Figma" and on the Components to review page. The name must be typed to enable "Delete user". Figma draws that button in the primary style, not the danger style, and the app follows Figma.
-- [ ] The wait steps ("Please wait...") last a fixed 1.2 seconds for delete and 1.5 seconds for reset, because there is no real work. Delete can't be closed while it waits.
-- [ ] Delete removes the object when you close the success step, then goes back to the list. Bulk delete from the action bar is still not built (Figma doesn't draw it).
-- [ ] The modal for objects other than users is titled with the object type (for example "Delete Computer"). Figma draws only the user.
-- [ ] **Password reset:** AD users get the form (password, confirm, account options), Reset password enables when both match, then Please wait and the result ([3269:35695](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3269-35695)). Entra users go straight to a generated temporary password ([3269:36076](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3269-36076)).
-- [ ] A user counts as Entra when its Location is `Entra` (Flat view) or its directory is `@Entra1` (user page). The account options are shown but have no effect.
-- [ ] **Unsaved changes** ([3534:19369](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3534-19369)) is new in the kit and listed under "Missing from Figma". It appears when you leave the Properties form with changes through Cancel, a tab, the header arrows and back button, J/K, the breadcrumb or the sidebar. It does not catch the browser's Back button or links that only change the address, such as names in the lists.
-- [ ] The text says "will be discard", as Figma does.
-- [ ] After a successful save, the toast ([3534:19514](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3534-19514)) says "Successfully updated User". Its View button has nothing else to open, because the object page is already showing.
-- [ ] The old Iris delete and reset-password modals are removed. The create flow, delete, reset and unsaved modals now share one scrim (`ModalOverlay`).
+Where: Delete and Reset password from a row menu, the selection bar or the object page; edit a user, change a field, then leave.
+
+### Compare with Figma
+
+- [ ] Delete, confirm step ([1755:15057](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1755-15057)).
+- [ ] Delete, wait step ([1755:15056](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1755-15056)).
+- [ ] Delete, success step ([1755:15055](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1755-15055)).
+- [ ] AD password reset: empty, filled, wait, success ([3269:35695](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3269-35695), [3269:35790](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3269-35790), [3269:35884](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3269-35884), [3269:35915](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3269-35915)).
+- [ ] Entra password reset ([3269:36076](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3269-36076)).
+- [ ] Unsaved changes modal ([3534:19369](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3534-19369)).
+- [ ] Update toast ([3534:19514](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3534-19514)).
+
+### Confirm
+
+- [ ] **New components.** The delete modal and the unsaved-changes modal exist only in the CRUD file. They are in the "Missing from Figma" group in Storybook and on the Components to review page.
+- [ ] **Delete button style.** Figma draws "Delete user" in the primary style, not the danger style. The app follows Figma. It stays disabled until the name is typed.
+- [ ] **Wait steps.** "Please wait..." lasts a fixed 1.2 seconds for delete and 1.5 for reset, as there is no real work. Delete can't be closed while it waits.
+- [ ] **When the object goes.** Delete removes the object when you close the success step, then returns to the list. Bulk delete from the selection bar isn't built, since Figma doesn't draw it.
+- [ ] **Other object types.** The delete modal is titled with the type (for example "Delete Computer"). Figma draws only the user.
+- [ ] **Entra or AD.** A user is Entra when its Location is `Entra` (Flat view) or its directory is `@Entra1` (user page). Entra goes straight to a generated temporary password. AD gets the form, and Reset password enables when both passwords match. The account options have no effect.
+- [ ] **What triggers Unsaved changes.** Cancel, a tab, the header arrows and back button, J/K, the breadcrumb and the sidebar. It misses the browser's Back button and links that only change the address, such as names in the lists.
+- [ ] **Wording.** The modal says "will be discard", as Figma does.
+- [ ] **Update toast.** It says "Successfully updated User". Its View button has nothing else to open, because the object page is already showing.
