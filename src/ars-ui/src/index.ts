@@ -25,3 +25,21 @@ export {
   type ARSTableRow,
   type ARSTableVariant,
 } from './components/ARSTable/ARSTable.js';
+export type { ARSMenuProps, ARSMenuSpec } from './parts/menu.js';
+export { ARSADUserActions } from './components/ARSADUserActions/ARSADUserActions.js';
+export { ARSEntraUserActions } from './components/ARSEntraUserActions/ARSEntraUserActions.js';
+export { ARSADBulkUserActions } from './components/ARSADBulkUserActions/ARSADBulkUserActions.js';
+export { ARSEntraUserBulkActions } from './components/ARSEntraUserBulkActions/ARSEntraUserBulkActions.js';
+export { ARSADRightClickTreeMenu } from './components/ARSADRightClickTreeMenu/ARSADRightClickTreeMenu.js';
+export { ARSADBulkUserFlatView } from './components/ARSADBulkUserFlatView/ARSADBulkUserFlatView.js';
+export { ARSNewObjectMenu } from './components/ARSNewObjectMenu/ARSNewObjectMenu.js';
+export { ARSFilterMenu } from './components/ARSFilterMenu/ARSFilterMenu.js';
+export { ARSTableMenu } from './components/ARSTableMenu/ARSTableMenu.js';
+export { ARSPageMenu } from './components/ARSPageMenu/ARSPageMenu.js';
+export { ARSCreateMenu } from './components/ARSCreateMenu/ARSCreateMenu.js';
+export {
+  ARSNewUserEntraDir,
+  type ARSNewUserEntraDirProps,
+  type ARSNewUserEntraDirVariant,
+} from './components/ARSNewUserEntraDir/ARSNewUserEntraDir.js';
+export { ARSCreateMenuButton, type ARSCreateMenuButtonProps } from './components/ARSCreateMenuButton/ARSCreateMenuButton.js';
