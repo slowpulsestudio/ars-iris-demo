@@ -160,3 +160,21 @@ export {
   type ARSUserPasswordResetADProps,
   type ARSUserPasswordResetADVariant,
 } from './components/ARSUserPasswordResetAD/ARSUserPasswordResetAD.js';
+export { ARSActionBar, type ARSActionBarProps } from './components/ARSActionBar/ARSActionBar.js';
+export { ARSSidebar, type ARSSidebarProps } from './components/ARSSidebar/ARSSidebar.js';
+export {
+  ARSDirectoryManagementContent,
+  type ARSDirectoryManagementContentProps,
+  type ARSDirectoryNavItem,
+  type ARSDirectoryFavoritesSection,
+} from './components/ARSDirectoryManagementContent/ARSDirectoryManagementContent.js';
+export {
+  ARSDirectoryManagementPanel,
+  type ARSDirectoryManagementPanelProps,
+  type ARSDirectoryView,
+} from './components/ARSDirectoryManagementPanel/ARSDirectoryManagementPanel.js';
+export {
+  ARSDirectoryMultiselect,
+  type ARSDirectoryMultiselectProps,
+} from './components/ARSDirectoryMultiselect/ARSDirectoryMultiselect.js';
+export { ARSEmptyContent, type ARSEmptyContentProps } from './components/ARSEmptyContent/ARSEmptyContent.js';

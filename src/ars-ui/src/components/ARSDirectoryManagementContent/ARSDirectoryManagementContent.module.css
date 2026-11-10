@@ -1,0 +1,64 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ARS_Flat_View_Content (3563:17382): py s, px l, no gap. */
+.flat {
+  height: 100%;
+  box-sizing: border-box;
+  padding: var(--oi-spacing-s) var(--oi-spacing-l);
+  background-color: var(--oi-background-color-primary);
+  overflow-y: auto;
+}
+
+/* ARS_Tree_*_Content (3563:17383–17385): Iris Tree, pl s, pr m, py s. */
+.treeRoot {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background-color: var(--oi-background-color-primary);
+}
+
+.treeRoot .tree {
+  padding: var(--oi-spacing-s) var(--oi-spacing-m) var(--oi-spacing-s) var(--oi-spacing-s);
+}
+
+/* The ARS file draws a 20px active indicator (no 20px token). */
+.treeRoot .tree [aria-selected='true']::after {
+  height: 20px;
+}
+
+/* Favorites (3991:36687): p s, gap m. */
+.favorites {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+  height: 100%;
+  box-sizing: border-box;
+  padding: var(--oi-spacing-s);
+  background-color: var(--oi-background-color-primary);
+  overflow-y: auto;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Section heading in a tree-element row: h 24, px s, py xs, caption tertiary. */
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--oi-spacing-xs) var(--oi-spacing-s);
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+  font-weight: var(--oi-text-caption-font-weight);
+  color: var(--oi-content-color-tertiary);
+}

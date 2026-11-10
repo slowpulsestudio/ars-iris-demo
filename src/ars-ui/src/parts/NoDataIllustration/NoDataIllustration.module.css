@@ -1,0 +1,18 @@
+/* Figma fills → Iris tokens with the same light-theme values:
+   #E2E8F0 background-tertiary, #0F172B content-primary,
+   #90A1B9 border-strong, white background-primary. */
+.paper {
+  fill: var(--oi-background-color-tertiary);
+}
+
+.outline {
+  fill: var(--oi-content-color-primary);
+}
+
+.clip {
+  fill: var(--oi-border-color-strong);
+}
+
+.hole {
+  fill: var(--oi-background-color-primary);
+}

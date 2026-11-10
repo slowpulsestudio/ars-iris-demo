@@ -1,0 +1,4 @@
+/* The trigger fills its container (222px in ARS_Directory_Management_Panel). */
+.trigger {
+  width: 100%;
+}

@@ -1,0 +1,23 @@
+/* ARS_Directory_Management_Panel (2385:54213): 254px, muted right border, radius l. */
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 254px;
+  height: 100%;
+  min-height: 0;
+  background-color: var(--oi-background-color-primary);
+  border-right: var(--oi-border-width-default) var(--oi-border-style-solid)
+    var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+  overflow: clip;
+}
+
+/* "Select" frame: pt l, px l, pb s. */
+.select {
+  padding: var(--oi-spacing-l) var(--oi-spacing-l) var(--oi-spacing-s);
+}
+
+.content {
+  flex: 1 1 0;
+  min-height: 0;
+}
