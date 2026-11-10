@@ -211,7 +211,7 @@
   top: var(--oi-spacing-xs);
   bottom: var(--oi-spacing-xs);
   width: 2px;
-  background-color: var(--oi-base-color-brand);
+  background-color: var(--oi-content-color-brand);
   border-radius: var(--oi-border-radius-s);
 }
 
@@ -306,10 +306,11 @@
   z-index: 1;
 }
 
+/* UI Kit "Nested Hover & Active": tertiary fill, primary text, regular weight. */
 .treeLinkActive {
   background-color: var(--oi-background-color-tertiary);
   color: var(--oi-content-color-primary);
-  font-weight: var(--oi-text-body-s-strong-font-weight);
+  font-weight: var(--oi-text-body-s-font-weight);
 }
 
 /* ------------------------------------------------------------------ */

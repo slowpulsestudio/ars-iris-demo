@@ -118,7 +118,7 @@
   top: var(--oi-spacing-xs);
   bottom: var(--oi-spacing-xs);
   width: 2px;
-  background-color: var(--oi-base-color-brand);
+  background-color: var(--oi-content-color-brand);
   border-radius: var(--oi-border-radius-s);
 }
 

@@ -20,14 +20,15 @@
     color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
 }
 
+/* Iris UI Kit "Main nav, Item" — State=Hover & Active. */
 .item:hover {
-  background-color: var(--oi-background-color-secondary);
+  background-color: var(--oi-background-color-tertiary);
   color: var(--oi-content-color-primary);
 }
 
 .selected,
 .selected:hover {
-  background-color: var(--oi-background-color-brand);
+  background-color: var(--oi-background-color-tertiary);
   color: var(--oi-content-color-primary);
   font-weight: var(--oi-text-body-s-strong-font-weight);
 }
@@ -55,6 +56,6 @@
   top: var(--oi-spacing-xs);
   bottom: var(--oi-spacing-xs);
   width: 2px;
-  background-color: var(--oi-base-color-brand);
+  background-color: var(--oi-content-color-brand);
   border-radius: 0 var(--oi-border-radius-s) var(--oi-border-radius-s) 0;
 }
