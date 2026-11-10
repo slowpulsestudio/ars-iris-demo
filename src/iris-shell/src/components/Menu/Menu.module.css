@@ -1,15 +1,15 @@
+/* Iris UI Kit "Menu" and ".Menu, Item" (Component / Menu, 3427:98). */
 .menu {
   position: fixed;
   z-index: 1000;
   min-width: 180px;
-  max-width: 240px;
   background-color: var(--oi-background-color-primary);
   border-radius: var(--oi-border-radius-l);
   box-shadow: var(--oi-shadow-mid);
   padding: var(--oi-spacing-xs);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   /* Origin-aware grow: the menu scales up from the corner nearest its
      trigger so it reads as opening *from* the trigger. Submenu flyouts and
      pointer-anchored menus anchor by their left edge (top-left origin); a
@@ -50,10 +50,12 @@
   letter-spacing: var(--oi-letter-spacing-xl);
 }
 
+/* UI Kit "State=Separator": 8px tall with a 1px muted line through the middle. */
 .divider {
-  height: 1px;
-  margin: var(--oi-spacing-xs) 0;
-  background-color: var(--oi-border-color-muted);
+  flex-shrink: 0;
+  height: var(--oi-spacing-s);
+  background: linear-gradient(var(--oi-border-color-muted), var(--oi-border-color-muted)) center / 100% 1px
+    no-repeat;
 }
 
 /* ── Header (identity block) ─────────────────────────────────────── */
@@ -99,13 +101,12 @@
 .item {
   display: flex;
   align-items: center;
-  gap: var(--oi-spacing-s);
+  gap: var(--oi-spacing-6);
   width: 100%;
-  height: var(--oi-size-default);
-  padding-inline: var(--oi-spacing-s);
+  padding: var(--oi-spacing-xs);
   border-radius: var(--oi-border-radius-default);
   background-color: transparent;
-  color: var(--oi-content-color-primary);
+  color: var(--oi-content-color-secondary);
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);
   font-weight: var(--oi-text-body-s-font-weight);
@@ -115,12 +116,18 @@
     var(--oi-motion-ease-default);
 }
 
-.item:hover:not(:disabled),
-.item:focus-visible {
-  background-color: var(--oi-background-color-secondary);
-  outline: none;
+.item:hover:not(:disabled) {
+  background-color: var(--oi-background-color-tertiary);
+  color: var(--oi-content-color-primary);
 }
 
+.item:focus-visible {
+  outline: 1.5px solid var(--oi-border-color-focus);
+  outline-offset: -1.5px;
+  color: var(--oi-content-color-primary);
+}
+
+/* The UI Kit's --oi-content-color-placeholder isn't in the Iris code tokens yet. */
 .item:disabled {
   color: var(--oi-content-color-disabled);
   cursor: not-allowed;
@@ -147,8 +154,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   color: var(--oi-content-color-secondary);
   flex-shrink: 0;
 }

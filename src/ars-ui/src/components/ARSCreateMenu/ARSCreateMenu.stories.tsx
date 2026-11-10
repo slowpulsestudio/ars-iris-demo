@@ -9,7 +9,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Figma: Create menu · ARS - Primary · 3360:40902. Opens from ARS_Create_Menu_Button. Shown in the Iris menu, so rows and icons use the Iris menu's sizes; the Iris menu is at most 240px wide, so \"Group Managed Service Account\" may be cut short (Figma's menu is 286px).",
+          "Figma: Create menu · ARS - Primary · 3360:40902. Opens from ARS_Create_Menu_Button. Shown in the Iris menu (Iris UI Kit \"Menu\").",
       },
     },
   },

@@ -407,7 +407,7 @@ function SubmenuItem({ item, close }: { item: MenuSubmenuEntry; close: () => voi
       >
         {item.icon && (
           <span className={styles.itemIcon}>
-            <Icon name={item.icon} size="16px" />
+            <Icon name={item.icon} size="20px" />
           </span>
         )}
         <span className={styles.itemLabel}>{item.label}</span>
@@ -498,7 +498,7 @@ function renderItem(item: MenuEntry, i: number, close: () => void): ReactNode {
           <span className={styles.itemIcon}>
             {item.visual !== undefined
               ? item.visual
-              : item.icon && <Icon name={item.icon} size="16px" />}
+              : item.icon && <Icon name={item.icon} size="20px" />}
           </span>
         )}
         <span className={styles.itemLabel}>{item.label}</span>
