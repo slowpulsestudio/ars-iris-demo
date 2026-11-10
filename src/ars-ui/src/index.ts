@@ -43,3 +43,7 @@ export {
   type ARSNewUserEntraDirVariant,
 } from './components/ARSNewUserEntraDir/ARSNewUserEntraDir.js';
 export { ARSCreateMenuButton, type ARSCreateMenuButtonProps } from './components/ARSCreateMenuButton/ARSCreateMenuButton.js';
+export {
+  ARSMainContentPlaceholder,
+  type ARSMainContentPlaceholderProps,
+} from './components/ARSMainContentPlaceholder/ARSMainContentPlaceholder.js';

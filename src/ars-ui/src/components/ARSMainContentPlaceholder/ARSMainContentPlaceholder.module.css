@@ -1,0 +1,15 @@
+/* Stretches to fill its container, as it fills the content area in ARS_App_Layout_Flat_View. */
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--oi-spacing-m);
+  width: 100%;
+  height: 100%;
+  padding: var(--oi-spacing-l);
+  overflow: hidden;
+  border-radius: var(--oi-border-radius-l);
+  background-color: var(--oi-color-pink-200);
+  color: var(--oi-color-pink-500);
+}
