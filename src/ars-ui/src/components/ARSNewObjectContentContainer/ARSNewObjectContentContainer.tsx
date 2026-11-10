@@ -13,6 +13,8 @@ const STEPS: StepperStepItem[] = [
 export interface ARSNewObjectContentContainerProps {
   steps?: StepperStepItem[];
   activeIndex?: number;
+  interactive?: boolean;
+  onStepSelect?: (index: number) => void;
   /** Replaces the content, as ARS_New_Object_Template does. */
   children?: ReactNode;
   className?: string;
@@ -25,12 +27,20 @@ export interface ARSNewObjectContentContainerProps {
 export function ARSNewObjectContentContainer({
   steps = STEPS,
   activeIndex = 0,
+  interactive,
+  onStepSelect,
   children,
   className,
 }: ARSNewObjectContentContainerProps) {
   return (
     <div className={cx(styles.root, className)}>
-      <ARSStepperWithDiv steps={steps} activeIndex={activeIndex} className={styles.stepper} />
+      <ARSStepperWithDiv
+        steps={steps}
+        activeIndex={activeIndex}
+        interactive={interactive}
+        onStepSelect={onStepSelect}
+        className={styles.stepper}
+      />
       <div className={styles.content}>{children ?? <ARSNewObjectContent layout="container" />}</div>
     </div>
   );

@@ -16,12 +16,41 @@ const DESCRIPTION: Record<ARSNewObjectContentVariant, string> = {
     'Mange account details. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis  suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur.',
 };
 
-const ACCOUNT_OPTIONS = [
+export const ARS_ACCOUNT_OPTIONS = [
   'User must change password at next login',
   'User cannot change password',
   'Password never expires',
   'Account is inactive',
 ];
+
+export const ARS_SUFFIX_OPTIONS = ['@dom.net'];
+
+/** The form's text values; Figma's sample for each is the field's placeholder when controlled. */
+export interface ARSNewObjectValues {
+  firstName: string;
+  lastName: string;
+  initials: string;
+  name: string;
+  displayName: string;
+  userLogonName: string;
+  suffix: string;
+  preWindows2000: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export const ARS_EMPTY_NEW_OBJECT_VALUES: ARSNewObjectValues = {
+  firstName: '',
+  lastName: '',
+  initials: '',
+  name: '',
+  displayName: '',
+  userLogonName: '',
+  suffix: '',
+  preWindows2000: '',
+  password: '',
+  confirmPassword: '',
+};
 
 export interface ARSNewObjectContentProps {
   /** Figma "Property 1": Default (names and logon) or Variant2 (password and account options). */
@@ -30,6 +59,12 @@ export interface ARSNewObjectContentProps {
   showFolderButton?: boolean;
   /** "container" is the hidden copy inside ARS_New_Object_Content_Container (audit note 1). */
   layout?: 'default' | 'container';
+  /** Makes the form controlled; without it the fields show Figma's sample values. */
+  values?: ARSNewObjectValues;
+  onValuesChange?: (patch: Partial<ARSNewObjectValues>) => void;
+  /** Variant2: the ticked account options (controlled). */
+  accountOptions?: ReadonlySet<string>;
+  onAccountOptionsChange?: (next: Set<string>) => void;
   onSelectFolder?: () => void;
   className?: string;
 }
@@ -42,61 +77,90 @@ export function ARSNewObjectContent({
   variant = 'Default',
   showFolderButton = false,
   layout = 'default',
+  values,
+  onValuesChange,
+  accountOptions,
+  onAccountOptionsChange,
   onSelectFolder,
   className,
 }: ARSNewObjectContentProps) {
-  const [checked, setChecked] = useState<ReadonlySet<string>>(() => new Set([ACCOUNT_OPTIONS[0]]));
+  const [localOptions, setLocalOptions] = useState<ReadonlySet<string>>(() => new Set([ARS_ACCOUNT_OPTIONS[0]]));
+  const checked = accountOptions ?? localOptions;
   const nameWidth = layout === 'container' ? 280 : undefined;
+
+  /** Figma's sample is the value when uncontrolled and the placeholder when controlled. */
+  const field = (key: keyof ARSNewObjectValues, sample: string) =>
+    values
+      ? { value: values[key], placeholder: sample, onChange: (v: string) => onValuesChange?.({ [key]: v }) }
+      : { value: sample };
 
   return (
     <div className={cx(styles.root, layout === 'container' && styles.container, className)}>
       {variant === 'Default' ? (
         <div className={styles.form}>
           <div className={cx(styles.row, !nameWidth && styles.fillRow)}>
-            <FormInput label="First name" required value="Markus" width={nameWidth} />
-            <FormInput label="Last name" required value="Kim" width={nameWidth} />
+            <FormInput label="First name" required {...field('firstName', 'Markus')} width={nameWidth} />
+            <FormInput label="Last name" required {...field('lastName', 'Kim')} width={nameWidth} />
           </div>
-          <FormInput label="Initials" value="MK" />
-          <FormInput label="Name" required info={INFO} value="MKim" />
-          <FormInput label="Display name" required info={INFO} value="Markus Kim" />
+          <FormInput label="Initials" {...field('initials', 'MK')} />
+          <FormInput label="Name" required info={INFO} {...field('name', 'MKim')} />
+          <FormInput label="Display name" required info={INFO} {...field('displayName', 'Markus Kim')} />
           <div className={styles.row}>
-            <FormInput label="User logon name" required info={INFO} value="MKim@Entra1" width={280} />
-            <FormInput label="Suffix" value="@dom.net" iconTrail="CaretDown" width={280} />
+            <FormInput label="User logon name" required info={INFO} {...field('userLogonName', 'MKim@Entra1')} width={280} />
+            <FormInput
+              label="Suffix"
+              {...field('suffix', '@dom.net')}
+              select={values ? true : undefined}
+              options={values ? ARS_SUFFIX_OPTIONS : undefined}
+              iconTrail="CaretDown"
+              width={280}
+            />
           </div>
           {showFolderButton && (
             <Button variant="secondary" iconLead="FolderOpen" className={styles.folder} onClick={onSelectFolder}>
               Select destination folder
             </Button>
           )}
-          <FormInput label="User logon name (pre-Windows 2000)" required info={INFO} value="MKim" />
+          <FormInput
+            label="User logon name (pre-Windows 2000)"
+            required
+            info={INFO}
+            {...field('preWindows2000', 'MKim')}
+          />
         </div>
       ) : (
         <div className={styles.form}>
-          <FormInput label="Password" required info={INFO} type="password" placeholder="Input text" iconTrail="Eye" />
+          <FormInput
+            label="Password"
+            required
+            info={INFO}
+            type="password"
+            iconTrail="Eye"
+            {...(values ? field('password', 'Input text') : { placeholder: 'Input text' })}
+          />
           <FormInput
             label="Confirm password"
             required
             info={INFO}
             type="password"
-            placeholder="Input text"
             iconTrail="Eye"
+            {...(values ? field('confirmPassword', 'Input text') : { placeholder: 'Input text' })}
           />
           <div className={styles.options}>
             <p className={styles.optionsLabel}>Account options:</p>
             <div className={styles.checks}>
-              {ACCOUNT_OPTIONS.map((option) => (
+              {ARS_ACCOUNT_OPTIONS.map((option) => (
                 <Checkbox
                   key={option}
                   label={option}
                   checked={checked.has(option)}
-                  onChange={(on) =>
-                    setChecked((prev) => {
-                      const next = new Set(prev);
-                      if (on) next.add(option);
-                      else next.delete(option);
-                      return next;
-                    })
-                  }
+                  onChange={(on) => {
+                    const next = new Set(checked);
+                    if (on) next.add(option);
+                    else next.delete(option);
+                    setLocalOptions(next);
+                    onAccountOptionsChange?.(next);
+                  }}
                 />
               ))}
             </div>

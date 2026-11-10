@@ -1,7 +1,12 @@
+import type { ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
-import { ARSModalNewObjectFooter } from '../ARSModalNewObjectFooter/ARSModalNewObjectFooter.js';
+import type { StepperStepItem } from '@iris/components/Stepper/Stepper.js';
+import {
+  ARSModalNewObjectFooter,
+  type ARSModalNewObjectFooterVariant,
+} from '../ARSModalNewObjectFooter/ARSModalNewObjectFooter.js';
 import { ARSNewObjectContent } from '../ARSNewObjectContent/ARSNewObjectContent.js';
 import { ARSNewObjectContentContainer } from '../ARSNewObjectContentContainer/ARSNewObjectContentContainer.js';
 import styles from './ARSNewObjectTemplate.module.css';
@@ -14,6 +19,16 @@ export interface ARSNewObjectTemplateProps {
   icon?: string;
   /** Figma annotation: the step count hides when the create action has no steps. */
   hasSteps?: boolean;
+  steps?: StepperStepItem[];
+  activeIndex?: number;
+  /** Makes reachable steps clickable. */
+  interactiveSteps?: boolean;
+  onStepSelect?: (index: number) => void;
+  /** Footer variant; follows the step by default. */
+  footerVariant?: ARSModalNewObjectFooterVariant;
+  ctaLabel?: string;
+  /** Replaces the form, as Figma's content slot does. */
+  children?: ReactNode;
   onClose?: () => void;
   onBack?: () => void;
   onContinue?: () => void;
@@ -29,6 +44,13 @@ export function ARSNewObjectTemplate({
   location = '[Object Location]',
   icon = 'User',
   hasSteps = true,
+  steps,
+  activeIndex = 0,
+  interactiveSteps,
+  onStepSelect,
+  footerVariant = '1',
+  ctaLabel,
+  children,
   onClose,
   onBack,
   onContinue,
@@ -47,13 +69,19 @@ export function ARSNewObjectTemplate({
         <IconButton icon="X" ariaLabel="Close" variant="ghost" size="s" className={styles.close} onClick={onClose} />
       </header>
       <div className={styles.body}>
-        <ARSNewObjectContentContainer>
-          <ARSNewObjectContent showFolderButton />
+        <ARSNewObjectContentContainer
+          steps={steps}
+          activeIndex={activeIndex}
+          interactive={interactiveSteps}
+          onStepSelect={onStepSelect}
+        >
+          {children ?? <ARSNewObjectContent showFolderButton />}
         </ARSNewObjectContentContainer>
       </div>
       <ARSModalNewObjectFooter
-        variant="1"
+        variant={footerVariant}
         stepLabel={hasSteps ? undefined : null}
+        ctaLabel={ctaLabel}
         onBack={onBack}
         onCta={onContinue}
       />

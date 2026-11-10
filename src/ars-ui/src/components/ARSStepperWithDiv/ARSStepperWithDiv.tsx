@@ -10,6 +10,9 @@ const STEPS: StepperStepItem[] = [
 export interface ARSStepperWithDivProps {
   steps?: StepperStepItem[];
   activeIndex?: number;
+  /** Makes reachable steps clickable. */
+  interactive?: boolean;
+  onStepSelect?: (index: number) => void;
   className?: string;
 }
 
@@ -17,11 +20,24 @@ export interface ARSStepperWithDivProps {
  * ARS_Stepper_with_div — the Iris Stepper under a top border, with the
  * fading vertical divider that runs down the new-object form. Figma: 3367:11939.
  */
-export function ARSStepperWithDiv({ steps = STEPS, activeIndex = 0, className }: ARSStepperWithDivProps) {
+export function ARSStepperWithDiv({
+  steps = STEPS,
+  activeIndex = 0,
+  interactive,
+  onStepSelect,
+  className,
+}: ARSStepperWithDivProps) {
   return (
     <div className={cx(styles.root, className)}>
       <span className={styles.divider} aria-hidden="true" />
-      <Stepper steps={steps} activeIndex={activeIndex} ariaLabel="Steps" className={styles.stepper} />
+      <Stepper
+        steps={steps}
+        activeIndex={activeIndex}
+        interactive={interactive}
+        onStepSelect={onStepSelect}
+        ariaLabel="Steps"
+        className={styles.stepper}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { BorderBeam } from 'border-beam';
 import { cx } from '../../lib/cx.js';
@@ -14,7 +14,7 @@ export interface ActionItem {
   icon: string | ReactNode;
   label: string;
   tone?: ActionTone;
-  onClick?: () => void;
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   /**
    * Force the icon-only rendering (label hidden, preserved as `aria-label` and

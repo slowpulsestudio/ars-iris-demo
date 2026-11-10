@@ -124,8 +124,11 @@ export {
 export { ARSStepperWithDiv, type ARSStepperWithDivProps } from './components/ARSStepperWithDiv/ARSStepperWithDiv.js';
 export {
   ARSNewObjectContent,
+  ARS_ACCOUNT_OPTIONS,
+  ARS_EMPTY_NEW_OBJECT_VALUES,
   type ARSNewObjectContentProps,
   type ARSNewObjectContentVariant,
+  type ARSNewObjectValues,
 } from './components/ARSNewObjectContent/ARSNewObjectContent.js';
 export {
   ARSNewObjectContentContainer,
