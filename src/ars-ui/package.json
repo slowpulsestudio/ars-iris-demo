@@ -27,6 +27,7 @@
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "storybook": "^10.6.5",
+    "storybook-addon-pseudo-states": "10.6.5",
     "typescript": "7.0.2",
     "vite": "8.0.16"
   }

@@ -6,7 +6,7 @@ const srcRoot = fileURLToPath(new URL('../..', import.meta.url));
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.tsx'],
-  addons: ['@storybook/addon-docs', '@storybook/addon-a11y'],
+  addons: ['@storybook/addon-docs', '@storybook/addon-a11y', 'storybook-addon-pseudo-states'],
   framework: '@storybook/react-vite',
   staticDirs: [`${irisShell}/public`],
   core: { disableTelemetry: true },

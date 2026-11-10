@@ -1,0 +1,28 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: var(--oi-spacing-xs) var(--oi-spacing-xs) var(--oi-spacing-xs) var(--oi-button-gap-s);
+  background-color: var(--oi-background-color-primary);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+  border-right: none;
+  border-radius: var(--oi-border-radius-default) 0 0 var(--oi-border-radius-default);
+  color: var(--oi-content-color-tertiary);
+  cursor: pointer;
+  transition: color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+.root:hover {
+  color: var(--oi-content-color-link-hover);
+}
+
+.root:focus-visible {
+  outline: none;
+  box-shadow: var(--oi-focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+}

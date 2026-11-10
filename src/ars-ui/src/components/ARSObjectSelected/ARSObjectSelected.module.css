@@ -1,0 +1,29 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--oi-spacing-xs);
+  padding: 0;
+  background: none;
+  white-space: nowrap;
+  font-size: var(--oi-text-body-s-strong-font-size);
+  line-height: var(--oi-text-body-s-strong-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
+  cursor: pointer;
+}
+
+.icon {
+  color: var(--oi-content-color-secondary);
+}
+
+.root:hover,
+.root:hover .icon {
+  color: var(--oi-content-color-link-hover);
+}
+
+.root:focus-visible {
+  outline: none;
+  border-radius: var(--oi-border-radius-s);
+  box-shadow: var(--oi-focus-ring);
+}

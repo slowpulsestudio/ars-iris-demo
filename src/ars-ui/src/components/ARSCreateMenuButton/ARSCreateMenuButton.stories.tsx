@@ -9,7 +9,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Figma: ARS_Create_Menu_Button · ARS - Primary · 3360:40921. Built on the Iris SplitButton; its Hover and Active states are the Iris button\'s own hover and pressed styles, so hover or press it to see them. The arrow opens the Create menu.',
+          'Figma: ARS_Create_Menu_Button · ARS - Primary · 3360:40921. Built on the Iris SplitButton; Hover and Active are the Iris button\'s own hover and pressed styles. The arrow opens the Create menu.',
       },
     },
   },
@@ -20,6 +20,12 @@ type Story = StoryObj<typeof meta>;
 
 /** Figma "State=Default" (3360:40922). */
 export const Default: Story = {};
+
+/** Figma "State=Hover" (3360:40926). */
+export const Hover: Story = { parameters: { pseudo: { hover: true } } };
+
+/** Figma "State=Active" (3360:40930). */
+export const Active: Story = { parameters: { pseudo: { active: true } } };
 
 /** Figma "OU_Create_menu_button" (3360:40934): the button with the Create menu open. */
 export const MenuOpen: Story = {
