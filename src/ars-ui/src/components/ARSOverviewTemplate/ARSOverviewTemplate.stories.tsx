@@ -8,7 +8,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Figma: ARS_Overview_Template · ARS - Primary · 3353:38318. Uses the Iris Avatar, Badge and StatCard as they are, so a few details follow Iris rather than Figma: the avatar is Iris's largest size (40px; Figma shows 48px), and each stat card keeps Iris's caption label and options button. The OU counts use Iris's strongest weight (600; Figma shows bold).",
+          "Figma: ARS_Overview_Template · ARS - Primary · 3353:38318. Uses the Iris Avatar and Badge (Iris UI Kit). The count tiles are plain frames in the ARS file, built as drawn.",
       },
     },
   },

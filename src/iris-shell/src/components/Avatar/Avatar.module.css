@@ -1,29 +1,41 @@
+/* Iris UI Kit "Avatar" (Component / Avatar, 107:24). Placeholder: white circle,
+   IBM Plex Mono initials. The UI Kit's initial sizes (8/13/17px) have no tokens. */
 .avatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   border-radius: var(--oi-border-radius-max);
-  background-color: var(--oi-background-color-tertiary);
-  color: var(--oi-content-color-secondary);
+  background-color: var(--oi-content-color-constant);
+  color: var(--oi-color-grey-950);
   overflow: hidden;
-  font-weight: var(--oi-text-body-s-strong-font-weight);
+  font-family: var(--oi-font-family-code);
+  font-weight: var(--oi-font-weight-400);
+  letter-spacing: var(--oi-letter-spacing-m);
   user-select: none;
 }
 
 .size_s {
+  width: var(--oi-size-xs);
+  height: var(--oi-size-xs);
+  font-size: 8px;
+  font-weight: var(--oi-font-weight-600);
+}
+.size_m {
   width: var(--oi-size-s);
   height: var(--oi-size-s);
-  font-size: var(--oi-text-caption-strong-font-size);
+  font-size: 13px;
 }
 .size_default {
   width: var(--oi-size-default);
   height: var(--oi-size-default);
-  font-size: var(--oi-text-body-s-font-size);
+  font-size: 17px;
 }
+/* 48px has no size token. */
 .size_l {
-  width: var(--oi-size-l);
-  height: var(--oi-size-l);
-  font-size: var(--oi-text-body-s-font-size);
+  width: 48px;
+  height: 48px;
+  font-size: var(--oi-font-size-xl);
 }
 
 .img {

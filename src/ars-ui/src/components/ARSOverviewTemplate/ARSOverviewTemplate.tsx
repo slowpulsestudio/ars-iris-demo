@@ -1,7 +1,6 @@
 import { Fragment } from 'react';
 import { Avatar } from '@iris/components/Avatar/Avatar.js';
 import { Badge, type BadgeTone } from '@iris/components/Badge/Badge.js';
-import { StatCard } from '@iris/components/StatCard/StatCard.js';
 import { cx } from '@iris/lib/cx.js';
 import styles from './ARSOverviewTemplate.module.css';
 
@@ -90,7 +89,8 @@ export interface ARSOverviewTemplateProps {
 
 /**
  * ARS_Overview_Template — the overview of a user, group or OU: a profile
- * summary with key details, then Iris stat cards. Figma: 3353:38318.
+ * summary with key details, then count tiles ("Dashboard Widgets" frames in
+ * the ARS file). Figma: 3353:38318.
  */
 export function ARSOverviewTemplate({ variant = 'User', className }: ARSOverviewTemplateProps) {
   const { profile, details, stats, others } = OVERVIEWS[variant];
@@ -133,7 +133,10 @@ export function ARSOverviewTemplate({ variant = 'User', className }: ARSOverview
       )}
       <div className={styles.stats}>
         {stats.map((s) => (
-          <StatCard key={s.label} label={s.label} value={s.value} className={styles.stat} />
+          <div key={s.label} className={styles.widget}>
+            <span className={styles.widgetLabel}>{s.label}</span>
+            <span className={styles.widgetValue}>{s.value}</span>
+          </div>
         ))}
       </div>
       {others && (

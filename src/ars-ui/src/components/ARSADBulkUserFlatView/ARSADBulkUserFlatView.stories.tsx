@@ -9,7 +9,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Figma: ARS_AD Bulk User Flat View · ARS - Primary · 2385:57426. Shown in the Iris menu, so rows and icons use the Iris menu's sizes. The last two rows are the Iris menu's placeholder \"Menu item\" rows, as Figma has them.",
+          "Figma: ARS_AD Bulk User Flat View · ARS - Primary · 2385:57426. Shown in the Iris menu (Iris UI Kit \"Menu\"). The last two rows are the Iris menu's placeholder \"Menu item\" rows, as Figma has them.",
       },
     },
   },

@@ -9,7 +9,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Figma: ARS_New User Entra Dir · ARS - Primary · 2275:91121. Shown in the Iris menu, so rows and icons use the Iris menu's sizes.",
+          "Figma: ARS_New User Entra Dir · ARS - Primary · 2275:91121. Shown in the Iris menu (Iris UI Kit \"Menu\").",
       },
     },
   },

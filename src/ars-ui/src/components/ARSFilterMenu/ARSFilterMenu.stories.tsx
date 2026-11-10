@@ -9,7 +9,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Figma: ARS_Filter_Menu · ARS - Primary · 3064:26920. Opens from the Filters button in ARS_Table_Toolbar. Shown in the Iris menu, so rows use the Iris menu's sizes.",
+          "Figma: ARS_Filter_Menu · ARS - Primary · 3064:26920. Opens from the Filters button in ARS_Table_Toolbar. Shown in the Iris menu (Iris UI Kit \"Menu\").",
       },
     },
   },

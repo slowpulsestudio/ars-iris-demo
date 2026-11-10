@@ -9,7 +9,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Figma: Entra User Bulk Actions · ARS - Primary · 2275:91260. Shown in the Iris menu, so rows and icons use the Iris menu's sizes.",
+          "Figma: Entra User Bulk Actions · ARS - Primary · 2275:91260. Shown in the Iris menu (Iris UI Kit \"Menu\").",
       },
     },
   },

@@ -9,7 +9,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Figma: ARS_Table Menu · ARS - Primary · 3663:20381. Shown in the Iris menu, so rows and icons use the Iris menu's sizes. Figma note on Adjust columns: \"These are placeholders until we have fully reviewed AG Grid with Developers\".",
+          "Figma: ARS_Table Menu · ARS - Primary · 3663:20381. Shown in the Iris menu (Iris UI Kit \"Menu\"). Figma note on Adjust columns: \"These are placeholders until we have fully reviewed AG Grid with Developers\".",
       },
     },
   },

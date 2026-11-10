@@ -1,3 +1,4 @@
+/* Iris UI Kit "Link" (Component / Link, 3340:536). */
 .link {
   text-decoration: none;
   cursor: pointer;
@@ -9,15 +10,35 @@
 }
 
 .link:focus-visible {
-  box-shadow: var(--oi-focus-ring);
+  outline: 1.5px solid var(--oi-border-color-focus);
+  outline-offset: -1.5px;
   border-radius: var(--oi-border-radius-s);
-  outline: none;
+  box-shadow: none;
+}
+
+/* UI Kit "State=Disabled": tertiary at 72% opacity (no opacity token). */
+.link[aria-disabled='true'],
+.link[aria-disabled='true']:hover {
+  color: var(--oi-content-color-tertiary);
+  opacity: 0.72;
+  text-decoration: none;
+  cursor: not-allowed;
+}
+
+.size_default {
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.size_l {
+  font-size: var(--oi-font-size-m);
+  line-height: var(--oi-line-height-m);
 }
 
 /* ---------- tones ---------- */
 
 .tone_brand {
-  color: var(--oi-content-color-link);
+  color: var(--oi-content-color-info);
 }
 .tone_brand:hover {
   color: var(--oi-content-color-link-hover);
@@ -30,7 +51,7 @@
    suppress the visited color shift so list rows do not look inconsistently
    "used" after a user drills into a detail page and returns. */
 .tone_brand[href^="#"]:visited {
-  color: var(--oi-content-color-link);
+  color: var(--oi-content-color-info);
 }
 
 .tone_danger {

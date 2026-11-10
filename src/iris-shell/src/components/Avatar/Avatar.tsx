@@ -6,7 +6,8 @@ export interface AvatarProps extends HTMLAttributes<HTMLSpanElement> {
   src?: string;
   /** Used for alt text and initials fallback. */
   name: string;
-  size?: 's' | 'default' | 'l';
+  /** Iris UI Kit sizes: Small 16, Medium 24, Default 32, Large 48. */
+  size?: 's' | 'm' | 'default' | 'l';
 }
 
 /**

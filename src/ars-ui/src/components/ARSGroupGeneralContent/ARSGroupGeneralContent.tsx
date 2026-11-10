@@ -10,7 +10,7 @@ export type ARSGroupGeneralContentVariant = 'Default' | 'Variant2' | 'Variant3';
 const DESCRIPTION =
   'Nullam laoreet erat id felis iaculis, efficitur aliquam velit pharetra. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum sed consectetur dui. Pellentesque at lectus in massa venenatis scelerisque.';
 
-const badge = (label: string) => <Badge className={styles.badge}>{label}</Badge>;
+const badge = (label: string) => <Badge>{label}</Badge>;
 
 const ROWS: DetailsRow[] = [
   { label: 'Group name', value: 'Security Users' },

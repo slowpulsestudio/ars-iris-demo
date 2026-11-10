@@ -102,9 +102,35 @@
   gap: var(--oi-spacing-l);
 }
 
-.stat {
+/* The ARS file's "Dashboard Widgets" tile: 100px tall (no token). */
+.widget {
+  display: flex;
   flex: 1 1 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--oi-spacing-s);
   min-width: 0;
+  height: 100px;
+  padding: var(--oi-spacing-l);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+  background-color: var(--oi-background-color-primary);
+  box-shadow: var(--oi-shadow-low);
+}
+
+.widgetLabel {
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-tertiary);
+}
+
+/* IBM Plex Mono Medium (500) in the ARS file; Iris has no 500 weight token. */
+.widgetValue {
+  font-family: var(--oi-font-family-code);
+  font-size: var(--oi-font-size-xxl);
+  line-height: var(--oi-line-height-xxl);
+  font-weight: 500;
+  color: var(--oi-content-color-primary);
 }
 
 /* Figma's strip uses 14px vertical padding (no token). */
@@ -132,8 +158,9 @@
   white-space: pre;
 }
 
+/* IBM Plex Mono Bold (700) in the ARS file; Iris has no 700 weight token. */
 .count {
   font-family: var(--oi-font-family-code);
-  font-weight: var(--oi-font-weight-600);
+  font-weight: 700;
   color: var(--oi-content-color-secondary);
 }

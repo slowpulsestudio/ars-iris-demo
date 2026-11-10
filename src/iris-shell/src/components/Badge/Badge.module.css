@@ -1,16 +1,17 @@
+/* Iris UI Kit "Badge" (Component / Badge, 109:246). 20px tall (no size token). */
 .badge {
   display: inline-flex;
   align-items: center;
   gap: var(--oi-spacing-xs);
-  height: 1.375rem;
+  height: 20px;
   padding-inline: var(--oi-spacing-xs);
   border-radius: var(--oi-border-radius-default);
-  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+  border: 0.5px var(--oi-border-style-solid) var(--oi-border-color-default);
   background-color: var(--oi-background-color-primary);
   color: var(--oi-content-color-primary);
-  font-size: var(--oi-text-caption-font-size);
-  line-height: var(--oi-text-caption-line-height);
-  font-weight: var(--oi-text-caption-font-weight);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-font-weight);
   white-space: nowrap;
 }
 
@@ -21,7 +22,7 @@
 .tone_info {
   border-color: var(--oi-border-color-badge-info);
   background-color: var(--oi-background-color-info);
-  color: var(--oi-content-color-info);
+  color: var(--oi-content-color-link);
 }
 
 .tone_success {
@@ -40,4 +41,26 @@
   border-color: var(--oi-border-color-badge-error);
   background-color: var(--oi-background-color-error);
   color: var(--oi-content-color-error);
+}
+
+/* ---------- UI Kit "Strong=True" ---------- */
+.strong {
+  border-color: transparent;
+  color: var(--oi-content-color-constant);
+}
+.strong.tone_neutral {
+  background-color: var(--oi-content-color-primary);
+}
+.strong.tone_info {
+  background-color: var(--oi-base-color-info);
+}
+.strong.tone_success {
+  background-color: var(--oi-base-color-success);
+}
+.strong.tone_warning {
+  background-color: var(--oi-base-color-warning);
+  color: var(--oi-content-color-primary);
+}
+.strong.tone_error {
+  background-color: var(--oi-base-color-error);
 }

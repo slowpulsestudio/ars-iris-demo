@@ -17,3 +17,16 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const Danger: Story = { args: { tone: 'danger', children: 'Delete' } };
+
+/** Iris UI Kit sizes: Default (14px) and Large (16px). */
+export const Sizes: Story = {
+  render: (args) => (
+    <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--oi-spacing-l)' }}>
+      <Link {...args} size="default">Default</Link>
+      <Link {...args} size="l">Large</Link>
+    </div>
+  ),
+};
+
+/** Iris UI Kit "State=Disabled". */
+export const Disabled: Story = { args: { disabled: true } };

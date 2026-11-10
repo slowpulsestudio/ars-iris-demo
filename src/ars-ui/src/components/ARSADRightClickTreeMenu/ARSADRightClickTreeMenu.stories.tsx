@@ -9,7 +9,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Figma: ARS_AD Right Click Tree Menu · ARS - Primary · 2385:57427. Shown in the Iris menu, so rows and icons use the Iris menu's sizes. Figma draws Create with a submenu arrow; it opens ARS_New Object Menu, the Figma menu labelled \"New object from Tree View OU/Folder AD\". Right-click the folder to move the menu.",
+          "Figma: ARS_AD Right Click Tree Menu · ARS - Primary · 2385:57427. Shown in the Iris menu (Iris UI Kit \"Menu\"). Figma draws Create with a submenu arrow; it opens ARS_New Object Menu, the Figma menu labelled \"New object from Tree View OU/Folder AD\". Right-click the folder to move the menu.",
       },
     },
   },

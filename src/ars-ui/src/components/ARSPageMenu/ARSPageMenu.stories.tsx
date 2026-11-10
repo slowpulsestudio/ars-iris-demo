@@ -9,7 +9,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Figma: ARS_Page Menu · ARS - Primary · 3663:20458. Shown in the Iris menu, so rows and icons use the Iris menu's sizes. Figma note on Customize: \"In development feature- Placeholder\".",
+          "Figma: ARS_Page Menu · ARS - Primary · 3663:20458. Shown in the Iris menu (Iris UI Kit \"Menu\"). Figma note on Customize: \"In development feature- Placeholder\".",
       },
     },
   },

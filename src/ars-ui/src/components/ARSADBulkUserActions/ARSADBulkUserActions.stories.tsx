@@ -9,7 +9,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Figma: ARS_AD Bulk User Actions · ARS - Primary · 2385:57425. Shown in the Iris menu, so rows and icons use the Iris menu's sizes. The Move icon (Editing/FolderArrowRight) isn't in the Iris code icon set yet, so it's drawn from Figma.",
+          "Figma: ARS_AD Bulk User Actions · ARS - Primary · 2385:57425. Shown in the Iris menu (Iris UI Kit \"Menu\"). The Move icon (Editing/FolderArrowRight) isn't in the Iris code icon set yet, so it's drawn from Figma.",
       },
     },
   },
