@@ -1,12 +1,13 @@
+/* Iris UI Kit ".TA Input" (Component / Text area, 4873:12240). The 88px height has no token. */
 .textarea {
   display: block;
   width: 100%;
-  min-height: 96px;
-  padding: var(--oi-spacing-s);
+  min-height: 88px;
+  padding: var(--oi-spacing-xs) calc(var(--oi-spacing-xs) + var(--oi-border-width-l));
   background-color: var(--oi-background-color-primary);
   color: var(--oi-content-color-primary);
   border-radius: var(--oi-border-radius-default);
-  border: .5px var(--oi-border-style-solid) var(--oi-border-color-default);
+  border: 0.5px var(--oi-border-style-solid) var(--oi-border-color-strong);
   font-family: var(--oi-font-family-default);
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);
@@ -17,12 +18,9 @@
     border-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
 }
 
+/* The UI Kit's --oi-content-color-placeholder isn't in the Iris code tokens yet. */
 .textarea::placeholder {
   color: var(--oi-content-color-tertiary);
-}
-
-.textarea:hover {
-  background-color: var(--oi-background-color-secondary);
 }
 
 .textarea:focus {
@@ -38,12 +36,27 @@
   box-shadow: none;
 }
 
-.invalid {
-  border-color: var(--oi-color-red-500);
-}
+.invalid,
 .invalid:focus {
-  outline: 1.5px solid var(--oi-color-red-500);
+  outline: 1.5px solid var(--oi-base-color-error);
   outline-offset: -1.5px;
   border-color: transparent;
   box-shadow: none;
+}
+
+.textarea:read-only {
+  background-color: var(--oi-background-color-secondary);
+}
+
+/* UI Kit "State=Readonly" draws the 1.5px focus border. */
+.textarea:read-only:not(:disabled) {
+  border-color: transparent;
+  outline: 1.5px solid var(--oi-border-color-focus);
+  outline-offset: -1.5px;
+}
+
+.textarea:disabled {
+  border-color: transparent;
+  color: var(--oi-content-color-disabled);
+  resize: none;
 }

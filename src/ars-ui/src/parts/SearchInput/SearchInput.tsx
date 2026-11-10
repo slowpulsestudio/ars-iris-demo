@@ -10,7 +10,7 @@ export interface SearchInputProps {
   className?: string;
 }
 
-/** Figma's search box (Iris "Text input" with a magnifying glass): Iris TextInput at 28px. */
+/** The ARS file's search box: Iris TextInput (UI Kit "Text input") with a magnifying glass. */
 export function SearchInput({ placeholder, value, onChange, ariaLabel = 'Search', className }: SearchInputProps) {
   return (
     <div className={cx(styles.root, className)}>

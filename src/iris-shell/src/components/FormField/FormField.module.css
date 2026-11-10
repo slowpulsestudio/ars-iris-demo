@@ -1,7 +1,15 @@
+/* Iris UI Kit "Text input" field (4859:11615) and "Label". */
 .field {
   display: flex;
   flex-direction: column;
   gap: var(--oi-spacing-s);
+  min-width: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
   min-width: 0;
 }
 
@@ -10,18 +18,23 @@
 }
 
 .label {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: var(--oi-spacing-xs);
+  gap: var(--oi-spacing-6);
   font-size: var(--oi-text-body-s-strong-font-size);
   line-height: var(--oi-text-body-s-strong-line-height);
   font-weight: var(--oi-text-body-s-strong-font-weight);
   color: var(--oi-content-color-primary);
 }
 
-.required {
-  color: var(--oi-content-color-tertiary);
+.required,
+.count {
+  color: var(--oi-content-color-secondary);
   font-weight: var(--oi-text-body-s-font-weight);
+}
+
+.count {
+  margin-inline-start: auto;
 }
 
 .info {
@@ -30,9 +43,20 @@
   cursor: help;
 }
 
-.error {
+.message {
   margin: 0;
   font-size: var(--oi-text-caption-font-size);
   line-height: var(--oi-text-caption-line-height);
-  color: var(--oi-color-red-600);
+}
+
+.help {
+  color: var(--oi-content-color-secondary);
+}
+
+.warning {
+  color: var(--oi-content-color-primary);
+}
+
+.error {
+  color: var(--oi-content-color-error);
 }

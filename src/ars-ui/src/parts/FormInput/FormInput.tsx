@@ -22,9 +22,8 @@ export interface FormInputProps {
 }
 
 /**
- * Iris UI Kit "Text input" / "Text area" as the ARS file draws them: filled
- * grey, strong 0.5px border, 28px tall. Iris FormField + TextInput/Textarea
- * restyled with Iris tokens.
+ * Iris FormField + TextInput / Textarea / Select (Iris UI Kit "Text input",
+ * "Text area", "Dropdown") with the ARS file's grey fill.
  */
 export function FormInput({ label, value, required, iconTrail, multiline, select, width, className }: FormInputProps) {
   return (
@@ -35,11 +34,7 @@ export function FormInput({ label, value, required, iconTrail, multiline, select
         ) : multiline ? (
           <Textarea defaultValue={value} className={styles.textarea} />
         ) : (
-          <TextInput
-            defaultValue={value}
-            iconTrail={iconTrail}
-            className={cx(styles.input, iconTrail && styles.withIcon)}
-          />
+          <TextInput defaultValue={value} iconTrail={iconTrail} className={styles.input} />
         )}
       </FormField>
     </div>

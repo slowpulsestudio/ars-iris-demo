@@ -9,13 +9,15 @@ export interface TextInputProps
   iconLead?: string;
   /** Icon name to render at the end. */
   iconTrail?: string;
-  size?: 's' | 'default' | 'l';
+  /** Iris UI Kit sizes: Default (28px) and Large (32px). */
+  size?: 'default' | 'l';
   /** Render the error state (red border + `aria-invalid`). */
   invalid?: boolean;
 }
 
 /**
- * TextInput — single-line text field.
+ * TextInput — single-line text field. Matches the Iris UI Kit ".Input"
+ * (Component / Text input): empty, filled, focus, error, disabled, read-only.
  */
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function TextInput(
   { iconLead, iconTrail, size = 'default', invalid = false, type = 'text', className, id, ...rest },
@@ -44,7 +46,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function T
         {...rest}
       />
       {iconTrail && (
-        <span className={styles.icon}>
+        <span className={cx(styles.icon, styles.iconTrail)}>
           <Icon name={iconTrail} size="20px" />
         </span>
       )}

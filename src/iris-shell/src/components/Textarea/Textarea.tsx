@@ -9,7 +9,8 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
 }
 
 /**
- * Textarea — multi-line text field that mirrors `TextInput`'s look & feel.
+ * Textarea — multi-line text field. Matches the Iris UI Kit ".TA Input"
+ * (Component / Text area).
  */
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
   { invalid = false, rows = 4, className, id, ...rest },

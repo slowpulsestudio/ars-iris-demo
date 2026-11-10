@@ -29,3 +29,12 @@ export const Filled: Story = {
 export const MoreRows: Story = { name: 'More rows', args: { rows: 8 } };
 
 export const Invalid: Story = { args: { invalid: true } };
+
+/** Iris UI Kit "State=Readonly". */
+export const ReadOnly: Story = {
+  name: 'Read-only',
+  args: { readOnly: true, defaultValue: 'Sales Division members in the EMEA region.' },
+};
+
+/** Iris UI Kit "State=Disabled". */
+export const Disabled: Story = { args: { disabled: true } };

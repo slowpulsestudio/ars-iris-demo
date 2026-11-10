@@ -15,7 +15,7 @@ const meta = {
     ),
   ],
   args: { 'aria-label': 'Display name', placeholder: 'Markus Kim' },
-  argTypes: { size: { control: 'inline-radio', options: ['s', 'default', 'l'] } },
+  argTypes: { size: { control: 'inline-radio', options: ['default', 'l'] } },
 } satisfies Meta<typeof TextInput>;
 
 export default meta;
@@ -25,15 +25,21 @@ export const Default: Story = {};
 
 export const Filled: Story = { args: { defaultValue: 'Markus Kim' } };
 
+/** Iris UI Kit sizes: Default (28px) and Large (32px). */
 export const Sizes: Story = {
   render: (args) => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--oi-spacing-s)' }}>
-      <TextInput {...args} size="s" placeholder="Small" />
       <TextInput {...args} size="default" placeholder="Default" />
       <TextInput {...args} size="l" placeholder="Large" />
     </div>
   ),
 };
+
+/** Iris UI Kit "State=Readonly". */
+export const ReadOnly: Story = { name: 'Read-only', args: { readOnly: true, defaultValue: 'Markus Kim' } };
+
+/** Iris UI Kit "State=Disabled". */
+export const Disabled: Story = { args: { disabled: true } };
 
 export const WithLeadingIcon: Story = {
   name: 'With leading icon',

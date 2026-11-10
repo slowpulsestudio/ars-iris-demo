@@ -1,4 +1,6 @@
+/* Iris UI Kit ".Input" (Component / Text input, 4660:1965). */
 .wrap {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: var(--oi-button-gap-s);
@@ -6,15 +8,12 @@
   background-color: var(--oi-background-color-primary);
   color: var(--oi-content-color-primary);
   border-radius: var(--oi-border-radius-default);
-  padding-inline: var(--oi-spacing-s);
-  border: 1px var(--oi-border-style-solid) var(--oi-border-color-muted);
+  padding-block: var(--oi-spacing-xs);
+  padding-inline: var(--oi-spacing-xs) var(--oi-spacing-xl);
+  border: 0.5px var(--oi-border-style-solid) var(--oi-border-color-strong);
   transition:
     background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default),
     border-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
-}
-
-.wrap:hover {
-  background-color: var(--oi-background-color-secondary);
 }
 
 .wrap:focus-within {
@@ -25,30 +24,42 @@
   box-shadow: none;
 }
 
-/* Error state. Wins over focus-within for border/shadow. */
-.invalid {
-  border-color: var(--oi-color-red-500);
-}
+/* Error state. Shown with or without focus. */
+.invalid,
 .invalid:focus-within {
   border-color: transparent;
-  outline: 1.5px solid var(--oi-color-red-500);
+  outline: 1.5px solid var(--oi-base-color-error);
   outline-offset: -1.5px;
   box-shadow: none;
 }
 
-.size_s {
-  height: var(--oi-size-s);
+.wrap:has(.input:read-only) {
+  background-color: var(--oi-background-color-secondary);
 }
+
+.wrap:has(.input:disabled) {
+  border-color: transparent;
+}
+
+/* UI Kit "State=Readonly, Size=Large" draws the 1.5px focus border. */
+.size_l:has(.input:read-only:not(:disabled)) {
+  border-color: transparent;
+  outline: 1.5px solid var(--oi-border-color-focus);
+  outline-offset: -1.5px;
+}
+
 .size_default {
-  height: var(--oi-size-default);
+  height: var(--oi-size-m);
 }
 .size_l {
-  height: var(--oi-size-l);
+  height: var(--oi-size-default);
+  padding-inline-start: var(--oi-spacing-6);
 }
 
 .input {
   flex: 1 1 0;
   min-width: 0;
+  padding-inline: var(--oi-border-width-l);
   font-family: var(--oi-font-family-default);
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);
@@ -56,8 +67,19 @@
   color: var(--oi-content-color-primary);
 }
 
+/* UI Kit "Body" text for Large. */
+.size_l .input {
+  font-size: var(--oi-font-size-m);
+  line-height: var(--oi-line-height-m);
+}
+
+/* The UI Kit's --oi-content-color-placeholder isn't in the Iris code tokens yet. */
 .input::placeholder {
   color: var(--oi-content-color-tertiary);
+}
+
+.input:disabled {
+  color: var(--oi-content-color-disabled);
 }
 
 .input:focus,
@@ -69,4 +91,15 @@
 .icon {
   display: inline-flex;
   color: var(--oi-content-color-tertiary);
+}
+
+.iconTrail {
+  position: absolute;
+  inset-inline-end: var(--oi-spacing-xs);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.size_l .iconTrail {
+  inset-inline-end: var(--oi-spacing-6);
 }

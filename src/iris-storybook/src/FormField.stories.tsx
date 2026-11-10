@@ -58,6 +58,22 @@ export const WithHelperText: Story = {
   args: { helperText: 'Shown in the address book and in Active Roles lists.' },
 };
 
+/** Iris UI Kit feedback "Help". */
+export const Help: Story = {
+  args: { help: 'Enter your full name as it appears on your government issued ID or passport.' },
+};
+
+/** Iris UI Kit feedback "Warning". */
+export const Warning: Story = {
+  args: { warning: 'This name is already used by another object.' },
+};
+
+/** Iris UI Kit Label with "Count". */
+export const WithCount: Story = {
+  name: 'With count',
+  args: { count: '0/100' },
+};
+
 export const WithError: Story = {
   name: 'Error',
   args: {

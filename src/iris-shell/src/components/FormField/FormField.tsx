@@ -18,8 +18,14 @@ export interface FormFieldProps {
   required?: boolean;
   /** Tooltip text on the info icon. */
   helperText?: string;
+  /** Help message below the control (UI Kit feedback "Help"). */
+  help?: string;
+  /** Warning message below the control (UI Kit feedback "Warning"). */
+  warning?: string;
   /** Renders below the control; sets invalid. */
   error?: string;
+  /** Right-aligned count in the label row, e.g. "0/100". */
+  count?: string;
   /** Increment to replay the p12 error shake on the control. Only shakes
    *  while the field currently has an error. */
   shakeTrigger?: number;
@@ -43,14 +49,20 @@ export function FormField({
   label,
   required,
   helperText,
+  help,
+  warning,
   error,
+  count,
   shakeTrigger,
   children,
   className,
 }: FormFieldProps) {
   const id = useId();
-  const errorId = `${id}-err`;
+  const messageId = `${id}-msg`;
   const hasError = Boolean(error);
+  // The UI Kit shows one feedback message at a time.
+  const message = error ?? warning ?? help;
+  const messageTone = error ? styles.error : warning ? styles.warning : styles.help;
   const [shakeRef, shake] = useShake<HTMLDivElement>();
 
   // Replay the shake when `shakeTrigger` changes while this field has an
@@ -68,8 +80,8 @@ export function FormField({
     ? cloneElement(children as ReactElement<Record<string, unknown>>, {
         id,
         invalid: hasError || (children.props as Record<string, unknown>).invalid,
-        'aria-describedby': hasError
-          ? errorId
+        'aria-describedby': message
+          ? messageId
           : (children.props as Record<string, unknown>)['aria-describedby'],
         'aria-required':
           required || (children.props as Record<string, unknown>)['aria-required'],
@@ -79,14 +91,12 @@ export function FormField({
   return (
     <div className={cx(styles.field, className)}>
       <label htmlFor={id} className={styles.label}>
-        <span>
-          {label}
-          {required && (
-            <span aria-hidden="true" className={styles.required}>
-              {' (Required)'}
-            </span>
-          )}
-        </span>
+        <span>{label}</span>
+        {required && (
+          <span aria-hidden="true" className={styles.required}>
+            (Required)
+          </span>
+        )}
         {helperText && (
           <Tooltip label={helperText}>
             <span
@@ -95,19 +105,22 @@ export function FormField({
               aria-label="More info"
               tabIndex={0}
             >
-              <Icon name="Info" size="14px" />
+              <Icon name="Info" size="20px" />
             </span>
           </Tooltip>
         )}
+        {count && <span className={styles.count}>{count}</span>}
       </label>
-      <div ref={shakeRef} className={styles.control}>
-        {control}
+      <div className={styles.content}>
+        <div ref={shakeRef} className={styles.control}>
+          {control}
+        </div>
+        {message && (
+          <p id={messageId} className={cx(styles.message, messageTone)} role={hasError ? 'alert' : undefined}>
+            {message}
+          </p>
+        )}
       </div>
-      {hasError && (
-        <p id={errorId} className={styles.error} role="alert">
-          {error}
-        </p>
-      )}
     </div>
   );
 }

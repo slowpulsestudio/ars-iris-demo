@@ -6,31 +6,8 @@
   align-self: stretch;
 }
 
-/* Figma's "(Required)" is secondary text; Iris FormField draws it tertiary. */
-.field label span[aria-hidden='true'] {
-  color: var(--oi-content-color-secondary);
-}
-
-.field .input {
-  height: var(--oi-size-m);
-  padding: var(--oi-spacing-xs) var(--oi-spacing-xl) var(--oi-spacing-xs) var(--oi-spacing-xs);
-  background-color: var(--oi-background-color-secondary);
-  border: 0.5px var(--oi-border-style-solid) var(--oi-border-color-strong);
-}
-
-.field .input input {
-  padding-inline: var(--oi-border-width-l);
-}
-
-.field .withIcon {
-  padding-right: var(--oi-spacing-xs);
-}
-
+/* The ARS file fills its fields grey; the Iris UI Kit's are white. */
+.field .input,
 .field .textarea {
-  /* Figma's text area is 88px tall (no token). */
-  min-height: 88px;
-  height: 88px;
-  padding: var(--oi-spacing-xs) calc(var(--oi-spacing-xs) + var(--oi-border-width-l));
   background-color: var(--oi-background-color-secondary);
-  border-color: var(--oi-border-color-strong);
 }
