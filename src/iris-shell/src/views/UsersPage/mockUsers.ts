@@ -34,7 +34,7 @@ const LOREM = `Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit 
  * Build the detail payload for a user. Keeps the listing rows compact while
  * still giving the detail page rich content to render.
  */
-function makeDetails(name: string, login: string): UserDetails {
+export function makeDetails(name: string, login: string): UserDetails {
   const initials = name
     .split(/\s+/)
     .map((p) => p[0])

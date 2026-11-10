@@ -431,3 +431,13 @@ export function getLeafObjects(nodeId: string): DirectoryObject[] {
 export function getObject(nodeId: string, objectId: string): DirectoryObject | undefined {
   return getChildren(nodeId).find((o) => o.id === objectId);
 }
+
+/** Put a newly created object at the top of a node's listing and notify subscribers. */
+export function addObject(nodeId: string, object: DirectoryObject): boolean {
+  const node = nodeById.get(nodeId);
+  if (!node) return false;
+  getLeaves(node).unshift(object);
+  treeVersion += 1;
+  listeners.forEach((l) => l());
+  return true;
+}

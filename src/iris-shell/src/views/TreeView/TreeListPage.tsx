@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type MouseEvent } from 'react';
 import {
   ARSADRightClickTreeMenu,
   ARSADUserActions,
+  ARSActionBar,
   ARSEmptyContent,
   ARSFilterMenu,
   ARSNewObjectMenu,
@@ -16,11 +17,15 @@ import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.
 import { useFavorites } from '../../lib/useFavorites.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { Button } from '../../components/Button/Button.js';
-import { ActionBar } from '../../components/ActionBar/ActionBar.js';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
 import { ResetPasswordModal } from '../UserDetailPage/ResetPasswordModal/ResetPasswordModal.js';
 import { DeleteUserModal } from '../UserDetailPage/DeleteUserModal/DeleteUserModal.js';
-import { CreateObjectModal } from '../UsersPage/CreateObjectModal/CreateObjectModal.js';
+import { CreateObjectModal, type CreateObjectResult } from '../UsersPage/CreateObjectModal/CreateObjectModal.js';
+import {
+  announceCreated,
+  directoryObjectFromValues,
+  objectTypeFromMenuLabel,
+} from '../UsersPage/CreateObjectModal/createdObject.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 import styles from './TreeView.module.css';
 
@@ -45,13 +50,14 @@ export interface TreeListPageProps {
  * (Tree_View_AD_Content) inside the shell's directory layout.
  */
 export function TreeListPage({ nodeId }: TreeListPageProps) {
-  const { isContainer, getChildren, getPath, getNodeName, getNodeIcon } = useDirectory();
+  const { isContainer, getChildren, getPath, getNodeName, getNodeIcon, addObject } = useDirectory();
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
 
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const [showSelected, setShowSelected] = useState(false);
   const [resetTarget, setResetTarget] = useState<DirectoryObject | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<DirectoryObject | null>(null);
   // Which object type the Create flow is building. `null` = closed.
@@ -68,6 +74,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     setQuery('');
     setPage(1);
     setSelected(new Set());
+    setShowSelected(false);
   }, [nodeId]);
 
   const nodeName = getNodeName(nodeId);
@@ -80,11 +87,13 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
 
   const rows = useMemo<DirectoryObject[]>(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return allRows;
-    return allRows.filter((o) =>
-      [o.name, OBJECT_TYPE_META[o.type].label, o.description].some((v) => v.toLowerCase().includes(q)),
-    );
-  }, [allRows, query]);
+    const matching = q
+      ? allRows.filter((o) =>
+          [o.name, OBJECT_TYPE_META[o.type].label, o.description].some((v) => v.toLowerCase().includes(q)),
+        )
+      : allRows;
+    return showSelected ? matching.filter((o) => selected.has(o.id)) : matching;
+  }, [allRows, query, showSelected, selected]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
@@ -122,8 +131,32 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     }
   };
 
-  const openCreate = (label: string) =>
-    setCreateTarget({ type: label.replace(/^New /, ''), icon: NEW_OBJECT_ICONS.get(label) ?? 'User' });
+  const openCreate = (label: string) => {
+    const type = objectTypeFromMenuLabel(label);
+    if (type) setCreateTarget({ type, icon: NEW_OBJECT_ICONS.get(label) ?? 'User' });
+  };
+
+  const selectedObjects = allRows.filter((o) => selected.has(o.id));
+  const onBarAction = (label: string, e: MouseEvent<HTMLButtonElement>) => {
+    const only = selectedObjects.length === 1 ? selectedObjects[0] : null;
+    if (label === 'Select all') setSelected(new Set(allRows.map((o) => o.id)));
+    if (label === 'Reset password' && only) setResetTarget(only);
+    if (label === 'Delete' && only) setDeleteTarget(only);
+    if (label === 'More actions' && only) {
+      setRowObject(only);
+      rowMenu.openAt(e);
+    }
+  };
+
+  const onCreated = (result: CreateObjectResult) => {
+    if (!result.locationId) {
+      announceCreated(result);
+      return;
+    }
+    const object = directoryObjectFromValues(result, result.locationId);
+    addObject(result.locationId, object);
+    announceCreated(result, `#/tree/${result.locationId}/${object.id}`);
+  };
 
   const breadcrumb = useMemo<Crumb[]>(() => {
     const path = getPath(nodeId);
@@ -212,32 +245,20 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
       <ARSPageMenu {...pageMenu.menuProps} onAction={onPageAction} />
       <ARSNewObjectMenu {...createMenu.menuProps} onAction={openCreate} />
 
-      <ActionBar
+      <ARSActionBar
+        variant={selectedObjects.length === 1 ? '2' : 'Default'}
         open={selected.size > 0}
         selectedCount={selected.size}
         totalCount={allRows.length}
+        showTotal
+        showSelected={showSelected}
+        onShowSelectedChange={setShowSelected}
         layout="inline"
-        onDismiss={() => setSelected(new Set())}
-        groups={[
-          [
-            {
-              icon: 'SelectionAll',
-              label: 'Select all',
-              onClick: () => setSelected(new Set(allRows.map((o) => o.id))),
-            },
-            { icon: 'Copy', label: 'Copy', onClick: () => undefined },
-            { icon: 'Folder', label: 'Move', onClick: () => undefined },
-            { icon: 'UserList', label: 'Properties', onClick: () => undefined },
-          ],
-          [
-            {
-              icon: 'Trash',
-              label: 'Delete',
-              tone: 'danger',
-              onClick: () => undefined,
-            },
-          ],
-        ]}
+        onAction={onBarAction}
+        onDismiss={() => {
+          setSelected(new Set());
+          setShowSelected(false);
+        }}
       />
 
       {resetTarget && (
@@ -252,7 +273,8 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
           onClose={() => setCreateTarget(null)}
           objectType={createTarget.type}
           icon={createTarget.icon}
-          location={`Directory Management / ${nodeName}`}
+          locationId={nodeId}
+          onCreate={onCreated}
         />
       )}
     </AppShell>

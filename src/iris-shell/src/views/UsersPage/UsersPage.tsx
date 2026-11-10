@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type MouseEvent } from 'react';
 import {
   ARSADUserActions,
+  ARSActionBar,
   ARSCreateMenu,
   ARSEntraUserActions,
   ARSFilterMenu,
@@ -13,10 +14,15 @@ import { useUsers } from '../../lib/usersStore.js';
 import { useAppShell } from '../../lib/appShellContext.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import type { BadgeTone } from '../../components/Badge/Badge.js';
-import { ActionBar } from '../../components/ActionBar/ActionBar.js';
 import { ResetPasswordModal } from '../UserDetailPage/ResetPasswordModal/ResetPasswordModal.js';
 import { DeleteUserModal } from '../UserDetailPage/DeleteUserModal/DeleteUserModal.js';
-import { CreateObjectModal } from './CreateObjectModal/CreateObjectModal.js';
+import { CreateObjectModal, type CreateObjectResult } from './CreateObjectModal/CreateObjectModal.js';
+import {
+  announceCreated,
+  directoryTypeFor,
+  objectTypeFromMenuLabel,
+  userFromValues,
+} from './CreateObjectModal/createdObject.js';
 import type { User } from './mockUsers.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 
@@ -49,12 +55,13 @@ const CREATE_ICONS = new Map(
  * (ARS_Flat View_User_Content) inside the shell's directory layout.
  */
 export function UsersPage() {
-  const { users } = useUsers();
+  const { users, addUser } = useUsers();
   const { setAiOpen, setAiContext } = useAppShell();
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const [showSelected, setShowSelected] = useState(false);
 
   // Which user (if any) a row-action modal is open for. `null` = closed.
   const [resetUser, setResetUser] = useState<User | null>(null);
@@ -70,11 +77,13 @@ export function UsersPage() {
 
   const rows = useMemo<User[]>(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return users;
-    return users.filter((u) =>
-      [u.name, u.description, u.email, u.objectId].some((v) => v.toLowerCase().includes(q)),
-    );
-  }, [users, query]);
+    const matching = q
+      ? users.filter((u) =>
+          [u.name, u.description, u.email, u.objectId].some((v) => v.toLowerCase().includes(q)),
+        )
+      : users;
+    return showSelected ? matching.filter((u) => selected.has(u.id)) : matching;
+  }, [users, query, showSelected, selected]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
@@ -98,6 +107,32 @@ export function UsersPage() {
 
   const onPageAction = (label: string) => {
     if (label === 'Ask AI') setAiOpen(true);
+  };
+
+  const selectedUsers = users.filter((u) => selected.has(u.id));
+  const onBarAction = (label: string, e: MouseEvent<HTMLButtonElement>) => {
+    const only = selectedUsers.length === 1 ? selectedUsers[0] : null;
+    if (label === 'Select all') setSelected(new Set(users.map((u) => u.id)));
+    if (label === 'Reset password' && only) setResetUser(only);
+    if (label === 'Delete' && only) setDeleteUser(only);
+    if (label === 'More actions' && only) {
+      setRowUser(only);
+      rowMenu.openAt(e);
+    }
+    if (label === 'Ask AI') {
+      setAiContext(selectedUsers.map((u) => ({ kind: 'user' as const, id: u.id, label: u.name })));
+      setAiOpen(true);
+    }
+  };
+
+  const onCreated = (result: CreateObjectResult) => {
+    if (directoryTypeFor(result.objectType) !== 'user') {
+      announceCreated(result);
+      return;
+    }
+    const user = userFromValues(result);
+    addUser(user);
+    announceCreated(result, `#/users/${user.id}`);
   };
 
   const RowActions = rowUser?.location === 'Entra' ? ARSEntraUserActions : ARSADUserActions;
@@ -149,52 +184,26 @@ export function UsersPage() {
       <ARSPageMenu {...pageMenu.menuProps} onAction={onPageAction} />
       <ARSCreateMenu
         {...createMenu.menuProps}
-        onAction={(label) => setCreateTarget({ type: label, icon: CREATE_ICONS.get(label) ?? 'User' })}
+        onAction={(label) => {
+          const type = objectTypeFromMenuLabel(label);
+          if (type) setCreateTarget({ type, icon: CREATE_ICONS.get(label) ?? 'User' });
+        }}
       />
 
-      <ActionBar
+      <ARSActionBar
+        variant={selectedUsers.length === 1 ? '2' : 'Default'}
         open={selected.size > 0}
         selectedCount={selected.size}
         totalCount={users.length}
+        showTotal
+        showSelected={showSelected}
+        onShowSelectedChange={setShowSelected}
         layout="inline"
-        onDismiss={() => setSelected(new Set())}
-        groups={[
-          [
-            {
-              icon: 'SelectionAll',
-              label: 'Select all',
-              onClick: () => setSelected(new Set(users.map((u) => u.id))),
-            },
-            { icon: 'Copy', label: 'Copy', onClick: () => undefined },
-            { icon: 'Folder', label: 'Move', onClick: () => undefined },
-            { icon: 'UserList', label: 'Properties', onClick: () => undefined },
-            {
-              icon: 'Sparkle',
-              label: 'Ask AI',
-              tone: 'brand',
-              beam: true,
-              // Signature action — never auto-collapse to icon-only.
-              iconOnly: false,
-              onClick: () => {
-                setAiContext(
-                  [...selected].flatMap((id) => {
-                    const u = users.find((x) => x.id === id);
-                    return u ? [{ kind: 'user' as const, id: u.id, label: u.name }] : [];
-                  }),
-                );
-                setAiOpen(true);
-              },
-            },
-          ],
-          [
-            {
-              icon: 'Trash',
-              label: 'Delete',
-              tone: 'danger',
-              onClick: () => undefined,
-            },
-          ],
-        ]}
+        onAction={onBarAction}
+        onDismiss={() => {
+          setSelected(new Set());
+          setShowSelected(false);
+        }}
       />
 
       {resetUser && <ResetPasswordModal open onClose={() => setResetUser(null)} user={resetUser} />}
@@ -205,6 +214,7 @@ export function UsersPage() {
           onClose={() => setCreateTarget(null)}
           objectType={createTarget.type}
           icon={createTarget.icon}
+          onCreate={onCreated}
         />
       )}
     </AppShell>

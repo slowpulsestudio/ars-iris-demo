@@ -30,6 +30,8 @@ export interface UsersContextValue {
   getUser: (id: string) => User | null;
   getUserIndex: (id: string) => number;
   updateUser: (id: string, patch: UserPatch) => void;
+  /** Put a newly created user at the top of the list. */
+  addUser: (user: User) => void;
 }
 
 const UsersContext = createContext<UsersContextValue | null>(null);
@@ -67,6 +69,8 @@ export function UsersProvider({ children }: UsersProviderProps) {
     );
   }, []);
 
+  const addUser = useCallback((user: User) => setUsers((prev) => [user, ...prev]), []);
+
   // Inline the lookups inside the memoized value — they only depend on `users`,
   // so wrapping them in their own `useCallback` would buy nothing (the dep
   // changes on every edit anyway).
@@ -76,8 +80,9 @@ export function UsersProvider({ children }: UsersProviderProps) {
       getUser: (id: string): User | null => users.find((u) => u.id === id) ?? null,
       getUserIndex: (id: string): number => users.findIndex((u) => u.id === id),
       updateUser,
+      addUser,
     }),
-    [users, updateUser],
+    [users, updateUser, addUser],
   );
 
   return <UsersContext.Provider value={value}>{children}</UsersContext.Provider>;

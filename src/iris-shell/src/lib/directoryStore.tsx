@@ -2,6 +2,7 @@ import { createContext, useContext, useMemo, useSyncExternalStore, type ReactNod
 
 import {
   NODE_TREE,
+  addObject,
   canMoveNode,
   getChildren,
   getLeafObjects,
@@ -46,6 +47,8 @@ export interface DirectoryContextValue {
   moveNode: (nodeId: string, newParentId: string | null) => boolean;
   /** Whether a reparent is allowed (rejects no-ops + self/descendant drops). */
   canMoveNode: (nodeId: string, newParentId: string | null) => boolean;
+  /** Add a created object to a node's listing. */
+  addObject: (nodeId: string, object: DirectoryObject) => boolean;
 }
 
 const DirectoryContext = createContext<DirectoryContextValue | null>(null);
@@ -58,13 +61,14 @@ export function DirectoryProvider({ children }: { children: ReactNode }) {
       nodeTree: NODE_TREE,
       isContainer: isContainerNode,
       getPath: (nodeId) => getNodePath(nodeId).map((n) => ({ id: n.id, name: n.name })),
-      getChildren,
-      getObject,
+      getChildren: (nodeId) => getChildren(nodeId),
+      getObject: (nodeId, objectId) => getObject(nodeId, objectId),
       getNodeName: (nodeId) => getNode(nodeId)?.name,
       getNodeIcon,
-      getSiblings: getLeafObjects,
+      getSiblings: (nodeId) => getLeafObjects(nodeId),
       moveNode,
       canMoveNode,
+      addObject,
     }),
     [version],
   );

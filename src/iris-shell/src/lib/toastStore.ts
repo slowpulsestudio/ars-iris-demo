@@ -6,10 +6,22 @@ import { useCallback, useSyncExternalStore } from 'react';
  * single `<Toast>` rendered in `App` subscribes and displays it.
  *
  * The `Toast` component owns its own auto-dismiss timer, so this store only
- * holds the current message and a `dismiss` to clear it.
+ * holds the current toast and a `dismiss` to clear it.
  */
 
-let current: string | null = null;
+export interface ToastOptions {
+  supportingText?: string;
+  /** When set, the toast offers a View button that opens this route. */
+  viewHref?: string;
+}
+
+interface CurrentToast extends ToastOptions {
+  message: string;
+}
+
+let current: CurrentToast | null = null;
+// Kept after dismissal so the toast keeps its type while it animates out.
+let last: CurrentToast | null = null;
 const listeners = new Set<() => void>();
 
 function emit() {
@@ -17,8 +29,9 @@ function emit() {
 }
 
 /** Show a toast from anywhere in the app. */
-export function showToast(message: string): void {
-  current = message;
+export function showToast(message: string, options: ToastOptions = {}): void {
+  current = { message, ...options };
+  last = current;
   emit();
 }
 
@@ -29,14 +42,16 @@ function subscribe(cb: () => void): () => void {
 
 export interface ToastController {
   message: string | null;
+  supportingText?: string;
+  viewHref?: string;
   dismiss: () => void;
 }
 
 export function useToastMessage(): ToastController {
-  const message = useSyncExternalStore(subscribe, () => current);
+  const toast = useSyncExternalStore(subscribe, () => current);
   const dismiss = useCallback(() => {
     current = null;
     emit();
   }, []);
-  return { message, dismiss };
+  return { message: toast?.message ?? null, supportingText: last?.supportingText, viewHref: last?.viewHref, dismiss };
 }

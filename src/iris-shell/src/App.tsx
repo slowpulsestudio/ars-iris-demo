@@ -1,8 +1,9 @@
-import { useRoute, type Route } from './lib/router.js';
+import { useRoute, navigate, type Route } from './lib/router.js';
 import { UsersProvider } from './lib/usersStore.js';
 import { DirectoryProvider } from './lib/directoryStore.js';
 import { AppShellProvider, useAppShell } from './lib/appShellContext.js';
 import { useToastMessage } from './lib/toastStore.js';
+import { ARSNewObjectToast } from '@ars';
 import { CommandPalette } from './components/CommandPalette/CommandPalette.js';
 import { Toast } from './components/Toast/Toast.js';
 import { UsersPage } from './views/UsersPage/UsersPage.js';
@@ -109,7 +110,19 @@ export default function App() {
         <AppShellProvider directoryPanel={<ARSDirectoryPanel />}>
           <RoutedPage />
           <CommandPalette />
-          <Toast message={toast.message} onDismiss={toast.dismiss} />
+          {toast.viewHref ? (
+            <ARSNewObjectToast
+              message={toast.message}
+              supportingText={toast.supportingText}
+              onView={() => {
+                if (toast.viewHref) navigate(toast.viewHref);
+                toast.dismiss();
+              }}
+              onDismiss={toast.dismiss}
+            />
+          ) : (
+            <Toast message={toast.message} supportingText={toast.supportingText} onDismiss={toast.dismiss} />
+          )}
         </AppShellProvider>
       </DirectoryProvider>
     </UsersProvider>
