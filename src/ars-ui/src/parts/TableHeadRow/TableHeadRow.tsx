@@ -19,6 +19,10 @@ export interface TableHeadRowProps {
   allSelected?: boolean;
   someSelected?: boolean;
   onSelectAll?: (selected: boolean) => void;
+  /** Content of the last head cell, e.g. a column-settings button. */
+  actions?: ReactNode;
+  /** Width of the last head cell in px (default 44). */
+  actionsWidth?: number;
   className?: string;
 }
 
@@ -28,6 +32,8 @@ export function TableHeadRow({
   allSelected = false,
   someSelected = false,
   onSelectAll,
+  actions,
+  actionsWidth,
   className,
 }: TableHeadRowProps) {
   return (
@@ -51,7 +57,13 @@ export function TableHeadRow({
           {col.trailing}
         </Fragment>
       ))}
-      <TableHeadItem className={styles.actions} aria-label="Actions" />
+      <TableHeadItem
+        className={styles.actions}
+        style={actionsWidth != null ? { width: actionsWidth } : undefined}
+        aria-label="Actions"
+      >
+        {actions}
+      </TableHeadItem>
     </div>
   );
 }

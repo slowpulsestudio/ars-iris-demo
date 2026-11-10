@@ -1,0 +1,43 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background-color: var(--oi-background-color-secondary);
+}
+
+/* "Fluid, large (1088)" (2385:51281): gap xs, px s, pb s, shadow low. */
+.contentArea {
+  display: flex;
+  flex: 1 1 0;
+  gap: var(--oi-spacing-xs);
+  min-height: 0;
+  padding: 0 var(--oi-spacing-s) var(--oi-spacing-s);
+}
+
+.panel {
+  display: flex;
+  flex-shrink: 0;
+  min-height: 0;
+}
+
+/* The layout's panel instance has a 1px muted border on every side. */
+.panel > * {
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  box-shadow: var(--oi-shadow-low);
+}
+
+/* "Content" frame (2385:52598): fills the rest. */
+.content {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.content > * {
+  flex: 1 1 0;
+  min-height: 0;
+  box-shadow: var(--oi-shadow-low);
+}

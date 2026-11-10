@@ -1,0 +1,19 @@
+/* ARS_Flat View_User_Content (3423:30755) and Tree_View_AD_Content
+   (4517:19943): bordered card, py xxl, gap xl; header and toolbar inset xxl,
+   the table runs edge to edge. */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-xl);
+  min-height: 0;
+  padding: var(--oi-spacing-xxl) 0;
+  background-color: var(--oi-background-color-primary);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+  overflow: clip;
+}
+
+.root > .inset {
+  box-sizing: border-box;
+  padding-inline: var(--oi-spacing-xxl);
+}

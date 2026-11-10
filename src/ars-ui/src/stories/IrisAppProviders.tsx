@@ -3,6 +3,14 @@ import { UsersProvider } from '@iris/lib/usersStore.js';
 import { DirectoryProvider } from '@iris/lib/directoryStore.js';
 import { AppShellProvider, useAppShell } from '@iris/lib/appShellContext.js';
 import { DEFAULT_PERSONA } from '@iris/lib/personas.js';
+import type { HeaderUser } from '@iris/components/AppHeader/AppHeader.js';
+
+/** The signed-in persona as the AppHeader user, as in the Iris AppHeader story. */
+export const signedInUser: HeaderUser = {
+  name: DEFAULT_PERSONA.name,
+  src: DEFAULT_PERSONA.avatar,
+  email: DEFAULT_PERSONA.email,
+};
 
 // Picks the persona the way the welcome page does, then shows the children.
 function SignedIn({ children }: { children: ReactNode }) {

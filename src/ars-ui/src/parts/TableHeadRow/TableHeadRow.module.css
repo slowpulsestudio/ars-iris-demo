@@ -19,6 +19,7 @@
 
 .actions {
   width: 44px;
+  justify-content: center;
 }
 
 .fill {

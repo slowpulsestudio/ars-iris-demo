@@ -1,0 +1,26 @@
+import { ARSTable, type ARSTableProps } from '../ARSTable/ARSTable.js';
+import type { ARSHeaderProps } from '../ARSHeader/ARSHeader.js';
+import type { ARSTableToolbarProps } from '../ARSTableToolbar/ARSTableToolbar.js';
+import { ContentScreen } from '../../parts/ContentScreen/ContentScreen.js';
+
+export interface ARSFlatViewUserContentProps {
+  /** ARS_Header; Figma uses Variant1 with the User icon. */
+  header: ARSHeaderProps;
+  /** ARS_Table_Toolbar; Figma uses the "Basic" variant. */
+  toolbar?: ARSTableToolbarProps;
+  /** ARS_Table (Default columns). */
+  table: Omit<ARSTableProps, 'variant'>;
+  className?: string;
+}
+
+/**
+ * ARS_Flat View_User_Content — the Flat view list of users: ARS_Header,
+ * ARS_Table_Toolbar and ARS_Table. Figma: 3423:30755.
+ */
+export function ARSFlatViewUserContent({ header, toolbar, table, className }: ARSFlatViewUserContentProps) {
+  return (
+    <ContentScreen header={{ icon: 'User', ...header }} toolbar={toolbar} className={className}>
+      <ARSTable variant="Default" {...table} />
+    </ContentScreen>
+  );
+}
