@@ -34,6 +34,8 @@ export type Route =
   | { name: 'welcome'; params: Record<string, never> }
   | { name: 'storybooks'; params: Record<string, never> }
   | { name: 'componentsReview'; params: Record<string, never> }
+  | { name: 'componentsReviewMissing'; params: Record<string, never> }
+  | { name: 'componentsReviewTasks'; params: Record<string, never> }
   | { name: 'userViewHome'; params: Record<string, never> }
   | { name: 'userViewProfile'; params: Record<string, never> }
   | { name: 'userViewApprovals'; params: Record<string, never> }
@@ -71,6 +73,8 @@ const ROUTES: RouteDef[] = [
   { name: 'welcome', pattern: /^#\/welcome$/, keys: [] },
   { name: 'storybooks', pattern: /^#\/storybooks$/, keys: [] },
   { name: 'componentsReview', pattern: /^#\/components-to-review$/, keys: [] },
+  { name: 'componentsReviewMissing', pattern: /^#\/components-to-review\/missing$/, keys: [] },
+  { name: 'componentsReviewTasks', pattern: /^#\/components-to-review\/tasks$/, keys: [] },
   { name: 'userViewHome', pattern: /^#\/user-view\/home$/, keys: [] },
   { name: 'userViewProfile', pattern: /^#\/user-view\/profile$/, keys: [] },
   { name: 'userViewApprovals', pattern: /^#\/user-view\/approvals$/, keys: [] },

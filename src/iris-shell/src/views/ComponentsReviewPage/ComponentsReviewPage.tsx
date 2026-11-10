@@ -12,10 +12,10 @@ import styles from './ComponentsReviewPage.module.css';
 export function ComponentsReviewPage() {
   return (
     <ChoicePage
-      title="Components to review"
+      title="Components not in Figma"
       subtitle="Used by the screens but missing from the ARS - Primary kit. Each is drawn from the node linked on its card."
       topStart={
-        <Button variant="secondary" iconLead="ArrowLeft" onClick={() => navigate('#/welcome')}>
+        <Button variant="secondary" iconLead="ArrowLeft" onClick={() => navigate('#/components-to-review')}>
           Back
         </Button>
       }

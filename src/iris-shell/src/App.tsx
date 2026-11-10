@@ -23,6 +23,8 @@ import { SafeguardPage } from './views/SafeguardPage/SafeguardPage.js';
 import { WelcomePage } from './views/WelcomePage/WelcomePage.js';
 import { StorybooksPage } from './views/StorybooksPage/StorybooksPage.js';
 import { ComponentsReviewPage } from './views/ComponentsReviewPage/ComponentsReviewPage.js';
+import { ReviewHubPage } from './views/ReviewHubPage/ReviewHubPage.js';
+import { ReviewTasksPage } from './views/ReviewTasksPage/ReviewTasksPage.js';
 import { ARSDirectoryPanel } from './views/ARSDirectoryPanel/ARSDirectoryPanel.js';
 
 function renderRoute(route: Route) {
@@ -98,7 +100,9 @@ function RoutedPage() {
   const route = useRoute();
   const { persona } = useAppShell();
   if (route.name === 'storybooks') return <StorybooksPage />;
-  if (route.name === 'componentsReview') return <ComponentsReviewPage />;
+  if (route.name === 'componentsReview') return <ReviewHubPage />;
+  if (route.name === 'componentsReviewMissing') return <ComponentsReviewPage />;
+  if (route.name === 'componentsReviewTasks') return <ReviewTasksPage />;
   return persona ? renderRoute(route) : <WelcomePage />;
 }
 

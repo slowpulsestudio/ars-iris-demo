@@ -28,10 +28,10 @@ export function WelcomePage() {
       subtitle="Choose a persona to start. Each one has their own scenario and navigation."
       topEnd={
         <span className={styles.topActions}>
-          <Tooltip label="Components to review" placement="bottom">
+          <Tooltip label="Design review" placement="bottom">
             <IconButton
               icon="ClipboardText"
-              ariaLabel="Components to review"
+              ariaLabel="Design review"
               size="l"
               onClick={() => navigate('#/components-to-review')}
             />
