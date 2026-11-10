@@ -16,7 +16,9 @@
 }
 
 .rootOpen {
-  background-color: var(--oi-background-color-blanket, rgba(2, 6, 24, 0.4));
+  background-color: var(--oi-background-color-modal-backdrop);
+  /* UI Kit ".Background overlay": 16px background blur (--oi-backdrop-blur-md isn't in the code tokens). */
+  backdrop-filter: blur(16px);
   transition: background-color var(--oi-motion-duration-long)
     var(--oi-motion-ease-default);
 }
@@ -48,14 +50,15 @@
     transform var(--oi-motion-duration-long) var(--oi-motion-ease-default);
 }
 
+/* Iris UI Kit "Modal" sizes (Component / Modal, 3945:422). */
 .size_s {
-  max-width: 420px;
+  max-width: 380px;
 }
 .size_m {
   max-width: 620px;
 }
 .size_l {
-  max-width: 820px;
+  max-width: 980px;
 }
 
 /* ---------- header ---------- */
@@ -66,8 +69,6 @@
   align-items: flex-start;
   gap: var(--oi-spacing-m);
   padding: var(--oi-spacing-l);
-  border-bottom: var(--oi-border-width-default) var(--oi-border-style-solid)
-    var(--oi-border-color-default);
   flex-shrink: 0;
 }
 
@@ -91,11 +92,11 @@
 .headerText {
   display: flex;
   flex-direction: column;
-  gap: var(--oi-spacing-2);
+  gap: var(--oi-spacing-xs);
   flex: 1 1 auto;
   min-width: 0;
   /* leave room for the absolute close button */
-  padding-right: var(--oi-spacing-l);
+  padding-right: var(--oi-spacing-xl);
 }
 
 .title {
@@ -118,8 +119,8 @@
 
 .closeBtn {
   position: absolute;
-  top: var(--oi-spacing-s);
-  right: var(--oi-spacing-s);
+  top: var(--oi-spacing-l);
+  right: var(--oi-spacing-l);
 }
 
 /* ---------- body ---------- */
@@ -130,17 +131,26 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
-  padding: var(--oi-spacing-l);
+  padding: 0 var(--oi-spacing-l);
+}
+
+/* Without a footer, keep the UI Kit's 16px below the content. */
+.body:last-child {
+  padding-bottom: var(--oi-spacing-l);
 }
 
 /* ---------- footer ---------- */
 
+/* UI Kit ".Modal-Footer": 16px gap, a default-colour divider, then the actions. */
 .footer {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--oi-spacing-s);
+  gap: var(--oi-button-gap-default);
+  margin-top: var(--oi-spacing-l);
   padding: var(--oi-spacing-l);
+  border-top: var(--oi-border-width-default) var(--oi-border-style-solid)
+    var(--oi-border-color-default);
   flex-shrink: 0;
 }
 
