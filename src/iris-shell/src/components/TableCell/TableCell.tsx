@@ -1,5 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react';
-import { cx } from '@iris/lib/cx.js';
+import { cx } from '../../lib/cx.js';
 import styles from './TableCell.module.css';
 
 export interface TableCellProps extends HTMLAttributes<HTMLDivElement> {
@@ -11,25 +11,15 @@ export interface TableCellProps extends HTMLAttributes<HTMLDivElement> {
   divider?: boolean;
 }
 
-/** Iris UI Kit ".Cell item" — one cell of a table row. */
-export function TableCell({
-  inset = 'm',
-  gap = 'm',
-  divider = true,
-  className,
-  children,
-  ...rest
-}: TableCellProps) {
+/**
+ * TableCell — one cell of a table row. Matches the Iris UI Kit ".Cell item"
+ * (Component / Table): 44px tall, muted bottom and right borders.
+ */
+export function TableCell({ inset = 'm', gap = 'm', divider = true, className, children, ...rest }: TableCellProps) {
   return (
     <div
       role="cell"
-      className={cx(
-        styles.cell,
-        styles[`inset_${inset}`],
-        styles[`gap_${gap}`],
-        divider && styles.divider,
-        className,
-      )}
+      className={cx(styles.cell, styles[`inset_${inset}`], styles[`gap_${gap}`], divider && styles.divider, className)}
       {...rest}
     >
       {children}
@@ -38,12 +28,12 @@ export function TableCell({
 }
 
 export interface CellTextProps {
-  /** Semi-bold, as used for the name column. */
+  /** Semi-bold, as used for a name column. */
   strong?: boolean;
   children?: ReactNode;
 }
 
-/** Single-line cell text that truncates with an ellipsis. */
+/** UI Kit cell "Heading" text: one line that truncates with an ellipsis. */
 export function CellText({ strong = false, children }: CellTextProps) {
   return <span className={cx(styles.text, strong && styles.strong)}>{children}</span>;
 }

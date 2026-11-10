@@ -1,10 +1,4 @@
-.list {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--oi-spacing-6);
-  min-width: 0;
-}
-
+/* Iris UI Kit "Tag" (Component / Tag, 3534:232). The 240px text limit has no token. */
 .tag {
   display: inline-flex;
   align-items: stretch;
@@ -29,21 +23,23 @@
     color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
 }
 
+/* UI Kit "State=Hover". */
 .actionButton:hover {
   background-color: var(--oi-background-color-tertiary);
   color: var(--oi-content-color-primary);
 }
 
+/* UI Kit "State=Focus Action". */
 .actionButton:focus-visible {
-  outline: none;
-  box-shadow: var(--oi-focus-ring);
+  outline: 1.5px solid var(--oi-border-color-focus);
+  outline-offset: -1.5px;
 }
 
 .text {
   display: inline-flex;
   align-items: center;
   max-width: 240px;
-  padding: var(--oi-spacing-2) var(--oi-spacing-s) var(--oi-spacing-2) var(--oi-spacing-xs);
+  padding: var(--oi-border-width-l) var(--oi-spacing-s) var(--oi-border-width-l) var(--oi-spacing-xs);
   background-color: var(--oi-background-color-primary);
   border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
   border-left: none;

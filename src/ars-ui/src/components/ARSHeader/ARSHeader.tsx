@@ -2,7 +2,7 @@ import { cx } from '@iris/lib/cx.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
 import { ObjectIcon } from '../../parts/ObjectIcon/ObjectIcon.js';
 import { ObjectTitle } from '../../parts/ObjectTitle/ObjectTitle.js';
-import { Tag } from '../../parts/Tag/Tag.js';
+import { Tag } from '@iris/components/Tag/Tag.js';
 import styles from './ARSHeader.module.css';
 
 export type ARSHeaderVariant =

@@ -1,19 +1,16 @@
+/* Iris UI Kit ".Table head item" (Component / Table, 4439:1445). */
 .item {
   display: flex;
   align-items: center;
   gap: var(--oi-spacing-s);
   flex-shrink: 0;
   min-width: 0;
-  /* 20px label + 8px above and below = the 36px Figma header height. */
+  /* 20px label + 8px above and below = the UI Kit's 36px header. */
   min-height: calc(var(--oi-line-height-s) + 2 * var(--oi-spacing-s));
   overflow: hidden;
   background-color: var(--oi-background-color-primary);
-  border-top: var(--oi-border-width-default) var(--oi-border-style-solid)
-    var(--oi-border-color-muted);
-  border-right: var(--oi-border-width-default) var(--oi-border-style-solid)
-    var(--oi-border-color-muted);
-  border-bottom: var(--oi-border-width-default) var(--oi-border-style-solid)
-    var(--oi-border-color-muted);
+  border-right: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-bottom: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
 }
 
 .inset_m {

@@ -2,7 +2,7 @@ import { cx } from '@iris/lib/cx.js';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
 import { Link } from '@iris/components/Link/Link.js';
-import { CellText, TableCell } from '../../parts/TableCell/TableCell.js';
+import { CellText, TableCell } from '@iris/components/TableCell/TableCell.js';
 import styles from './ARSTableGroupRow.module.css';
 
 export interface ARSTableGroupRowProps {

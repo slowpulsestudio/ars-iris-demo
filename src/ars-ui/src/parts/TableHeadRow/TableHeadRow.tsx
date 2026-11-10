@@ -1,7 +1,7 @@
 import { Fragment, type ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
-import { TableHeadItem } from '../TableHeadItem/TableHeadItem.js';
+import { TableHeadItem } from '@iris/components/TableHeadItem/TableHeadItem.js';
 import styles from './TableHeadRow.module.css';
 
 export interface TableHeadColumn {

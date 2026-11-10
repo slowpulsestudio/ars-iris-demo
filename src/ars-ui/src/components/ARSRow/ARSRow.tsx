@@ -3,8 +3,8 @@ import { Badge, type BadgeTone } from '@iris/components/Badge/Badge.js';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
 import { Link } from '@iris/components/Link/Link.js';
-import { CellText, TableCell } from '../../parts/TableCell/TableCell.js';
-import { TagList } from '../../parts/Tag/Tag.js';
+import { CellText, TableCell } from '@iris/components/TableCell/TableCell.js';
+import { TagList } from '../../parts/TagList/TagList.js';
 import styles from './ARSRow.module.css';
 
 export interface ARSRowProps {

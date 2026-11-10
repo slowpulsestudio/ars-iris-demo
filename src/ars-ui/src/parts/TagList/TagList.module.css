@@ -1,0 +1,6 @@
+.list {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-6);
+  min-width: 0;
+}

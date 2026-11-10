@@ -7,6 +7,11 @@
   background-color: var(--oi-background-color-primary);
 }
 
+/* The ARS file adds a top border to its header cells; the Iris UI Kit head item has none. */
+.head > [role='columnheader'] {
+  border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+}
+
 .check {
   width: 40px;
   justify-content: center;
