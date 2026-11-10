@@ -8,8 +8,10 @@ export interface PersonRowProps {
   name: string;
   /** Text beside the name, e.g. "roles2.net/Users". */
   detail?: string;
-  /** Edit mode: grey row with the edit / remove buttons Figma shows. */
+  /** Edit mode: grey row with Figma's remove (Trash) button. */
   editable?: boolean;
+  /** Adds Figma's change (PencilSimple) button to an editable row. */
+  showEdit?: boolean;
   onOpen?: () => void;
   onEdit?: () => void;
   onRemove?: () => void;
@@ -17,7 +19,16 @@ export interface PersonRowProps {
 }
 
 /** A person (manager or owner) on the ARS ownership cards. */
-export function PersonRow({ name, detail, editable = false, onOpen, onEdit, onRemove, className }: PersonRowProps) {
+export function PersonRow({
+  name,
+  detail,
+  editable = false,
+  showEdit = false,
+  onOpen,
+  onEdit,
+  onRemove,
+  className,
+}: PersonRowProps) {
   return (
     <div className={cx(styles.row, editable && styles.editable, className)}>
       <span className={styles.who}>
@@ -35,7 +46,7 @@ export function PersonRow({ name, detail, editable = false, onOpen, onEdit, onRe
       </span>
       {editable && (
         <span className={styles.actions}>
-          {onEdit && <IconButton icon="PencilSimple" ariaLabel={`Change ${name}`} size="s" onClick={onEdit} />}
+          {showEdit && <IconButton icon="PencilSimple" ariaLabel={`Change ${name}`} size="s" onClick={onEdit} />}
           <IconButton icon="Trash" ariaLabel={`Remove ${name}`} size="s" onClick={onRemove} />
         </span>
       )}

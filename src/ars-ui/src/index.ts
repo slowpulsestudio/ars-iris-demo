@@ -105,3 +105,9 @@ export {
   type ARSManagedByProps,
   type ARSManagedByState,
 } from './components/ARSManagedBy/ARSManagedBy.js';
+export {
+  ARSOwnership,
+  type ARSOwnershipProps,
+  type ARSOwnershipState,
+  type ARSOwnershipVariant,
+} from './components/ARSOwnership/ARSOwnership.js';

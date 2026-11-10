@@ -1,11 +1,10 @@
-import type { ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Button } from '@iris/components/Button/Button.js';
 import { Card } from '@iris/components/Card/Card.js';
 import { DetailsList, type DetailsRow } from '../../parts/DetailsList/DetailsList.js';
 import { FormInput, type FormInputProps } from '../../parts/FormInput/FormInput.js';
 import { GhostButton } from '../../parts/GhostButton/GhostButton.js';
-import { PersonRow } from '../../parts/PersonRow/PersonRow.js';
+import { NotSet, OwnerList, OwnerSection, type OwnerPerson } from '../../parts/OwnerSection/OwnerSection.js';
 import styles from './ARSManagedBy.module.css';
 
 export type ARSManagedByState = 'Empty' | 'Hover' | 'Add manager' | 'Edit mode' | 'Filled';
@@ -42,21 +41,11 @@ const fields = (labels: string[]): FormInputProps[] => [
 const ADD_FIELDS = fields(['Office', 'Street address', 'City', 'State/Province', 'ZIP/Postal code']);
 const EDIT_FIELDS = fields(['Office', 'Street Address', 'City', 'State/Provance', 'ZIP/Postal Code']);
 
-const OWNERS = [
+const MANAGER: OwnerPerson[] = [{ name: 'Marcus Kim' }];
+const OWNERS: OwnerPerson[] = [
   { name: 'Emily Park', detail: 'roles2.net/Users' },
   { name: 'Peter Smith', detail: 'roles2.net/Users' },
 ];
-
-function Section({ label, editing, children }: { label: string; editing: boolean; children: ReactNode }) {
-  return (
-    <div className={styles.section}>
-      <span className={editing ? styles.fieldLabel : styles.label}>{label}</span>
-      {children}
-    </div>
-  );
-}
-
-const notSet = <div className={styles.notSet}>Not set</div>;
 
 export interface ARSManagedByProps {
   /** Figma "State". */
@@ -106,12 +95,10 @@ export function ARSManagedBy({
       <GhostButton iconLead="Plus" onClick={onAddManager}>
         Add manager
       </GhostButton>
-    ) : state === 'Edit mode' ? (
-      <PersonRow name="Marcus Kim" editable onEdit={onAddManager} className={styles.person} />
-    ) : filled ? (
-      <PersonRow name="Marcus Kim" className={styles.person} />
+    ) : state === 'Edit mode' || filled ? (
+      <OwnerList people={MANAGER} editable={state === 'Edit mode'} showEdit />
     ) : (
-      notSet
+      <NotSet />
     );
 
   return (
@@ -121,9 +108,9 @@ export function ARSManagedBy({
       className={cx(styles.card, !editing && styles.readable, state === 'Hover' && styles.hovered, className)}
     >
       <div className={styles.body}>
-        <Section label="Manager" editing={editing}>
+        <OwnerSection label="Manager" editing={editing}>
           {manager}
-        </Section>
+        </OwnerSection>
         {editing ? (
           <div className={styles.grid}>
             {(state === 'Add manager' ? ADD_FIELDS : EDIT_FIELDS).map((f) => (
@@ -133,30 +120,20 @@ export function ARSManagedBy({
         ) : (
           <DetailsList rows={filled ? FILLED_ROWS : EMPTY_ROWS} />
         )}
-        <Section label="Secondary owners" editing={editing}>
+        <OwnerSection label="Secondary owners" editing={editing}>
           {editing ? (
             <>
-              {state === 'Edit mode' && (
-                <div className={styles.people}>
-                  {OWNERS.map((o) => (
-                    <PersonRow key={o.name} {...o} editable className={styles.person} />
-                  ))}
-                </div>
-              )}
+              {state === 'Edit mode' && <OwnerList people={OWNERS} editable />}
               <GhostButton iconLead="Plus" onClick={onAddOwner}>
                 Add owner
               </GhostButton>
             </>
           ) : filled ? (
-            <div className={styles.people}>
-              {OWNERS.map((o) => (
-                <PersonRow key={o.name} {...o} className={styles.person} />
-              ))}
-            </div>
+            <OwnerList people={OWNERS} />
           ) : (
-            notSet
+            <NotSet />
           )}
-        </Section>
+        </OwnerSection>
       </div>
     </Card>
   );

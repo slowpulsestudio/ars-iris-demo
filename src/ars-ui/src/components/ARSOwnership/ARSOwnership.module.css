@@ -1,0 +1,5 @@
+/* Figma's component is 576px wide (no token). */
+.root {
+  width: 576px;
+  max-width: 100%;
+}
