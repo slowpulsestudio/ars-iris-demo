@@ -100,6 +100,15 @@
   border: 0.5px var(--oi-border-style-solid) var(--oi-border-color-default);
   border-radius: var(--oi-border-radius-l);
   cursor: pointer;
+  transition:
+    border-color var(--oi-motion-duration-short) var(--oi-motion-ease-default),
+    box-shadow var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+/* Hover: a 1px strong border (the inset shadow adds the second half-pixel without moving the layout). */
+.card:hover {
+  border-color: var(--oi-border-color-strong);
+  box-shadow: inset 0 0 0 0.5px var(--oi-border-color-strong);
 }
 
 .card:focus-visible {
@@ -166,6 +175,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .card,
   .arrow {
     transition: none;
   }

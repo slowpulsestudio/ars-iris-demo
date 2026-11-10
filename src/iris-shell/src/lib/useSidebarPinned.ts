@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 
-const STORAGE_KEY = 'ars.globalSidebar.pinned';
+// Renamed from 'ars.globalSidebar.pinned' when the default became pinned.
+const STORAGE_KEY = 'ars.globalSidebar.pinnedOpen';
 
-/** Read the persisted pinned flag, defaulting to collapsed. */
+/** Read the persisted pinned flag, defaulting to pinned (open). */
 function readInitial(): boolean {
   try {
-    return localStorage.getItem(STORAGE_KEY) === '1';
+    return localStorage.getItem(STORAGE_KEY) !== '0';
   } catch {
-    return false;
+    return true;
   }
 }
 
