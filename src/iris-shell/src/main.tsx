@@ -22,14 +22,11 @@ import './styles/base.css';
 import './styles/scroll.css';
 
 import App from './App.js';
-import { THEMES } from './lib/useTheme.js';
+import { readSavedTheme } from './lib/useTheme.js';
 
-// Default theme. The useTheme hook later restores the user's saved
-// preference; this prevents a flash if no preference is stored.
-const STORED_THEME = localStorage.getItem('ars.theme');
-const VALID = THEMES.map((t) => t.value) as string[];
-const initial = STORED_THEME && VALID.includes(STORED_THEME) ? STORED_THEME : 'dark';
-document.body.classList.add(`theme-${initial}`);
+// First paint uses the product theme (light unless the user picked another);
+// the welcome and Storybooks pages switch to dark before they paint.
+document.body.classList.add(`theme-${readSavedTheme()}`);
 
 const rootEl = document.getElementById('root');
 if (!rootEl) throw new Error('Root element #root not found');

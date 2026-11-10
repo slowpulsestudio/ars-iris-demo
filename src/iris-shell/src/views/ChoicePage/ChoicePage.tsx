@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { BrandLogo } from '../../components/BrandLogo/BrandLogo.js';
 import { Icon } from '../../components/Icon/Icon.js';
+import { useFixedTheme } from '../../lib/useTheme.js';
 import styles from './ChoicePage.module.css';
 
 interface ChoicePageProps {
@@ -16,9 +17,10 @@ interface ChoicePageProps {
 /**
  * ChoicePage — full-window page (no shell chrome) with the product lockup,
  * a heading and a row of big choice cards. Used by the welcome page and the
- * Storybooks page.
+ * Storybooks page, which always show in the dark theme.
  */
 export function ChoicePage({ title, subtitle, topStart, topEnd, children }: ChoicePageProps) {
+  useFixedTheme('dark');
   return (
     <div className={styles.page}>
       {topStart && <div className={styles.topStart}>{topStart}</div>}
