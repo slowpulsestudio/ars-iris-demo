@@ -112,22 +112,21 @@ export function CreateObjectModal({
   const setV = (patch: Partial<ARSNewObjectValues>) => setValues((p) => ({ ...p, ...patch }));
 
   const isLast = step === STEPS.length - 1;
-  const anyGeneralValue = [
+  // The fields Figma marks Required; step 1 is complete once all have a value.
+  const generalComplete = [
     values.firstName,
     values.lastName,
-    values.initials,
     values.name,
     values.displayName,
     values.userLogonName,
-    values.suffix,
     values.preWindows2000,
-  ].some((v) => v.trim() !== '');
-  const footerVariant = isLast ? '2' : anyGeneralValue ? '1_complete' : '1';
+  ].every((v) => v.trim() !== '');
+  const footerVariant = isLast ? '2' : generalComplete ? '1_complete' : '1';
 
   // Reached steps are clickable; the next one opens once this step is complete.
   const steps = STEPS.map((s, i) => ({
     ...s,
-    disabled: i > step && !(i === step + 1 && anyGeneralValue),
+    disabled: i > step && !(i === step + 1 && generalComplete),
   }));
 
   const create = () => {
