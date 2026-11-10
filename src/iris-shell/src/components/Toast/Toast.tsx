@@ -1,22 +1,38 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { cx } from '../../lib/cx.js';
 import { Icon } from '../Icon/Icon.js';
 import { IconButton } from '../IconButton/IconButton.js';
 import styles from './Toast.module.css';
 
+export type ToastTone = 'info' | 'warning' | 'error' | 'success';
+
+const TONE_ICONS: Record<ToastTone, string> = {
+  info: 'Info',
+  warning: 'Warning',
+  error: 'WarningCircle',
+  success: 'CheckCircle',
+};
+
 export interface ToastProps {
-  /** Truthy = visible. Setting a new message resets the auto-dismiss timer. */
+  /** The toast's title. Truthy = visible. Setting a new message resets the auto-dismiss timer. */
   message: string | null;
   /** Called when the auto-dismiss timer fires or the user clicks the dismiss
    *  button. Owner clears its own `message` state in response. */
   onDismiss: () => void;
-  /** Auto-dismiss delay in ms. */
+  /** Iris UI Kit "Type". */
+  tone?: ToastTone;
+  supportingText?: string;
+  /** Up to one action, e.g. a small secondary Button (UI Kit "Actions"). */
+  actions?: ReactNode;
+  /** Auto-dismiss delay in ms (UI Kit: 5 seconds). */
   durationMs?: number;
 }
 
 /**
- * Toast — bottom-right status notification matching the Figma `Toast`
- * component (white card, featured success icon, dismiss X).
+ * Toast — bottom-right status notification matching the Iris UI Kit "Toast"
+ * (Component / Toast): featured icon, title, optional supporting text and
+ * action, dismiss X. The countdown pauses on hover or keyboard focus.
  *
  * Controlled: the parent owns the message string and clears it when
  * `onDismiss` fires. A new non-null `message` resets the timer, so a
@@ -26,7 +42,14 @@ export interface ToastProps {
  * AI panel, modals, and side sheets without inheriting their stacking
  * context.
  */
-export function Toast({ message, onDismiss, durationMs = 3000 }: ToastProps) {
+export function Toast({
+  message,
+  onDismiss,
+  tone = 'success',
+  supportingText,
+  actions,
+  durationMs = 5000,
+}: ToastProps) {
   // Two-stage state so the leave transition has time to play after the
   // owner clears `message`. `shown` holds the last non-null text and is
   // cleared on a short delay after the prop goes null.
@@ -47,18 +70,44 @@ export function Toast({ message, onDismiss, durationMs = 3000 }: ToastProps) {
     onDismissRef.current = onDismiss;
   }, [onDismiss]);
 
+  // Pausable countdown: hover or keyboard focus holds it; it resumes (not resets) when both end.
+  const timerRef = useRef<number | undefined>(undefined);
+  const startedRef = useRef(0);
+  const remainingRef = useRef(durationMs);
+  const holdRef = useRef({ hover: false, focus: false });
+
+  const startTimer = useCallback(() => {
+    if (timerRef.current !== undefined) return;
+    startedRef.current = Date.now();
+    timerRef.current = window.setTimeout(() => onDismissRef.current(), remainingRef.current);
+  }, []);
+
+  const stopTimer = useCallback(() => {
+    if (timerRef.current === undefined) return;
+    clearTimeout(timerRef.current);
+    timerRef.current = undefined;
+    remainingRef.current -= Date.now() - startedRef.current;
+  }, []);
+
+  const hold = (key: 'hover' | 'focus', on: boolean) => {
+    holdRef.current[key] = on;
+    if (on) stopTimer();
+    else if (!holdRef.current.hover && !holdRef.current.focus && message) startTimer();
+  };
+
   useEffect(() => {
     if (!message) return;
     setShown(message);
     // Flip to visible on the next frame so the enter transition runs from
     // the resting (below + faded + blurred) state.
     const raf = requestAnimationFrame(() => setVisible(true));
-    const id = setTimeout(() => onDismissRef.current(), durationMs);
+    remainingRef.current = durationMs;
+    startTimer();
     return () => {
       cancelAnimationFrame(raf);
-      clearTimeout(id);
+      stopTimer();
     };
-  }, [message, durationMs]);
+  }, [message, durationMs, startTimer, stopTimer]);
 
   // Hide local copy once the owner clears the prop, after a short delay
   // so the CSS opacity/transform transition can play out.
@@ -72,24 +121,31 @@ export function Toast({ message, onDismiss, durationMs = 3000 }: ToastProps) {
 
   if (!shown) return null;
 
+  const isError = tone === 'error';
   return createPortal(
     <div
-      className={styles.toast}
-      role="status"
-      aria-live="polite"
+      className={cx(styles.toast, styles[`tone_${tone}`])}
+      role={isError ? 'alert' : 'status'}
+      aria-live={isError ? 'assertive' : 'polite'}
       data-visible={visible ? 'true' : 'false'}
+      onMouseEnter={() => hold('hover', true)}
+      onMouseLeave={() => hold('hover', false)}
+      onFocus={() => hold('focus', true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) hold('focus', false);
+      }}
     >
       <span className={styles.icon} aria-hidden="true">
-        <Icon name="Check" size="20px" />
+        <Icon name={TONE_ICONS[tone]} size="20px" />
       </span>
-      <p className={styles.message}>{shown}</p>
-      <IconButton
-        icon="X"
-        ariaLabel="Dismiss notification"
-        size="s"
-        className={styles.dismiss}
-        onClick={onDismiss}
-      />
+      <div className={styles.content}>
+        <div className={styles.text}>
+          <p className={styles.title}>{shown}</p>
+          {supportingText && <p className={styles.supporting}>{supportingText}</p>}
+        </div>
+        {actions && <div className={styles.actions}>{actions}</div>}
+      </div>
+      <IconButton icon="X" ariaLabel="Dismiss notification" size="s" onClick={onDismiss} />
     </div>,
     document.body,
   );
