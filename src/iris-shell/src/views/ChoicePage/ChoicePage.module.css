@@ -3,8 +3,9 @@
   position: relative;
   height: 100%;
   overflow: auto;
+  scrollbar-gutter: stable;
   display: flex;
-  padding: var(--oi-spacing-xxl) var(--oi-spacing-l);
+  padding: var(--oi-spacing-96) var(--oi-spacing-l) var(--oi-spacing-xxl);
   background-color: var(--oi-background-color-secondary);
 }
 
@@ -22,9 +23,10 @@
   right: var(--oi-spacing-l);
 }
 
-/* Auto margins centre the content, and collapse so it scrolls when tall. */
+/* Top-anchored, not vertically centred, so the heading doesn't move between
+   the welcome and Storybooks pages (their cards are different heights). */
 .content {
-  margin: auto;
+  margin: 0 auto;
   width: 100%;
   max-width: 936px;
   display: flex;
