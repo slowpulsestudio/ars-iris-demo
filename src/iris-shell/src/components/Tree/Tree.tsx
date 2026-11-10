@@ -46,27 +46,38 @@ export interface TreeProps {
   className?: string;
 }
 
+type TrailPiece = 'line' | 'tee' | 'end';
+
+const TRAIL_CLASS: Record<TrailPiece, string> = {
+  line: styles.trailLine,
+  tee: styles.trailTee,
+  end: styles.trailEnd,
+};
+
 interface Row {
   node: TreeNode;
   level: number;
   parentId: string | null;
-  /** Per ancestor column: does that ancestor's line continue below this row? */
-  guides: boolean[];
-  isLast: boolean;
+  /** One .Tree-Trail piece per level. */
+  trail: TrailPiece[];
 }
 
 function flatten(nodes: TreeNode[], expanded: ReadonlySet<string>): Row[] {
   const rows: Row[] = [];
-  const walk = (list: TreeNode[], level: number, parentId: string | null, guides: boolean[]) => {
-    list.forEach((node, i) => {
-      const isLast = i === list.length - 1;
-      rows.push({ node, level, parentId, guides, isLast });
-      if (node.children?.length && expanded.has(node.id)) {
-        walk(node.children, level + 1, node.id, level === 0 ? [] : [...guides, !isLast]);
-      }
-    });
+  const walk = (list: TreeNode[], level: number, parentId: string | null) => {
+    for (const node of list) {
+      rows.push({ node, level, parentId, trail: [] });
+      if (node.children?.length && expanded.has(node.id)) walk(node.children, level + 1, node.id);
+    }
   };
-  walk(nodes, 0, null, []);
+  walk(nodes, 0, null);
+  // A column's line continues while the next row is still inside that column's branch.
+  rows.forEach((row, i) => {
+    const nextLevel = rows[i + 1]?.level ?? 0;
+    for (let k = 1; k <= row.level; k++) {
+      row.trail.push(nextLevel >= k ? (k === row.level ? 'tee' : 'line') : 'end');
+    }
+  });
   return rows;
 }
 
@@ -239,10 +250,9 @@ export function Tree({
           >
             {level > 0 && (
               <span className={styles.trailZone} aria-hidden="true">
-                {row.guides.map((continues, i) => (
-                  <span key={i} className={cx(styles.trail, continues && styles.trailLine)} />
+                {row.trail.map((piece, i) => (
+                  <span key={i} className={cx(styles.trail, TRAIL_CLASS[piece])} />
                 ))}
-                <span className={cx(styles.trail, row.isLast ? styles.trailEnd : styles.trailTee)} />
               </span>
             )}
             <span className={styles.leading}>
