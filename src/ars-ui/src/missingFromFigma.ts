@@ -28,12 +28,4 @@ export interface MissingFromFigmaEntry {
  * Components the ARS_WebUI2_CRUD screens use that are not in the ARS - Primary kit.
  * They are drawn from the CRUD file and shown in Storybook under "Missing from Figma".
  */
-export const MISSING_FROM_FIGMA: MissingFromFigmaEntry[] = [
-  {
-    component: 'ARSEmpty',
-    figmaName: 'Empty',
-    figmaNodeId: '1369:31209',
-    file: 'crud',
-    note: 'Main content of Tree view with no directory or folder selected. A symbol in the CRUD file only; ARS_Empty_Content is a different component (header, toolbar and empty state).',
-  },
-];
+export const MISSING_FROM_FIGMA: MissingFromFigmaEntry[] = [];
