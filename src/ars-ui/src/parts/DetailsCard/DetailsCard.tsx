@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Button } from '@iris/components/Button/Button.js';
-import { Card } from '@iris/components/Card/Card.js';
 import { cx } from '@iris/lib/cx.js';
+import { Card } from '../Card/Card.js';
 import { DetailsList, type DetailsRow } from '../DetailsList/DetailsList.js';
 import { FormInput, type FormInputProps } from '../FormInput/FormInput.js';
 import styles from './DetailsCard.module.css';
@@ -63,7 +63,7 @@ export function DetailsCard({
       title={title}
       helper={helper}
       actions={actions ?? defaultActions}
-      className={cx(styles.card, className)}
+      className={className}
     >
       {editing ? (
         <div className={cx(styles.fields, compactFields && styles.compact)}>

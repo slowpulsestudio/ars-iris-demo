@@ -1,4 +1,9 @@
-/* Figma's Variant2 is the read card hovered: grey fill and the Edit button. */
+/* Figma's Variant2 is the read card hovered: the outer frame (square corners) fills grey and Edit shows. */
+.root {
+  display: flex;
+  flex-direction: column;
+}
+
 .readable .edit {
   visibility: hidden;
 }
@@ -9,12 +14,8 @@
   visibility: visible;
 }
 
-section.readable:hover,
-section.readable:focus-within,
-section.hovered {
+.readable:hover,
+.readable:focus-within,
+.hovered {
   background-color: var(--oi-background-color-secondary);
-}
-
-.card {
-  width: 100%;
 }

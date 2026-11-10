@@ -45,26 +45,27 @@ export interface ARSGroupGeneralContentProps {
 export function ARSGroupGeneralContent({ variant = 'Default', onEdit, onSave, className }: ARSGroupGeneralContentProps) {
   const editing = variant === 'Variant3';
   return (
-    <DetailsCard
-      title="Properties"
-      helper="Manage group name and type."
-      editing={editing}
-      rows={ROWS}
-      fields={FIELDS}
-      labelWidth={130}
-      compactFields
-      actions={
-        editing ? (
-          <Button size="s" iconLead="KeyReturn" onClick={onSave}>
-            Save
-          </Button>
-        ) : (
-          <Button variant="secondary" size="s" className={styles.edit} onClick={onEdit}>
-            Edit
-          </Button>
-        )
-      }
-      className={cx(styles.card, !editing && styles.readable, variant === 'Variant2' && styles.hovered)}
-    />
+    <div className={cx(styles.root, !editing && styles.readable, variant === 'Variant2' && styles.hovered, className)}>
+      <DetailsCard
+        title="Properties"
+        helper="Manage group name and type."
+        editing={editing}
+        rows={ROWS}
+        fields={FIELDS}
+        labelWidth={130}
+        compactFields
+        actions={
+          editing ? (
+            <Button size="s" iconLead="KeyReturn" onClick={onSave}>
+              Save
+            </Button>
+          ) : (
+            <Button variant="secondary" size="s" className={styles.edit} onClick={onEdit}>
+              Edit
+            </Button>
+          )
+        }
+      />
+    </div>
   );
 }

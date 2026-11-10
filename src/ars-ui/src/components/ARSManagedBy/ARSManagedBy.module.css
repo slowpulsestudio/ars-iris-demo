@@ -1,6 +1,10 @@
-/* Figma's card: 1px muted border. */
-section.card {
-  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+/* ARS_Managed_by fills the card white and puts 8px between the title and the buttons. */
+.card {
+  background-color: var(--oi-background-color-primary);
+}
+
+.card > header {
+  gap: var(--oi-spacing-s);
 }
 
 /* Figma's Hover state: the read card fills grey and shows Edit. */
@@ -14,9 +18,9 @@ section.card {
   visibility: visible;
 }
 
-section.readable:hover,
-section.readable:focus-within,
-section.hovered {
+.readable:hover,
+.readable:focus-within,
+.card.hovered {
   background-color: var(--oi-background-color-secondary);
 }
 

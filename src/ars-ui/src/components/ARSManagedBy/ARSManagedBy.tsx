@@ -1,6 +1,6 @@
 import { cx } from '@iris/lib/cx.js';
 import { Button } from '@iris/components/Button/Button.js';
-import { Card } from '@iris/components/Card/Card.js';
+import { Card } from '../../parts/Card/Card.js';
 import { DetailsList, type DetailsRow } from '../../parts/DetailsList/DetailsList.js';
 import { FormInput, type FormInputProps } from '../../parts/FormInput/FormInput.js';
 import { NotSet, OwnerList, OwnerSection, type OwnerPerson } from '../../parts/OwnerSection/OwnerSection.js';
