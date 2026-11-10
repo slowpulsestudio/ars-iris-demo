@@ -1,0 +1,139 @@
+/* Iris UI Kit "Tree" (Component / Tree, 351:1555). */
+.tree {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  /* 9px top/bottom as in the UI Kit (no spacing token). */
+  padding: 9px var(--oi-spacing-m) 9px var(--oi-spacing-s);
+  list-style: none;
+  background-color: var(--oi-background-color-primary);
+}
+
+/* .Tree-Tree Element */
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+  height: var(--oi-size-s);
+  padding-inline: var(--oi-spacing-s);
+  border-radius: var(--oi-border-radius-default);
+  background-color: var(--oi-background-color-primary);
+  cursor: pointer;
+  outline: none;
+}
+
+.row:hover,
+.selected {
+  background-color: var(--oi-button-background-secondary-hover);
+}
+
+.row:focus-visible {
+  outline: 1.5px solid var(--oi-border-color-focus);
+  outline-offset: -1.5px;
+}
+
+/* Active indicator: 2px brand line just outside the row's right edge. */
+.selected::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -6px;
+  width: 2px;
+  height: var(--oi-size-xs);
+  border-radius: var(--oi-border-radius-max);
+  background-color: var(--oi-content-color-brand);
+  transform: translateY(-50%);
+}
+
+/* .Tree-Trail Zone / .Tree-Trail */
+.trailZone {
+  display: flex;
+  flex-shrink: 0;
+  align-self: stretch;
+  gap: var(--oi-spacing-xs);
+}
+
+.trail {
+  position: relative;
+  width: var(--oi-size-xs);
+}
+
+.trailLine::before,
+.trailTee::before,
+.trailEnd::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  border-left: var(--oi-border-width-default) solid var(--oi-border-color-muted);
+}
+
+.trailLine::before,
+.trailTee::before {
+  bottom: 0;
+}
+
+.trailEnd::before {
+  bottom: 50%;
+}
+
+.trailTee::after,
+.trailEnd::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: 0;
+  border-top: var(--oi-border-width-default) solid var(--oi-border-color-muted);
+}
+
+/* .Tree-Leading Icons */
+.leading {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+  color: var(--oi-content-color-tertiary);
+}
+
+.caret,
+.check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--oi-size-xs);
+  height: var(--oi-size-s);
+}
+
+/* .Tree-Text Zone */
+.text {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  padding-block: var(--oi-spacing-xs);
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+  color: var(--oi-content-color-primary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.selected .text {
+  font-weight: var(--oi-text-caption-strong-font-weight);
+}
+
+/* .Tree-Trailing Icons: visible on hover, focus and selection. */
+.trailing {
+  display: none;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+  color: var(--oi-content-color-tertiary);
+}
+
+.row:hover .trailing,
+.row:focus-visible .trailing,
+.selected .trailing {
+  display: flex;
+}
