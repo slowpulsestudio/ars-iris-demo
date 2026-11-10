@@ -3,3 +3,8 @@
   width: var(--oi-size-s);
   height: var(--oi-size-s);
 }
+
+.topActions {
+  display: inline-flex;
+  gap: var(--oi-spacing-s);
+}

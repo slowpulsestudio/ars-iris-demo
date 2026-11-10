@@ -18,6 +18,8 @@ export interface MissingFromFigmaEntry {
   /** Layer name in Figma. */
   figmaName: string;
   figmaNodeId: string;
+  /** The Figma file the node is in. */
+  file: FigmaFileId;
   /** Where the screens use it and what the ARS - Primary kit lacks. */
   note: string;
 }
@@ -31,6 +33,7 @@ export const MISSING_FROM_FIGMA: MissingFromFigmaEntry[] = [
     component: 'ARSEmpty',
     figmaName: 'Empty',
     figmaNodeId: '1369:31209',
+    file: 'crud',
     note: 'Main content of Tree view with no directory or folder selected. A symbol in the CRUD file only; ARS_Empty_Content is a different component (header, toolbar and empty state).',
   },
 ];

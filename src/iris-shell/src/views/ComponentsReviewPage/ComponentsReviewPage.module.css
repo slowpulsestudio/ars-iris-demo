@@ -1,0 +1,6 @@
+/* Same size as the persona avatars on the welcome page. */
+.visual {
+  width: var(--oi-size-l);
+  height: var(--oi-size-l);
+  color: var(--oi-content-color-secondary);
+}

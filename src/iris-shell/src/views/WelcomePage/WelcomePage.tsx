@@ -27,14 +27,24 @@ export function WelcomePage() {
       title="Welcome"
       subtitle="Choose a persona to start. Each one has their own scenario and navigation."
       topEnd={
-        <Tooltip label="Storybooks" placement="bottom">
-          <IconButton
-            icon={<img src="/logos/storybook.svg" alt="" className={styles.storybookLogo} />}
-            ariaLabel="Storybooks"
-            size="l"
-            onClick={() => navigate('#/storybooks')}
-          />
-        </Tooltip>
+        <span className={styles.topActions}>
+          <Tooltip label="Components to review" placement="bottom">
+            <IconButton
+              icon="ClipboardText"
+              ariaLabel="Components to review"
+              size="l"
+              onClick={() => navigate('#/components-to-review')}
+            />
+          </Tooltip>
+          <Tooltip label="Storybooks" placement="bottom">
+            <IconButton
+              icon={<img src="/logos/storybook.svg" alt="" className={styles.storybookLogo} />}
+              ariaLabel="Storybooks"
+              size="l"
+              onClick={() => navigate('#/storybooks')}
+            />
+          </Tooltip>
+        </span>
       }
     >
       {PERSONAS.map((persona) => (

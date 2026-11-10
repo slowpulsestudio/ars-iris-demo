@@ -33,6 +33,7 @@ export type Route =
   | { name: 'safeguardHome'; params: Record<string, never> }
   | { name: 'welcome'; params: Record<string, never> }
   | { name: 'storybooks'; params: Record<string, never> }
+  | { name: 'componentsReview'; params: Record<string, never> }
   | { name: 'userViewHome'; params: Record<string, never> }
   | { name: 'userViewProfile'; params: Record<string, never> }
   | { name: 'userViewApprovals'; params: Record<string, never> }
@@ -69,6 +70,7 @@ const ROUTES: RouteDef[] = [
   { name: 'safeguardHome', pattern: /^#\/safeguard$/, keys: [] },
   { name: 'welcome', pattern: /^#\/welcome$/, keys: [] },
   { name: 'storybooks', pattern: /^#\/storybooks$/, keys: [] },
+  { name: 'componentsReview', pattern: /^#\/components-to-review$/, keys: [] },
   { name: 'userViewHome', pattern: /^#\/user-view\/home$/, keys: [] },
   { name: 'userViewProfile', pattern: /^#\/user-view\/profile$/, keys: [] },
   { name: 'userViewApprovals', pattern: /^#\/user-view\/approvals$/, keys: [] },

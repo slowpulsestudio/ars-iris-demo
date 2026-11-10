@@ -21,6 +21,7 @@ import { IdentitySectionPage } from './views/IdentityManagerPage/IdentitySection
 import { SafeguardPage } from './views/SafeguardPage/SafeguardPage.js';
 import { WelcomePage } from './views/WelcomePage/WelcomePage.js';
 import { StorybooksPage } from './views/StorybooksPage/StorybooksPage.js';
+import { ComponentsReviewPage } from './views/ComponentsReviewPage/ComponentsReviewPage.js';
 import { ARSDirectoryPanel } from './views/ARSDirectoryPanel/ARSDirectoryPanel.js';
 
 function renderRoute(route: Route) {
@@ -96,6 +97,7 @@ function RoutedPage() {
   const route = useRoute();
   const { persona } = useAppShell();
   if (route.name === 'storybooks') return <StorybooksPage />;
+  if (route.name === 'componentsReview') return <ComponentsReviewPage />;
   return persona ? renderRoute(route) : <WelcomePage />;
 }
 
