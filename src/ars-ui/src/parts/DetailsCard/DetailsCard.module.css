@@ -1,0 +1,56 @@
+/* Figma draws this card with a 1px muted border and no fill. */
+section.card {
+  background-color: transparent;
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.label,
+.value {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-font-weight);
+}
+
+.label {
+  /* Figma's label column is 160px (no token). */
+  flex: 0 0 160px;
+  color: var(--oi-content-color-secondary);
+}
+
+.value {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-primary);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--oi-spacing-l);
+}
+
+.fieldRow {
+  display: flex;
+  gap: var(--oi-spacing-l);
+}
