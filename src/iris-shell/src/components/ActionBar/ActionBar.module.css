@@ -164,6 +164,21 @@
   background-color: var(--oi-color-grey-700);
 }
 
+/* Toggle on the dark surface: the dark-theme track and knob. */
+.toggle {
+  --toggle-track: var(--oi-color-grey-700);
+  --toggle-knob: var(--oi-color-grey-950);
+}
+
+.toggleLabel {
+  padding-inline: var(--oi-spacing-xs) var(--oi-spacing-s);
+  font-size: var(--oi-text-body-s-strong-font-size);
+  line-height: var(--oi-text-body-s-strong-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-color-grey-300);
+  white-space: nowrap;
+}
+
 /* ---------- action buttons ---------- */
 
 .actionBtn {
@@ -220,6 +235,12 @@
 
 .tone_default {
   color: var(--oi-color-grey-300);
+}
+
+.customIcon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
 }
 
 .tone_brand {

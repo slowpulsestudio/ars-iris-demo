@@ -3,13 +3,15 @@ import { createPortal } from 'react-dom';
 import { BorderBeam } from 'border-beam';
 import { cx } from '../../lib/cx.js';
 import { Icon } from '../Icon/Icon.js';
+import { Toggle } from '../Toggle/Toggle.js';
 import { Tooltip } from '../Tooltip/Tooltip.js';
 import styles from './ActionBar.module.css';
 
 export type ActionTone = 'default' | 'brand' | 'danger';
 
 export interface ActionItem {
-  icon: string;
+  /** Icon name, or an icon element for icons outside the Iris set. */
+  icon: string | ReactNode;
   label: string;
   tone?: ActionTone;
   onClick?: () => void;
@@ -35,8 +37,10 @@ export interface ActionBarProps {
   open: boolean;
   /** Number of currently selected rows. */
   selectedCount: number;
-  /** Total rows in the collection. */
-  totalCount: number;
+  /** Total rows in the collection. Omit to show only the selected count. */
+  totalCount?: number;
+  /** Optional switch after the count, e.g. "Show selected". */
+  toggle?: { label: string; checked: boolean; onChange: (checked: boolean) => void };
   /** Called when the user closes the bar. */
   onDismiss?: () => void;
   /** Action groups; separated by a vertical divider in the bar. */
@@ -62,6 +66,7 @@ export function ActionBar({
   open,
   selectedCount,
   totalCount,
+  toggle,
   onDismiss,
   groups,
   itemNoun = 'selected',
@@ -179,10 +184,28 @@ export function ActionBar({
 
       <p className={styles.count} aria-live={measure ? undefined : 'polite'}>
         <span className={styles.countStrong}>{selectedCount}</span>
-        <span className={styles.countMuted}> of </span>
-        <span className={styles.countStrong}>{totalCount}</span>
+        {totalCount !== undefined && (
+          <>
+            <span className={styles.countMuted}> of </span>
+            <span className={styles.countStrong}>{totalCount}</span>
+          </>
+        )}
         <span className={styles.countMuted}> {itemNoun}</span>
       </p>
+
+      {toggle && (
+        <div className={styles.group}>
+          <span className={styles.separator} aria-hidden="true" />
+          <Toggle
+            checked={toggle.checked}
+            onChange={measure ? undefined : toggle.onChange}
+            label={toggle.label}
+            tabIndex={measure ? -1 : undefined}
+            className={styles.toggle}
+            labelClassName={styles.toggleLabel}
+          />
+        </div>
+      )}
 
       {nonEmptyGroups.map((group, gi) => (
         <div key={gi} className={styles.group} role="group">
@@ -256,7 +279,13 @@ function ActionButton({
       aria-label={iconOnly ? label : undefined}
       {...beamHandlers}
     >
-      <Icon name={icon} size="16px" />
+      {typeof icon === 'string' ? (
+        <Icon name={icon} size="16px" />
+      ) : (
+        <span className={styles.customIcon} aria-hidden="true">
+          {icon}
+        </span>
+      )}
       {!iconOnly && <span>{label}</span>}
     </button>
   );

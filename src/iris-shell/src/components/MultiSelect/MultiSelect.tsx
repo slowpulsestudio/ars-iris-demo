@@ -12,6 +12,7 @@ import { cx } from '../../lib/cx.js';
 import { Icon } from '../Icon/Icon.js';
 import { Checkbox } from '../Checkbox/Checkbox.js';
 import { TextInput } from '../TextInput/TextInput.js';
+import { Button } from '../Button/Button.js';
 import styles from './MultiSelect.module.css';
 
 export interface MultiSelectOption {
@@ -38,6 +39,8 @@ export interface MultiSelectProps {
   searchPlaceholder?: string;
   ariaLabel?: string;
   className?: string;
+  /** Open the popover on mount (e.g. to show the panel in a story). */
+  defaultOpen?: boolean;
   /**
    * Render a custom trigger instead of the default labelled button. Attach the
    * supplied `ref` and `onClick` so positioning and toggling keep working.
@@ -74,8 +77,9 @@ export function MultiSelect({
   ariaLabel = 'Multi-select',
   className,
   renderTrigger,
+  defaultOpen = false,
 }: MultiSelectProps) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [pos, setPos] = useState<Pos | null>(null);
   const [query, setQuery] = useState('');
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -283,18 +287,20 @@ export function MultiSelect({
                       <span className={styles.check}>
                         <Checkbox checked={isSel} disabled={o.disabled} tabIndex={-1} />
                       </span>
-                      {(o.visual !== undefined || o.icon) && (
-                        <span className={styles.optionIcon}>
-                          {o.visual !== undefined
-                            ? o.visual
-                            : o.icon && <Icon name={o.icon} size="20px" />}
-                        </span>
-                      )}
-                      <span className={styles.optionText}>
-                        <span className={styles.optionTitle}>{o.title}</span>
-                        {o.subtitle && (
-                          <span className={styles.optionSubtitle}>{o.subtitle}</span>
+                      <span className={styles.optionContent}>
+                        {(o.visual !== undefined || o.icon) && (
+                          <span className={styles.optionIcon}>
+                            {o.visual !== undefined
+                              ? o.visual
+                              : o.icon && <Icon name={o.icon} size="20px" />}
+                          </span>
                         )}
+                        <span className={styles.optionText}>
+                          <span className={styles.optionTitle}>{o.title}</span>
+                          {o.subtitle && (
+                            <span className={styles.optionSubtitle}>{o.subtitle}</span>
+                          )}
+                        </span>
                       </span>
                     </div>
                   );
@@ -303,12 +309,12 @@ export function MultiSelect({
             </div>
 
             <div className={styles.footer}>
-              <button type="button" className={styles.footerBtn} onClick={selectAllVisible}>
-                Select all
-              </button>
-              <button type="button" className={styles.footerBtn} onClick={clearAll}>
+              <Button variant="ghost" className={styles.footerBtn} onClick={clearAll}>
                 Clear
-              </button>
+              </Button>
+              <Button variant="ghost" className={styles.footerBtn} onClick={selectAllVisible}>
+                Select all
+              </Button>
             </div>
           </div>,
           document.body,

@@ -1,0 +1,72 @@
+/* Iris UI Kit "Toggle" (Component / Toggle, 111:249). */
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+  cursor: pointer;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+/* 42×20 track (no size tokens). Dark surfaces can set --toggle-track / --toggle-knob. */
+.track {
+  position: relative;
+  flex-shrink: 0;
+  width: 42px;
+  height: 20px;
+  border-radius: var(--oi-border-radius-max);
+  background-color: var(--toggle-track, var(--oi-border-color-default));
+  transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+/* 26×18 knob, 1px inside the track; travels 14px. */
+.knob {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 26px;
+  height: 18px;
+  border-radius: var(--oi-border-radius-max);
+  background-color: var(--toggle-knob, var(--oi-background-color-primary));
+  box-shadow: var(--oi-shadow-mid);
+  transition: transform var(--oi-motion-duration-default) var(--oi-motion-ease-default);
+}
+
+.input:checked + .track {
+  background-color: var(--oi-base-color-brand);
+}
+
+.input:checked + .track .knob {
+  transform: translateX(14px);
+}
+
+.input:focus-visible + .track {
+  outline: 1.5px solid var(--oi-border-color-focus);
+  outline-offset: 2px;
+}
+
+.label {
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-primary);
+}
+
+/* UI Kit "Is Disabled": the whole switch at half opacity. */
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .knob {
+    transition: none;
+  }
+}

@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes, Ref } from 'react';
 import { cx } from '../../lib/cx.js';
 import { Icon } from '../Icon/Icon.js';
 import styles from './Select.module.css';
@@ -12,6 +12,8 @@ export interface SelectProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'default' | 'l';
   /** Error state (red border + `aria-invalid`). */
   invalid?: boolean;
+  /** Trigger element, e.g. to anchor a popover such as MultiSelect. */
+  ref?: Ref<HTMLButtonElement>;
 }
 
 /**
