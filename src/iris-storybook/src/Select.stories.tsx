@@ -47,7 +47,7 @@ const meta = {
     ),
   ],
   args: { label: 'Object type: All' },
-  argTypes: { size: { control: 'inline-radio', options: ['s', 'default', 'l'] } },
+  argTypes: { size: { control: 'inline-radio', options: ['default', 'l'] } },
 } satisfies Meta<typeof Select>;
 
 export default meta;
@@ -55,15 +55,21 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
+/** Iris UI Kit "State=Default": nothing chosen yet. */
+export const Placeholder: Story = { args: { label: '', placeholder: 'Choose an option...' } };
+
+/** Iris UI Kit sizes: Default (28px) and Large (32px). */
 export const Sizes: Story = {
   render: (args) => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--oi-spacing-s)' }}>
-      <Select {...args} size="s" label="Small" />
       <Select {...args} size="default" label="Default" />
       <Select {...args} size="l" label="Large" />
     </div>
   ),
 };
+
+/** Iris UI Kit "State=Error". */
+export const Invalid: Story = { args: { invalid: true } };
 
 export const LongLabel: Story = {
   name: 'Long label',

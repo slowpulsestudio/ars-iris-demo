@@ -1,54 +1,68 @@
+/* Iris UI Kit ".Select" (Component / Dropdown, 5699:1359). */
 .trigger {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--oi-spacing-s);
+  gap: var(--oi-button-gap-s);
   width: 100%;
-  background-color: var(--oi-button-background-secondary);
-  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+  background-color: var(--oi-background-color-primary);
+  border: 0.5px var(--oi-border-style-solid) var(--oi-border-color-strong);
   border-radius: var(--oi-border-radius-default);
   color: var(--oi-content-color-primary);
-  padding-inline: var(--oi-spacing-s);
+  padding-block: var(--oi-spacing-xs);
+  padding-inline: var(--oi-spacing-xs) var(--oi-spacing-6);
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);
   font-weight: var(--oi-text-body-s-font-weight);
-  transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
 }
 
-.trigger:hover {
-  background-color: var(--oi-button-background-secondary-hover);
+.trigger:active {
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
 }
 
-.size_s {
-  height: var(--oi-size-s);
+.trigger:focus-visible,
+.trigger[aria-expanded='true'] {
+  border-color: transparent;
+  outline: 1.5px solid var(--oi-border-color-focus);
+  outline-offset: -1.5px;
+  box-shadow: none;
 }
+
+.invalid,
+.invalid:focus-visible {
+  border-color: transparent;
+  outline: 1.5px solid var(--oi-base-color-error);
+  outline-offset: -1.5px;
+}
+
 .size_default {
-  height: var(--oi-size-default);
+  height: var(--oi-size-m);
 }
 .size_l {
-  height: var(--oi-size-l);
+  height: var(--oi-size-default);
+  padding-inline: var(--oi-spacing-6);
+}
+
+/* UI Kit "State=Default, Size=Large" (nothing chosen) is filled grey. */
+.size_l.empty {
+  background-color: var(--oi-background-color-secondary);
 }
 
 .label {
   flex: 1 1 auto;
   min-width: 0;
+  padding-inline: var(--oi-border-width-l);
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.empty .label {
+  color: var(--oi-content-color-tertiary);
+}
+
 .caret {
+  flex-shrink: 0;
   color: var(--oi-content-color-secondary);
-  transition: transform var(--oi-motion-duration-short) var(--oi-motion-ease-default);
-}
-
-.trigger[aria-expanded='true'] .caret {
-  transform: rotate(180deg);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .caret {
-    transition: none;
-  }
 }
