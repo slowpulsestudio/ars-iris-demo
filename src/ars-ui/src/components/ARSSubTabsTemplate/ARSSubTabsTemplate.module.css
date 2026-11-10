@@ -1,0 +1,57 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+  height: 100%;
+  padding: var(--oi-spacing-l) var(--oi-spacing-xxl);
+  background-color: var(--oi-background-color-primary);
+}
+
+.object {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+  min-height: 0;
+}
+
+.members {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--oi-spacing-xl);
+  min-height: 0;
+  padding: var(--oi-spacing-l) var(--oi-spacing-zero);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-l);
+}
+
+.lhs {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  gap: var(--oi-spacing-m);
+  min-width: 0;
+}
+
+/* Figma's divider is 22px tall (no token). */
+.divider {
+  flex-shrink: 0;
+  width: var(--oi-border-width-default);
+  height: 22px;
+  background-color: var(--oi-border-color-default);
+}
+
+.search {
+  flex: 1 1 0;
+}
+
+/* Figma's members content has square corners. */
+.members .placeholder {
+  flex: 1 1 auto;
+  border-radius: 0;
+}

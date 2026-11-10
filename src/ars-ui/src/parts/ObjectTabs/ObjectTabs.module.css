@@ -1,0 +1,10 @@
+/* Figma's tab row sits on the default border colour; Iris Tabs uses muted. */
+.tabs [role='tablist'] {
+  border-bottom-color: var(--oi-border-color-default);
+}
+
+/* Figma fills the selected tab with the tertiary background and no border. */
+.tabs [role='tab'][aria-selected='true'] > :first-child {
+  background-color: var(--oi-background-color-tertiary);
+  border-color: transparent;
+}

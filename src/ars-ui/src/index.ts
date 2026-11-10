@@ -70,3 +70,14 @@ export {
   ARSUsersContactInfoCard,
   type ARSUsersContactInfoCardProps,
 } from './components/ARSUsersContactInfoCard/ARSUsersContactInfoCard.js';
+export {
+  ARSPageHeader,
+  type ARSPageHeaderProps,
+  type ARSPageHeaderVariant,
+} from './components/ARSPageHeader/ARSPageHeader.js';
+export { ARSPageHeaderSingle, type ARSPageHeaderSingleProps } from './components/ARSPageHeaderSingle/ARSPageHeaderSingle.js';
+export { ARSUserPageHeader, type ARSUserPageHeaderProps } from './components/ARSUserPageHeader/ARSUserPageHeader.js';
+export { ARSPageTabs, PAGE_TABS, type ARSPageTabsProps } from './components/ARSPageTabs/ARSPageTabs.js';
+export { ARSUserPageTabs, USER_PAGE_TABS, type ARSUserPageTabsProps } from './components/ARSUserPageTabs/ARSUserPageTabs.js';
+export { ARSPageActionPanel, type ARSPageActionPanelProps } from './components/ARSPageActionPanel/ARSPageActionPanel.js';
+export { ARSSubTabsTemplate, type ARSSubTabsTemplateProps } from './components/ARSSubTabsTemplate/ARSSubTabsTemplate.js';

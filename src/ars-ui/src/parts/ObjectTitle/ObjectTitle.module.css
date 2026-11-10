@@ -1,0 +1,35 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--oi-spacing-xs);
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  white-space: nowrap;
+  font-size: var(--oi-text-heading-04-font-size);
+  line-height: var(--oi-text-heading-04-line-height);
+  font-weight: var(--oi-text-heading-04-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.supportingRow {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+}
+
+.supporting {
+  margin: 0;
+  white-space: nowrap;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-font-weight);
+  color: var(--oi-content-color-secondary);
+}
+
+.dot {
+  color: var(--oi-content-color-tertiary);
+}

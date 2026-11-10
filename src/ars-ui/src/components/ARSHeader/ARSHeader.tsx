@@ -1,6 +1,7 @@
 import { cx } from '@iris/lib/cx.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
 import { ObjectIcon } from '../../parts/ObjectIcon/ObjectIcon.js';
+import { ObjectTitle } from '../../parts/ObjectTitle/ObjectTitle.js';
 import { Tag } from '../../parts/Tag/Tag.js';
 import styles from './ARSHeader.module.css';
 
@@ -71,21 +72,15 @@ export function ARSHeader({
       <div className={cx(styles.lhs, variant === 'Variant1' && styles.lhsWide)}>
         {layout.back && back}
         <ObjectIcon icon={icon ?? layout.icon} />
-        <div className={styles.titles}>
-          <h2 className={styles.title}>{title}</h2>
-          {layout.supporting && (
-            <div className={styles.supportingRow}>
-              <p className={styles.supporting}>
-                {objectClass}
-                <span className={styles.dot}> · </span>
-                {objectName}
-              </p>
-              {layout.customize && (
-                <IconButton icon="Gear" ariaLabel="Customize" onClick={onCustomize} />
-              )}
-            </div>
-          )}
-        </div>
+        <ObjectTitle
+          title={title}
+          objectClass={objectClass}
+          objectName={objectName}
+          supporting={layout.supporting}
+          supportingAction={
+            layout.customize && <IconButton icon="Gear" ariaLabel="Customize" onClick={onCustomize} />
+          }
+        />
       </div>
       <div className={styles.rhs}>
         <IconButton icon="DotsThree" ariaLabel="More actions" onClick={onMore} />

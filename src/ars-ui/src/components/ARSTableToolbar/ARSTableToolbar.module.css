@@ -26,16 +26,3 @@
   flex-shrink: 0;
   width: calc(var(--oi-size-default) * 3);
 }
-
-/* Iris TextInput adjusted to the Figma search box: 28px tall, 4px padding,
-   default border. Two classes so it wins over the Iris base styles. */
-.root .search {
-  height: var(--oi-size-m);
-  padding-inline: var(--oi-spacing-xs);
-  gap: var(--oi-spacing-6);
-  border-color: var(--oi-border-color-default);
-}
-
-.root .search input {
-  padding-inline: var(--oi-spacing-2);
-}

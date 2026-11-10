@@ -2,7 +2,7 @@ import { cx } from '@iris/lib/cx.js';
 import { Button } from '@iris/components/Button/Button.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
 import { SplitButton } from '@iris/components/SplitButton/SplitButton.js';
-import { TextInput } from '@iris/components/TextInput/TextInput.js';
+import { SearchInput } from '../../parts/SearchInput/SearchInput.js';
 import styles from './ARSTableToolbar.module.css';
 
 export type ARSTableToolbarVariant = 'Split' | 'Basic' | 'No create' | '4';
@@ -43,16 +43,7 @@ export function ARSTableToolbar({
   className,
 }: ARSTableToolbarProps) {
   const label = actionLabel ?? ACTION_LABEL[variant];
-  const searchBox = (
-    <TextInput
-      className={styles.search}
-      iconLead="MagnifyingGlass"
-      placeholder={searchPlaceholder}
-      aria-label="Search"
-      value={search}
-      onChange={(e) => onSearchChange?.(e.target.value)}
-    />
-  );
+  const searchBox = <SearchInput placeholder={searchPlaceholder} value={search} onChange={onSearchChange} />;
   const filter = <IconButton icon="FunnelSimple" ariaLabel="Filters" onClick={onFilter} />;
 
   if (variant === 'No create') {

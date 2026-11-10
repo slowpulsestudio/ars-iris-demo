@@ -1,0 +1,48 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--oi-spacing-l);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+  word-break: break-word;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.helper {
+  margin: 0;
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+  color: var(--oi-content-color-tertiary);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--oi-spacing-xs);
+  /* Figma's card width (no token). */
+  width: 315px;
+  max-width: 100%;
+  padding: var(--oi-spacing-m);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+}
+
+.action {
+  font-size: var(--oi-text-body-s-strong-font-size);
+  line-height: var(--oi-text-body-s-strong-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  text-decoration: none;
+}
