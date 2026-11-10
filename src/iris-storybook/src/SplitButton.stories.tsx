@@ -17,7 +17,7 @@ const meta = {
   },
   args: { children: 'New user', ariaMenuLabel: 'More create options' },
   argTypes: {
-    variant: { control: 'inline-radio', options: ['primary', 'secondary', 'danger'] },
+    variant: { control: 'inline-radio', options: ['primary', 'secondary', 'ghost', 'danger'] },
     size: { control: 'inline-radio', options: ['s', 'default', 'l'] },
   },
 } satisfies Meta<typeof SplitButton>;
@@ -28,6 +28,9 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const Secondary: Story = { args: { variant: 'secondary' } };
+
+/** Iris UI Kit "Type=Ghost". */
+export const Ghost: Story = { args: { variant: 'ghost' } };
 
 export const Danger: Story = { args: { variant: 'danger', children: 'Delete', ariaMenuLabel: 'More delete options' } };
 

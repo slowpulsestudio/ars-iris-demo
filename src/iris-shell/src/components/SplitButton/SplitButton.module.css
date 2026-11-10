@@ -1,9 +1,10 @@
+/* Iris UI Kit "Button split" (Component / Button split, 3981:92): two parts with a 1px gap. */
 .root {
   display: inline-flex;
   align-items: stretch;
+  gap: 1px;
   isolation: isolate;
   border-radius: var(--oi-border-radius-default);
-  box-shadow: var(--oi-shadow-low);
 }
 
 .main {
@@ -16,29 +17,11 @@
   align-items: center;
   justify-content: center;
   border: var(--oi-border-width-default) var(--oi-border-style-solid) transparent;
-  border-left: var(--oi-border-width-default) var(--oi-border-style-solid)
-    rgba(255, 255, 255, 0.24);
   border-top-right-radius: var(--oi-border-radius-default);
   border-bottom-right-radius: var(--oi-border-radius-default);
-  margin-left: -1px;
   padding-inline: var(--oi-spacing-xs);
   color: var(--oi-content-color-constant);
   transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
-}
-
-/* Chevron rotates when the caller's menu is open (expanded). */
-.caret {
-  transition: transform var(--oi-motion-duration-short) var(--oi-motion-ease-default);
-}
-
-.split[aria-expanded='true'] .caret {
-  transform: rotate(180deg);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .caret {
-    transition: none;
-  }
 }
 
 /* Chevron rotates when the caller's menu is open (expanded). */
@@ -71,6 +54,7 @@
 .variant_primary {
   background-color: var(--oi-button-background-primary);
   color: var(--oi-button-foreground-primary, var(--oi-content-color-constant));
+  box-shadow: var(--oi-shadow-low);
 }
 .variant_primary:hover:not(:disabled) {
   background-color: var(--oi-button-background-primary-hover);
@@ -86,6 +70,19 @@
 }
 .variant_secondary:hover:not(:disabled) {
   background-color: var(--oi-button-background-secondary-hover);
+}
+
+/* UI Kit "Type=Ghost". */
+.variant_ghost {
+  background-color: transparent;
+  color: var(--oi-content-color-secondary);
+}
+.variant_ghost:hover:not(:disabled) {
+  background-color: var(--oi-button-background-secondary-hover);
+  color: var(--oi-content-color-primary);
+}
+.variant_ghost:active:not(:disabled) {
+  background-color: var(--oi-button-background-secondary-active);
 }
 
 .variant_danger {

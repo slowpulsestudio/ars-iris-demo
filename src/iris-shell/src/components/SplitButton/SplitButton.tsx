@@ -7,7 +7,8 @@ import styles from './SplitButton.module.css';
 export interface SplitButtonProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'onClick'> {
   onClick?: () => void;
   onMenuClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'danger';
+  /** Iris UI Kit types: Primary and Ghost (secondary and danger are code extras). */
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   size?: 's' | 'default' | 'l';
   /** Icon name rendered before the label. */
   iconLead?: string;
