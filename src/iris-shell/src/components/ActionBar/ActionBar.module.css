@@ -5,14 +5,15 @@
 /*  surface is always dark regardless of the active theme.            */
 /* ------------------------------------------------------------------ */
 
+/* Iris UI Kit "Action bar" (Pattern / Action bar, 6104:3853). Its 12px radius has no token. */
 .bar {
   display: inline-flex;
   align-items: center;
   gap: var(--oi-spacing-m);
-  height: 48px;
-  padding-inline: var(--oi-spacing-m);
+  height: var(--oi-size-l);
+  padding-inline: var(--oi-spacing-s);
   background-color: var(--oi-color-black);
-  border-radius: 14px;
+  border-radius: 12px;
   box-shadow: var(--oi-shadow-mid);
 
   /* Enter/exit: slide + fade. Positioning (and the axis of the slide) is set
@@ -102,6 +103,7 @@
   align-items: center;
 }
 
+/* UI Kit dismiss: a ghost icon-only button. */
 .dismissBtn {
   display: inline-flex;
   align-items: center;
@@ -110,8 +112,7 @@
   height: 24px;
   padding: 0;
   background: transparent;
-  border: var(--oi-border-width-default) var(--oi-border-style-solid)
-    var(--oi-color-grey-700);
+  border: 0;
   border-radius: var(--oi-border-radius-default);
   color: var(--oi-color-grey-300);
   cursor: pointer;
@@ -153,14 +154,13 @@
 .group {
   display: inline-flex;
   align-items: center;
-  gap: var(--oi-spacing-xs);
+  gap: var(--oi-button-gap-s);
 }
 
 .separator {
   display: inline-block;
   width: 1px;
   height: 16px;
-  margin-right: var(--oi-spacing-xs);
   background-color: var(--oi-color-grey-700);
 }
 
