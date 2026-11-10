@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { cx } from '@iris/lib/cx.js';
 import { Tabs } from '@iris/components/Tabs/Tabs.js';
-import styles from './ObjectTabs.module.css';
 
 export interface ObjectTabsProps {
   /** Tab labels as Figma draws them, counts included, e.g. "Memberships (8)". */
@@ -15,7 +13,7 @@ export interface ObjectTabsProps {
   className?: string;
 }
 
-/** The tabs under an object's page header: Iris Tabs with Figma's selected-tab fill. */
+/** The tabs under an object's page header: Iris Tabs (Iris UI Kit "Tabs") that keep their own selection. */
 export function ObjectTabs({ tabs, defaultValue, value, onChange, ariaLabel, className }: ObjectTabsProps) {
   const [current, setCurrent] = useState(defaultValue);
   return (
@@ -27,7 +25,7 @@ export function ObjectTabs({ tabs, defaultValue, value, onChange, ariaLabel, cla
         onChange?.(tab);
       }}
       ariaLabel={ariaLabel}
-      className={cx(styles.tabs, className)}
+      className={className}
     />
   );
 }

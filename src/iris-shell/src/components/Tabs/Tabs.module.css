@@ -3,13 +3,14 @@
   min-width: 0;
 }
 
+/* Iris UI Kit "Tabs" and ".Tab item" (Component / Tabs, 114:841). */
 .tablist {
   position: relative;
   display: flex;
   align-items: flex-start;
   gap: var(--oi-spacing-s);
   border-bottom: var(--oi-border-width-default) var(--oi-border-style-solid)
-    var(--oi-border-color-muted);
+    var(--oi-border-color-default);
 }
 
 /* Off-screen full render of every tab, used to measure natural widths so we
@@ -68,8 +69,7 @@
 }
 
 .tab:hover .tabContent {
-  background-color: var(--oi-background-color-primary);
-  border-color: var(--oi-border-color-muted);
+  background-color: var(--oi-background-color-tertiary);
 }
 
 .tab:hover,
@@ -77,29 +77,35 @@
   color: var(--oi-content-color-primary);
 }
 
+/* UI Kit "State=Focused": focus ring on the tab content and a semibold label. */
 .tab:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--oi-color-blue-500);
-  border-radius: var(--oi-border-radius-default);
+}
+
+.tab:focus-visible .tabContent {
+  background-color: var(--oi-background-color-tertiary);
+  box-shadow: var(--oi-focus-ring);
+}
+
+.tab:focus-visible .label {
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
 }
 
 .tabContent {
   display: inline-flex;
   align-items: center;
   gap: var(--oi-spacing-xs);
-  height: 28px;
+  height: var(--oi-size-m);
   padding: var(--oi-spacing-xs) var(--oi-spacing-s);
-  border-radius: var(--oi-border-radius-l);
+  border-radius: var(--oi-border-radius-default);
   color: inherit;
-  border: var(--oi-border-width-default) var(--oi-border-style-solid) transparent;
   transition: background-color var(--oi-motion-duration-short)
-    var(--oi-motion-ease-default),
-    border-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+    var(--oi-motion-ease-default);
 }
 
 .tabContentSelected {
-  background-color: var(--oi-background-color-primary);
-  border-color: var(--oi-border-color-muted);
+  background-color: var(--oi-background-color-tertiary);
 }
 
 .label {
@@ -123,22 +129,23 @@
   font-weight: var(--oi-text-body-s-strong-font-weight);
 }
 
+/* UI Kit "State=Active" keeps the regular weight. */
 .labelSelected {
-  font-size: var(--oi-text-body-s-strong-font-size);
-  line-height: var(--oi-text-body-s-strong-line-height);
-  font-weight: var(--oi-text-body-s-strong-font-weight);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-font-weight);
   color: var(--oi-content-color-primary);
 }
 
+/* UI Kit "Stroke": 1px default-colour line under each tab. */
 .stroke {
   display: block;
   height: 1px;
   width: 100%;
-  background-color: transparent;
+  background-color: var(--oi-border-color-default);
 }
 
-/* The active underline is now the sliding `.indicator`; the per-tab stroke
-   stays a transparent layout spacer so tab heights don't shift. */
+/* The selected stroke is drawn by the sliding `.indicator`. */
 .strokeSelected {
   background-color: transparent;
 }
@@ -147,13 +154,14 @@
   display: inline-flex;
 }
 
-/* Overflow "…" ghost button — holds tabs that don't fit the viewport. */
+/* Overflow "…" tab — holds tabs that don't fit the viewport. UI Kit "Type=Overflow". */
 .overflowTrigger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 28px;
-  padding: 0 var(--oi-spacing-xs);
+  width: var(--oi-size-m);
+  height: var(--oi-size-m);
+  padding: 0;
   background: none;
   border: 0;
   border-radius: var(--oi-border-radius-default);
@@ -170,10 +178,12 @@
 
 .overflowTrigger:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--oi-color-blue-500);
+  background-color: var(--oi-background-color-tertiary);
+  box-shadow: var(--oi-focus-ring);
 }
 
 /* Active tab currently lives inside the overflow menu. */
 .overflowTriggerActive {
+  background-color: var(--oi-background-color-tertiary);
   color: var(--oi-content-color-primary);
 }

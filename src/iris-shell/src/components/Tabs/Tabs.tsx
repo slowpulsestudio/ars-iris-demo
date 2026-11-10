@@ -228,7 +228,7 @@ export function Tabs({ items, value, onChange, ariaLabel, className }: TabsProps
                 onClick={onClick}
                 className={cx(styles.overflowTrigger, activeInOverflow && styles.overflowTriggerActive)}
               >
-                <Icon name="DotsThree" size="20px" />
+                <Icon name="DotsThreeOutline" size="16px" />
               </button>
             )}
           />
@@ -252,7 +252,7 @@ export function Tabs({ items, value, onChange, ariaLabel, className }: TabsProps
           </span>
         ))}
         <span ref={measureTriggerRef} className={styles.overflowTrigger}>
-          <Icon name="DotsThree" size="20px" />
+          <Icon name="DotsThreeOutline" size="16px" />
         </span>
       </div>
     </div>
