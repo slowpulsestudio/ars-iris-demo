@@ -1,0 +1,21 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+  width: 100%;
+}
+
+.content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--oi-spacing-l);
+  padding-top: var(--oi-spacing-m);
+}
+
+.cards {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--oi-spacing-l);
+  min-width: 0;
+}

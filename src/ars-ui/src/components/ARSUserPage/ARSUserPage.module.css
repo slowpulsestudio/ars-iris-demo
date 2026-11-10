@@ -1,0 +1,9 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-l);
+  height: 100%;
+  padding: var(--oi-spacing-l) var(--oi-spacing-xxl);
+  overflow: auto;
+  background-color: var(--oi-background-color-primary);
+}

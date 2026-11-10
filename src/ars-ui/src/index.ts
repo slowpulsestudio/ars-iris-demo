@@ -81,3 +81,9 @@ export { ARSPageTabs, PAGE_TABS, type ARSPageTabsProps } from './components/ARSP
 export { ARSUserPageTabs, USER_PAGE_TABS, type ARSUserPageTabsProps } from './components/ARSUserPageTabs/ARSUserPageTabs.js';
 export { ARSPageActionPanel, type ARSPageActionPanelProps } from './components/ARSPageActionPanel/ARSPageActionPanel.js';
 export { ARSSubTabsTemplate, type ARSSubTabsTemplateProps } from './components/ARSSubTabsTemplate/ARSSubTabsTemplate.js';
+export {
+  ARSObjectContent,
+  type ARSObjectContentProps,
+  type ARSObjectContentVariant,
+} from './components/ARSObjectContent/ARSObjectContent.js';
+export { ARSUserPage, type ARSUserPageProps } from './components/ARSUserPage/ARSUserPage.js';

@@ -16,7 +16,7 @@ export interface DetailsCardProps {
   editing: boolean;
   rows: DetailsRow[];
   /** An inner array puts fields side by side. */
-  fields: (FormInputProps | FormInputProps[])[];
+  fields?: (FormInputProps | FormInputProps[])[];
   onEdit?: () => void;
   onCancel?: () => void;
   onSave?: () => void;
@@ -29,7 +29,7 @@ export function DetailsCard({
   helper,
   editing,
   rows,
-  fields,
+  fields = [],
   onEdit,
   onCancel,
   onSave,
