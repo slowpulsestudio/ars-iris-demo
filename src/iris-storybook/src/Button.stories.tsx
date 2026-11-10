@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@iris/components/Button/Button.js';
 
@@ -23,6 +24,34 @@ export const Secondary: Story = { args: { variant: 'secondary' } };
 
 /** Iris UI Kit "Style=Ghost". */
 export const Ghost: Story = { args: { variant: 'ghost' } };
+
+/** Iris UI Kit "Style=Ghost": text only, icon + text and icon only, in each size. */
+export const GhostTypes: Story = {
+  name: 'Ghost types',
+  args: { variant: 'ghost' },
+  render: (args) => (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, max-content)',
+        alignItems: 'center',
+        gap: 'var(--oi-spacing-m)',
+      }}
+    >
+      {(['s', 'default', 'l'] as const).map((size) => (
+        <Fragment key={size}>
+          <Button {...args} size={size}>
+            Button
+          </Button>
+          <Button {...args} size={size} iconLead="Plus">
+            Button
+          </Button>
+          <Button {...args} size={size} iconOnly iconLead="Plus" aria-label="Add" />
+        </Fragment>
+      ))}
+    </div>
+  ),
+};
 
 export const Danger: Story = { args: { variant: 'danger', children: 'Delete' } };
 

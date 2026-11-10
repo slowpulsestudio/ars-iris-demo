@@ -33,8 +33,9 @@
 .variant_ghost {
   background-color: transparent;
 }
+/* Iris UI Kit "Style=Ghost, Variant=Icon only" hover. */
 .variant_ghost:hover:not(:disabled) {
-  background-color: var(--oi-background-color-tertiary);
+  background-color: var(--oi-button-background-secondary-hover);
   color: var(--oi-content-color-primary);
 }
 .variant_ghost:active:not(:disabled) {
