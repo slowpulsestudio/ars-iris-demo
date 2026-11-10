@@ -178,6 +178,14 @@ export {
   type ARSDirectoryMultiselectProps,
 } from './components/ARSDirectoryMultiselect/ARSDirectoryMultiselect.js';
 export { ARSEmptyContent, type ARSEmptyContentProps } from './components/ARSEmptyContent/ARSEmptyContent.js';
+export { ARSEmpty, type ARSEmptyProps } from './components/ARSEmpty/ARSEmpty.js';
+export {
+  FIGMA_FILES,
+  MISSING_FROM_FIGMA,
+  figmaNodeUrl,
+  type FigmaFileId,
+  type MissingFromFigmaEntry,
+} from './missingFromFigma.js';
 export {
   ARSFlatViewUserContent,
   type ARSFlatViewUserContentProps,

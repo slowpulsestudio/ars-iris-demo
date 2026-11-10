@@ -1,45 +1,6 @@
 /* ------------------------------------------------------------------ */
-/*  Tree view — shared styles for empty / list / detail pages          */
+/*  Tree view — shared styles for the detail page and the not-found state */
 /* ------------------------------------------------------------------ */
-
-.tableWrap {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  padding: var(--oi-spacing-m) var(--oi-spacing-l);
-  container-type: inline-size;
-  border-top: 1px solid var(--oi-border-color-muted);
-}
-
-.pagination > * {
-  flex: 1;
-}
-
-/* Name cell: leading type icon + link. */
-.nameCell {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--oi-spacing-s);
-  font-weight: var(--oi-text-body-s-strong-font-weight);
-  min-width: 0;
-}
-
-.nameIcon {
-  display: inline-flex;
-  flex-shrink: 0;
-  color: var(--oi-content-color-secondary);
-}
-
-.nameText {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 
 /* ---------- detail page ---------- */
 

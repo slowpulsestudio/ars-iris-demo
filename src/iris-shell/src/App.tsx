@@ -1,7 +1,6 @@
 import { useRoute, type Route } from './lib/router.js';
 import { UsersProvider } from './lib/usersStore.js';
 import { DirectoryProvider } from './lib/directoryStore.js';
-import { FIRST_NODE_ID } from './lib/directoryData.js';
 import { AppShellProvider, useAppShell } from './lib/appShellContext.js';
 import { useToastMessage } from './lib/toastStore.js';
 import { CommandPalette } from './components/CommandPalette/CommandPalette.js';
@@ -9,6 +8,7 @@ import { Toast } from './components/Toast/Toast.js';
 import { UsersPage } from './views/UsersPage/UsersPage.js';
 import { UserDetailPage } from './views/UserDetailPage/UserDetailPage.js';
 import { TreeListPage } from './views/TreeView/TreeListPage.js';
+import { TreeRootPage } from './views/TreeView/TreeRootPage.js';
 import { TreeDetailPage } from './views/TreeView/TreeDetailPage.js';
 import { FavoritesPage } from './views/FavoritesView/FavoritesPage.js';
 import { WipPage } from './views/WipPage/WipPage.js';
@@ -21,6 +21,7 @@ import { IdentitySectionPage } from './views/IdentityManagerPage/IdentitySection
 import { SafeguardPage } from './views/SafeguardPage/SafeguardPage.js';
 import { WelcomePage } from './views/WelcomePage/WelcomePage.js';
 import { StorybooksPage } from './views/StorybooksPage/StorybooksPage.js';
+import { ARSDirectoryPanel } from './views/ARSDirectoryPanel/ARSDirectoryPanel.js';
 
 function renderRoute(route: Route) {
   switch (route.name) {
@@ -29,7 +30,7 @@ function renderRoute(route: Route) {
     case 'usersList':
       return <UsersPage />;
     case 'treeRoot':
-      return <TreeListPage nodeId={FIRST_NODE_ID} />;
+      return <TreeRootPage />;
     case 'treeList':
       return <TreeListPage nodeId={route.params.nodeId} />;
     case 'treeDetail':
@@ -103,7 +104,7 @@ export default function App() {
   return (
     <UsersProvider>
       <DirectoryProvider>
-        <AppShellProvider>
+        <AppShellProvider directoryPanel={<ARSDirectoryPanel />}>
           <RoutedPage />
           <CommandPalette />
           <Toast message={toast.message} onDismiss={toast.dismiss} />

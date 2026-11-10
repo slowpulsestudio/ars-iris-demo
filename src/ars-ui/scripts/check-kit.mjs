@@ -27,6 +27,14 @@ const auditIds = new Map(
 
 const src = path.join(kit, 'src');
 const index = read(path.join(src, 'index.ts'));
+
+// Components used by the CRUD screens that are not in ARS - Primary (src/missingFromFigma.ts).
+const missing = [
+  ...read(path.join(src, 'missingFromFigma.ts')).matchAll(
+    /component: '([^']+)',\s*figmaName: '([^']+)',\s*figmaNodeId: '([^']+)'/g,
+  ),
+].map((m) => ({ component: m[1], figmaName: m[2], figmaNodeId: m[3] }));
+const MISSING_PREFIX = 'ARS/Missing from Figma/';
 const files = walk(src);
 const components = fs.readdirSync(path.join(src, 'components'));
 
@@ -43,6 +51,14 @@ for (const name of components) {
   if (fs.existsSync(storyPath)) {
     const story = read(storyPath);
     const title = story.match(/title: '([^']+)'/)?.[1];
+    const entry = missing.find((m) => m.component === name);
+    if (entry) {
+      if (title !== `${MISSING_PREFIX}${entry.figmaName}`) fail(`${name}: story title must be "${MISSING_PREFIX}${entry.figmaName}"`);
+      if (!story.includes(entry.figmaNodeId)) fail(`${name}: story doesn't cite Figma ID ${entry.figmaNodeId}`);
+      if (!story.includes("'missing-from-figma'")) fail(`${name}: story needs the missing-from-figma tag`);
+      continue;
+    }
+    if (title?.startsWith(MISSING_PREFIX)) fail(`${name}: not listed in src/missingFromFigma.ts`);
     const figmaName = title?.replace(/^ARS\//, '');
     if (!title?.startsWith('ARS/')) fail(`${name}: story title must start with "ARS/"`);
     else if (!auditIds.has(figmaName)) fail(`${name}: story title "${figmaName}" is not a component in the audit`);

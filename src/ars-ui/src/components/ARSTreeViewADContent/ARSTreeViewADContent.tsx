@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
@@ -28,7 +29,7 @@ export interface ARSTreeViewADContentProps {
   selected?: Set<string>;
   onSelectionChange?: (next: Set<string>) => void;
   onColumns?: () => void;
-  onMore?: (id: string) => void;
+  onMore?: (id: string, event: MouseEvent<HTMLElement>) => void;
   pagination: ARSPaginationProps;
   className?: string;
 }
@@ -94,7 +95,7 @@ export function ARSTreeViewADContent({
               <CellText>{row.description}</CellText>
             </TableCell>
             <TableCell inset="button" className={styles.actions}>
-              <IconButton icon="DotsThree" ariaLabel={`More actions for ${row.name}`} onClick={() => onMore?.(row.id)} />
+              <IconButton icon="DotsThree" ariaLabel={`More actions for ${row.name}`} onClick={(e) => onMore?.(row.id, e)} />
             </TableCell>
           </div>
         ))}
