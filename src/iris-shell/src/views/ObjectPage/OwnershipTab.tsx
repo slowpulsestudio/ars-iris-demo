@@ -32,6 +32,8 @@ export interface OwnershipTabProps {
   objectLabel: string;
   /** Adds "can update membership list" checkboxes (groups only). */
   membershipFlags?: boolean;
+  /** Subtitle under "Managed by". */
+  helper?: string;
   onDirtyChange: (dirty: boolean) => void;
   requestLeave: (action: () => void) => void;
 }
@@ -46,6 +48,7 @@ export function OwnershipTab({
   candidateNodeId,
   objectLabel,
   membershipFlags = false,
+  helper,
   onDirtyChange,
   requestLeave,
 }: OwnershipTabProps) {
@@ -79,7 +82,13 @@ export function OwnershipTab({
 
   const current = draft ?? saved;
   const set = <K extends keyof Draft>(key: K) => (value: Draft[K]) => setDraft((d) => (d ? { ...d, [key]: value } : d));
-  const text = (key: Exclude<keyof Draft, 'manager' | 'secondaryOwners' | 'managerCanUpdate' | 'secondaryCanUpdate'>) => ({
+  // Groups file "Ownership Edit": each field's placeholder is its label.
+  const text = (
+    label: string,
+    key: Exclude<keyof Draft, 'manager' | 'secondaryOwners' | 'managerCanUpdate' | 'secondaryCanUpdate'>,
+  ): FormInputProps => ({
+    label,
+    placeholder: label,
     value: current[key],
     onChange: set(key),
     width: 280,
@@ -107,8 +116,10 @@ export function OwnershipTab({
     { label: 'Country / Region', value: shown(saved.country) },
     { label: 'Telephone number', value: shown(saved.phone) },
     { label: 'Fax number', value: shown(saved.fax) },
-    ...(membershipFlags ? [{ label: 'Secondary owners can update membership list', value: saved.secondaryCanUpdate ? 'Yes' : 'No' }] : []),
   ];
+  const trailingRows: DetailsRow[] = membershipFlags
+    ? [{ label: 'Secondary owners can update membership list', value: saved.secondaryCanUpdate ? 'Yes' : 'No' }]
+    : [];
 
   const fields: FormInputProps[] = [
     ...(membershipFlags
@@ -122,24 +133,24 @@ export function OwnershipTab({
           },
         ]
       : []),
-    { label: 'Office', ...text('office') },
-    { label: 'Street address', multiline: true, value: current.street, onChange: set('street') },
-    { label: 'City', ...text('city') },
-    { label: 'State / Province', ...text('state') },
-    { label: 'Country / Region', ...text('country') },
-    { label: 'Telephone number', ...text('phone') },
-    { label: 'Fax number', ...text('fax') },
-    ...(membershipFlags
-      ? [
-          {
-            label: 'Secondary owners can update membership list',
-            checkbox: true,
-            value: String(current.secondaryCanUpdate),
-            onChange: (v: string) => set('secondaryCanUpdate')(v === 'true'),
-          },
-        ]
-      : []),
+    text('Office', 'office'),
+    text('Street address', 'street'),
+    text('City', 'city'),
+    text('State / Province', 'state'),
+    text('Country / Region', 'country'),
+    text('Telephone number', 'phone'),
+    text('Fax number', 'fax'),
   ];
+  const trailingFields: FormInputProps[] = membershipFlags
+    ? [
+        {
+          label: 'Secondary owners can update membership list',
+          checkbox: true,
+          value: String(current.secondaryCanUpdate),
+          onChange: (v: string) => set('secondaryCanUpdate')(v === 'true'),
+        },
+      ]
+    : [];
 
   const openPicker = (which: Exclude<Picker, null>) => {
     setQuery('');
@@ -179,6 +190,9 @@ export function OwnershipTab({
         owners={current.secondaryOwners.map(person)}
         rows={rows}
         fields={fields}
+        helper={helper}
+        trailingRows={trailingRows}
+        trailingFields={trailingFields}
         onEdit={() => setDraft(saved)}
         onCancel={cancel}
         onSave={save}

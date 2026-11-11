@@ -280,6 +280,7 @@ export function GroupObjectPage({
           candidateNodeId={currentNodeId}
           objectLabel="Group"
           membershipFlags
+          helper="Configure ownership and membership approval settings."
           onDirtyChange={setOwnershipDirty}
           requestLeave={leave}
         />
