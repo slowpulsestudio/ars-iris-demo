@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
+  ARSDeprovisionGroup,
   ARSOverviewTemplate,
   ARSPageMenu,
+  ARSRenameGroup,
   ARSUserPage,
   DetailsCard,
   type ARSOverviewData,
@@ -14,6 +16,8 @@ import { useAppShell } from '../../lib/appShellContext.js';
 import { GROUP_SCOPES, GROUP_TYPES, saveGroupProps, useGroupProps, type GroupProps } from '../../lib/groupDetailsStore.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
 import { showToast } from '../../lib/toastStore.js';
+import { copyObject } from '../../lib/copyObject.js';
+import { useDirectory } from '../../lib/directoryStore.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { useLeaveGuard } from '../../lib/useLeaveGuard.js';
 import { EmptyFigure } from '../../components/EmptyFigure/EmptyFigure.js';
@@ -21,6 +25,8 @@ import type { Crumb } from '../../components/AppHeader/AppHeader.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { UnsavedChangesModal } from '../ObjectModals/UnsavedChangesModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
+import { GroupMembersTab } from './GroupMembersTab.js';
+import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
 import styles from './UserObjectPage.module.css';
 
 /** The tabs as ARS_Group_Tabs draws them. */
@@ -40,9 +46,9 @@ const TAB_GENERAL = 'General';
 const TAB_OWNERSHIP = 'Ownership';
 const TAB_DETAILS = 'Object details';
 
-/** Object Management as the group's Overview draws it. */
+/** Object Management as the group's Overview draws it, with Rename added from the written requirements. */
 const GROUP_ACTIONS = [
-  [{ label: 'Move' }, { label: 'Copy' }],
+  [{ label: 'Rename' }, { label: 'Move' }, { label: 'Copy' }],
   [{ label: 'Deprovision', danger: true }, { label: 'Delete', danger: true }],
 ];
 
@@ -91,7 +97,14 @@ function memberCounts(object: DirectoryObject) {
 function overviewFor(object: DirectoryObject, p: GroupProps): ARSOverviewData {
   const c = memberCounts(object);
   return {
-    profile: { name: object.name, email: p.email, badges: [{ label: 'Cloud', tone: 'neutral' }] },
+    profile: {
+      name: object.name,
+      email: p.email,
+      badges: [
+        { label: 'Cloud', tone: 'neutral' },
+        ...(p.deprovisioned ? [{ label: 'Deprovisioned', tone: 'warning' as const }] : []),
+      ],
+    },
     details: [
       [{ label: 'Membership type', value: `${p.type} Group` }],
       [{ label: 'Object ID', value: object.id }],
@@ -155,6 +168,12 @@ export function GroupObjectPage({
   const [errors, setErrors] = useState<Draft>({});
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [moveOpen, setMoveOpen] = useState(false);
+  const [copyOpen, setCopyOpen] = useState(false);
+  const [deprovisionOpen, setDeprovisionOpen] = useState(false);
+  const [renameOpen, setRenameOpen] = useState(false);
+  const [renameDraft, setRenameDraft] = useState({ name: '', groupName: '' });
+  const [renameErrors, setRenameErrors] = useState({ name: '', groupName: '' });
+  const { getNodeName } = useDirectory();
 
   const initial = useMemo(
     () => (editing === TAB_GENERAL ? generalDraft(object, p) : editing === TAB_OWNERSHIP ? ownershipDraft(p) : {}),
@@ -329,6 +348,7 @@ export function GroupObjectPage({
         />
       );
     }
+    if (tab === 'Memberships') return <GroupMembersTab key={object.id} group={object} nodeId={currentNodeId} />;
     if (tab === TAB_DETAILS) {
       return (
         <DetailsCard
@@ -344,8 +364,48 @@ export function GroupObjectPage({
   };
 
   const onAction = (label: string) => {
+    if (label === 'Rename') {
+      setRenameDraft({ name: object.name, groupName: p.groupName });
+      setRenameErrors({ name: '', groupName: '' });
+      leave(() => setRenameOpen(true));
+    }
     if (label === 'Move') setMoveOpen(true);
+    if (label === 'Copy') setCopyOpen(true);
+    if (label === 'Deprovision') setDeprovisionOpen(true);
     if (label === 'Delete') setDeleteOpen(true);
+  };
+
+  const rename = () => {
+    const next = {
+      name: renameDraft.name.trim() ? '' : 'Name is required.',
+      groupName: renameDraft.groupName.trim() ? '' : 'Group name (Pre-Windows 2000) is required.',
+    };
+    setRenameErrors(next);
+    if (next.name || next.groupName) return;
+    onSave({ name: renameDraft.name.trim(), description: object.description });
+    saveGroupProps(object.id, { groupName: renameDraft.groupName.trim() });
+    setRenameOpen(false);
+    showToast('Successfully renamed Group', { supportingText: `Group renamed to ${renameDraft.name.trim()}` });
+  };
+
+  const deprovision = () => {
+    setDeprovisionOpen(false);
+    saveGroupProps(object.id, { deprovisioned: true });
+    showToast(`Group ${object.name} deprovisioned successfully.`, {
+      onUndo: () => saveGroupProps(object.id, { deprovisioned: false }),
+    });
+  };
+
+  const copyTo = (destId: string) => {
+    setCopyOpen(false);
+    const result = copyObject(currentNodeId, object.id, destId);
+    if (!result) return;
+    saveGroupProps(result.copy.id, { ...p, groupName: result.copy.name });
+    showToast(`Group ${object.name} copied to ${getNodeName(destId) ?? 'the folder'} successfully.`, {
+      onUndo: result.undo,
+      viewHref: `#/tree/${destId}/${result.copy.id}`,
+      viewLabel: 'View object',
+    });
   };
 
   return (
@@ -398,6 +458,37 @@ export function GroupObjectPage({
         }}
       />
       <UnsavedChangesModal open={guard.open} onCancel={guard.cancel} onConfirm={guard.confirm} />
+      <MoveObjectSheet
+        open={copyOpen}
+        mode="copy"
+        onClose={() => setCopyOpen(false)}
+        objects={[{ id: object.id, name: object.name }]}
+        objectType={OBJECT_TYPE_META.group.label}
+        currentNodeId={currentNodeId}
+        canMoveTo={() => true}
+        onMove={copyTo}
+      />
+      <ModalOverlay open={renameOpen} onClose={() => setRenameOpen(false)} label="Rename Group">
+        <ARSRenameGroup
+          name={renameDraft.name}
+          onNameChange={(name) => setRenameDraft((d) => ({ ...d, name }))}
+          groupName={renameDraft.groupName}
+          onGroupNameChange={(groupName) => setRenameDraft((d) => ({ ...d, groupName }))}
+          nameError={renameErrors.name}
+          groupNameError={renameErrors.groupName}
+          onClose={() => setRenameOpen(false)}
+          onCancel={() => setRenameOpen(false)}
+          onRename={rename}
+        />
+      </ModalOverlay>
+      <ModalOverlay open={deprovisionOpen} onClose={() => setDeprovisionOpen(false)} label="Deprovision AD Group">
+        <ARSDeprovisionGroup
+          name={object.name}
+          onClose={() => setDeprovisionOpen(false)}
+          onNo={() => setDeprovisionOpen(false)}
+          onYes={deprovision}
+        />
+      </ModalOverlay>
     </AppShell>
   );
 }

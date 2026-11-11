@@ -26,6 +26,7 @@ export interface GroupProps {
   phone: string;
   fax: string;
   secondaryCanUpdate: boolean;
+  deprovisioned: boolean;
 }
 
 const EMPTY: Partial<GroupProps> = Object.freeze({});
@@ -61,6 +62,7 @@ function defaultsFor(object: DirectoryObject): GroupProps {
     phone: '',
     fax: '',
     secondaryCanUpdate: false,
+    deprovisioned: false,
   };
 }
 

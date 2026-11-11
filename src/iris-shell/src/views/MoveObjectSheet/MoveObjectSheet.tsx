@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ARSDirectoryManagementContent, ARSSelectedObjectsBlock, FolderArrowRightIcon } from '@ars';
 import { Button } from '../../components/Button/Button.js';
+import { Icon } from '../../components/Icon/Icon.js';
 import { SideSheet } from '../../components/SideSheet/SideSheet.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { toTreeNode } from '../../lib/directoryTree.js';
@@ -14,6 +15,8 @@ export interface MoveObjectSheetObject {
 export interface MoveObjectSheetProps {
   open: boolean;
   onClose: () => void;
+  /** "copy" keeps the same sheet but reads Copy, for choosing where a copy goes. */
+  mode?: 'move' | 'copy';
   /** The objects being moved; one gets its own title, several get the removable list. */
   objects: MoveObjectSheetObject[];
   /** Object class of a single object, e.g. "User". Drives the title. */
@@ -34,6 +37,7 @@ export interface MoveObjectSheetProps {
 export function MoveObjectSheet({
   open,
   onClose,
+  mode = 'move',
   objects: given,
   objectType: givenType,
   currentNodeId = null,
@@ -64,13 +68,14 @@ export function MoveObjectSheet({
   const remaining = objects.filter((o) => !removed.has(o.id));
   const several = objects.length > 1;
   const ready = !!choice && remaining.length > 0 && canMoveTo(choice);
+  const verb = mode === 'copy' ? 'Copy' : 'Move';
 
   return (
     <SideSheet
       open={open}
       onClose={onClose}
-      icon={<FolderArrowRightIcon />}
-      title={several ? 'Move Objects' : `Move ${objectType}`}
+      icon={mode === 'copy' ? <Icon name="Copy" size="24px" /> : <FolderArrowRightIcon />}
+      title={several ? `${verb} Objects` : `${verb} ${objectType}`}
       subtitle={
         several
           ? 'Browse and choose a destination folder'
@@ -82,7 +87,7 @@ export function MoveObjectSheet({
             Cancel
           </Button>
           <Button disabled={!ready} onClick={() => choice && onMove(choice, remaining)}>
-            Move
+            {verb}
           </Button>
         </>
       }
