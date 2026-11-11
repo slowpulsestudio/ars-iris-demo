@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { ARSTableGroups } from '@ars';
 import { AppShell } from '../AppShell/AppShell.js';
 import { useDirectory } from '../../lib/directoryStore.js';
+import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import type { DirectoryNodeView, DirectoryObject } from '../../lib/directoryData.js';
 import { getGroupProps } from '../../lib/groupDetailsStore.js';
 import { CreateGroupModal } from './CreateGroupModal.js';
@@ -42,8 +43,11 @@ export function GroupsPage() {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
-  const [selected, setSelected] = useState<Set<string>>(() => new Set());
-  const [createOpen, setCreateOpen] = useState(false);
+  const [selected, setSelected] = useHashSelection();
+  // The New AD Group dialog lives in the address (?dialog=new-group).
+  const [dialog] = useHashParam('dialog');
+  const createOpen = dialog === 'new-group';
+  const setCreateOpen = (open: boolean) => setHashParams({ dialog: open ? 'new-group' : null });
   const [removedTags, setRemovedTags] = useState<Map<string, Set<string>>>(() => new Map());
 
   // Only groups inside a directory (under Managed Directories); the Access Templates and Managed Units folders aren't directories.

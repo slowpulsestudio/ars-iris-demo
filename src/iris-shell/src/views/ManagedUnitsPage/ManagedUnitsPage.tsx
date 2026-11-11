@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { ARSActionBar, ARSManagedUnitMembers, ARSManagedUsersContent } from '@ars';
 import { AppShell } from '../AppShell/AppShell.js';
 import { navigate } from '../../lib/router.js';
+import { useHashSelection } from '../../lib/hashState.js';
 import { MANAGED_UNITS, getManagedUnit, membersOf } from '../../lib/managedUnits.js';
 import { Button } from '../../components/Button/Button.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
@@ -14,7 +15,7 @@ export function ManagedUnitsPage() {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
-  const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const [selected, setSelected] = useHashSelection();
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -69,7 +70,7 @@ export function ManagedUnitMembersPage({ unitId }: ManagedUnitMembersPageProps) 
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
-  const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const [selected, setSelected] = useHashSelection();
 
   const members = useMemo(() => membersOf(unitId), [unitId]);
   const rows = useMemo(() => {

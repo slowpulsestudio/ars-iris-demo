@@ -91,16 +91,24 @@ const ROUTES: RouteDef[] = [
 /** Start page: the welcome page with the persona picker. */
 const DEFAULT = '#/welcome';
 
+/** Splits `#/path?a=b` into `#/path` and `?a=b` (empty when there is no query). */
+function splitQuery(hash: string): [string, string] {
+  const i = hash.indexOf('?');
+  return i < 0 ? [hash, ''] : [hash.slice(0, i), hash.slice(i)];
+}
+
 /**
  * Splits `#/<persona-id>/<page>` into the persona and the page address. `#/<persona-id>` alone
- * opens that persona's start page. Addresses without a persona id come back unchanged.
+ * opens that persona's start page. Addresses without a persona id come back unchanged. A
+ * `?query` on the address is kept on the returned path.
  */
 export function splitPersonaHash(hash: string | null | undefined): { personaId: string | null; path: string } {
   const h = hash || DEFAULT;
-  const m = h.match(/^#\/([^/]+)(\/.*)?$/);
+  const [base, query] = splitQuery(h);
+  const m = base.match(/^#\/([^/]+)(\/.*)?$/);
   const persona = m ? findPersona(m[1]) : undefined;
   if (!m || !persona) return { personaId: null, path: h };
-  return { personaId: persona.id, path: m[2] ? `#${m[2]}` : persona.navigation.defaultRoute };
+  return { personaId: persona.id, path: (m[2] ? `#${m[2]}` : persona.navigation.defaultRoute) + query };
 }
 
 /** The address of a page as seen by one persona, e.g. `#/admin-user/users`. */
@@ -109,7 +117,7 @@ export function personaHash(personaId: string, path: string): string {
 }
 
 function parseHash(hash: string | null | undefined): Route {
-  const h = splitPersonaHash(hash).path;
+  const [h] = splitQuery(splitPersonaHash(hash).path);
   for (const r of ROUTES) {
     const m = h.match(r.pattern);
     if (m) {
@@ -138,6 +146,29 @@ export function navigate(path: string): void {
 
 let guard: ((path: string) => boolean) | null = null;
 let lastHash = typeof window === 'undefined' ? '' : window.location.hash;
+
+const HASH_STATE_EVENT = 'ars-hash-state';
+
+/**
+ * Changes the address without adding a history entry or running the navigation guard. For
+ * page state kept in the address (a tab, an open dialog), not for moving to another page.
+ */
+export function replaceHash(next: string): void {
+  if (typeof window === 'undefined' || window.location.hash === next) return;
+  window.history.replaceState(null, '', next);
+  lastHash = next;
+  window.dispatchEvent(new Event(HASH_STATE_EVENT));
+}
+
+/** Calls `callback` whenever the address changes, by navigation or by `replaceHash`. */
+export function subscribeHash(callback: () => void): () => void {
+  window.addEventListener('hashchange', callback);
+  window.addEventListener(HASH_STATE_EVENT, callback);
+  return () => {
+    window.removeEventListener('hashchange', callback);
+    window.removeEventListener(HASH_STATE_EVENT, callback);
+  };
+}
 
 /**
  * Lets a page hold back navigation (e.g. a form with unsaved changes): the

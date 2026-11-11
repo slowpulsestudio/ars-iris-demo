@@ -12,6 +12,7 @@ import {
 import { NEW_OBJECT_MENU } from '@ars/components/ARSNewObjectMenu/ARSNewObjectMenu.js';
 import { AppShell } from '../AppShell/AppShell.js';
 import { navigate } from '../../lib/router.js';
+import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
 import { useFavorites } from '../../lib/useFavorites.js';
@@ -43,6 +44,12 @@ const NEW_OBJECT_ICONS = new Map(
   NEW_OBJECT_MENU.flatMap((row) => (row === 'divider' || !row.icon ? [] : [[row.label, row.icon] as const])),
 );
 
+/** The icon of the New object menu entry for an object type. */
+function newObjectIconFor(type: string): string {
+  for (const [label, icon] of NEW_OBJECT_ICONS) if (objectTypeFromMenuLabel(label) === type) return icon;
+  return 'User';
+}
+
 /** Href for a row: containers drill in; leaves open detail. */
 function hrefFor(obj: DirectoryObject, nodeId: string): string {
   return obj.isContainer ? `#/tree/${obj.id}` : `#/tree/${nodeId}/${obj.id}`;
@@ -63,17 +70,19 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
-  const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const [selected, setSelectedSet] = useHashSelection();
+  const setSelected = (next: Set<string> | ((s: Set<string>) => Set<string>)) =>
+    setSelectedSet(typeof next === 'function' ? next(selected) : next);
   const [showSelected, setShowSelected] = useState(false);
-  const [resetTarget, setResetTarget] = useState<DirectoryObject | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<DirectoryObject | null>(null);
-  // Which objects the Move side sheet is open for. `null` = closed.
-  const [moveTargets, setMoveTargets] = useState<DirectoryObject[] | null>(null);
-  // Which object type the Create flow is building. `null` = closed.
-  const [createTarget, setCreateTarget] = useState<{ type: string; icon: string } | null>(null);
-  // Which kind of group the group create flow is building. `null` = closed.
-  const [groupCreate, setGroupCreate] = useState<CreateGroupKind | null>(null);
-  const [ouCreate, setOuCreate] = useState(false);
+
+  // The open dialog and what it is about live in the address
+  // (?select=a,b&dialog=delete&target=a, or ?dialog=create&type=User).
+  const [dialog] = useHashParam('dialog');
+  const [targetParam] = useHashParam('target');
+  const [typeParam] = useHashParam('type');
+  const closeDialog = () => setHashParams({ dialog: null, target: null, type: null });
+  const openDialog = (name: string, ids: string[] = []) =>
+    setHashParams({ dialog: name, target: ids.length ? ids.join(',') : null, type: null });
 
   const [rowObject, setRowObject] = useState<DirectoryObject | null>(null);
   const rowMenu = useAnchoredMenu();
@@ -81,11 +90,11 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
   const createMenu = useAnchoredMenu();
   const pageMenu = useAnchoredMenu();
 
-  // Reset transient view state when the selected node changes.
+  // Reset transient view state when the selected node changes. (The ticked rows are in the address,
+  // which a move to another folder replaces.)
   useEffect(() => {
     setQuery('');
     setPage(1);
-    setSelected(new Set());
     setShowSelected(false);
   }, [nodeId]);
 
@@ -96,6 +105,18 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     () => (known ? getChildren(nodeId) : []),
     [known, getChildren, nodeId],
   );
+
+  const targets = useMemo(() => {
+    const ids = targetParam ? targetParam.split(',') : [];
+    return allRows.filter((o) => ids.includes(o.id));
+  }, [allRows, targetParam]);
+  const resetTarget = dialog === 'reset-password' ? (targets[0] ?? null) : null;
+  const deleteTarget = dialog === 'delete' ? (targets[0] ?? null) : null;
+  const moveTargets = dialog === 'move' ? targets : null;
+  const createTarget = dialog === 'create' && typeParam ? { type: typeParam, icon: newObjectIconFor(typeParam) } : null;
+  const groupCreate: CreateGroupKind | null =
+    dialog === 'new-group' ? (getPath(nodeId).some((n) => n.id === 'entra-directories') ? 'Entra' : 'AD') : null;
+  const ouCreate = dialog === 'new-ou';
 
   const rows = useMemo<DirectoryObject[]>(() => {
     const q = query.trim().toLowerCase();
@@ -132,9 +153,9 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
 
   const onRowAction = (label: string) => {
     if (!rowObject) return;
-    if (label === 'Reset Password') setResetTarget(rowObject);
-    if (label === 'Delete') setDeleteTarget(rowObject);
-    if (label === 'Move') setMoveTargets([rowObject]);
+    if (label === 'Reset Password') openDialog('reset-password', [rowObject.id]);
+    if (label === 'Delete') openDialog('delete', [rowObject.id]);
+    if (label === 'Move') openDialog('move', [rowObject.id]);
     if (label === 'View properties') navigate(hrefFor(rowObject, nodeId).replace(/^#\/tree\/([^/]+)$/, `#/tree/${nodeId}/${rowObject.id}`));
     if (label === 'Add to Favorites') toggleRowFavorite(rowObject);
   };
@@ -148,23 +169,23 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
   const openCreate = (label: string) => {
     const type = objectTypeFromMenuLabel(label);
     if (type === 'Group') {
-      setGroupCreate(getPath(nodeId).some((n) => n.id === 'entra-directories') ? 'Entra' : 'AD');
+      openDialog('new-group');
       return;
     }
     if (type === 'Organizational Unit') {
-      setOuCreate(true);
+      openDialog('new-ou');
       return;
     }
-    if (type) setCreateTarget({ type, icon: NEW_OBJECT_ICONS.get(label) ?? 'User' });
+    if (type) setHashParams({ dialog: 'create', type, target: null });
   };
 
   const selectedObjects = allRows.filter((o) => selected.has(o.id));
   const onBarAction = (label: string, e: MouseEvent<HTMLButtonElement>) => {
     const only = selectedObjects.length === 1 ? selectedObjects[0] : null;
     if (label === 'Select all') setSelected(new Set(allRows.map((o) => o.id)));
-    if (label === 'Reset password' && only) setResetTarget(only);
-    if (label === 'Delete' && only) setDeleteTarget(only);
-    if (label === 'Move') setMoveTargets(selectedObjects);
+    if (label === 'Reset password' && only) openDialog('reset-password', [only.id]);
+    if (label === 'Delete' && only) openDialog('delete', [only.id]);
+    if (label === 'Move') openDialog('move', selectedObjects.map((o) => o.id));
     if (label === 'More actions' && only) {
       setRowObject(only);
       rowMenu.openAt(e);
@@ -179,9 +200,9 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
   });
 
   const onMoveObjects = (destId: string, objs: Array<{ id: string }>) => {
-    const targets = (moveTargets ?? []).filter((o) => objs.some((x) => x.id === o.id));
-    moveEntries(targets.map(entryFor), destId, getNodeName(destId) ?? 'the folder');
-    setMoveTargets(null);
+    const movable = (moveTargets ?? []).filter((o) => objs.some((x) => x.id === o.id));
+    moveEntries(movable.map(entryFor), destId, getNodeName(destId) ?? 'the folder');
+    closeDialog();
   };
 
   // Dragging a selected row drags the whole selection; any other row drags alone.
@@ -262,7 +283,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
           toolbar={toolbar}
           message="This folder has no objects."
           actionLabel="Add object"
-          onAction={() => setCreateTarget({ type: 'User', icon: 'User' })}
+          onAction={() => setHashParams({ dialog: 'create', type: 'User', target: null })}
         />
       ) : (
         <ARSTreeViewADContent
@@ -320,7 +341,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
       {resetTarget && (
         <ResetPasswordModal
           open
-          onClose={() => setResetTarget(null)}
+          onClose={closeDialog}
           user={{ name: resetTarget.details.displayName || resetTarget.name }}
           location={nodeName ?? 'Directory'}
         />
@@ -328,7 +349,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
       {deleteTarget && (
         <DeleteObjectModal
           open
-          onClose={() => setDeleteTarget(null)}
+          onClose={closeDialog}
           objectClass={OBJECT_TYPE_META[deleteTarget.type].label}
           name={deleteTarget.name}
           location={nodeName ?? 'Directory'}
@@ -345,21 +366,21 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
       )}
       <MoveObjectSheet
         open={moveTargets !== null}
-        onClose={() => setMoveTargets(null)}
+        onClose={closeDialog}
         objects={(moveTargets ?? []).map((o) => ({ id: o.id, name: o.name }))}
         objectType={moveTargets?.[0] ? OBJECT_TYPE_META[moveTargets[0].type].label : undefined}
         currentNodeId={nodeId}
         canMoveTo={(destId) => (moveTargets ?? []).some((o) => canMoveItem(toMoveItem(o), destId))}
         onMove={onMoveObjects}
       />
-      <CreateOUModal open={ouCreate} onClose={() => setOuCreate(false)} locationId={nodeId} />
+      <CreateOUModal open={ouCreate} onClose={closeDialog} locationId={nodeId} />
       {groupCreate && (
-        <CreateGroupModal open onClose={() => setGroupCreate(null)} kind={groupCreate} locationId={nodeId} />
+        <CreateGroupModal open onClose={closeDialog} kind={groupCreate} locationId={nodeId} />
       )}
       {createTarget && (
         <CreateObjectModal
           open
-          onClose={() => setCreateTarget(null)}
+          onClose={closeDialog}
           objectType={createTarget.type}
           icon={createTarget.icon}
           locationId={nodeId}

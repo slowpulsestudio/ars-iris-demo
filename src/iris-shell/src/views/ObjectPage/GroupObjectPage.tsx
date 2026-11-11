@@ -12,6 +12,7 @@ import {
 import { Dish } from '@lucasmarkes/hairline/react';
 import { AppShell } from '../AppShell/AppShell.js';
 import { useAppShell } from '../../lib/appShellContext.js';
+import { setHashParams, useHashParam, useHashTab } from '../../lib/hashState.js';
 import { GROUP_SCOPES, GROUP_TYPES, saveGroupProps, useGroupProps, type GroupProps } from '../../lib/groupDetailsStore.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
 import { showToast } from '../../lib/toastStore.js';
@@ -136,17 +137,21 @@ export function GroupObjectPage({
   const { setAiOpen } = useAppShell();
   const pageMenu = useAnchoredMenu();
   const p = useGroupProps(object);
-  const [tab, setTab] = useState(TAB_OVERVIEW);
-  const [editing, setEditing] = useState<Editing>(null);
+  // The tab, the card being edited and the open dialog live in the address (?tab=general&edit=general&dialog=rename).
+  const [tab, setTab] = useHashTab(GROUP_TABS);
+  const [editParam] = useHashParam('edit');
+  const [dialog] = useHashParam('dialog');
+  const editing: Editing = editParam === 'general' ? TAB_GENERAL : null;
+  const deleteOpen = dialog === 'delete';
+  const moveOpen = dialog === 'move';
+  const copyOpen = dialog === 'copy';
+  const deprovisionOpen = dialog === 'deprovision';
+  const renameOpen = dialog === 'rename';
+  const closeDialog = () => setHashParams({ dialog: null });
   // Unsaved changes in the Ownership card.
   const [ownershipDirty, setOwnershipDirty] = useState(false);
   const [draft, setDraft] = useState<Draft>({});
   const [errors, setErrors] = useState<Draft>({});
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [moveOpen, setMoveOpen] = useState(false);
-  const [copyOpen, setCopyOpen] = useState(false);
-  const [deprovisionOpen, setDeprovisionOpen] = useState(false);
-  const [renameOpen, setRenameOpen] = useState(false);
   const [renameDraft, setRenameDraft] = useState({ name: '', groupName: '' });
   const [renameErrors, setRenameErrors] = useState({ name: '', groupName: '' });
   const { getNodeName } = useDirectory();
@@ -158,7 +163,7 @@ export function GroupObjectPage({
   const dirty = ownershipDirty || (editing !== null && JSON.stringify(draft) !== JSON.stringify(initial));
 
   const cancelEditing = () => {
-    setEditing(null);
+    setHashParams({ edit: null });
     setErrors({});
   };
   const guard = useLeaveGuard(dirty, () => {
@@ -167,16 +172,23 @@ export function GroupObjectPage({
   });
   const { leave } = guard;
 
-  // A different group starts from its own Overview.
+  // A different group, or a form or dialog opened by an address, starts from the saved values.
   useEffect(() => {
-    setTab(TAB_OVERVIEW);
-    cancelEditing();
-  }, [object.id]);
+    if (editing === TAB_GENERAL) setDraft(generalDraft(object, p));
+    setErrors({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [object.id, editing]);
+  useEffect(() => {
+    if (!renameOpen) return;
+    setRenameDraft({ name: object.name, groupName: p.groupName });
+    setRenameErrors({ name: '', groupName: '' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [renameOpen, object.id]);
 
   const startEditing = (which: Exclude<Editing, null>) => {
     setDraft(generalDraft(object, p));
     setErrors({});
-    setEditing(which);
+    setHashParams({ tab: 'general', edit: 'general', dialog: null });
   };
 
   const set = (key: string) => (value: string) => {
@@ -311,15 +323,11 @@ export function GroupObjectPage({
   };
 
   const onAction = (label: string) => {
-    if (label === 'Rename') {
-      setRenameDraft({ name: object.name, groupName: p.groupName });
-      setRenameErrors({ name: '', groupName: '' });
-      leave(() => setRenameOpen(true));
-    }
-    if (label === 'Move') setMoveOpen(true);
-    if (label === 'Copy') setCopyOpen(true);
-    if (label === 'Deprovision') setDeprovisionOpen(true);
-    if (label === 'Delete') setDeleteOpen(true);
+    if (label === 'Rename') leave(() => setHashParams({ dialog: 'rename' }));
+    if (label === 'Move') setHashParams({ dialog: 'move' });
+    if (label === 'Copy') setHashParams({ dialog: 'copy' });
+    if (label === 'Deprovision') setHashParams({ dialog: 'deprovision' });
+    if (label === 'Delete') setHashParams({ dialog: 'delete' });
   };
 
   const rename = () => {
@@ -331,12 +339,12 @@ export function GroupObjectPage({
     if (next.name || next.groupName) return;
     onSave({ name: renameDraft.name.trim(), description: object.description });
     saveGroupProps(object.id, { groupName: renameDraft.groupName.trim() });
-    setRenameOpen(false);
+    closeDialog();
     showToast('Successfully renamed Group', { supportingText: `Group renamed to ${renameDraft.name.trim()}` });
   };
 
   const deprovision = () => {
-    setDeprovisionOpen(false);
+    closeDialog();
     saveGroupProps(object.id, { deprovisioned: true });
     showToast(`Group ${object.name} deprovisioned successfully.`, {
       onUndo: () => saveGroupProps(object.id, { deprovisioned: false }),
@@ -344,7 +352,7 @@ export function GroupObjectPage({
   };
 
   const copyTo = (destId: string) => {
-    setCopyOpen(false);
+    closeDialog();
     const result = copyObject(currentNodeId, object.id, destId);
     if (!result) return;
     saveGroupProps(result.copy.id, { ...p, groupName: result.copy.name });
@@ -386,7 +394,7 @@ export function GroupObjectPage({
 
       <DeleteObjectModal
         open={deleteOpen}
-        onClose={() => setDeleteOpen(false)}
+        onClose={closeDialog}
         objectClass={OBJECT_TYPE_META.group.label}
         name={object.name}
         location={location}
@@ -394,13 +402,13 @@ export function GroupObjectPage({
       />
       <MoveObjectSheet
         open={moveOpen}
-        onClose={() => setMoveOpen(false)}
+        onClose={closeDialog}
         objects={[{ id: object.id, name: object.name }]}
         objectType={OBJECT_TYPE_META.group.label}
         currentNodeId={currentNodeId}
         canMoveTo={canMoveTo}
         onMove={(destId) => {
-          setMoveOpen(false);
+          closeDialog();
           leave(() => onMove(destId));
         }}
       />
@@ -408,14 +416,14 @@ export function GroupObjectPage({
       <MoveObjectSheet
         open={copyOpen}
         mode="copy"
-        onClose={() => setCopyOpen(false)}
+        onClose={closeDialog}
         objects={[{ id: object.id, name: object.name }]}
         objectType={OBJECT_TYPE_META.group.label}
         currentNodeId={currentNodeId}
         canMoveTo={() => true}
         onMove={copyTo}
       />
-      <ModalOverlay open={renameOpen} onClose={() => setRenameOpen(false)} label="Rename Group">
+      <ModalOverlay open={renameOpen} onClose={closeDialog} label="Rename Group">
         <ARSRenameGroup
           name={renameDraft.name}
           onNameChange={(name) => setRenameDraft((d) => ({ ...d, name }))}
@@ -423,16 +431,16 @@ export function GroupObjectPage({
           onGroupNameChange={(groupName) => setRenameDraft((d) => ({ ...d, groupName }))}
           nameError={renameErrors.name}
           groupNameError={renameErrors.groupName}
-          onClose={() => setRenameOpen(false)}
-          onCancel={() => setRenameOpen(false)}
+          onClose={closeDialog}
+          onCancel={closeDialog}
           onRename={rename}
         />
       </ModalOverlay>
-      <ModalOverlay open={deprovisionOpen} onClose={() => setDeprovisionOpen(false)} label="Deprovision AD Group">
+      <ModalOverlay open={deprovisionOpen} onClose={closeDialog} label="Deprovision AD Group">
         <ARSDeprovisionGroup
           name={object.name}
-          onClose={() => setDeprovisionOpen(false)}
-          onNo={() => setDeprovisionOpen(false)}
+          onClose={closeDialog}
+          onNo={closeDialog}
           onYes={deprovision}
         />
       </ModalOverlay>

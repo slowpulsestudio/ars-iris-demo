@@ -11,6 +11,7 @@ import {
 import { Dish } from '@lucasmarkes/hairline/react';
 import { AppShell } from '../AppShell/AppShell.js';
 import { useAppShell } from '../../lib/appShellContext.js';
+import { setHashParams, useHashParam, useHashTab } from '../../lib/hashState.js';
 import { canMoveNode, getNodePath, removeNode, type DirectoryObject } from '../../lib/directoryData.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { saveGroupProps, useGroupProps } from '../../lib/groupDetailsStore.js';
@@ -71,12 +72,17 @@ export function OUObjectPage({ breadcrumb, ou, onSave, onBack, onMoved, onDelete
   const { getChildren } = useDirectory();
   const pageMenu = useAnchoredMenu();
   const p = useGroupProps(ou);
-  const [tab, setTab] = useState(TAB_OVERVIEW);
+  // The tab, the form being edited and the open dialog live in the address (?tab=general&edit=general&dialog=delete).
+  const [tab, setTab] = useHashTab(OU_TABS);
+  const [editParam] = useHashParam('edit');
+  const [dialog] = useHashParam('dialog');
+  const editing = editParam === 'general';
+  const deleteOpen = dialog === 'delete';
+  const moveOpen = dialog === 'move';
+  const closeDialog = () => setHashParams({ dialog: null });
   const [draft, setDraft] = useState<Draft | null>(null);
   const [nameError, setNameError] = useState('');
   const [ownershipDirty, setOwnershipDirty] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [moveOpen, setMoveOpen] = useState(false);
 
   const saved: Draft = useMemo(
     () => ({
@@ -93,14 +99,16 @@ export function OUObjectPage({ breadcrumb, ou, onSave, onBack, onMoved, onDelete
   const dirty = ownershipDirty || (draft !== null && JSON.stringify(draft) !== JSON.stringify(saved));
   const guard = useLeaveGuard(dirty, () => {
     setOwnershipDirty(false);
-    setDraft(null);
+    setHashParams({ edit: null });
   });
   const { leave } = guard;
 
+  // A different OU, or editing opened by an address, starts the form from the saved values.
   useEffect(() => {
-    setTab(TAB_OVERVIEW);
-    setDraft(null);
-  }, [ou.id]);
+    setDraft(editing ? saved : null);
+    setNameError('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ou.id, editing]);
 
   const path = getNodePath(ou.id).map((n) => n.name);
   // Figma's header writes the location from the directory down, e.g. "O1D.local" (the first two levels are tree folders).
@@ -164,7 +172,7 @@ export function OUObjectPage({ breadcrumb, ou, onSave, onBack, onMoved, onDelete
     }
     onSave({ name: draft.name.trim(), description: draft.description });
     saveGroupProps(ou.id, { street: draft.street, city: draft.city, state: draft.state, zip: draft.zip, country: draft.country });
-    setDraft(null);
+    setHashParams({ edit: null });
     showToast('Successfully updated Organizational Unit', {
       supportingText: `Successfully updated properties for Organizational Unit ${draft.name.trim()}`,
     });
@@ -196,14 +204,14 @@ export function OUObjectPage({ breadcrumb, ou, onSave, onBack, onMoved, onDelete
         <DetailsCard
           title="General"
           helper="Manage general information."
-          editing={draft !== null}
+          editing={editing}
           rows={generalRows}
           fields={generalFields}
           onEdit={() => {
             setNameError('');
-            setDraft(saved);
+            setHashParams({ tab: 'general', edit: 'general' });
           }}
-          onCancel={() => leave(() => setDraft(null))}
+          onCancel={() => leave(() => setHashParams({ edit: null }))}
           onSave={saveGeneral}
         />
       );
@@ -241,8 +249,8 @@ export function OUObjectPage({ breadcrumb, ou, onSave, onBack, onMoved, onDelete
         onBack={onBack}
         onMore={pageMenu.openAt}
         onAction={(label) => {
-          if (label === 'Move') setMoveOpen(true);
-          if (label === 'Delete') setDeleteOpen(true);
+          if (label === 'Move') setHashParams({ dialog: 'move' });
+          if (label === 'Delete') setHashParams({ dialog: 'delete' });
         }}
       >
         <div className={styles.stack}>{renderContent()}</div>
@@ -257,7 +265,7 @@ export function OUObjectPage({ breadcrumb, ou, onSave, onBack, onMoved, onDelete
       />
       <DeleteObjectModal
         open={deleteOpen}
-        onClose={() => setDeleteOpen(false)}
+        onClose={closeDialog}
         objectClass="Organizational Unit"
         name={ou.name}
         location={location}
@@ -268,13 +276,13 @@ export function OUObjectPage({ breadcrumb, ou, onSave, onBack, onMoved, onDelete
       />
       <MoveObjectSheet
         open={moveOpen}
-        onClose={() => setMoveOpen(false)}
+        onClose={closeDialog}
         objects={[{ id: ou.id, name: ou.name }]}
         objectType="Organizational Unit"
         currentNodeId={ou.parentId}
         canMoveTo={(destId) => canMoveNode(ou.id, destId)}
         onMove={(destId) => {
-          setMoveOpen(false);
+          closeDialog();
           leave(() => onMoved(destId));
         }}
       />

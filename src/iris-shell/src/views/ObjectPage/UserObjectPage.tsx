@@ -5,12 +5,14 @@ import {
   ARSUserPage,
   DetailsCard,
   USER_OBJECT_ACTIONS,
+  USER_PAGE_TABS,
   type ARSOverviewData,
   type DetailsRow,
   type FormInputProps,
 } from '@ars';
 import { AppShell } from '../AppShell/AppShell.js';
 import { useAppShell } from '../../lib/appShellContext.js';
+import { setHashParams, useHashParam, useHashTab } from '../../lib/hashState.js';
 import { navigate, setNavigationGuard } from '../../lib/router.js';
 import { showToast } from '../../lib/toastStore.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
@@ -157,14 +159,18 @@ export function UserObjectPage({
 }: UserObjectPageProps) {
   const { setAiOpen } = useAppShell();
   const pageMenu = useAnchoredMenu();
-  const [tab, setTab] = useState(TAB_OVERVIEW);
-  const [editing, setEditing] = useState(false);
+  // The tab, the card being edited and the open dialog live in the address (?tab=general&edit=general&dialog=delete).
+  const [tab, setTab] = useHashTab(USER_PAGE_TABS);
+  const [editParam] = useHashParam('edit');
+  const [dialog] = useHashParam('dialog');
+  const editing = editParam === 'general';
+  const resetOpen = dialog === 'reset-password';
+  const deleteOpen = dialog === 'delete';
+  const moveOpen = dialog === 'move';
+  const closeDialog = () => setHashParams({ dialog: null });
   const [draft, setDraft] = useState<Draft>(() => toDraft(data));
   const [errors, setErrors] = useState<Errors>({});
   const [bannerOpen, setBannerOpen] = useState(false);
-  const [resetOpen, setResetOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [moveOpen, setMoveOpen] = useState(false);
   // Unsaved changes in the User Details cards.
   const [detailsDirty, setDetailsDirty] = useState(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
@@ -179,24 +185,23 @@ export function UserObjectPage({
   });
   const { leave } = guard;
 
-  // A different object starts from its own Overview.
+  // A different object, or editing opened by an address, starts the form from the saved values.
   useEffect(() => {
-    setTab(TAB_OVERVIEW);
-    setEditing(false);
+    setDraft(toDraft(data));
     setErrors({});
     setBannerOpen(false);
-  }, [data.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data.id, editing]);
 
   const startEditing = () => {
     setDraft(toDraft(data));
     setErrors({});
     setBannerOpen(false);
-    setTab(TAB_GENERAL);
-    setEditing(true);
+    setHashParams({ tab: 'general', edit: 'general', dialog: null });
   };
 
   const cancelEditing = () => {
-    setEditing(false);
+    setHashParams({ edit: null });
     setErrors({});
     setBannerOpen(false);
   };
@@ -342,9 +347,9 @@ export function UserObjectPage({
   };
 
   const onAction = (label: string) => {
-    if (label === 'Reset password') setResetOpen(true);
-    if (label === 'Delete') setDeleteOpen(true);
-    if (label === 'Move') setMoveOpen(true);
+    if (label === 'Reset password') setHashParams({ dialog: 'reset-password' });
+    if (label === 'Delete') setHashParams({ dialog: 'delete' });
+    if (label === 'Move') setHashParams({ dialog: 'move' });
   };
 
   return (
@@ -375,14 +380,14 @@ export function UserObjectPage({
 
       <ResetPasswordModal
         open={resetOpen}
-        onClose={() => setResetOpen(false)}
+        onClose={closeDialog}
         user={{ name: data.displayName }}
         location={directoryName}
         entra={data.directory === '@Entra1'}
       />
       <DeleteObjectModal
         open={deleteOpen}
-        onClose={() => setDeleteOpen(false)}
+        onClose={closeDialog}
         objectClass="User"
         name={data.displayName}
         location={directoryName}
@@ -391,13 +396,13 @@ export function UserObjectPage({
       <UnsavedChangesModal open={guard.open} onCancel={guard.cancel} onConfirm={guard.confirm} />
       <MoveObjectSheet
         open={moveOpen}
-        onClose={() => setMoveOpen(false)}
+        onClose={closeDialog}
         objects={[{ id: data.id, name: data.displayName }]}
         objectType="User"
         currentNodeId={currentNodeId}
         canMoveTo={canMoveTo}
         onMove={(destId) => {
-          setMoveOpen(false);
+          closeDialog();
           leave(() => onMove(destId));
         }}
       />

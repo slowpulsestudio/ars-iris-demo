@@ -8,6 +8,7 @@ import {
   type ARSGroupMembershipView,
 } from '@ars';
 import { useDirectory } from '../../lib/directoryStore.js';
+import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
 import { saveGroupProps, useGroupProps } from '../../lib/groupDetailsStore.js';
 import { showToast } from '../../lib/toastStore.js';
@@ -43,16 +44,25 @@ export interface GroupMembersTabProps {
 export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
   const { getSiblings } = useDirectory();
   const props = useGroupProps(group);
-  const [view, setView] = useState<ARSGroupMembershipView>('Members');
+  // The sub-view, the ticked rows, the Add Member dialog and its chosen objects live in the address
+  // (?tab=memberships&view=members-of&select=a,b&dialog=add-member&pick=c).
+  const [viewParam, setViewParam] = useHashParam('view');
+  const view: ARSGroupMembershipView = viewParam === 'members-of' ? 'Members of' : 'Members';
+  const setView = (next: ARSGroupMembershipView) => setViewParam(next === 'Members' ? null : 'members-of');
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   // Figma's Memberships pagination shows "15 / page".
   const [pageSize, setPageSize] = useState(15);
-  const [selected, setSelected] = useState<string[]>([]);
-  const [addOpen, setAddOpen] = useState(false);
+  const [selectedSet, setSelectedSet] = useHashSelection();
+  const selected = useMemo(() => [...selectedSet], [selectedSet]);
+  const setSelected = (ids: string[]) => setSelectedSet(new Set(ids));
+  const [dialog] = useHashParam('dialog');
+  const addOpen = dialog === 'add-member';
+  const [pickParam, setPickParam] = useHashParam('pick');
+  const addSelected = useMemo(() => (pickParam ? pickParam.split(',').filter(Boolean) : []), [pickParam]);
+  const setAddSelected = (ids: string[]) => setPickParam(ids.length ? ids.join(',') : null);
   const [addQuery, setAddQuery] = useState('');
   const [addPage, setAddPage] = useState(1);
-  const [addSelected, setAddSelected] = useState<string[]>([]);
 
   const pool = useMemo(() => getSiblings(nodeId).filter((o) => o.id !== group.id), [getSiblings, nodeId, group.id]);
 
@@ -92,14 +102,14 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
   const openAdd = () => {
     setAddQuery('');
     setAddPage(1);
-    setAddSelected([]);
-    setAddOpen(true);
+    setHashParams({ dialog: 'add-member', pick: null });
   };
+
+  const closeAdd = () => setHashParams({ dialog: null, pick: null });
 
   const saveAdd = () => {
     saveGroupProps(group.id, { addedMembers: [...props.addedMembers, ...addSelected] });
-    setAddOpen(false);
-    setView('Members');
+    setHashParams({ dialog: null, pick: null, view: null });
     showToast(
       addSelected.length === 1 ? 'Member added successfully' : `${addSelected.length} members added successfully`,
       { supportingText: `Added to group ${group.name}.` },
@@ -139,7 +149,7 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
           setPage(1);
         }}
       />
-      <ModalOverlay open={addOpen} onClose={() => setAddOpen(false)} label="Add Member">
+      <ModalOverlay open={addOpen} onClose={closeAdd} label="Add Member">
         <ARSAddMemberModal
           found={candidates.length}
           rows={candidates.slice((addSafePage - 1) * MODAL_PAGE_SIZE, addSafePage * MODAL_PAGE_SIZE).map((o) => ({
@@ -163,8 +173,8 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
             pageSize: MODAL_PAGE_SIZE,
             pageSizeOptions: [MODAL_PAGE_SIZE],
           }}
-          onClose={() => setAddOpen(false)}
-          onCancel={() => setAddOpen(false)}
+          onClose={closeAdd}
+          onCancel={closeAdd}
           onSave={saveAdd}
         />
       </ModalOverlay>

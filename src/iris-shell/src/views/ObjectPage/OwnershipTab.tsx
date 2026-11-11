@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ARSAddMemberModal, ARSManagedBy, type DetailsRow, type FormInputProps } from '@ars';
 import { useDirectory } from '../../lib/directoryStore.js';
+import { setHashParams, useHashParam } from '../../lib/hashState.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
 import { saveGroupProps, useGroupProps } from '../../lib/groupDetailsStore.js';
 import { showToast } from '../../lib/toastStore.js';
@@ -71,13 +72,21 @@ export function OwnershipTab({
     [p],
   );
   const [draft, setDraft] = useState<Draft | null>(null);
-  const [picker, setPicker] = useState<Picker>(null);
+  // Editing and the open picker live in the address (?tab=ownership&edit=ownership&dialog=add-manager).
+  const [editParam] = useHashParam('edit');
+  const [dialog] = useHashParam('dialog');
+  const picker: Picker = dialog === 'add-manager' ? 'manager' : dialog === 'add-owner' ? 'owner' : null;
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [chosen, setChosen] = useState<string[]>([]);
 
-  const editing = draft !== null;
-  const dirty = editing && JSON.stringify(draft) !== JSON.stringify(saved);
+  const editing = editParam === 'ownership';
+  // The form starts from the saved values, also when an address opens it.
+  useEffect(() => {
+    setDraft(editing ? saved : null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editing]);
+  const dirty = editing && draft !== null && JSON.stringify(draft) !== JSON.stringify(saved);
   useEffect(() => onDirtyChange(dirty), [dirty, onDirtyChange]);
 
   const current = draft ?? saved;
@@ -156,24 +165,26 @@ export function OwnershipTab({
     setQuery('');
     setPage(1);
     setChosen([]);
-    setPicker(which);
+    setHashParams({ dialog: which === 'manager' ? 'add-manager' : 'add-owner' });
   };
 
   const pick = (ids: string[]) => setChosen(picker === 'manager' ? ids.slice(-1) : ids);
+
+  const closePicker = () => setHashParams({ dialog: null });
 
   const savePicker = () => {
     const names = chosen.map((id) => users.find((u) => u.id === id)?.name ?? id);
     if (picker === 'manager') set('manager')(names[0] ?? current.manager);
     else set('secondaryOwners')([...new Set([...current.secondaryOwners, ...names])]);
-    setPicker(null);
+    closePicker();
   };
 
-  const cancel = () => requestLeave(() => setDraft(null));
+  const cancel = () => requestLeave(() => setHashParams({ edit: null, dialog: null }));
 
   const save = () => {
     if (!draft) return;
     saveGroupProps(object.id, { ...draft, manager: draft.manager });
-    setDraft(null);
+    setHashParams({ edit: null, dialog: null });
     showToast(`Successfully updated ${objectLabel}`, {
       supportingText: `Successfully updated ownership for ${objectLabel} ${object.name}`,
     });
@@ -193,7 +204,7 @@ export function OwnershipTab({
         helper={helper}
         trailingRows={trailingRows}
         trailingFields={trailingFields}
-        onEdit={() => setDraft(saved)}
+        onEdit={() => setHashParams({ edit: 'ownership' })}
         onCancel={cancel}
         onSave={save}
         onAddManager={() => openPicker('manager')}
@@ -201,7 +212,7 @@ export function OwnershipTab({
         onRemoveManager={() => set('manager')('')}
         onRemoveOwner={(who) => set('secondaryOwners')(current.secondaryOwners.filter((n) => n !== who.name))}
       />
-      <ModalOverlay open={picker !== null} onClose={() => setPicker(null)} label={picker === 'manager' ? 'Add manager' : 'Add owner'}>
+      <ModalOverlay open={picker !== null && editing} onClose={closePicker} label={picker === 'manager' ? 'Add manager' : 'Add owner'}>
         <ARSAddMemberModal
           title={picker === 'manager' ? (current.manager ? 'Change manager' : 'Add manager') : 'Add owner'}
           found={candidates.length}
@@ -220,8 +231,8 @@ export function OwnershipTab({
             setPage(1);
           }}
           pagination={{ page: safePage, pageCount, onPageChange: setPage, pageSize: PICKER_PAGE_SIZE, pageSizeOptions: [PICKER_PAGE_SIZE] }}
-          onClose={() => setPicker(null)}
-          onCancel={() => setPicker(null)}
+          onClose={closePicker}
+          onCancel={closePicker}
           onSave={savePicker}
         />
       </ModalOverlay>

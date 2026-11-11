@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
 import { showToast } from '../../lib/toastStore.js';
+import { setHashParams, slug, useHashParam } from '../../lib/hashState.js';
 import { Button } from '../../components/Button/Button.js';
 import { DataTable, type DataTableColumn } from '../../components/DataTable/DataTable.js';
 import { FormField } from '../../components/FormField/FormField.js';
@@ -42,9 +43,14 @@ function downloadCsv(records: AccessRecord[]): void {
 /** MyAccessPage — time-based access records and the Request Access side sheet (my-access-screen-full 10199:6654, my-access-request-sidesheet 10199:7056). */
 export function MyAccessPage() {
   const [records, setRecords] = useState<AccessRecord[]>(ACCESS_RECORDS);
-  const [tab, setTab] = useState(TABS[0]);
+  // The tab and the Request Access sheet live in the address (?tab=pending&sheet=request-access).
+  const [tabParam] = useHashParam('tab');
+  const tab = TABS.find((t) => slug(t) === tabParam) ?? TABS[0];
+  const setTab = (next: string) => setHashParams({ tab: next === TABS[0] ? null : slug(next) });
   const [page, setPage] = useState(1);
-  const [requestOpen, setRequestOpen] = useState(false);
+  const [sheetParam] = useHashParam('sheet');
+  const requestOpen = sheetParam === 'request-access';
+  const setRequestOpen = (open: boolean) => setHashParams({ sheet: open ? 'request-access' : null });
   const [objectType, setObjectType] = useState('');
   const [object, setObject] = useState('');
   const [description, setDescription] = useState('');

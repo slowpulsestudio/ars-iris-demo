@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
 import { useCurrentUser } from '../../lib/currentUser.js';
+import { setHashParams, slug, useHashParam } from '../../lib/hashState.js';
 import { showToast } from '../../lib/toastStore.js';
 import { Banner } from '../../components/Banner/Banner.js';
 import { Button } from '../../components/Button/Button.js';
@@ -44,12 +45,19 @@ function now(): string {
 export function ApprovalsPage() {
   const me = useCurrentUser();
   const [requests, setRequests] = useState<ApprovalRequest[]>(APPROVAL_REQUESTS);
-  const [tab, setTab] = useState(TABS[0].value);
+  // The tab, the open request and the open modal live in the address (?tab=pending&request=REQ-002&modal=approve).
+  const [tabParam] = useHashParam('tab');
+  const tab = TABS.find((t) => slug(t.value) === tabParam)?.value ?? TABS[0].value;
+  const setTab = (next: string) =>
+    setHashParams({ tab: next === TABS[0].value ? null : slug(next), request: null, modal: null });
+  const [openId] = useHashParam('request');
+  const setOpenId = (id: string | null) => setHashParams(id ? { request: id } : { request: null, modal: null });
+  const [actionParam] = useHashParam('modal');
+  const action = (['approve', 'deny', 'escalate'] as const).find((a) => a === actionParam) ?? null;
+  const setAction = (next: Action | null) => setHashParams({ modal: next });
   const [page, setPage] = useState(1);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [openId, setOpenId] = useState<string | null>(null);
-  const [action, setAction] = useState<Action | null>(null);
   const [comment, setComment] = useState('');
   const [escalation, setEscalation] = useState({ to: '', subject: '', message: '' });
   const [approvedToday, setApprovedToday] = useState(12);

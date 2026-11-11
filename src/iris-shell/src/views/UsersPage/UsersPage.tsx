@@ -12,6 +12,7 @@ import { CREATE_MENU } from '@ars/components/ARSCreateMenu/ARSCreateMenu.js';
 import { AppShell } from '../AppShell/AppShell.js';
 import { useUsers } from '../../lib/usersStore.js';
 import { useAppShell } from '../../lib/appShellContext.js';
+import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { useMoveUsers } from '../../lib/useMoveUsers.js';
 import type { BadgeTone } from '../../components/Badge/Badge.js';
@@ -54,6 +55,12 @@ const CREATE_ICONS = new Map(
   CREATE_MENU.flatMap((row) => (row === 'divider' || !row.icon ? [] : [[row.label, row.icon] as const])),
 );
 
+/** The icon of the Create menu entry for an object type. */
+function createIconFor(type: string): string {
+  for (const [label, icon] of CREATE_ICONS) if (objectTypeFromMenuLabel(label) === type) return icon;
+  return 'User';
+}
+
 /**
  * UsersPage — Directory Management, Flat view: the Users list
  * (ARS_Flat View_User_Content) inside the shell's directory layout.
@@ -65,18 +72,29 @@ export function UsersPage() {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
-  const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const [selected, setSelectedSet] = useHashSelection();
+  const setSelected = (next: Set<string> | ((s: Set<string>) => Set<string>)) =>
+    setSelectedSet(typeof next === 'function' ? next(selected) : next);
   const [showSelected, setShowSelected] = useState(false);
 
-  // Which user (if any) a row-action modal is open for. `null` = closed.
-  const [resetUser, setResetUser] = useState<User | null>(null);
-  const [deleteUser, setDeleteUser] = useState<User | null>(null);
-  // Which users the Move side sheet is open for. `null` = closed.
-  const [moveTargets, setMoveTargets] = useState<User[] | null>(null);
-  // Which object type the Create flow is building. `null` = closed.
-  const [createTarget, setCreateTarget] = useState<{ type: string; icon: string } | null>(null);
-  const [groupCreateOpen, setGroupCreateOpen] = useState(false);
-  const [ouCreateOpen, setOuCreateOpen] = useState(false);
+  // The open dialog and what it is about live in the address
+  // (?select=a,b&dialog=delete&target=a, or ?dialog=create&type=User).
+  const [dialog] = useHashParam('dialog');
+  const [targetParam] = useHashParam('target');
+  const [typeParam] = useHashParam('type');
+  const targets = useMemo(() => {
+    const ids = targetParam ? targetParam.split(',') : [];
+    return users.filter((u) => ids.includes(u.id));
+  }, [users, targetParam]);
+  const resetUser = dialog === 'reset-password' ? (targets[0] ?? null) : null;
+  const deleteUser = dialog === 'delete' ? (targets[0] ?? null) : null;
+  const moveTargets = dialog === 'move' ? targets : null;
+  const createTarget = dialog === 'create' && typeParam ? { type: typeParam, icon: createIconFor(typeParam) } : null;
+  const groupCreateOpen = dialog === 'new-group';
+  const ouCreateOpen = dialog === 'new-ou';
+  const closeDialog = () => setHashParams({ dialog: null, target: null, type: null });
+  const openDialog = (name: string, ids: string[] = []) =>
+    setHashParams({ dialog: name, target: ids.length ? ids.join(',') : null, type: null });
 
   const [rowUser, setRowUser] = useState<User | null>(null);
   const rowMenu = useAnchoredMenu();
@@ -110,9 +128,9 @@ export function UsersPage() {
 
   const onRowAction = (label: string) => {
     if (!rowUser) return;
-    if (label === 'Reset Password') setResetUser(rowUser);
-    if (label === 'Delete') setDeleteUser(rowUser);
-    if (label === 'Move') setMoveTargets([rowUser]);
+    if (label === 'Reset Password') openDialog('reset-password', [rowUser.id]);
+    if (label === 'Delete') openDialog('delete', [rowUser.id]);
+    if (label === 'Move') openDialog('move', [rowUser.id]);
   };
 
   const onPageAction = (label: string) => {
@@ -123,9 +141,9 @@ export function UsersPage() {
   const onBarAction = (label: string, e: MouseEvent<HTMLButtonElement>) => {
     const only = selectedUsers.length === 1 ? selectedUsers[0] : null;
     if (label === 'Select all') setSelected(new Set(users.map((u) => u.id)));
-    if (label === 'Reset password' && only) setResetUser(only);
-    if (label === 'Delete' && only) setDeleteUser(only);
-    if (label === 'Move') setMoveTargets(selectedUsers);
+    if (label === 'Reset password' && only) openDialog('reset-password', [only.id]);
+    if (label === 'Delete' && only) openDialog('delete', [only.id]);
+    if (label === 'Move') openDialog('move', selectedUsers.map((u) => u.id));
     if (label === 'More actions' && only) {
       setRowUser(only);
       rowMenu.openAt(e);
@@ -198,14 +216,14 @@ export function UsersPage() {
         onAction={(label) => {
           const type = objectTypeFromMenuLabel(label);
           if (type === 'Group') {
-            setGroupCreateOpen(true);
+            openDialog('new-group');
             return;
           }
           if (type?.toLowerCase() === 'organizational unit') {
-            setOuCreateOpen(true);
+            openDialog('new-ou');
             return;
           }
-          if (type) setCreateTarget({ type, icon: CREATE_ICONS.get(label) ?? 'User' });
+          if (type) setHashParams({ dialog: 'create', type, target: null });
         }}
       />
 
@@ -228,7 +246,7 @@ export function UsersPage() {
       {resetUser && (
         <ResetPasswordModal
           open
-          onClose={() => setResetUser(null)}
+          onClose={closeDialog}
           user={{ name: resetUser.details.displayName }}
           location={directoryOf(resetUser).slice(1)}
           entra={resetUser.location === 'Entra'}
@@ -237,7 +255,7 @@ export function UsersPage() {
       {deleteUser && (
         <DeleteObjectModal
           open
-          onClose={() => setDeleteUser(null)}
+          onClose={closeDialog}
           objectClass="User"
           name={deleteUser.details.displayName}
           location={directoryOf(deleteUser).slice(1)}
@@ -253,7 +271,7 @@ export function UsersPage() {
       )}
       <MoveObjectSheet
         open={moveTargets !== null}
-        onClose={() => setMoveTargets(null)}
+        onClose={closeDialog}
         objects={(moveTargets ?? []).map((u) => ({ id: u.id, name: u.name }))}
         objectType="User"
         canMoveTo={(destId) => moveUsers.canMoveTo(moveTargets ?? [], destId)}
@@ -262,15 +280,15 @@ export function UsersPage() {
             (moveTargets ?? []).filter((u) => objs.some((o) => o.id === u.id)),
             destId,
           );
-          setMoveTargets(null);
+          closeDialog();
         }}
       />
-      <CreateOUModal open={ouCreateOpen} onClose={() => setOuCreateOpen(false)} locationId="o1d-local" />
-      <CreateGroupModal open={groupCreateOpen} onClose={() => setGroupCreateOpen(false)} kind="AD" locationId="o1d-local" />
+      <CreateOUModal open={ouCreateOpen} onClose={closeDialog} locationId="o1d-local" />
+      <CreateGroupModal open={groupCreateOpen} onClose={closeDialog} kind="AD" locationId="o1d-local" />
       {createTarget && (
         <CreateObjectModal
           open
-          onClose={() => setCreateTarget(null)}
+          onClose={closeDialog}
           objectType={createTarget.type}
           icon={createTarget.icon}
           onCreate={onCreated}
