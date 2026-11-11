@@ -261,7 +261,7 @@ The screens from the CRUD and Move files (lists, selection bars, create, user pa
 - **Follow the CRUD file** (`63c8fe8`, `f2b76ac`): the Flat view Create button opens the CRUD New object menu (as the Tree view did); the one-row selection bar has no Delete (new `showDelete` on ARSActionBar); Tree list search also covers the folders below the current one.
 - **Menus stay on screen** (`c02b872`): the viewport clamp in the Iris Menu never ran after the menu mounted; it does now, and menus flip above their button when there is no room below.
 - **Spelling** (`235814d`): "passowrd", "Reigon" and the missing full stop in the created toast are corrected in the app; with quote style and the places where the Figma files disagree they are on the new Figma tidy-up card in the Design review tasks.
-- **Wrong Figma references fixed in the notes**: Flow 5's node is in ARS-Primary, not the CRUD file; nodes 1369:32139 and 4517:19943 no longer exist. Every item and question on the review page now carries its Figma node link.
+- **Wrong Figma references fixed in the notes**: Flow 5's node and Flow 1's Tree view nodes (4517:19943, right-click menu 2385:57427) are in ARS-Primary, not the CRUD file, so the links now point there and the Tree view was compared with them (it matches); node 1369:32139 no longer exists. Every item and question on the review page now carries its Figma node link.
 
 ## Iris files changed since the Iris packages were installed
 
