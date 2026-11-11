@@ -1,0 +1,117 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+  padding: var(--oi-spacing-m);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+  color: var(--oi-content-color-tertiary);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+  padding: var(--oi-spacing-m);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: var(--oi-text-caption-strong-font-size);
+  line-height: var(--oi-text-caption-strong-line-height);
+  font-weight: var(--oi-text-caption-strong-font-weight);
+  color: var(--oi-content-color-secondary);
+}
+
+/* Label column 200px as in Figma (no layout-size token). */
+.rows {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  align-items: center;
+  row-gap: var(--oi-spacing-s);
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-primary);
+}
+
+.rows dt,
+.rows dd {
+  margin: 0;
+}
+
+.rows dt {
+  color: var(--oi-content-color-secondary);
+}
+
+.pair {
+  display: contents;
+}
+
+.inline {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+}
+
+/* Figma draws a 40px avatar with Inter initials; two classes so it overrides the Iris Avatar's size. */
+.rows .avatar {
+  width: var(--oi-size-l);
+  height: var(--oi-size-l);
+  background-color: var(--oi-background-color-tertiary);
+  color: var(--oi-content-color-primary);
+  font-family: var(--oi-font-family-default);
+  font-size: var(--oi-text-body-s-strong-font-size);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  letter-spacing: normal;
+}
+
+.count {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-link);
+}
+
+button.count {
+  cursor: pointer;
+}
+
+button.count:hover {
+  color: var(--oi-content-color-link-hover);
+  text-decoration: underline;
+}
+
+button.count:focus-visible {
+  outline: 1.5px solid var(--oi-border-color-focus);
+  outline-offset: 2px;
+  border-radius: var(--oi-border-radius-s);
+}

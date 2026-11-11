@@ -104,6 +104,13 @@ export const MISSING_FROM_FIGMA: MissingFromFigmaEntry[] = [
     note: 'The Groups list: Name, Group type badge, Description, removable Tags and Directory. ARS - Primary has ARS_Group_Table, whose columns are Object Type and Object ID instead.',
   },
   {
+    component: 'ARSGroupOverview',
+    figmaName: 'ARS_Group_Overview',
+    figmaNodeId: '158:33654',
+    file: 'groups',
+    note: 'A group\'s Overview tab: Basic information and Members as labelled rows. ARS - Primary\'s ARS_Overview_Template draws a profile card and count tiles instead.',
+  },
+  {
     component: 'ARSNewOrganizationalUnit',
     figmaName: 'ARS_New_Organizational_Unit',
     figmaNodeId: '1394:14812',

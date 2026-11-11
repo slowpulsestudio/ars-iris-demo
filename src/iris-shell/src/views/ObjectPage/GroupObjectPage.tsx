@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   ARSDeprovisionGroup,
-  ARSOverviewTemplate,
+  ARSGroupOverview,
   ARSPageMenu,
   ARSRenameGroup,
   ARSUserPage,
   DetailsCard,
-  type ARSOverviewData,
   type DetailsRow,
   type FormInputProps,
 } from '@ars';
@@ -74,39 +73,13 @@ function generalDraft(object: DirectoryObject, p: GroupProps): Draft {
 }
 
 /** A stable share of `total`, so the sample member counts add up. */
-function memberCounts(object: DirectoryObject) {
-  const total = object.details.memberCount ?? 0;
+function memberCounts(object: DirectoryObject, p: GroupProps) {
+  const total = (object.details.memberCount ?? 0) + p.addedMembers.length;
   const users = Math.round(total * 0.68);
   const groups = Math.round(total * 0.17);
   const devices = Math.round(total * 0.11);
-  return { total, users, groups, devices, others: Math.max(0, total - users - groups - devices), owners: 0 };
-}
-
-function overviewFor(object: DirectoryObject, p: GroupProps): ARSOverviewData {
-  const c = memberCounts(object);
-  return {
-    profile: {
-      name: object.name,
-      email: p.email,
-      badges: [
-        { label: 'Cloud', tone: 'neutral' },
-        ...(p.deprovisioned ? [{ label: 'Deprovisioned', tone: 'warning' as const }] : []),
-      ],
-    },
-    details: [
-      [{ label: 'Membership type', value: `${p.type} Group` }],
-      [{ label: 'Object ID', value: object.id }],
-      [{ label: 'Created on', value: object.details.created ?? '-' }],
-    ],
-    stats: [
-      { label: 'Total members', value: String(c.total) },
-      { label: 'User(s)', value: String(c.users) },
-      { label: 'Group(s)', value: String(c.groups) },
-      { label: 'Device(s)', value: String(c.devices) },
-      { label: 'Other(s)', value: String(c.others) },
-      { label: 'Owner(s)', value: String(c.owners) },
-    ],
-  };
+  const owners = (p.manager ? 1 : 0) + p.secondaryOwners.length;
+  return { total, users, groups, devices, others: Math.max(0, total - users - groups - devices), owners };
 }
 
 export interface GroupObjectPageProps {
@@ -262,7 +235,25 @@ export function GroupObjectPage({
   ];
 
   const renderContent = () => {
-    if (tab === TAB_OVERVIEW) return <ARSOverviewTemplate data={overviewFor(object, p)} />;
+    if (tab === TAB_OVERVIEW) {
+      return (
+        <ARSGroupOverview
+          name={object.name}
+          membershipType={`${p.type} Group`}
+          source="Cloud"
+          objectId={object.id}
+          createdOn={object.details.created ?? '-'}
+          email={shown(p.email)}
+          badges={p.deprovisioned ? [{ label: 'Deprovisioned', tone: 'warning' }] : []}
+          counts={memberCounts(object, p)}
+          onCopyName={() => {
+            void navigator.clipboard?.writeText(object.name);
+            showToast('Name copied');
+          }}
+          onOpenMembers={() => setTab('Memberships')}
+        />
+      );
+    }
     if (tab === TAB_GENERAL) {
       return (
         <DetailsCard

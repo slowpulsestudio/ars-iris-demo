@@ -204,6 +204,11 @@ export {
   type ARSTableGroupsRow,
 } from './components/ARSTableGroups/ARSTableGroups.js';
 export {
+  ARSGroupOverview,
+  type ARSGroupOverviewProps,
+  type ARSGroupOverviewCounts,
+} from './components/ARSGroupOverview/ARSGroupOverview.js';
+export {
   ARSNewOrganizationalUnit,
   type ARSNewOrganizationalUnitProps,
   type ARSNewOrganizationalUnitValues,
