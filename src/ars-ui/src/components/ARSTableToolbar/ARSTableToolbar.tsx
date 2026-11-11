@@ -28,6 +28,11 @@ export interface ARSTableToolbarProps {
   onAction?: MouseEventHandler<HTMLElement>;
   /** Split variants: the caret beside the main action. */
   onActionMenu?: MouseEventHandler<HTMLElement>;
+  /** Adds a "…" icon button before the filter (Groups file Memberships toolbar). */
+  showMore?: boolean;
+  onMore?: MouseEventHandler<HTMLElement>;
+  /** Split variant: hide the main action's Plus icon (the Groups file draws none). */
+  hideActionIcon?: boolean;
   className?: string;
 }
 
@@ -41,6 +46,9 @@ export function ARSTableToolbar({
   actionLabel,
   onAction,
   onActionMenu,
+  showMore = false,
+  onMore,
+  hideActionIcon = false,
   className,
 }: ARSTableToolbarProps) {
   const label = actionLabel ?? ACTION_LABEL[variant];
@@ -63,8 +71,14 @@ export function ARSTableToolbar({
     return (
       <div className={cx(styles.root, styles.spread, className)}>
         <div className={styles.searchSlot}>{searchBox}</div>
+        {showMore && <IconButton icon="DotsThree" ariaLabel="More options" onClick={onMore} />}
         {filter}
-        <SplitButton iconLead="Plus" onClick={onAction} onMenuClick={onActionMenu} ariaMenuLabel={`More ${label} options`}>
+        <SplitButton
+          iconLead={hideActionIcon ? undefined : 'Plus'}
+          onClick={onAction}
+          onMenuClick={onActionMenu}
+          ariaMenuLabel={`More ${label} options`}
+        >
           {label}
         </SplitButton>
       </div>
