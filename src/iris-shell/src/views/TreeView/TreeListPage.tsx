@@ -51,8 +51,8 @@ function newObjectIconFor(type: string): string {
 }
 
 /** Href for a row: containers drill in; leaves open detail. */
-function hrefFor(obj: DirectoryObject, nodeId: string): string {
-  return obj.isContainer ? `#/tree/${obj.id}` : `#/tree/${nodeId}/${obj.id}`;
+function hrefFor(obj: DirectoryObject): string {
+  return obj.isContainer ? `#/tree/${obj.id}` : `#/tree/${obj.parentId}/${obj.id}`;
 }
 
 export interface TreeListPageProps {
@@ -106,10 +106,25 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     [known, getChildren, nodeId],
   );
 
+  // Figma: search covers this folder and the folders below it, not the ones above.
+  const searching = query.trim() !== '';
+  const pool = useMemo<DirectoryObject[]>(() => {
+    if (!searching) return allRows;
+    const below: DirectoryObject[] = [];
+    const visit = (id: string) => {
+      for (const o of getChildren(id)) {
+        below.push(o);
+        if (o.isContainer) visit(o.id);
+      }
+    };
+    for (const o of allRows) if (o.isContainer) visit(o.id);
+    return [...allRows, ...below];
+  }, [searching, allRows, getChildren]);
+
   const targets = useMemo(() => {
     const ids = targetParam ? targetParam.split(',') : [];
-    return allRows.filter((o) => ids.includes(o.id));
-  }, [allRows, targetParam]);
+    return pool.filter((o) => ids.includes(o.id));
+  }, [pool, targetParam]);
   const resetTarget = dialog === 'reset-password' ? (targets[0] ?? null) : null;
   const deleteTarget = dialog === 'delete' ? (targets[0] ?? null) : null;
   const moveTargets = dialog === 'move' ? targets : null;
@@ -121,12 +136,12 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
   const rows = useMemo<DirectoryObject[]>(() => {
     const q = query.trim().toLowerCase();
     const matching = q
-      ? allRows.filter((o) =>
+      ? pool.filter((o) =>
           [o.name, OBJECT_TYPE_META[o.type].label, o.description].some((v) => v.toLowerCase().includes(q)),
         )
       : allRows;
     return showSelected ? matching.filter((o) => selected.has(o.id)) : matching;
-  }, [allRows, query, showSelected, selected]);
+  }, [allRows, pool, query, showSelected, selected]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
@@ -148,7 +163,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
       name: o.name,
       type: OBJECT_TYPE_META[o.type].label,
       description: o.description,
-      href: hrefFor(o, nodeId),
+      href: hrefFor(o),
     });
 
   const onRowAction = (label: string) => {
@@ -156,7 +171,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     if (label === 'Reset Password') openDialog('reset-password', [rowObject.id]);
     if (label === 'Delete') openDialog('delete', [rowObject.id]);
     if (label === 'Move') openDialog('move', [rowObject.id]);
-    if (label === 'View properties') navigate(hrefFor(rowObject, nodeId).replace(/^#\/tree\/([^/]+)$/, `#/tree/${nodeId}/${rowObject.id}`));
+    if (label === 'View properties') navigate(hrefFor(rowObject).replace(/^#\/tree\/([^/]+)$/, `#/tree/${nodeId}/${rowObject.id}`));
     if (label === 'Add to Favorites') toggleRowFavorite(rowObject);
   };
 
@@ -179,7 +194,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     if (type) setHashParams({ dialog: 'create', type, target: null });
   };
 
-  const selectedObjects = allRows.filter((o) => selected.has(o.id));
+  const selectedObjects = pool.filter((o) => selected.has(o.id));
   const onBarAction = (label: string, e: MouseEvent<HTMLButtonElement>) => {
     const only = selectedObjects.length === 1 ? selectedObjects[0] : null;
     if (label === 'Select all') setSelected(new Set(allRows.map((o) => o.id)));
@@ -192,7 +207,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     }
   };
 
-  const toMoveItem = (o: DirectoryObject): MoveItem => ({ id: o.id, nodeId, isContainer: o.isContainer });
+  const toMoveItem = (o: DirectoryObject): MoveItem => ({ id: o.id, nodeId: o.parentId || nodeId, isContainer: o.isContainer });
   const entryFor = (o: DirectoryObject): MoveEntry => ({
     item: toMoveItem(o),
     name: o.name,
@@ -207,7 +222,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
 
   // Dragging a selected row drags the whole selection; any other row drags alone.
   const onRowDragStart = (id: string, e: DragEvent<HTMLElement>) => {
-    const row = allRows.find((o) => o.id === id);
+    const row = pool.find((o) => o.id === id);
     if (!row) return;
     const dragged = selected.has(id) ? selectedObjects : [row];
     startObjectDrag(dragged.map(entryFor), e);
@@ -216,12 +231,12 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
 
   // Objects that moved away leave the selection.
   useEffect(() => {
-    const ids = new Set(allRows.map((o) => o.id));
+    const ids = new Set(pool.map((o) => o.id));
     setSelected((prev) => {
       const next = new Set([...prev].filter((id) => ids.has(id)));
       return next.size === prev.size ? prev : next;
     });
-  }, [allRows]);
+  }, [pool]);
 
   const onCreated = (result: CreateObjectResult) => {
     if (!result.locationId) {
@@ -294,14 +309,14 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
             id: o.id,
             name: o.name,
             icon: OBJECT_TYPE_META[o.type].icon,
-            href: hrefFor(o, nodeId),
+            href: hrefFor(o),
             objectType: OBJECT_TYPE_META[o.type].label,
             description: o.description,
           }))}
           selected={selected}
           onSelectionChange={setSelected}
           onMore={(id, e) => {
-            setRowObject(allRows.find((o) => o.id === id) ?? null);
+            setRowObject(pool.find((o) => o.id === id) ?? null);
             rowMenu.openAt(e);
           }}
           onRowDragStart={onRowDragStart}
@@ -324,6 +339,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
 
       <ARSActionBar
         variant={selectedObjects.length === 1 ? '2' : 'Default'}
+        showDelete={selectedObjects.length !== 1}
         open={selected.size > 0}
         selectedCount={selected.size}
         totalCount={allRows.length}
@@ -355,7 +371,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
           location={nodeName ?? 'Directory'}
           onDeleted={() => {
             if (deleteTarget.isContainer) removeNode(deleteTarget.id);
-            else removeObject(nodeId, deleteTarget.id);
+            else removeObject(deleteTarget.parentId || nodeId, deleteTarget.id);
             setSelected((s) => {
               const next = new Set(s);
               next.delete(deleteTarget.id);
