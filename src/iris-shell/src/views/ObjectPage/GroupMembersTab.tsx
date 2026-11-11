@@ -46,7 +46,8 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
   const [view, setView] = useState<ARSGroupMembershipView>('Members');
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
+  // Figma's Memberships pagination shows "15 / page".
+  const [pageSize, setPageSize] = useState(15);
   const [selected, setSelected] = useState<string[]>([]);
   const [addOpen, setAddOpen] = useState(false);
   const [addQuery, setAddQuery] = useState('');
@@ -115,7 +116,9 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
     <div className={styles.root}>
       <ARSGroupMembershipButtonSelect value={view} onChange={switchView} />
       <ARSTableToolbar
-        variant="Basic"
+        variant="Split"
+        showMore
+        hideActionIcon
         actionLabel="Add member"
         onAction={openAdd}
         search={query}
