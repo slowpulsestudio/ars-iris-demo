@@ -26,6 +26,8 @@ import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { UnsavedChangesModal } from '../ObjectModals/UnsavedChangesModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { UserDetailsTab } from './UserDetailsTab.js';
+import { UserMembershipsTab } from './UserMembershipsTab.js';
+import { useUserMemberships } from '../../lib/userMemberships.js';
 import { useLeaveGuard } from '../../lib/useLeaveGuard.js';
 import styles from './UserObjectPage.module.css';
 
@@ -90,8 +92,8 @@ function tileCount(id: string, salt: number, max: number): string {
 }
 
 /** The totals shown on the Overview cards and on the Memberships and Roles tab labels, so they always agree. */
-function userCounts(id: string): { memberships: string; roles: string } {
-  return { memberships: tileCount(id, 3, 40), roles: tileCount(id, 7, 8) };
+function userCounts(id: string, memberships: number): { memberships: string; roles: string } {
+  return { memberships: String(memberships), roles: tileCount(id, 7, 8) };
 }
 
 /** The user tabs with this user's totals: Figma's "Memberships (8)" is a sample count. */
@@ -102,8 +104,11 @@ function userTabs(counts: { memberships: string; roles: string }): string[] {
 }
 
 /** `openTab` opens the tab a card's number counts, by its label without the count. */
-function overviewFor(data: UserObjectData, openTab: (name: 'Memberships' | 'Roles') => void): ARSOverviewData {
-  const counts = userCounts(data.id);
+function overviewFor(
+  data: UserObjectData,
+  counts: { memberships: string; roles: string },
+  openTab: (name: 'Memberships' | 'Roles') => void,
+): ARSOverviewData {
   return {
     profile: {
       name: data.name,
@@ -174,7 +179,8 @@ export function UserObjectPage({
   const { setAiOpen } = useAppShell();
   const pageMenu = useAnchoredMenu();
   // The tab, the card being edited and the open dialog live in the address (?tab=general&edit=general&dialog=delete).
-  const counts = userCounts(data.id);
+  const memberships = useUserMemberships(data.id);
+  const counts = userCounts(data.id, memberships.length);
   const tabs = useMemo(() => userTabs(counts), [counts.memberships, counts.roles]);
   const [tab, setTab] = useHashTab(tabs);
   const [editParam] = useHashParam('edit');
@@ -317,7 +323,7 @@ export function UserObjectPage({
         const target = tabs.find((t) => t.startsWith(name));
         if (target) leave(() => setTab(target));
       };
-      return <ARSOverviewTemplate data={overviewFor(data, openTab)} />;
+      return <ARSOverviewTemplate data={overviewFor(data, counts, openTab)} />;
     }
     if (tab === TAB_DETAILS) {
       return (
@@ -330,6 +336,7 @@ export function UserObjectPage({
         />
       );
     }
+    if (tab.startsWith('Memberships')) return <UserMembershipsTab userId={data.id} userName={data.displayName} />;
     if (tab !== TAB_GENERAL) return <EmptyFigure figure={Dish} label={tab} />;
     return (
       <div className={styles.stack} ref={cardRef}>
