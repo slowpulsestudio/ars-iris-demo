@@ -22,6 +22,7 @@ import type { Crumb } from '../../components/AppHeader/AppHeader.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { UnsavedChangesModal } from '../ObjectModals/UnsavedChangesModal.js';
+import { UserDetailsTab } from './UserDetailsTab.js';
 import styles from './UserObjectPage.module.css';
 
 /** What the page shows and edits for a user, whichever store it comes from. */
@@ -59,6 +60,7 @@ export const USER_DIRECTORIES = ['@Entra1', '@O1D.Local'];
 
 const TAB_OVERVIEW = 'Overview';
 const TAB_GENERAL = 'General';
+const TAB_DETAILS = 'User Details';
 
 type Draft = UserObjectPatch;
 type Errors = Partial<Record<keyof Draft, string>>;
@@ -153,9 +155,11 @@ export function UserObjectPage({
   const [deleteOpen, setDeleteOpen] = useState(false);
   // What the Unsaved changes modal will do on Confirm; null = closed.
   const [pendingLeave, setPendingLeave] = useState<{ run: () => void } | null>(null);
+  // Unsaved changes in the User Details cards.
+  const [detailsDirty, setDetailsDirty] = useState(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
 
-  const dirty = editing && JSON.stringify(draft) !== JSON.stringify(toDraft(data));
+  const dirty = detailsDirty || (editing && JSON.stringify(draft) !== JSON.stringify(toDraft(data)));
   const directoryName = data.directory.replace(/^@/, '');
 
   // Leaving a form with changes asks first.
@@ -178,6 +182,7 @@ export function UserObjectPage({
     const next = pendingLeave;
     setNavigationGuard(null);
     setPendingLeave(null);
+    setDetailsDirty(false);
     cancelEditing();
     next?.run();
   };
@@ -295,6 +300,17 @@ export function UserObjectPage({
 
   const renderContent = () => {
     if (tab === TAB_OVERVIEW) return <ARSOverviewTemplate data={overviewFor(data)} />;
+    if (tab === TAB_DETAILS) {
+      return (
+        <UserDetailsTab
+          key={data.id}
+          userId={data.id}
+          email={data.email}
+          onDirtyChange={setDetailsDirty}
+          requestLeave={leave}
+        />
+      );
+    }
     if (tab !== TAB_GENERAL) return <EmptyFigure figure={Dish} label={tab} />;
     return (
       <div className={styles.stack} ref={cardRef}>

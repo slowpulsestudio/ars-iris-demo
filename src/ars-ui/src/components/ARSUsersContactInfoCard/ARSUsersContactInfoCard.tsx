@@ -1,8 +1,9 @@
 import { DetailsCard, type DetailsRow } from '../../parts/DetailsCard/DetailsCard.js';
+import type { FormInputProps } from '../../parts/FormInput/FormInput.js';
 import { JOB_INFO_FIELDS } from '../ARSUsersJobInfoCard/ARSUsersJobInfoCard.js';
 import type { ARSUserCardVariant } from '../ARSUsersPropertiesCard/ARSUsersPropertiesCard.js';
 
-const ROWS: DetailsRow[] = [
+export const CONTACT_INFO_ROWS: DetailsRow[] = [
   { label: 'Street address', value: '1 Street Lane' },
   { label: 'City', value: 'London' },
   { label: 'State', value: 'Greater London' },
@@ -22,6 +23,10 @@ const FIELDS = JOB_INFO_FIELDS.map((f) => (f.label === 'Office location' ? { ...
 export interface ARSUsersContactInfoCardProps {
   /** Figma "Default" is read mode; "Variant2" is edit mode. */
   variant?: ARSUserCardVariant;
+  /** Replaces the sample rows and form fields, and `editing` replaces the variant. */
+  rows?: DetailsRow[];
+  fields?: FormInputProps[];
+  editing?: boolean;
   onEdit?: () => void;
   onCancel?: () => void;
   onSave?: () => void;
@@ -29,15 +34,15 @@ export interface ARSUsersContactInfoCardProps {
 }
 
 /** ARS_Users_ContactInfo Card — a user's contact details, read or edited. Figma: 2820:30082. */
-export function ARSUsersContactInfoCard({ variant = 'Default', ...props }: ARSUsersContactInfoCardProps) {
+export function ARSUsersContactInfoCard({ variant = 'Default', rows, fields, editing, ...props }: ARSUsersContactInfoCardProps) {
   return (
     <DetailsCard
       {...props}
       title="Contact information"
       helper="Manage contact information."
-      editing={variant === 'Variant2'}
-      rows={ROWS}
-      fields={FIELDS}
+      editing={editing ?? variant === 'Variant2'}
+      rows={rows ?? CONTACT_INFO_ROWS}
+      fields={fields ?? FIELDS}
     />
   );
 }

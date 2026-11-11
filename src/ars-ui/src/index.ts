@@ -67,9 +67,15 @@ export {
   type ARSUsersPropertiesCardProps,
   type ARSUserCardVariant,
 } from './components/ARSUsersPropertiesCard/ARSUsersPropertiesCard.js';
-export { ARSUsersJobInfoCard, type ARSUsersJobInfoCardProps } from './components/ARSUsersJobInfoCard/ARSUsersJobInfoCard.js';
+export {
+  ARSUsersJobInfoCard,
+  JOB_INFO_FIELDS,
+  JOB_INFO_ROWS,
+  type ARSUsersJobInfoCardProps,
+} from './components/ARSUsersJobInfoCard/ARSUsersJobInfoCard.js';
 export {
   ARSUsersContactInfoCard,
+  CONTACT_INFO_ROWS,
   type ARSUsersContactInfoCardProps,
 } from './components/ARSUsersContactInfoCard/ARSUsersContactInfoCard.js';
 export {

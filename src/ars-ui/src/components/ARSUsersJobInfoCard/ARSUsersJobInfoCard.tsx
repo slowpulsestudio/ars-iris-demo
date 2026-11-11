@@ -2,7 +2,7 @@ import type { FormInputProps } from '../../parts/FormInput/FormInput.js';
 import { DetailsCard, type DetailsRow } from '../../parts/DetailsCard/DetailsCard.js';
 import type { ARSUserCardVariant } from '../ARSUsersPropertiesCard/ARSUsersPropertiesCard.js';
 
-const ROWS: DetailsRow[] = [
+export const JOB_INFO_ROWS: DetailsRow[] = [
   { label: 'Job title', value: 'Manager' },
   { label: 'Company name', value: 'Acme' },
   { label: 'Department', value: 'Security' },
@@ -29,6 +29,10 @@ export const JOB_INFO_FIELDS: FormInputProps[] = [
 export interface ARSUsersJobInfoCardProps {
   /** Figma "Default" is read mode; "Variant2" is edit mode. */
   variant?: ARSUserCardVariant;
+  /** Replaces the sample rows and form fields, and `editing` replaces the variant. */
+  rows?: DetailsRow[];
+  fields?: FormInputProps[];
+  editing?: boolean;
   onEdit?: () => void;
   onCancel?: () => void;
   onSave?: () => void;
@@ -36,15 +40,15 @@ export interface ARSUsersJobInfoCardProps {
 }
 
 /** ARS_Users_Job Info Card — a user's job details, read or edited. Figma: 2820:29901. */
-export function ARSUsersJobInfoCard({ variant = 'Default', ...props }: ARSUsersJobInfoCardProps) {
+export function ARSUsersJobInfoCard({ variant = 'Default', rows, fields, editing, ...props }: ARSUsersJobInfoCardProps) {
   return (
     <DetailsCard
       {...props}
       title="Job information"
       helper="Manage job information."
-      editing={variant === 'Variant2'}
-      rows={ROWS}
-      fields={JOB_INFO_FIELDS}
+      editing={editing ?? variant === 'Variant2'}
+      rows={rows ?? JOB_INFO_ROWS}
+      fields={fields ?? JOB_INFO_FIELDS}
     />
   );
 }
