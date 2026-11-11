@@ -70,8 +70,8 @@ interface RawNode {
 }
 
 const TREE: RawNode[] = [
-  { id: 'access-templates', name: 'Access Templates', type: 'container', description: 'Reusable access-control templates.', icon: 'UserCircleCheck', leafCount: 24 },
-  { id: 'managed-units', name: 'Managed Units', type: 'container', description: 'Delegated administrative units.', icon: 'FolderStar', leafCount: 18 },
+  { id: 'access-templates', name: 'Access templates', type: 'container', description: 'Reusable access-control templates.', icon: 'UserCircleCheck', leafCount: 24 },
+  { id: 'managed-units', name: 'Managed units', type: 'container', description: 'Delegated administrative units.', icon: 'FolderStar', leafCount: 18 },
   {
     id: 'managed-directories',
     name: 'Managed Directories',
