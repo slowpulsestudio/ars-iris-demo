@@ -12,6 +12,8 @@ const STEPS: StepperStepItem[] = [
 
 export interface ARSNewObjectContentContainerProps {
   steps?: StepperStepItem[];
+  /** Hides the stepper for single-form create actions, as ARS_New_Organizational_Unit does (OU file 1394:14744). */
+  showStepper?: boolean;
   activeIndex?: number;
   interactive?: boolean;
   onStepSelect?: (index: number) => void;
@@ -26,6 +28,7 @@ export interface ARSNewObjectContentContainerProps {
  */
 export function ARSNewObjectContentContainer({
   steps = STEPS,
+  showStepper = true,
   activeIndex = 0,
   interactive,
   onStepSelect,
@@ -34,13 +37,15 @@ export function ARSNewObjectContentContainer({
 }: ARSNewObjectContentContainerProps) {
   return (
     <div className={cx(styles.root, className)}>
-      <ARSStepperWithDiv
-        steps={steps}
-        activeIndex={activeIndex}
-        interactive={interactive}
-        onStepSelect={onStepSelect}
-        className={styles.stepper}
-      />
+      {showStepper && (
+        <ARSStepperWithDiv
+          steps={steps}
+          activeIndex={activeIndex}
+          interactive={interactive}
+          onStepSelect={onStepSelect}
+          className={styles.stepper}
+        />
+      )}
       <div className={styles.content}>{children ?? <ARSNewObjectContent layout="container" />}</div>
     </div>
   );

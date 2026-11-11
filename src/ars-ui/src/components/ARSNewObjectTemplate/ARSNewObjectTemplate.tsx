@@ -17,7 +17,7 @@ export interface ARSNewObjectTemplateProps {
   location?: string;
   /** Header icon for the object type. */
   icon?: string;
-  /** Figma annotation: the step count hides when the create action has no steps. */
+  /** Figma annotation: the step count hides when the create action has no steps; the stepper hides too, as in ARS_New_Organizational_Unit. */
   hasSteps?: boolean;
   steps?: StepperStepItem[];
   activeIndex?: number;
@@ -71,6 +71,7 @@ export function ARSNewObjectTemplate({
       <div className={styles.body}>
         <ARSNewObjectContentContainer
           steps={steps}
+          showStepper={hasSteps}
           activeIndex={activeIndex}
           interactive={interactiveSteps}
           onStepSelect={onStepSelect}
