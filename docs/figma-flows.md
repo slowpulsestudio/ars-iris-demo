@@ -2,7 +2,7 @@
 
 Every Figma file the app is built from, the flows taken from it, and where each stands. Update it when a flow is built or its review is done. Review tasks for built flows are in [review-notes.md](review-notes.md); the history of the work is in [../history.md](../history.md).
 
-Status: **Built** (in the app, committed and pushed), **Audited** (read in Figma, scope known, not built), **Not started**.
+Status: **Built** (in the app, committed and pushed), **Audited** (read in Figma, scope known, not built), **Not started**. **Reviewed** means the built screens were opened in the app and compared with Figma's layer values; fixes from a review are listed with their commits, and say "local" until pushed.
 
 ## Built
 
@@ -26,22 +26,44 @@ Status: **Built** (in the app, committed and pushed), **Audited** (read in Figma
 | --- | --- | --- | --- |
 | 6. Move objects: single, several, drag and drop | Move object [2381:17307](https://www.figma.com/design/IXKXZpycHiFcKbvHMvlc9r/ARS_WebUI2_Move_Browse_Objects?node-id=2381-17307), Sidesheet [2290:68343](https://www.figma.com/design/IXKXZpycHiFcKbvHMvlc9r/ARS_WebUI2_Move_Browse_Objects?node-id=2290-68343), Selected objects block [2224:16697](https://www.figma.com/design/IXKXZpycHiFcKbvHMvlc9r/ARS_WebUI2_Move_Browse_Objects?node-id=2224-16697), toasts [2355:28099](https://www.figma.com/design/IXKXZpycHiFcKbvHMvlc9r/ARS_WebUI2_Move_Browse_Objects?node-id=2355-28099) and [2396:13581](https://www.figma.com/design/IXKXZpycHiFcKbvHMvlc9r/ARS_WebUI2_Move_Browse_Objects?node-id=2396-13581), Element-Dragged [2281:47208](https://www.figma.com/design/IXKXZpycHiFcKbvHMvlc9r/ARS_WebUI2_Move_Browse_Objects?node-id=2281-47208) | `cd66398`, `b5153c1`, `f324b35` | Flow 6 |
 
-## Built in part
-
 ### ARS_WebUI2_Groups
 
 [File](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=58-24) · key `KukLyO1RkJ4kYTzxGWd2Q7`
 
-| Flow | Figma | Status | Review tasks |
+| Flow | Figma | Commits | Review tasks |
 | --- | --- | --- | --- |
-| 7. Group page: header, tabs, Overview, General, Ownership, Object details, Move, Delete | [158:35994](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-35994), [158:32718](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-32718), [158:33654](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-33654), [159:7057](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=159-7057), [159:7117](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=159-7117), [159:8006](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=159-8006), [159:8066](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=159-8066), [159:8194](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=159-8194) | Built, local commit | Flow 7 |
-| 8. Group dialogs and Memberships tab: Rename, Copy, Deprovision (written requirements only), Members and Members of | [64:6802](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=64-6802), [64:6804](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=64-6804), [64:6805](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=64-6805), [160:24932](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=160-24932), [160:9082](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=160-9082) | Built, local commit | Flow 8 |
-| 9. Add Member modal, Groups list, New AD Group, New Entra Distribution Group | [215:7485](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=215-7485), [158:33464](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-33464), [2111:11197](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=2111-11197), [2111:11198](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=2111-11198), [2113:12494](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=2113-12494) | Built, local commit | Flow 9 |
-| Left empty (no Figma content) | Managed units, Roles/access templates and History tabs; manager picker comes with the OU flow | Empty states | - |
+| 7. Group page: header, tabs, Overview, General, Ownership, Object details, Move, Delete | [158:35994](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-35994), [158:32718](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-32718), [158:33654](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-33654), [158:36016](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-36016), [159:7057](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=159-7057), [159:7117](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=159-7117), [159:8006](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=159-8006), [159:8066](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=159-8066), [159:8194](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=159-8194) | `ab44f76`, `766b35d`. Reviewed; fixes (local): `3b1c479`, `8a7a6ba`, `f833ca7`, `a41d42f`, `2759d21`, `2c4c675`, `6e21fae` | Flow 7 |
+| 8. Group dialogs and Memberships tab: Rename, Copy, Deprovision (written requirements only), Members and Members of | [64:6802](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=64-6802), [64:6804](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=64-6804), [64:6805](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=64-6805), [160:24932](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=160-24932), [160:9082](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=160-9082) | `c59554e`, `9a076da`. Reviewed; fixes (local): `b3c4d98`, `9798c4e`, `c7030c6` | Flow 8 |
+| 9. Add Member modal, Groups list, New AD Group, New Entra Distribution Group | [215:7485](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=215-7485), [158:33464](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-33464), [2111:11197](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=2111-11197), [2111:11198](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=2111-11198), [2113:12494](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=2113-12494) | `75b5c18`, `cef41e5`, `a82f866`. Reviewed; fixes (local): `84fd6ce`, `1cd2a33`, `93e9350` | Flow 9 |
+| Left empty (no Figma content) | Managed units, Roles/access templates and History tabs | Empty states | - |
 
-## Audited, not built
+### ARS_WebUI2_OU_Management
 
-The links you gave point at a page in each file, not at one frame. Each file's page was listed and its frames read.
+[File](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1009-3972) · key `DwKW5hhTprayGwhbMtOKMr`
+
+| Flow | Figma | Commits | Review tasks |
+| --- | --- | --- | --- |
+| 10. New Organizational Unit modal and the OU page: Overview, General, Ownership, Object details, Move, Delete | [1394:14812](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1394-14812), [1349:12126](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1349-12126), [1131:10263](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1131-10263), [1065:6047](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1065-6047), [1069:7492](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1069-7492), [1200:10265](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1200-10265), [1065:8070](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1065-8070) | `72ea8a4`, `1107804`. Reviewed; fixes (local): `efa5a37`, `b134cfd`, `4359645`, `2c4c675` | Flow 10 |
+
+### ARS_WebUI2_Managed-Units
+
+[File](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=4002-9991) · key `WsXrW6CBUME9thy8z8hPRR`
+
+| Flow | Figma | Commits | Review tasks |
+| --- | --- | --- | --- |
+| 11. Managed Units list and a unit's members | [7058:6179](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7058-6179), [7074:6939](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7074-6939), [7064:12185](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7064-12185) | `cbeb36b`, `d4f58fc`. Reviewed; fixes (local): `2ccb0f9`, `fe5ff94` | Flow 11 |
+
+### ARS_WebUI2_User-View-Approvals
+
+[File](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-6651) · key `pM8TUtMbcdF3JrEZaVXrE6`
+
+| Flow | Figma | Commits | Review tasks |
+| --- | --- | --- | --- |
+| 12. Self-service: Home, My Access, Approvals, User Profile | [10199:6772](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-6772), [10199:6654](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-6654), [10199:7056](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7056), [10199:7207](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7207), [10199:7351](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7351) | `1c8b513`. Reviewed; fixes: `b53cbd5`, `c0cb03f` | Flow 12 |
+
+## Audit notes
+
+What each file holds, read before building. Every file below is now built (see the tables above). The links you gave point at a page in each file, not at one frame. Each file's page was listed and its frames read.
 
 ### ARS_WebUI2_Groups
 
@@ -52,7 +74,8 @@ The links you gave point at a page in each file, not at one frame. Each file's p
 - **Create flows:** New AD Group, two steps (General; Exchange e-mail address) [2111:11197](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=2111-11197); New Entra Distribution Group, with Join and Leave toggles and tooltips [2113:12494](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=2113-12494).
 - **Screens and components in the file:** ARS_Group_Page_Overview [158:36016](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-36016), ARS_Group_Header [158:35994](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-35994), ARS_Group_Tabs [158:32718](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-32718), ARS_Group_tab Content (General, Ownership, Object Details; read and edit) [158:36243](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-36243), ARS_Group_Members_Content [160:24932](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=160-24932), ARS_Group_Object_Memberships table [160:9033](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=160-9033), ARS_Table_Groups [158:33464](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-33464), and seven ARS_AppLayout_Treeview_Entra_Template screens (149:21055, 160:9560, 160:10746, 185:7828, 160:11036, 160:11326, 160:11616).
 - **Already in the kit** (from ARS - Primary, shown as fixed samples, not driven by data): ARSGroupPage, ARSGroupGeneralContent, ARSGroupTable, ARSManagedBy, ARSOwnership. The group header with its "Security Group · AD1\Groups" line, tabs and members tables are not, and would be new.
-- **In the app today:** groups appear as rows in Tree view and open the old Iris detail page, with Move and Delete working.
+- **Before the build:** groups appeared as rows in Tree view and opened the old Iris detail page, with Move and Delete working.
+- **Status: built and pushed (Flows 7 to 9); reviewed in the app, fixes in local commits.** See the table above and review tasks Flows 7 to 9.
 
 ### ARS_WebUI2_OU_Management
 
@@ -63,7 +86,7 @@ The links you gave point at a page in each file, not at one frame. Each file's p
 - **Components:** ARS_New_Organizational_Unit [1394:14812](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1394-14812), ARS_Managed_by [1200:10265](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1200-10265), ARS_Ownership [1399:12329](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1399-12329), Create menu [1169:7106](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1169-7106), Directory table [1306:9965](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1306-9965), "Created successfully" toast [1591:19928](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1591-19928).
 - **Written requirements:** New Organizational Unit [1091:6250](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1091-6250), Bulk actions [1091:6251](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1091-6251), Single actions [1091:6252](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1091-6252), Edit AD OU [1091:6253](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1091-6253).
 - **Already in the kit:** ARSManagedBy and ARSOwnership (the same components appear here and in the Groups file).
-- **Status: built (Flow 10, local commit).** New Organizational Unit modal, OU page (Overview, General, Ownership with manager and owner picker, Object details; Move and Delete), reached from View properties. Roles and History are empty (Change history is "in progress" in Figma). Review tasks: Flow 10.
+- **Status: built and pushed (Flow 10); reviewed in the app, fixes in local commits.** New Organizational Unit modal, OU page (Overview, General, Ownership with manager and owner picker, Object details; Move and Delete), reached from View properties. Managed units, Roles and History are empty (Change history is "in progress" in Figma). Review tasks: Flow 10.
 
 ### ARS_WebUI2_User-View-Approvals (self-service end user)
 
@@ -72,7 +95,7 @@ The links you gave point at a page in each file, not at one frame. Each file's p
 - **Screens (1440 wide, a different layout from the admin screens):** home-dashboard [10199:6772](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-6772), my-access-screen-full [10199:6654](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-6654), my-access-request-sidesheet [10199:7056](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7056), user-profile-settings [10199:7207](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7207), Design-1-Approvals-Dashboard [10199:7351](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7351).
 - **Approval modals:** Approve [10199:7617](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7617), Deny [10199:7638](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7638), Escalate [10199:7659](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7659); read-only side sheets Approve [10300:2178](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10300-2178), Approved [10300:8498](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10300-8498), Denied [10300:8588](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10300-8588); Person card [10301:2300](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10301-2300).
 - **Not in the kit:** nothing here is. The app has personas (admin, helpdesk, self-service end user), so these screens would sit under the self-service persona.
-- **Status: built (Flow 12, local commit).** Home, My Access with Request Access sheet, Approvals with Approve/Deny/Escalate modals and read-only Review/Approved/Denied sheets, User Profile, Person card; all from Iris components in `views/UserView/` with sample data. Response Time is a bar chart stand-in. Review tasks: Flow 12.
+- **Status: built, reviewed and pushed (Flow 12).** Home, My Access with Request Access sheet, Approvals with Approve/Deny/Escalate modals and read-only Review/Approved/Denied sheets, User Profile, Person card; all from Iris components in `views/UserView/` with sample data. Response Time is an Iris LineChart (added for it). Review tasks: Flow 12.
 
 ### ARS_WebUI2_Managed-Units
 
@@ -80,9 +103,9 @@ The links you gave point at a page in each file, not at one frame. Each file's p
 
 - **Screens:** two ARS_Flat_Master [7051:3954](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7051-3954), [7064:14262](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7064-14262); ARS_Treeview_Master [7051:7736](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7051-7736).
 - **Components:** ARS_Managed_Users_Content [7058:6179](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7058-6179), ARS_Managed_Unit_Members [7074:6939](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7074-6939), ARS_Managed_Unit_Members_Table [7064:12185](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7064-12185), plus ARS_Action_bar [7077:3722](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7077-3722) and ARS_AD User Actions [7077:3917](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7077-3917), which the app already has.
-- **In the app today:** "Managed Units" was a nav item and a tree container with generated rows only.
-- **Status: built (Flow 11, local commit).** Managed Units list and a unit's members page (sample data), with the selection bar. The Tree view screen (ARS_Treeview_Master) and the row menus are not built. Review tasks: Flow 11.
+- **Before the build:** "Managed Units" was a nav item and a tree container with generated rows only.
+- **Status: built and pushed (Flow 11); reviewed in the app, fixes in local commits.** Managed Units list and a unit's members page (sample data), with the selection bar. The Tree view screen (ARS_Treeview_Master) and the member row menus are not built. Review tasks: Flow 11.
 
 ## Order
 
-Groups, then OU Management (it shares ARS_Managed_by and ARS_Ownership with Groups), then Managed Units, then the self-service screens (a separate layout and persona). Each is built flow by flow with a discrepancy audit first, as with the CRUD and Move files.
+Built in this order: Groups, then OU Management (it shares ARS_Managed_by and ARS_Ownership with Groups), then Managed Units, then the self-service screens (a separate layout and persona). All four were then reviewed in the app against Figma (November 2026). Flows 1 to 6 have not had a browser review yet.
