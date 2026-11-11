@@ -213,3 +213,29 @@ Where: Memberships tab, Add member; Directory Management, Groups; Create, Group 
 - [ ] **Creating a group.** In Tree view, New Group in an Entra directory opens New Entra Distribution Group; anywhere else it opens New AD Group (two steps: General, then the Exchange e-mail address). In Flat view and from the Groups list the group is made in O1D.local. Both flows come from written notes with no frames, so the layout is the New object modal; the Exchange step's Alias is read-only (the group name) and Associated administrative group shows the folder, which is my guess.
 - [ ] **Entra Distribution Group.** One form with Join and Leave toggles (Open or Closed) whose tooltips use Figma's text; the two Closed tooltips both start "Only group owners can add members", as in the notes. A group made here is a Distribution, Universal group.
 - [ ] **Still empty.** Managed units and Roles/access templates (marked NEW, no content in Figma) and History (Change History and User Activity, no frames) show the empty state.
+
+## Flow 10: organizational units (OU Management file)
+
+Figma: [ARS_WebUI2_OU_Management](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1009-3972) (page "Iris UI", section "Current screens"; the ARCHIVED section is not built).
+
+Where: Tree view, New, New Organizational Unit (or Create in Flat view); a row's "..." menu, View properties; the Managed by tab of a group or an OU.
+
+### Compare with Figma
+
+- [ ] New Organizational Unit modal ([ARS_New_Organizational_Unit 1394:14812](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1394-14812), screen [1349:12126](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1349-12126)).
+- [ ] OU Overview ([1131:10263](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1131-10263)).
+- [ ] OU General, read and edit ([1065:6047](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1065-6047), [1069:7492](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1069-7492)).
+- [ ] Ownership: [ARS_Managed_by 1200:10265](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1200-10265), [saved 1373:11754](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1373-11754), [Add/Change Manager 1189:7985](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1189-7985).
+- [ ] Object details ([1065:8070](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1065-8070)).
+
+### Confirm
+
+- [ ] **New Organizational Unit.** Name (required), Description, "Protect container from accidental deletion", and Figma's explanation on the right; the button reads "Save & Continue →". Figma draws the header icon as a user (copied from the New User modal) and I kept it. The second checkbox, "Open properties for this object when I click finish", is from the written note, not the frame. Without it ticked you stay on the list and the toast offers View; with it, the OU's page opens. A new component under "Missing from Figma".
+- [ ] **Where the OU page opens.** There is no frame showing how you reach it, so it opens from View properties in a row's menu (the menu already has it) and from Open properties after creating.
+- [ ] **Tabs.** Overview, General, Ownership, Roles, Object details, History as the header draws them. Roles and History are empty: the Change History frame says "In progress under Change history Figma file". Figma also draws a count after History (12); I left it out.
+- [ ] **Overview.** Five count tiles taken from what the OU holds. Figma's annotation says a card opens the filtered list of objects; the tiles aren't clickable yet. The count tiles use the existing Overview layout.
+- [ ] **Object management.** Move and Delete, as the Overview draws them. Delete removes the OU and everything under it. Move uses the same side sheet; an OU can't go into itself or its folders.
+- [ ] **General.** Description, street address, city, state/province, zip/postal code and country/region, from the written Edit AD OU note. Saved for the session, except the description, which the list shows too.
+- [ ] **Ownership (also on groups).** The Managed by card now shows a manager, office details and secondary owners. Add manager and Add owner open the Add Member modal as a picker (the Add/Change Manager frame shows a modal like it); the manager is one person, owners can be several. To change the manager, remove it and add another; Figma's pencil on the manager isn't wired. Groups add the two "can update membership list" checkboxes from the written notes.
+- [ ] **Object details.** A Properties card of read-only values; "Protect object from accidental deletion" is Yes or No, not a disabled checkbox. A new OU is protected unless you untick it.
+- [ ] **Deleting OUs from the list** now removes the OU (before, nothing happened).
