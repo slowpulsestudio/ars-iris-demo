@@ -62,6 +62,15 @@ const INFO = 'More information';
 const DESCRIPTION_LIMIT = 100;
 const shown = (value: string) => (value.trim() ? value : '-');
 
+/** Figma writes dates as "Jan 12, 2024"; the sample data stores "2024-01-12". */
+function figmaDate(iso: string | undefined): string {
+  if (!iso) return '-';
+  const date = new Date(`${iso}T00:00:00`);
+  return Number.isNaN(date.getTime())
+    ? iso
+    : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 function generalDraft(object: DirectoryObject, p: GroupProps): Draft {
   return {
     displayName: object.name,
@@ -228,7 +237,7 @@ export function GroupObjectPage({
     { label: 'Fully qualified domain name', value: dn },
     { label: 'Distinguished name', value: dn },
     { label: 'Object class', value: 'group' },
-    { label: 'Created', value: object.details.created ?? '-' },
+    { label: 'Created', value: figmaDate(object.details.created) },
     { label: 'Modified', value: 'Jun 18, 2025 14:23:07 PM' },
     { label: 'Original USN', value: '131458' },
     { label: 'Current USN', value: '2847193' },
@@ -246,7 +255,7 @@ export function GroupObjectPage({
           membershipType={`${p.type} Group`}
           source="Cloud"
           objectId={object.id}
-          createdOn={object.details.created ?? '-'}
+          createdOn={figmaDate(object.details.created)}
           email={shown(p.email)}
           badges={p.deprovisioned ? [{ label: 'Deprovisioned', tone: 'warning' }] : []}
           counts={memberCounts(object, p)}
