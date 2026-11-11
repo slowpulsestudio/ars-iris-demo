@@ -5,7 +5,7 @@ import { isTypingTarget } from '../../lib/keyboard.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
 import { useFavorites } from '../../lib/useFavorites.js';
-import { announceMoved, canMoveItem, moveItems } from '../../lib/moveObjects.js';
+import { announceMoved, canMoveItem, moveEntries, moveItems } from '../../lib/moveObjects.js';
 import { Tabs } from '../../components/Tabs/Tabs.js';
 import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
@@ -22,6 +22,7 @@ import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { tabsForType, PRIMARY_TAB } from './detailTabs.js';
 import { UserObjectPage, type UserObjectData } from '../ObjectPage/UserObjectPage.js';
 import { GroupObjectPage } from '../ObjectPage/GroupObjectPage.js';
+import { OUObjectPage } from '../OUPage/OUObjectPage.js';
 import styles from './TreeView.module.css';
 
 /** A stable UUID-looking id for an object that has none. */
@@ -189,6 +190,34 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
         currentNodeId={nodeId}
         canMoveTo={(destId) => canMoveItem(moveItem, destId)}
         onMove={onMoveObject}
+        onToggleFavorite={() =>
+          toggleFavorite({
+            id: object.id,
+            name: object.name,
+            type: meta.label,
+            description: object.description,
+            href: `#/tree/${nodeId}/${object.id}`,
+          })
+        }
+      />
+    );
+  }
+
+  if (object.type === 'ou') {
+    return (
+      <OUObjectPage
+        breadcrumb={breadcrumb}
+        ou={object}
+        onSave={(description) => updateObject(nodeId, object.id, { ...object, description })}
+        onBack={() => navigate(`#/tree/${nodeId}`)}
+        onMoved={(destId) => {
+          const entry = { item: { id: object.id, nodeId, isContainer: true }, name: object.name, typeLabel: meta.label };
+          if (moveEntries([entry], destId, getNodeName(destId) ?? 'the folder').length > 0) {
+            navigate(`#/tree/${destId}/${object.id}`);
+          }
+        }}
+        onDeleted={() => navigate(`#/tree/${nodeId}`)}
+        isFavorite={isFavorite(object.id)}
         onToggleFavorite={() =>
           toggleFavorite({
             id: object.id,

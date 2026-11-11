@@ -25,6 +25,8 @@ import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { setDragPreview } from './dragPreview.js';
 import { CreateGroupModal, type CreateGroupKind } from '../GroupsPage/CreateGroupModal.js';
+import { CreateOUModal } from '../OUPage/CreateOUModal.js';
+import { removeNode } from '../../lib/directoryData.js';
 import { CreateObjectModal, type CreateObjectResult } from '../UsersPage/CreateObjectModal/CreateObjectModal.js';
 import {
   announceCreated,
@@ -71,6 +73,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
   const [createTarget, setCreateTarget] = useState<{ type: string; icon: string } | null>(null);
   // Which kind of group the group create flow is building. `null` = closed.
   const [groupCreate, setGroupCreate] = useState<CreateGroupKind | null>(null);
+  const [ouCreate, setOuCreate] = useState(false);
 
   const [rowObject, setRowObject] = useState<DirectoryObject | null>(null);
   const rowMenu = useAnchoredMenu();
@@ -132,6 +135,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     if (label === 'Reset Password') setResetTarget(rowObject);
     if (label === 'Delete') setDeleteTarget(rowObject);
     if (label === 'Move') setMoveTargets([rowObject]);
+    if (label === 'View properties') navigate(hrefFor(rowObject, nodeId).replace(/^#\/tree\/([^/]+)$/, `#/tree/${nodeId}/${rowObject.id}`));
     if (label === 'Add to Favorites') toggleRowFavorite(rowObject);
   };
 
@@ -145,6 +149,10 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     const type = objectTypeFromMenuLabel(label);
     if (type === 'Group') {
       setGroupCreate(getPath(nodeId).some((n) => n.id === 'entra-directories') ? 'Entra' : 'AD');
+      return;
+    }
+    if (type === 'Organizational Unit') {
+      setOuCreate(true);
       return;
     }
     if (type) setCreateTarget({ type, icon: NEW_OBJECT_ICONS.get(label) ?? 'User' });
@@ -325,7 +333,8 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
           name={deleteTarget.name}
           location={nodeName ?? 'Directory'}
           onDeleted={() => {
-            removeObject(nodeId, deleteTarget.id);
+            if (deleteTarget.isContainer) removeNode(deleteTarget.id);
+            else removeObject(nodeId, deleteTarget.id);
             setSelected((s) => {
               const next = new Set(s);
               next.delete(deleteTarget.id);
@@ -343,6 +352,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
         canMoveTo={(destId) => (moveTargets ?? []).some((o) => canMoveItem(toMoveItem(o), destId))}
         onMove={onMoveObjects}
       />
+      <CreateOUModal open={ouCreate} onClose={() => setOuCreate(false)} locationId={nodeId} />
       {groupCreate && (
         <CreateGroupModal open onClose={() => setGroupCreate(null)} kind={groupCreate} locationId={nodeId} />
       )}

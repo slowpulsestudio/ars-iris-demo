@@ -2,9 +2,9 @@ import { useMemo, useSyncExternalStore } from 'react';
 import type { DirectoryObject } from './directoryData.js';
 
 /**
- * groupDetailsStore — the group fields the directory data doesn't have
- * (scope, type, email, ownership and so on), kept for the session. Until
- * edited, each is derived from the object.
+ * groupDetailsStore — the fields the directory data doesn't have for groups
+ * and OUs (scope, type, email, ownership, address and so on), kept for the
+ * session. Until edited, each is derived from the object.
  */
 
 export const GROUP_SCOPES = ['Domain local', 'Global', 'Universal'];
@@ -29,6 +29,11 @@ export interface GroupProps {
   deprovisioned: boolean;
   /** Ids of objects added on the Memberships tab. */
   addedMembers: string[];
+  manager: string;
+  managerCanUpdate: boolean;
+  secondaryOwners: string[];
+  zip: string;
+  protect: boolean;
 }
 
 const EMPTY: Partial<GroupProps> = Object.freeze({});
@@ -66,6 +71,11 @@ function defaultsFor(object: DirectoryObject): GroupProps {
     secondaryCanUpdate: false,
     deprovisioned: false,
     addedMembers: [],
+    manager: '',
+    managerCanUpdate: false,
+    secondaryOwners: [],
+    zip: '',
+    protect: object.type !== 'group',
   };
 }
 

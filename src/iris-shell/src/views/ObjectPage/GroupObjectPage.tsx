@@ -26,6 +26,7 @@ import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { UnsavedChangesModal } from '../ObjectModals/UnsavedChangesModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { GroupMembersTab } from './GroupMembersTab.js';
+import { OwnershipTab } from './OwnershipTab.js';
 import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
 import styles from './UserObjectPage.module.css';
 
@@ -52,7 +53,7 @@ const GROUP_ACTIONS = [
   [{ label: 'Deprovision', danger: true }, { label: 'Delete', danger: true }],
 ];
 
-type Editing = typeof TAB_GENERAL | typeof TAB_OWNERSHIP | null;
+type Editing = typeof TAB_GENERAL | null;
 type Draft = Record<string, string>;
 
 const NOT_SET = 'Not set';
@@ -69,19 +70,6 @@ function generalDraft(object: DirectoryObject, p: GroupProps): Draft {
     scope: p.scope,
     type: p.type,
     tags: p.tags,
-  };
-}
-
-function ownershipDraft(p: GroupProps): Draft {
-  return {
-    office: p.office,
-    street: p.street,
-    city: p.city,
-    state: p.state,
-    country: p.country,
-    phone: p.phone,
-    fax: p.fax,
-    secondaryCanUpdate: String(p.secondaryCanUpdate),
   };
 }
 
@@ -164,6 +152,8 @@ export function GroupObjectPage({
   const p = useGroupProps(object);
   const [tab, setTab] = useState(TAB_OVERVIEW);
   const [editing, setEditing] = useState<Editing>(null);
+  // Unsaved changes in the Ownership card.
+  const [ownershipDirty, setOwnershipDirty] = useState(false);
   const [draft, setDraft] = useState<Draft>({});
   const [errors, setErrors] = useState<Draft>({});
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -176,16 +166,19 @@ export function GroupObjectPage({
   const { getNodeName } = useDirectory();
 
   const initial = useMemo(
-    () => (editing === TAB_GENERAL ? generalDraft(object, p) : editing === TAB_OWNERSHIP ? ownershipDraft(p) : {}),
+    () => (editing === TAB_GENERAL ? generalDraft(object, p) : {}),
     [editing, object, p],
   );
-  const dirty = editing !== null && JSON.stringify(draft) !== JSON.stringify(initial);
+  const dirty = ownershipDirty || (editing !== null && JSON.stringify(draft) !== JSON.stringify(initial));
 
   const cancelEditing = () => {
     setEditing(null);
     setErrors({});
   };
-  const guard = useLeaveGuard(dirty, cancelEditing);
+  const guard = useLeaveGuard(dirty, () => {
+    setOwnershipDirty(false);
+    cancelEditing();
+  });
   const { leave } = guard;
 
   // A different group starts from its own Overview.
@@ -195,7 +188,7 @@ export function GroupObjectPage({
   }, [object.id]);
 
   const startEditing = (which: Exclude<Editing, null>) => {
-    setDraft(which === TAB_GENERAL ? generalDraft(object, p) : ownershipDraft(p));
+    setDraft(generalDraft(object, p));
     setErrors({});
     setEditing(which);
   };
@@ -229,23 +222,6 @@ export function GroupObjectPage({
     });
   };
 
-  const saveOwnership = () => {
-    saveGroupProps(object.id, {
-      office: draft.office,
-      street: draft.street,
-      city: draft.city,
-      state: draft.state,
-      country: draft.country,
-      phone: draft.phone,
-      fax: draft.fax,
-      secondaryCanUpdate: draft.secondaryCanUpdate === 'true',
-    });
-    cancelEditing();
-    showToast('Successfully updated Group', {
-      supportingText: `Successfully updated ownership for Group ${object.name}`,
-    });
-  };
-
   const generalRows: DetailsRow[] = [
     { label: 'Display name', value: object.name },
     { label: 'Group name (pre-Windows 2000)', value: p.groupName },
@@ -270,39 +246,6 @@ export function GroupObjectPage({
     { label: 'Tags', value: draft.tags, onChange: set('tags'), placeholder: 'Enter tags that describe this object.', width: 280 },
   ];
 
-  const ownershipRows: DetailsRow[] = [
-    { label: 'Manager', value: NOT_SET },
-    { label: 'Manager can update membership list', value: 'Disabled until a manager is set' },
-    { label: 'Office', value: shown(p.office) },
-    { label: 'Street address', value: shown(p.street) },
-    { label: 'City', value: shown(p.city) },
-    { label: 'State / Province', value: shown(p.state) },
-    { label: 'Country / Region', value: shown(p.country) },
-    { label: 'Telephone number', value: shown(p.phone) },
-    { label: 'Fax number', value: shown(p.fax) },
-    { label: 'Secondary owners', value: NOT_SET },
-    { label: 'Secondary owners can update membership list', value: p.secondaryCanUpdate ? 'Yes' : 'No' },
-  ];
-
-  const ownershipFields: (FormInputProps | FormInputProps[])[] = [
-    { label: 'Manager', value: NOT_SET, disabled: true, width: 280 },
-    { label: 'Manager can update membership list', checkbox: true, disabled: true, value: 'false' },
-    { label: 'Office', value: draft.office, onChange: set('office'), width: 280 },
-    { label: 'Street address', multiline: true, value: draft.street, onChange: set('street') },
-    { label: 'City', value: draft.city, onChange: set('city'), width: 280 },
-    { label: 'State / Province', value: draft.state, onChange: set('state'), width: 280 },
-    { label: 'Country / Region', value: draft.country, onChange: set('country'), width: 280 },
-    { label: 'Telephone number', value: draft.phone, onChange: set('phone'), width: 280 },
-    { label: 'Fax number', value: draft.fax, onChange: set('fax'), width: 280 },
-    { label: 'Secondary owners', value: NOT_SET, disabled: true, width: 280 },
-    {
-      label: 'Secondary owners can update membership list',
-      checkbox: true,
-      value: draft.secondaryCanUpdate,
-      onChange: set('secondaryCanUpdate'),
-    },
-  ];
-
   const dn = `CN=${object.name},OU=Groups,DC=contoso,DC=com`;
   const detailRows: DetailsRow[] = [
     { label: 'Fully qualified domain name', value: dn },
@@ -314,8 +257,8 @@ export function GroupObjectPage({
     { label: 'Current USN', value: '2847193' },
     { label: 'Object GUID', value: `{${object.id}}` },
     { label: 'Object SID', value: 'S-1-5-21-3623811015-3361044348-30300820-1013' },
-    { label: 'Managed by', value: NOT_SET },
-    { label: 'Protect from deletion', value: 'No' },
+    { label: 'Managed by', value: p.manager || NOT_SET },
+    { label: 'Protect from deletion', value: p.protect ? 'Yes' : 'No' },
   ];
 
   const renderContent = () => {
@@ -336,15 +279,14 @@ export function GroupObjectPage({
     }
     if (tab === TAB_OWNERSHIP) {
       return (
-        <DetailsCard
-          title="Managed by"
-          helper="Configure ownership and membership approval settings."
-          editing={editing === TAB_OWNERSHIP}
-          rows={ownershipRows}
-          fields={ownershipFields}
-          onEdit={() => startEditing(TAB_OWNERSHIP)}
-          onCancel={() => leave(cancelEditing)}
-          onSave={saveOwnership}
+        <OwnershipTab
+          key={object.id}
+          object={object}
+          candidateNodeId={currentNodeId}
+          objectLabel="Group"
+          membershipFlags
+          onDirtyChange={setOwnershipDirty}
+          requestLeave={leave}
         />
       );
     }

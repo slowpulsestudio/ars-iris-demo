@@ -448,6 +448,14 @@ export function addObject(nodeId: string, object: DirectoryObject): boolean {
 export function updateObject(nodeId: string, objectId: string, next: DirectoryObject): boolean {
   const node = nodeById.get(nodeId);
   if (!node) return false;
+  const child = node.children?.find((c) => c.id === objectId);
+  if (child) {
+    child.name = next.name;
+    child.description = next.description;
+    treeVersion += 1;
+    listeners.forEach((l) => l());
+    return true;
+  }
   const leaves = getLeaves(node);
   const i = leaves.findIndex((o) => o.id === objectId);
   if (i < 0) return false;
@@ -496,4 +504,33 @@ export function moveObject(fromNodeId: string, objectId: string, toNodeId: strin
 /** The node a container object sits in (`null` = top level). */
 export function getParentId(nodeId: string): string | null {
   return parentIdByNode.get(nodeId) ?? null;
+}
+
+let createdNodes = 0;
+
+/** Adds an OU under `parentId` and returns its id (`null` when the parent is unknown). */
+export function addContainerNode(parentId: string, name: string, description: string): string | null {
+  const parent = nodeById.get(parentId);
+  if (!parent) return null;
+  createdNodes += 1;
+  const id = `ou-new-${createdNodes}`;
+  (parent.children ??= []).push({ id, name, type: 'ou', description, leafCount: 0 });
+  reindex();
+  treeVersion += 1;
+  listeners.forEach((l) => l());
+  return id;
+}
+
+/** Removes a container node (and what is under it); returns whether it was there. */
+export function removeNode(nodeId: string): boolean {
+  const parentId = parentIdByNode.get(nodeId);
+  if (parentId === undefined) return false;
+  const siblings = parentId ? (nodeById.get(parentId)!.children ?? []) : TREE;
+  const i = siblings.findIndex((n) => n.id === nodeId);
+  if (i < 0) return false;
+  siblings.splice(i, 1);
+  reindex();
+  treeVersion += 1;
+  listeners.forEach((l) => l());
+  return true;
 }
