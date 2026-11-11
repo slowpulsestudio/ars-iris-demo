@@ -237,7 +237,7 @@ Four more Figma files, built flow by flow with an audit first; every flow, node 
 - **Organizational units** (Flow 10, [OU Management file](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1009-3972)): the New Organizational Unit modal and the OU page.
 - **Managed units** (Flow 11, [Managed Units file](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=4002-9991)): the list and a unit's members.
 - **Self-service** (Flow 12, [User-View-Approvals file](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-6651)): Home, My Access with the Request Access sheet, Approvals with Approve, Deny and Escalate, and User Profile, in `views/UserView/` from Iris components (the shell had placeholders there before).
-- Not built: Groups Managed units, Roles and History tabs, OU Managed units, Roles and History, the Managed Units Tree view screen and member row menus. These commits are on `origin/main` up to `a82f866`.
+- Not built: Groups Managed units, Roles and History tabs, OU Managed units, Roles and History, the Managed Units Tree view screen and member row menus. These commits are on `origin/main` up to `a82f866`. (Rechecked later: the tabs have no frames in Figma, the Tree view screen is now built, and the row menu has no trigger in Figma. See "11 Nov: unbuilt items rechecked" below.)
 
 ### 11 Nov: review of Flows 7 to 12 in the app
 
@@ -262,6 +262,15 @@ The screens from the CRUD and Move files (lists, selection bars, create, user pa
 - **Menus stay on screen** (`c02b872`): the viewport clamp in the Iris Menu never ran after the menu mounted; it does now, and menus flip above their button when there is no room below.
 - **Spelling** (`235814d`): "passowrd", "Reigon" and the missing full stop in the created toast are corrected in the app; with quote style and the places where the Figma files disagree they are on the Figma tidy-up page (its own card on the Design review hub, `docs/figma-tidy-up.md`).
 - **Wrong Figma references fixed in the notes**: Flow 5's node and Flow 1's Tree view nodes (4517:19943, right-click menu 2385:57427) are in ARS-Primary, not the CRUD file, so the links now point there and the Tree view was compared with them (it matches); node 1369:32139 no longer exists. Every item and question on the review page now carries its Figma node link.
+
+### 11 Nov: unbuilt items rechecked
+
+Each item on the "not built" list was checked against Figma again before building anything.
+
+- **Managed Units Tree view**: built. Tree view → Managed units now shows the managed units list (ARS_Treeview_Master, 7051:7736); it showed made-up contacts and computers before.
+- **Managed Unit member row menu**: not built. Figma's ARS_AD User Actions menu (7077:3917) has no trigger: member rows (7069:6835) have no "…" and nothing shows how it opens.
+- **Groups and OU Managed units, Roles and History tabs**: nothing to build. Groups has only note titles (64:6814, 64:6809, 64:6811); OU's Change History frame (1403:12579) says only "In progress under Change history Figma file". They stay as empty states.
+- **Copy my ticks**: a button on both review pages (Design review tasks and Figma tidy-up) copies the ticked items as markdown, so a reviewer using the deployed page can send their ticks back.
 
 ## Iris files changed since the Iris packages were installed
 
