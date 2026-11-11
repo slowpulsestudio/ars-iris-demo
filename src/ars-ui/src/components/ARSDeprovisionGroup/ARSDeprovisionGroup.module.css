@@ -1,0 +1,7 @@
+.message {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-font-weight);
+  color: var(--oi-content-color-primary);
+}

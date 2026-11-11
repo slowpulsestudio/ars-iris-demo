@@ -3,6 +3,7 @@ export const FIGMA_FILES = {
   primary: { name: 'ARS - Primary', key: 'IlG4nne9VhqpONzqc0tfKg' },
   crud: { name: 'ARS_WebUI2_CRUD', key: 'djs9NKqC3YG6KtAhHiQ4iT' },
   move: { name: 'ARS_WebUI2_Move_Browse_Objects', key: 'IXKXZpycHiFcKbvHMvlc9r' },
+  groups: { name: 'ARS_WebUI2_Groups', key: 'KukLyO1RkJ4kYTzxGWd2Q7' },
 } as const;
 
 export type FigmaFileId = keyof typeof FIGMA_FILES;
@@ -64,5 +65,26 @@ export const MISSING_FROM_FIGMA: MissingFromFigmaEntry[] = [
     figmaNodeId: '2281:47208',
     file: 'move',
     note: 'The chip that follows the pointer while an object is dragged from the table to a folder in the directory tree. Variants Directory folder and User.',
+  },
+  {
+    component: 'ARSRenameGroup',
+    figmaName: 'Rename Group Modal',
+    figmaNodeId: '64:6802',
+    file: 'groups',
+    note: 'Only a written requirement in Figma: Name and Group name (Pre-windows 2000) fields. No frame, so the layout and button labels are the ARS modal panel with Cancel and Rename.',
+  },
+  {
+    component: 'ARSDeprovisionGroup',
+    figmaName: 'Deprovision AD Group',
+    figmaNodeId: '64:6805',
+    file: 'groups',
+    note: 'Only a written requirement in Figma: a Yes or No confirmation, then a toast with Undo. No frame, so the question text is mine.',
+  },
+  {
+    component: 'ARSGroupMembershipButtonSelect',
+    figmaName: 'ARS_Group_Membership_Button_Select',
+    figmaNodeId: '160:9082',
+    file: 'groups',
+    note: 'The Members and Members of buttons above a group\'s membership table. In the ARS_WebUI2_Groups file, not in ARS - Primary.',
   },
 ];

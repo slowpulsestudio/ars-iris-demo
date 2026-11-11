@@ -185,6 +185,13 @@ export {
 } from './components/ARSSelectedObjectsBlock/ARSSelectedObjectsBlock.js';
 export { ARSMoveToast, type ARSMoveToastProps } from './components/ARSMoveToast/ARSMoveToast.js';
 export { ARSElementDragged, type ARSElementDraggedProps } from './components/ARSElementDragged/ARSElementDragged.js';
+export { ARSRenameGroup, type ARSRenameGroupProps } from './components/ARSRenameGroup/ARSRenameGroup.js';
+export { ARSDeprovisionGroup, type ARSDeprovisionGroupProps } from './components/ARSDeprovisionGroup/ARSDeprovisionGroup.js';
+export {
+  ARSGroupMembershipButtonSelect,
+  type ARSGroupMembershipButtonSelectProps,
+  type ARSGroupMembershipView,
+} from './components/ARSGroupMembershipButtonSelect/ARSGroupMembershipButtonSelect.js';
 export { FolderArrowRightIcon } from './parts/FolderArrowRightIcon.js';
 export { ARSActionBar, type ARSActionBarProps } from './components/ARSActionBar/ARSActionBar.js';
 export { ARSSidebar, type ARSSidebarProps } from './components/ARSSidebar/ARSSidebar.js';
