@@ -18,6 +18,7 @@ import { ServicesPage } from './views/ServicesPage/ServicesPage.js';
 import { IdentityManagerPage } from './views/IdentityManagerPage/IdentityManagerPage.js';
 import { IdentityInsightsPage } from './views/IdentityManagerPage/IdentityInsightsPage.js';
 import { IdentityPlaceholder } from './views/IdentityManagerPage/IdentityPlaceholder.js';
+import { GroupsPage } from './views/GroupsPage/GroupsPage.js';
 import { IdentitySectionPage } from './views/IdentityManagerPage/IdentitySectionPage.js';
 import { SafeguardPage } from './views/SafeguardPage/SafeguardPage.js';
 import { WelcomePage } from './views/WelcomePage/WelcomePage.js';
@@ -42,7 +43,7 @@ function renderRoute(route: Route) {
     case 'favoritesList':
       return <FavoritesPage />;
     case 'groups':
-      return <WipPage title="Groups" icon="UsersThree" />;
+      return <GroupsPage />;
     case 'devices':
       return <WipPage title="Devices" icon="Devices" />;
     case 'agents':

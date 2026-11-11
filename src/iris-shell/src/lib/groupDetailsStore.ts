@@ -27,6 +27,8 @@ export interface GroupProps {
   fax: string;
   secondaryCanUpdate: boolean;
   deprovisioned: boolean;
+  /** Ids of objects added on the Memberships tab. */
+  addedMembers: string[];
 }
 
 const EMPTY: Partial<GroupProps> = Object.freeze({});
@@ -63,10 +65,15 @@ function defaultsFor(object: DirectoryObject): GroupProps {
     fax: '',
     secondaryCanUpdate: false,
     deprovisioned: false,
+    addedMembers: [],
   };
 }
 
 /** The group's fields: what was saved, over what the object gives. */
+export function getGroupProps(object: DirectoryObject): GroupProps {
+  return { ...defaultsFor(object), ...(saved.get(object.id) ?? {}) };
+}
+
 export function useGroupProps(object: DirectoryObject): GroupProps {
   const edited = useSyncExternalStore(
     subscribe,

@@ -18,6 +18,7 @@ import type { BadgeTone } from '../../components/Badge/Badge.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
+import { CreateGroupModal } from '../GroupsPage/CreateGroupModal.js';
 import { CreateObjectModal, type CreateObjectResult } from './CreateObjectModal/CreateObjectModal.js';
 import {
   announceCreated,
@@ -73,6 +74,7 @@ export function UsersPage() {
   const [moveTargets, setMoveTargets] = useState<User[] | null>(null);
   // Which object type the Create flow is building. `null` = closed.
   const [createTarget, setCreateTarget] = useState<{ type: string; icon: string } | null>(null);
+  const [groupCreateOpen, setGroupCreateOpen] = useState(false);
 
   const [rowUser, setRowUser] = useState<User | null>(null);
   const rowMenu = useAnchoredMenu();
@@ -193,6 +195,10 @@ export function UsersPage() {
         {...createMenu.menuProps}
         onAction={(label) => {
           const type = objectTypeFromMenuLabel(label);
+          if (type === 'Group') {
+            setGroupCreateOpen(true);
+            return;
+          }
           if (type) setCreateTarget({ type, icon: CREATE_ICONS.get(label) ?? 'User' });
         }}
       />
@@ -253,6 +259,7 @@ export function UsersPage() {
           setMoveTargets(null);
         }}
       />
+      <CreateGroupModal open={groupCreateOpen} onClose={() => setGroupCreateOpen(false)} kind="AD" locationId="o1d-local" />
       {createTarget && (
         <CreateObjectModal
           open

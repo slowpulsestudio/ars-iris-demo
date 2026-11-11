@@ -1,0 +1,15 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-l);
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--oi-spacing-s);
+}
+
+.toggle {
+  display: inline-flex;
+}

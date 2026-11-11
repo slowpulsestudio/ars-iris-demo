@@ -24,6 +24,7 @@ import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { setDragPreview } from './dragPreview.js';
+import { CreateGroupModal, type CreateGroupKind } from '../GroupsPage/CreateGroupModal.js';
 import { CreateObjectModal, type CreateObjectResult } from '../UsersPage/CreateObjectModal/CreateObjectModal.js';
 import {
   announceCreated,
@@ -68,6 +69,8 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
   const [moveTargets, setMoveTargets] = useState<DirectoryObject[] | null>(null);
   // Which object type the Create flow is building. `null` = closed.
   const [createTarget, setCreateTarget] = useState<{ type: string; icon: string } | null>(null);
+  // Which kind of group the group create flow is building. `null` = closed.
+  const [groupCreate, setGroupCreate] = useState<CreateGroupKind | null>(null);
 
   const [rowObject, setRowObject] = useState<DirectoryObject | null>(null);
   const rowMenu = useAnchoredMenu();
@@ -140,6 +143,10 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
 
   const openCreate = (label: string) => {
     const type = objectTypeFromMenuLabel(label);
+    if (type === 'Group') {
+      setGroupCreate(getPath(nodeId).some((n) => n.id === 'entra-directories') ? 'Entra' : 'AD');
+      return;
+    }
     if (type) setCreateTarget({ type, icon: NEW_OBJECT_ICONS.get(label) ?? 'User' });
   };
 
@@ -336,6 +343,9 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
         canMoveTo={(destId) => (moveTargets ?? []).some((o) => canMoveItem(toMoveItem(o), destId))}
         onMove={onMoveObjects}
       />
+      {groupCreate && (
+        <CreateGroupModal open onClose={() => setGroupCreate(null)} kind={groupCreate} locationId={nodeId} />
+      )}
       {createTarget && (
         <CreateObjectModal
           open

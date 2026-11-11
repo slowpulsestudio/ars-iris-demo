@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
+  ARSAddMemberModal,
   ARSGroupMembershipButtonSelect,
   ARSGroupTable,
   ARSPagination,
@@ -8,9 +9,13 @@ import {
 } from '@ars';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
+import { saveGroupProps, useGroupProps } from '../../lib/groupDetailsStore.js';
+import { showToast } from '../../lib/toastStore.js';
+import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
 import styles from './GroupMembersTab.module.css';
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20, 30, 50];
+const MODAL_PAGE_SIZE = 10;
 
 /** A stable pick of `count` entries from `pool`, spread by a step from the group's id. */
 function pick<T>(pool: T[], count: number, seed: string): T[] {
@@ -31,23 +36,33 @@ export interface GroupMembersTabProps {
 
 /**
  * GroupMembersTab — the Memberships tab (ARS_Group_Members_Content): Members
- * and Members of, a search, and the group table with paging. The directory
- * data has no memberships, so the rows are objects from the group's folder.
+ * and Members of, a search, the group table with paging, and the Add Member
+ * modal. The directory data has no memberships, so the rows are objects from
+ * the group's folder.
  */
 export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
   const { getSiblings } = useDirectory();
+  const props = useGroupProps(group);
   const [view, setView] = useState<ARSGroupMembershipView>('Members');
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
   const [selected, setSelected] = useState<string[]>([]);
+  const [addOpen, setAddOpen] = useState(false);
+  const [addQuery, setAddQuery] = useState('');
+  const [addPage, setAddPage] = useState(1);
+  const [addSelected, setAddSelected] = useState<string[]>([]);
+
+  const pool = useMemo(() => getSiblings(nodeId).filter((o) => o.id !== group.id), [getSiblings, nodeId, group.id]);
+
+  const members = useMemo(() => {
+    const base = pick(pool, group.details.memberCount ?? 0, group.id);
+    const added = pool.filter((o) => props.addedMembers.includes(o.id));
+    return [...new Set([...base, ...added])];
+  }, [pool, group, props.addedMembers]);
 
   const rows = useMemo(() => {
-    const pool = getSiblings(nodeId).filter((o) => o.id !== group.id);
-    const chosen =
-      view === 'Members'
-        ? pick(pool, group.details.memberCount ?? 0, group.id)
-        : pick(pool.filter((o) => o.type === 'group'), 3, group.id);
+    const chosen = view === 'Members' ? members : pick(pool.filter((o) => o.type === 'group'), 3, group.id);
     const q = query.trim().toLowerCase();
     return chosen
       .filter((o) => !q || [o.name, o.description, o.id].some((v) => v.toLowerCase().includes(q)))
@@ -59,11 +74,36 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
         objectId: o.id,
         href: `#/tree/${nodeId}/${o.id}`,
       }));
-  }, [getSiblings, nodeId, group, view, query]);
+  }, [pool, members, group.id, view, query, nodeId]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
   const pageRows = rows.slice((safePage - 1) * pageSize, safePage * pageSize);
+
+  const candidates = useMemo(() => {
+    const have = new Set(members.map((m) => m.id));
+    const q = addQuery.trim().toLowerCase();
+    return pool.filter((o) => !have.has(o.id) && (!q || [o.name, o.description, o.id].some((v) => v.toLowerCase().includes(q))));
+  }, [pool, members, addQuery]);
+  const addPageCount = Math.max(1, Math.ceil(candidates.length / MODAL_PAGE_SIZE));
+  const addSafePage = Math.min(addPage, addPageCount);
+
+  const openAdd = () => {
+    setAddQuery('');
+    setAddPage(1);
+    setAddSelected([]);
+    setAddOpen(true);
+  };
+
+  const saveAdd = () => {
+    saveGroupProps(group.id, { addedMembers: [...props.addedMembers, ...addSelected] });
+    setAddOpen(false);
+    setView('Members');
+    showToast(
+      addSelected.length === 1 ? 'Member added successfully' : `${addSelected.length} members added successfully`,
+      { supportingText: `Added to group ${group.name}.` },
+    );
+  };
 
   const switchView = (next: ARSGroupMembershipView) => {
     setView(next);
@@ -77,6 +117,7 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
       <ARSTableToolbar
         variant="Basic"
         actionLabel="Add member"
+        onAction={openAdd}
         search={query}
         onSearchChange={(value) => {
           setQuery(value);
@@ -95,6 +136,35 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
           setPage(1);
         }}
       />
+      <ModalOverlay open={addOpen} onClose={() => setAddOpen(false)} label="Add Member">
+        <ARSAddMemberModal
+          found={candidates.length}
+          rows={candidates.slice((addSafePage - 1) * MODAL_PAGE_SIZE, addSafePage * MODAL_PAGE_SIZE).map((o) => ({
+            id: o.id,
+            name: o.name,
+            objectType: OBJECT_TYPE_META[o.type].label,
+            description: o.description,
+          }))}
+          selectedIds={addSelected}
+          onSelectedIdsChange={setAddSelected}
+          selectedItems={addSelected.map((id) => ({ id, label: pool.find((o) => o.id === id)?.name ?? id }))}
+          search={addQuery}
+          onSearchChange={(value) => {
+            setAddQuery(value);
+            setAddPage(1);
+          }}
+          pagination={{
+            page: addSafePage,
+            pageCount: addPageCount,
+            onPageChange: setAddPage,
+            pageSize: MODAL_PAGE_SIZE,
+            pageSizeOptions: [MODAL_PAGE_SIZE],
+          }}
+          onClose={() => setAddOpen(false)}
+          onCancel={() => setAddOpen(false)}
+          onSave={saveAdd}
+        />
+      </ModalOverlay>
     </div>
   );
 }
