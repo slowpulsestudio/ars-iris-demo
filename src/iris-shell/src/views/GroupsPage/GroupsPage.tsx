@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ARSTreeViewADContent } from '@ars';
+import { ARSTableGroups } from '@ars';
 import { AppShell } from '../AppShell/AppShell.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import type { DirectoryNodeView, DirectoryObject } from '../../lib/directoryData.js';
@@ -10,14 +10,32 @@ import screen from '../ARSScreen/ARSScreen.module.css';
 const PAGE_SIZE_OPTIONS = [15, 30, 50, 100];
 /** Where a group made from this list goes. */
 const DEFAULT_FOLDER = 'o1d-local';
+// Figma's sample tag pairs (ARS_Table_Groups); the directory data has no tags, so groups take them in turn.
+const TAG_PAIRS = [
+  ['Security', 'Compliance'],
+  ['Marketing', 'Strategy'],
+  ['Engineering', 'DevOps'],
+  ['Security', 'Administrator'],
+  ['Sales', 'Revenue'],
+  ['Support', 'Services'],
+  ['Product', 'Strategy'],
+  ['HR', 'Operations'],
+  ['IT', 'Infrastructure'],
+  ['Finance', 'Compliance'],
+  ['Leadership', 'Strategy'],
+  ['QA', 'Engineering'],
+  ['Analytics', 'Data'],
+  ['Cloud', 'Operations'],
+  ['Legal', 'Compliance'],
+];
 
 function nodeIds(nodes: DirectoryNodeView[]): string[] {
   return nodes.flatMap((n) => [n.id, ...nodeIds(n.children)]);
 }
 
 /**
- * GroupsPage — the Groups list (ARS_Table_Groups): every group in the
- * directory with its group type and description. Rows open the group page.
+ * GroupsPage — the Groups list (ARS_Table_Groups 158:33464): every group in
+ * the directory with its type, description, tags and folder. Rows open the group page.
  */
 export function GroupsPage() {
   const directory = useDirectory();
@@ -26,11 +44,25 @@ export function GroupsPage() {
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
   const [createOpen, setCreateOpen] = useState(false);
+  const [removedTags, setRemovedTags] = useState<Map<string, Set<string>>>(() => new Map());
 
   const groups = useMemo<DirectoryObject[]>(
     () => nodeIds(directory.nodeTree).flatMap((id) => directory.getSiblings(id).filter((o) => o.type === 'group')),
     [directory],
   );
+  const tagsFor = useMemo(() => {
+    const index = new Map(groups.map((g, i) => [g.id, i]));
+    return (id: string) => TAG_PAIRS[(index.get(id) ?? 0) % TAG_PAIRS.length].filter((t) => !removedTags.get(id)?.has(t));
+  }, [groups, removedTags]);
+
+  const describe = (g: DirectoryObject) => {
+    const path = directory.getPath(g.parentId);
+    const entra = path[0]?.id === 'entra-directories';
+    return {
+      groupType: entra ? 'O365Group' : `${getGroupProps(g).type}Group`,
+      directory: path.slice(entra ? 1 : -2).slice(0, 2).map((p) => p.name).join('\\'),
+    };
+  };
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -43,7 +75,7 @@ export function GroupsPage() {
 
   return (
     <AppShell breadcrumb={[{ label: 'Directory Management' }, { label: 'Groups' }]}>
-      <ARSTreeViewADContent
+      <ARSTableGroups
         className={screen.screen}
         header={{ title: 'Groups', icon: 'UsersThree' }}
         toolbar={{
@@ -56,15 +88,17 @@ export function GroupsPage() {
           actionLabel: 'Create',
           onAction: () => setCreateOpen(true),
         }}
-        typeLabel="Group type"
         rows={pageRows.map((g) => ({
           id: g.id,
           name: g.name,
-          icon: 'UsersThree',
           href: `#/tree/${g.parentId}/${g.id}`,
-          objectType: getGroupProps(g).type,
           description: g.description,
+          tags: tagsFor(g.id),
+          ...describe(g),
         }))}
+        onRemoveTag={(id, tag) =>
+          setRemovedTags((prev) => new Map(prev).set(id, new Set([...(prev.get(id) ?? []), tag])))
+        }
         selected={selected}
         onSelectionChange={setSelected}
         pagination={{

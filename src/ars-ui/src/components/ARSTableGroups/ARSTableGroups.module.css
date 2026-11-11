@@ -1,0 +1,76 @@
+/* ARS_Table_Groups (158:33464): head, rows and pagination 1px apart, as in Tree_View_AD_Content.
+   Column widths from Figma (no layout-size tokens). */
+.table {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--oi-border-width-default);
+  width: 100%;
+  min-height: 0;
+  overflow: auto;
+}
+
+.row {
+  display: flex;
+  align-items: stretch;
+  gap: var(--oi-border-width-default);
+  width: 100%;
+  background-color: var(--oi-background-color-primary);
+}
+
+.check {
+  width: 40px;
+  justify-content: center;
+}
+
+.name {
+  width: 180px;
+}
+
+.type {
+  width: 170px;
+}
+
+.fill {
+  flex: 1 1 0;
+  min-width: 160px;
+}
+
+.tags {
+  width: 220px;
+  overflow: hidden;
+}
+
+.directory {
+  width: 150px;
+}
+
+.actions {
+  width: 44px;
+  justify-content: center;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: var(--oi-content-color-secondary);
+}
+
+.nameLink {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--oi-text-body-s-strong-font-size);
+  line-height: var(--oi-text-body-s-strong-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+}
+
+/* Figma sets the group type in the Code style. */
+.badge {
+  font-family: var(--oi-font-family-code);
+}
+
+.pagination {
+  padding-block: var(--oi-spacing-s);
+}

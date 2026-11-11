@@ -97,6 +97,13 @@ export const MISSING_FROM_FIGMA: MissingFromFigmaEntry[] = [
     note: 'Find objects, tick the ones to add and Save. The frame is named just "Modal" in Figma; its title is Add Member.',
   },
   {
+    component: 'ARSTableGroups',
+    figmaName: 'ARS_Table_Groups',
+    figmaNodeId: '158:33464',
+    file: 'groups',
+    note: 'The Groups list: Name, Group type badge, Description, removable Tags and Directory. ARS - Primary has ARS_Group_Table, whose columns are Object Type and Object ID instead.',
+  },
+  {
     component: 'ARSNewOrganizationalUnit',
     figmaName: 'ARS_New_Organizational_Unit',
     figmaNodeId: '1394:14812',

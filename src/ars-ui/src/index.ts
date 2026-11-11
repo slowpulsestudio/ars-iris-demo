@@ -199,6 +199,11 @@ export {
   type ARSAddMemberRow,
 } from './components/ARSAddMemberModal/ARSAddMemberModal.js';
 export {
+  ARSTableGroups,
+  type ARSTableGroupsProps,
+  type ARSTableGroupsRow,
+} from './components/ARSTableGroups/ARSTableGroups.js';
+export {
   ARSNewOrganizationalUnit,
   type ARSNewOrganizationalUnitProps,
   type ARSNewOrganizationalUnitValues,
