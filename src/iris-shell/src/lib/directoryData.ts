@@ -452,6 +452,8 @@ export function updateObject(nodeId: string, objectId: string, next: DirectoryOb
   if (child) {
     child.name = next.name;
     child.description = next.description;
+    // The sidebar and folder pickers read NODE_TREE, so a renamed folder needs it rebuilt.
+    reindex();
     treeVersion += 1;
     listeners.forEach((l) => l());
     return true;
