@@ -26,6 +26,8 @@ export interface ARSTreeViewADContentProps {
   /** ARS_Table_Toolbar; Figma uses the "Basic" variant. */
   toolbar?: ARSTableToolbarProps;
   rows: ARSTreeViewADRow[];
+  /** Heading of the middle column; Figma's Groups list calls it "Group type". */
+  typeLabel?: string;
   selected?: Set<string>;
   onSelectionChange?: (next: Set<string>) => void;
   onColumns?: () => void;
@@ -46,6 +48,7 @@ export function ARSTreeViewADContent({
   header,
   toolbar,
   rows,
+  typeLabel = 'Object type',
   selected = new Set(),
   onSelectionChange,
   onColumns,
@@ -69,7 +72,7 @@ export function ARSTreeViewADContent({
         <TableHeadRow
           columns={[
             { label: 'Name', width: 180 },
-            { label: 'Object type', width: 119 },
+            { label: typeLabel, width: 119 },
             { label: 'Description' },
           ]}
           allSelected={allSelected}

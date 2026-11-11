@@ -87,4 +87,11 @@ export const MISSING_FROM_FIGMA: MissingFromFigmaEntry[] = [
     file: 'groups',
     note: 'The Members and Members of buttons above a group\'s membership table. In the ARS_WebUI2_Groups file, not in ARS - Primary.',
   },
+  {
+    component: 'ARSAddMemberModal',
+    figmaName: 'Add Member modal',
+    figmaNodeId: '215:7485',
+    file: 'groups',
+    note: 'Find objects, tick the ones to add and Save. The frame is named just "Modal" in Figma; its title is Add Member.',
+  },
 ];

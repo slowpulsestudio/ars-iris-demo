@@ -59,6 +59,7 @@ export {
   type ARSFilterSelectPart,
   type ARSFilterSelectProps,
 } from './components/ARSFilterSelect/ARSFilterSelect.js';
+export { FormInput } from './parts/FormInput/FormInput.js';
 export type { FormInputProps } from './parts/FormInput/FormInput.js';
 export { DetailsCard, type DetailsCardProps, type DetailsRow } from './parts/DetailsCard/DetailsCard.js';
 export type { PanelAction } from './parts/ActionPanel/ActionPanel.js';
@@ -192,6 +193,11 @@ export {
   type ARSGroupMembershipButtonSelectProps,
   type ARSGroupMembershipView,
 } from './components/ARSGroupMembershipButtonSelect/ARSGroupMembershipButtonSelect.js';
+export {
+  ARSAddMemberModal,
+  type ARSAddMemberModalProps,
+  type ARSAddMemberRow,
+} from './components/ARSAddMemberModal/ARSAddMemberModal.js';
 export { FolderArrowRightIcon } from './parts/FolderArrowRightIcon.js';
 export { ARSActionBar, type ARSActionBarProps } from './components/ARSActionBar/ARSActionBar.js';
 export { ARSSidebar, type ARSSidebarProps } from './components/ARSSidebar/ARSSidebar.js';

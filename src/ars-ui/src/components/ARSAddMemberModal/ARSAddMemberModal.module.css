@@ -1,0 +1,39 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+}
+
+/* Column widths from Figma (no layout-size tokens). */
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-border-width-default);
+  max-height: 320px;
+  overflow: auto;
+}
+
+.row {
+  display: flex;
+  align-items: stretch;
+  gap: var(--oi-border-width-default);
+  background-color: var(--oi-background-color-primary);
+}
+
+.check {
+  width: 40px;
+  justify-content: center;
+}
+
+.name {
+  width: 150px;
+}
+
+.type {
+  width: 110px;
+}
+
+.fill {
+  flex: 1 1 0;
+  min-width: 0;
+}

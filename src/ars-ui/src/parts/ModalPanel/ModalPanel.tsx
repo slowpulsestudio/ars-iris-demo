@@ -6,7 +6,7 @@ import styles from './ModalPanel.module.css';
 
 export interface ModalPanelProps {
   /** Icon shown before the title. */
-  icon: string;
+  icon?: string;
   title: string;
   supportingText?: string;
   onClose?: () => void;
@@ -39,7 +39,7 @@ export function ModalPanel({
       <header className={styles.header}>
         <div className={styles.heading}>
           <div className={styles.titleRow}>
-            <Icon name={icon} size="24px" />
+            {icon && <Icon name={icon} size="24px" />}
             <h2 id={titleId} className={styles.title}>
               {title}
             </h2>
