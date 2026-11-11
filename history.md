@@ -237,14 +237,26 @@ Four more Figma files, built flow by flow with an audit first; every flow, node 
 - **Organizational units** (Flow 10, [OU Management file](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1009-3972)): the New Organizational Unit modal and the OU page.
 - **Managed units** (Flow 11, [Managed Units file](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=4002-9991)): the list and a unit's members.
 - **Self-service** (Flow 12, [User-View-Approvals file](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-6651)): Home, My Access with the Request Access sheet, Approvals with Approve, Deny and Escalate, and User Profile, in `views/UserView/` from Iris components (the shell had placeholders there before).
-- Not built: Groups Managed units, Roles and History tabs, OU Roles and History, the Managed Units Tree view screen and row menus. Commits after `f324b35` are local and not pushed.
+- Not built: Groups Managed units, Roles and History tabs, OU Managed units, Roles and History, the Managed Units Tree view screen and member row menus. These commits are on `origin/main` up to `a82f866`.
+
+### 11 Nov: review of Flows 7 to 12 in the app
+
+Every screen from the Groups, OU Management, Managed Units and self-service files was opened in the running app (port 5193) and compared with Figma's layer values by reading the page, not screenshots. What was wrong was fixed in small local commits; what still differs or isn't in Figma is marked **New** in each flow's Confirm list in [docs/review-notes.md](docs/review-notes.md).
+
+- **Self-service** (`b53cbd5`, `c0cb03f`): reworked to the Figma frames; Response Time is now a line chart, rows open their sheet on click, Profile has Cancel and Save Changes.
+- **Groups list** (`a82f866`, `93e9350`): ARS_Table_Groups' columns (type badge, tags, directory); Entra groups now read O365Group and their directory name.
+- **Group page** (`3b1c479` to `6e21fae`): Overview rebuilt as ARS_Group_Overview (new kit component ARSGroupOverview); Object Management 315px with Figma's "object's"; header location "O1D.local\Builtin"; General edit with info icons, the 0/100 count, placeholders and the Tags help line (the kit form field gained help text and a character count); Ownership subtitle and order; Memberships toolbar ("…", filter, split Add member) and 15 per page; dates as "Aug 14, 2024".
+- **Dialogs and create** (`84fd6ce`, `1cd2a33`): table headings no longer shift when a table has no action column (Add Member, Managed Unit Members); one-step create modals (New Entra Distribution Group) hide the stepper instead of showing "Step name".
+- **OU** (`efa5a37`, `b134cfd`, `4359645`): Managed units tab; four tiles and the Other Objects strip; "Organizational unit · O1D.local"; General with Name (renames the OU, now also in the left panel), Figma's labels and widths; Object details without a subtitle and with an OU=…,DC=… name; "Protect container…" starts unticked.
+- **Managed Units** (`2ccb0f9`, `fe5ff94`): Figma's column widths and column settings button; the list rows lost a "…" Figma doesn't draw.
+- **Design review tasks** (`fc49f1c`): every flow and Compare item links to its prototype screen.
 
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
 
-- **Components changed:** ActionBar, AiPanel, AppHeader, Avatar, Badge, Button, Checkbox, FormField, GlobalSidebar, IconButton, Link, Menu, Modal, MultiSelect, NavItem, Pagination, Select, SideSheet, Sidebar, SplitButton, Stepper, Tabs, TextInput, Textarea, Toast, Tree.
-- **Components added:** Banner, Spinner, TableCell, TableHeadItem, Tag, Toggle, Tree.
+- **Components changed:** ActionBar, AiPanel, AppHeader, Avatar, Badge, Button, Checkbox, DataTable, FormField, GlobalSidebar, IconButton, Link, Menu, Modal, MultiSelect, NavItem, Pagination, Select, SideSheet, Sidebar, SplitButton, Stepper, Tabs, TextInput, Textarea, Toast, Tree. DataTable (`b53cbd5`) can hide its action column and open a row on click, for the self-service tables.
+- **Components added:** Banner, LineChart, Radio, Spinner, TableCell, TableHeadItem, Tag, Toggle, Tree. LineChart (`b53cbd5`) is for the self-service Response Time chart; Radio (`ab44f76`) is for the group scope and type fields.
 - **App files:**
   - `App.tsx` and `main.tsx`;
   - lib: `appShellContext`, `currentUser`, `personas` (folder and `personas.ts`), `productMenu`, `router`, `storybooks.ts`, `useSidebarPinned`, `useTheme`, `verticals`;
@@ -257,7 +269,7 @@ These files differ from the package installed in `c9b4253`, so they will show as
 - The audit shows the button in [ARS_Create_Menu_Button 3360:40921](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS---Primary?node-id=3360-40921) as a plain frame. The code uses the Iris SplitButton. Not yet re-checked.
 - In [ARS_Tree_Expand_Content 3563:17385](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS---Primary?node-id=3563-17385), Users has an open caret but no children. The stories note this.
 - In [ARS_Treeview_Master 3367:42088](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS---Primary?node-id=3367-42088), the header is a detached frame. The code uses the Iris AppHeader with the same breadcrumb.
-- Commits from `7a13f1a` onward were checked with type checks, the kit and story checks, and builds. The agent did not review them in a browser.
+- Commits from `7a13f1a` onward were checked with type checks, the kit and story checks, and builds. Flows 7 to 12 were also reviewed in a browser on 11 Nov; Flows 1 to 6 have not been.
 - The tokens have no `--oi-motion-ease-move`, although the motion skill lists it.
 
 ## ARS components
