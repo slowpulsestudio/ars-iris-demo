@@ -3,7 +3,7 @@ import { toMenuEntries, type ARSMenuProps, type ARSMenuSpec } from '../../parts/
 
 export type ARSNewUserEntraDirVariant = 'Entra Only' | 'AD Only' | 'Variant3';
 
-const ITEMS: Record<ARSNewUserEntraDirVariant, ARSMenuSpec[]> = {
+export const NEW_USER_ENTRA_DIR_MENU: Record<ARSNewUserEntraDirVariant, ARSMenuSpec[]> = {
   'Entra Only': [
     { label: 'New Entra User', icon: 'WindowsLogo' },
     { label: 'Add User', icon: 'Plus' },
@@ -31,5 +31,5 @@ export function ARSNewUserEntraDir({
   ariaLabel = 'New user',
   ...props
 }: ARSNewUserEntraDirProps) {
-  return <Menu {...props} ariaLabel={ariaLabel} items={toMenuEntries(ITEMS[variant], onAction)} />;
+  return <Menu {...props} ariaLabel={ariaLabel} items={toMenuEntries(NEW_USER_ENTRA_DIR_MENU[variant], onAction)} />;
 }

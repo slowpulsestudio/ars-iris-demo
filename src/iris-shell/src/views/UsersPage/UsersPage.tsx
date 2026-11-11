@@ -5,10 +5,10 @@ import {
   ARSEntraUserActions,
   ARSFilterMenu,
   ARSFlatViewUserContent,
-  ARSNewObjectMenu,
+  ARSNewUserEntraDir,
   ARSPageMenu,
 } from '@ars';
-import { NEW_OBJECT_MENU } from '@ars/components/ARSNewObjectMenu/ARSNewObjectMenu.js';
+import { NEW_USER_ENTRA_DIR_MENU } from '@ars/components/ARSNewUserEntraDir/ARSNewUserEntraDir.js';
 import { AppShell } from '../AppShell/AppShell.js';
 import { useUsers } from '../../lib/usersStore.js';
 import { useAppShell } from '../../lib/appShellContext.js';
@@ -19,8 +19,6 @@ import type { BadgeTone } from '../../components/Badge/Badge.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
-import { CreateGroupModal } from '../GroupsPage/CreateGroupModal.js';
-import { CreateOUModal } from '../OUPage/CreateOUModal.js';
 import { CreateObjectModal, type CreateObjectResult } from './CreateObjectModal/CreateObjectModal.js';
 import {
   announceCreated,
@@ -50,9 +48,9 @@ function statusTone(status: string): BadgeTone {
 /** Items-per-page choices offered below the list. */
 const PAGE_SIZE_OPTIONS = [10, 15, 20, 30, 50];
 
-/** Icon of each New object menu entry, by label. */
+/** Icon of each New user menu entry, by label. */
 const CREATE_ICONS = new Map(
-  NEW_OBJECT_MENU.flatMap((row) => (row === 'divider' || !row.icon ? [] : [[row.label, row.icon] as const])),
+  NEW_USER_ENTRA_DIR_MENU.Variant3.flatMap((row) => (row === 'divider' || !row.icon ? [] : [[row.label, row.icon] as const])),
 );
 
 /** The icon of the Create menu entry for an object type. */
@@ -91,8 +89,6 @@ export function UsersPage() {
   const deleteUser = dialog === 'delete' ? (targets[0] ?? null) : null;
   const moveTargets = dialog === 'move' ? targets : null;
   const createTarget = dialog === 'create' && typeParam ? { type: typeParam, icon: createIconFor(typeParam) } : null;
-  const groupCreateOpen = dialog === 'new-group';
-  const ouCreateOpen = dialog === 'new-ou';
   const closeDialog = () => setHashParams({ dialog: null, target: null, type: null });
   const openDialog = (name: string, ids: string[] = []) =>
     setHashParams({ dialog: name, target: ids.length ? ids.join(',') : null, type: null });
@@ -160,7 +156,12 @@ export function UsersPage() {
       announceCreated(result);
       return;
     }
-    const user = userFromValues(result);
+    const created = userFromValues(result);
+    // A new Entra user is an Entra user in the list: its row menu and directory follow.
+    const user =
+      result.objectType === 'Entra User'
+        ? { ...created, location: 'Entra', details: { ...created.details, directory: '@Entra1' } }
+        : created;
     addUser(user);
     announceCreated(result, `#/users/${user.id}`);
   };
@@ -214,18 +215,11 @@ export function UsersPage() {
       <RowActions {...rowMenu.menuProps} ariaLabel={`Actions for ${rowUser?.name ?? 'user'}`} onAction={onRowAction} />
       <ARSFilterMenu {...filterMenu.menuProps} />
       <ARSPageMenu {...pageMenu.menuProps} onAction={onPageAction} />
-      <ARSNewObjectMenu
+      <ARSNewUserEntraDir
+        variant="Variant3"
         {...createMenu.menuProps}
         onAction={(label) => {
           const type = objectTypeFromMenuLabel(label);
-          if (type === 'Group') {
-            openDialog('new-group');
-            return;
-          }
-          if (type?.toLowerCase() === 'organizational unit') {
-            openDialog('new-ou');
-            return;
-          }
           if (type) setHashParams({ dialog: 'create', type, target: null });
         }}
       />
@@ -287,8 +281,6 @@ export function UsersPage() {
           closeDialog();
         }}
       />
-      <CreateOUModal open={ouCreateOpen} onClose={closeDialog} locationId="o1d-local" />
-      <CreateGroupModal open={groupCreateOpen} onClose={closeDialog} kind="AD" locationId="o1d-local" />
       {createTarget && (
         <CreateObjectModal
           open
