@@ -169,8 +169,27 @@ Where: Tree view, open a group (a row with the Group type), then its tabs.
 - [ ] **Radio buttons.** Figma draws Group scope and Group type as radio buttons, and Iris had none. I added an Iris Radio (Storybook: Iris/Radio) and a checkbox option on the kit's form field.
 - [ ] **Not the kit's group card.** The ARS - Primary kit has a group Properties card (Group name, Display name and so on, in a dropdown). This file draws a different General card, so the page follows this file.
 - [ ] **Overview.** It uses the existing Overview template (profile summary and count tiles) with this file's numbers: total, users, groups, devices, others, owners. Figma draws "Basic information" as labelled rows with an "Overview" title and subtitle, and a Source of Cloud. The counts are made up from the group's size (owners is 0).
-- [ ] **Object Management.** Move, Copy, Deprovision and Delete, grouped like the user page. Move and Delete work. Copy and Deprovision do nothing yet.
+- [ ] **Object Management.** Rename, Move, Copy, Deprovision and Delete (see Flow 8). Figma draws Move, Copy, Deprovision and Delete; Rename is added at the top from the written requirements.
 - [ ] **Ownership.** The manager and secondary owners show "Not set". Figma's annotation says the full Add manager interaction is in the OU feature, so there is no picker yet; it comes with the OU flow. "Manager can update membership list" is disabled until a manager is set.
 - [ ] **Sample values.** Scope, type and email are derived from the group (email is its name at contoso.com). Modified date, USNs and SID in Object details are Figma's samples. "Protect from deletion" is shown as No, not a checkbox. Tags are typed as text, not drawn as chips.
 - [ ] **Values are kept for the session.** Display name and description are saved to the group, so the list shows them; the other fields reset on reload.
 - [ ] **Description counter.** Figma shows "0/100"; the field has no limit or counter yet.
+
+## Flow 8: group dialogs and Memberships (Groups file, part 2)
+
+Figma: [ARS_WebUI2_Groups](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=58-24).
+
+Where: a group's page, Object Management (Rename, Copy, Deprovision) and the Memberships tab.
+
+### Compare with Figma
+
+- [ ] Memberships tab ([ARS_Group_Members_Content 160:24932](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=160-24932), [Members and Members of buttons 160:9082](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=160-9082), [table 160:9033](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=160-9033)).
+- [ ] The written requirements for the dialogs: [Rename 64:6802](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=64-6802), [Copy 64:6804](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=64-6804), [Deprovision 64:6805](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=64-6805).
+
+### Confirm
+
+- [ ] **No frames for the dialogs.** Rename, Copy and Deprovision exist only as written notes, so I built them on the ARS modal panel and the existing destination sheet. Two new components under "Missing from Figma" (Rename Group Modal, Deprovision AD Group) say so. Button labels (Cancel and Rename; No and Yes) and the Deprovision question are mine.
+- [ ] **Rename** changes the group's name and its pre-Windows 2000 name, both required. The list and the page header follow.
+- [ ] **Copy** uses the Move side sheet, titled Copy, with a Copy button. It makes "Copy of [name]" in the chosen folder (the same folder is allowed), keeps scope, type and the other fields, and shows a toast with Undo and View object. Figma's note says "New User screen", which I took to mean choosing where the copy goes.
+- [ ] **Deprovision** asks Yes or No, then shows a toast with Undo. The sample data has no status, so a deprovisioned group shows a "Deprovisioned" badge in its Overview. That badge is mine.
+- [ ] **Memberships tab.** Members and Members of buttons, a search, "Add member", the group table and paging. The data has no memberships, so Members are objects from the group's folder (as many as its member count) and Members of are up to three groups from the same folder. "Add member" does nothing yet: Figma's add-members modal ([215:7485](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=215-7485)) is not built. Remove, temporary access and Set primary group (from the notes) aren't built either.
