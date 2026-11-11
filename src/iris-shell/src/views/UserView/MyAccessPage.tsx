@@ -2,21 +2,22 @@ import { useMemo, useState } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
 import { showToast } from '../../lib/toastStore.js';
 import { Button } from '../../components/Button/Button.js';
-import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
 import { DataTable, type DataTableColumn } from '../../components/DataTable/DataTable.js';
 import { FormField } from '../../components/FormField/FormField.js';
 import { Pagination } from '../../components/Pagination/Pagination.js';
 import { SideSheet } from '../../components/SideSheet/SideSheet.js';
 import { Tabs } from '../../components/Tabs/Tabs.js';
 import { Textarea } from '../../components/Textarea/Textarea.js';
+import { TextInput } from '../../components/TextInput/TextInput.js';
 import { Toggle } from '../../components/Toggle/Toggle.js';
-import { PersonCard, SelectField, StatusBadge } from './parts.js';
+import { PageHeader, PersonCard, SelectField, StatusBadge, StatusCount } from './parts.js';
 import { ACCESS_DURATIONS, ACCESS_RECORDS, AVAILABLE_OBJECTS, type AccessRecord } from './userViewData.js';
 import styles from './UserView.module.css';
 
 const PAGE_SIZE = 10;
 const REASON_LIMIT = 100;
 const TABS = ['All Access', 'Active', 'Pending', 'Inactive', 'Revoked'];
+const OBJECT_TYPES = [...new Set(AVAILABLE_OBJECTS.map((o) => o.type))];
 
 const STATS = [
   { status: 'Active', label: 'Active Access', text: 'Current permissions' },
@@ -44,21 +45,43 @@ export function MyAccessPage() {
   const [tab, setTab] = useState(TABS[0]);
   const [page, setPage] = useState(1);
   const [requestOpen, setRequestOpen] = useState(false);
+  const [objectType, setObjectType] = useState('');
   const [object, setObject] = useState('');
-  const [duration, setDuration] = useState(ACCESS_DURATIONS[0]);
+  const [description, setDescription] = useState('');
+  const [duration, setDuration] = useState('Permanent');
   const [reason, setReason] = useState('');
 
   const count = (status: string) => records.filter((r) => r.status === status).length;
   const shown = useMemo(() => (tab === TABS[0] ? records : records.filter((r) => r.status === tab)), [records, tab]);
   const pageCount = Math.max(1, Math.ceil(shown.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
+  const objects = AVAILABLE_OBJECTS.filter((o) => !objectType || o.type === objectType);
   const chosen = AVAILABLE_OBJECTS.find((o) => o.name === object);
 
   const openRequest = () => {
+    setObjectType('');
     setObject('');
-    setDuration(ACCESS_DURATIONS[0]);
+    setDescription('');
+    setDuration('Permanent');
     setReason('');
     setRequestOpen(true);
+  };
+
+  const chooseObject = (name: string) => {
+    const next = AVAILABLE_OBJECTS.find((o) => o.name === name);
+    setObject(name);
+    if (next) {
+      setObjectType(next.type);
+      setDescription(next.description);
+    }
+  };
+
+  const chooseType = (type: string) => {
+    setObjectType(type);
+    if (chosen && chosen.type !== type) {
+      setObject('');
+      setDescription('');
+    }
   };
 
   const submit = () => {
@@ -69,8 +92,8 @@ export function MyAccessPage() {
         name: chosen.name,
         type: chosen.type,
         status: 'Pending',
-        about: chosen.description,
-        remaining: duration,
+        about: description.trim() || chosen.description,
+        remaining: duration === 'Permanent' ? 'Long term' : duration,
         autoExtend: false,
       },
       ...prev,
@@ -80,70 +103,72 @@ export function MyAccessPage() {
   };
 
   const columns: DataTableColumn<AccessRecord>[] = [
-    { key: 'name', header: 'Object Name', grow: 1, minWidth: 200, cell: (r) => r.name },
+    { key: 'name', header: 'Object Name', grow: 1, minWidth: 180, cell: (r) => r.name },
     { key: 'type', header: 'Object Type', width: 120, cell: (r) => r.type },
-    { key: 'status', header: 'Status', width: 120, cell: (r) => <StatusBadge status={r.status} /> },
+    { key: 'status', header: 'Status', width: 110, cell: (r) => <StatusBadge status={r.status} /> },
     { key: 'about', header: 'About', grow: 2, minWidth: 240, cell: (r) => r.about },
-    { key: 'remaining', header: 'Time Remaining', width: 150, cell: (r) => r.remaining },
+    { key: 'remaining', header: 'Time Remaining', width: 140, cell: (r) => r.remaining },
     {
       key: 'auto',
       header: 'Auto Extend',
-      width: 120,
-      cell: (r) =>
-        r.status === 'Active' ? (
-          <Toggle
-            ariaLabel={`Auto extend ${r.name}`}
-            checked={r.autoExtend}
-            onChange={(on) => setRecords((prev) => prev.map((x) => (x.id === r.id ? { ...x, autoExtend: on } : x)))}
-          />
-        ) : null,
+      width: 110,
+      cell: (r) => (
+        <Toggle
+          ariaLabel={`Auto extend ${r.name}`}
+          checked={r.autoExtend}
+          disabled={r.status === 'Revoked' || r.status === 'Inactive'}
+          onChange={(on) => setRecords((prev) => prev.map((x) => (x.id === r.id ? { ...x, autoExtend: on } : x)))}
+        />
+      ),
     },
   ];
 
   return (
     <AppShell breadcrumb={[{ label: 'Active Roles' }, { label: 'My Access' }]} activeGlobalItem="#/user-view/my-access">
-      <ContentHeader
-        icon="Key"
-        title="My Access"
-        subtitle="Manage your time-based access requests and permissions"
-        actions={
-          <>
-            <Button variant="secondary" iconLead="Export" onClick={() => downloadCsv(shown)}>
-              Export
-            </Button>
-            <Button iconLead="Plus" onClick={openRequest}>
-              Request Access
-            </Button>
-          </>
-        }
-      />
       <div className={styles.page}>
+        <PageHeader
+          title="My Access"
+          subtitle="Manage your time-based access requests and permissions"
+          actions={
+            <>
+              <Button variant="secondary" onClick={() => downloadCsv(shown)}>
+                Export
+              </Button>
+              <Button onClick={openRequest}>Request Access</Button>
+            </>
+          }
+        />
+
         <div className={styles.cards}>
           {STATS.map((s) => (
-            <div key={s.status} className={styles.stat}>
-              <span className={styles.quickTitle}>{s.label}</span>
-              <span className={styles.quickValue}>{count(s.status)}</span>
-              <span className={styles.quickText}>{s.text}</span>
-            </div>
+            <StatusCount key={s.status} status={s.status} label={s.label} value={count(s.status)} text={s.text} />
           ))}
         </div>
 
-        <Tabs
-          ariaLabel="Access records"
-          value={tab}
-          onChange={(next) => {
-            setTab(next);
-            setPage(1);
-          }}
-          items={TABS.map((t) => ({ value: t, label: `${t} (${t === TABS[0] ? records.length : count(t)})` }))}
-        />
-        <DataTable
-          ariaLabel="Access records"
-          columns={columns}
-          rows={shown.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)}
-          emptyState={{ title: 'No access records', description: 'Nothing matches this filter.' }}
-        />
-        <Pagination page={safePage} pageCount={pageCount} onPageChange={setPage} />
+        <section className={styles.records} aria-labelledby="access-records-title">
+          <h2 id="access-records-title" className={styles.sectionTitle}>
+            Access Records
+          </h2>
+          <Tabs
+            ariaLabel="Access records"
+            value={tab}
+            onChange={(next) => {
+              setTab(next);
+              setPage(1);
+            }}
+            items={TABS.map((t) => ({ value: t, label: `${t} (${t === TABS[0] ? records.length : count(t)})` }))}
+          />
+          <DataTable
+            ariaLabel="Access records"
+            columns={columns}
+            rows={shown.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)}
+            hideRowActions
+            emptyState={{ title: 'No access records', description: 'Nothing matches this filter.' }}
+          />
+        </section>
+        <div className={styles.pagination}>
+          <Pagination page={safePage} pageCount={pageCount} onPageChange={setPage} />
+        </div>
       </div>
 
       <SideSheet
@@ -167,26 +192,35 @@ export function MyAccessPage() {
             label="Requested Object"
             required
             value={object}
-            options={AVAILABLE_OBJECTS.map((o) => o.name)}
-            onChange={setObject}
-            placeholder="Select an object"
-            helper={`${AVAILABLE_OBJECTS.length} Available objects`}
+            options={objects.map((o) => o.name)}
+            onChange={chooseObject}
+            placeholder={`${objects.length} Available objects`}
+          />
+          <SelectField
+            label="Object Type"
+            required
+            value={objectType}
+            options={OBJECT_TYPES}
+            onChange={chooseType}
+            placeholder="Select a type"
           />
           <FormField label="Description">
-            <p className={styles.message}>{chosen?.description ?? '-'}</p>
+            <TextInput value={description} onChange={(e) => setDescription(e.target.value)} />
           </FormField>
-          <FormField label="Owner">{chosen ? <PersonCard person={chosen.owner} role="Owner" /> : <p className={styles.message}>-</p>}</FormField>
-          <SelectField label="Access Duration" value={duration} options={ACCESS_DURATIONS} onChange={setDuration} />
-          <FormField label="Reason for Request" required>
+          {chosen && (
+            <div className={styles.field}>
+              <span className={styles.fieldLabel}>Owner</span>
+              <PersonCard person={chosen.owner} role="Owner" />
+            </div>
+          )}
+          <SelectField label="Access Duration" required value={duration} options={ACCESS_DURATIONS} onChange={setDuration} />
+          <FormField label="Reason for Request" required count={`${reason.length}/${REASON_LIMIT}`}>
             <Textarea
               value={reason}
               maxLength={REASON_LIMIT}
               placeholder="Please describe why you need access to this resource..."
               onChange={(e) => setReason(e.target.value)}
             />
-            <span className={styles.counter}>
-              {reason.length}/{REASON_LIMIT}
-            </span>
           </FormField>
         </div>
       </SideSheet>
