@@ -258,7 +258,7 @@ The screens from the CRUD and Move files (lists, selection bars, create, user pa
 - **Users list tags** (`41f52a3`): the X on each tag now removes it for the session, as in the Groups list.
 - **Directory tree names** (`635690a`, then `63c8fe8`): first sentence case for "Access templates" and "Managed units"; then, once you said the CRUD file wins, "Managed directories / Active Directory / Entra ID" as in its panel.
 - **Unsaved changes modal** (`21a5bbc`): "Your unsaved changes will be discarded. To continue, click Confirm. To review your changes and save them later, click Cancel." replaces text with a typo; the earlier note that Figma has the typo was wrong.
-- **Follow the CRUD file** (`63c8fe8`, `f2b76ac`): the Flat view Create button opens the CRUD New object menu (as the Tree view did); the one-row selection bar has no Delete (new `showDelete` on ARSActionBar); Tree list search also covers the folders below the current one.
+- **Follow the CRUD file** (`63c8fe8`, `f2b76ac`): the Flat view Create button briefly opened the CRUD New object menu (corrected, see "Users list Create menu" below); the one-row selection bar has no Delete (new `showDelete` on ARSActionBar); Tree list search also covers the folders below the current one.
 - **Menus stay on screen** (`c02b872`): the viewport clamp in the Iris Menu never ran after the menu mounted; it does now, and menus flip above their button when there is no room below.
 - **Spelling** (`235814d`): "passowrd", "Reigon" and the missing full stop in the created toast are corrected in the app; with quote style and the places where the Figma files disagree they are on the Figma tidy-up page (its own card on the Design review hub, `docs/figma-tidy-up.md`).
 - **Wrong Figma references fixed in the notes**: Flow 5's node and Flow 1's Tree view nodes (4517:19943, right-click menu 2385:57427) are in ARS-Primary, not the CRUD file, so the links now point there and the Tree view was compared with them (it matches); node 1369:32139 no longer exists. Every item and question on the review page now carries its Figma node link.
@@ -275,6 +275,10 @@ Each item on the "not built" list was checked against Figma again before buildin
 ### 11 Nov: user Overview cards link to their tabs
 
 - **Group memberships and Assigned roles** on a user's Overview are blue links that open the Memberships and Roles tabs, for users in the Flat view and the Tree view. Each number is the same as the total on its tab label (before, the cards had their own numbers and the Memberships tab always said "(8)"). Roles now has a count in its label too, which Figma doesn't draw; see Flow 3 in the review notes. The kit's ARSOverviewTemplate fields gained an optional `onClick`.
+
+### 11 Nov: Users list Create menu
+
+Users > Create in the Flat view had the long New object menu (groups, OUs, bulk actions), which I put there by misreading "the CRUD file's menu is correct". It now opens ARS_New User Entra Dir, Variant3 ([2275:91121](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS-Primary?node-id=2275-91121)): New Entra User, New AD User, Add User. The long menu stays on the Tree view's Create. A new Entra user is added with Location "Entra" so its row menu is the Entra one. The group and OU dialogs on the Users page were removed, as nothing opens them any more.
 
 ## Iris files changed since the Iris packages were installed
 
