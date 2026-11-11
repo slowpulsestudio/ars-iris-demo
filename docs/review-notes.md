@@ -81,7 +81,9 @@ Where: open a user from either list ([Isabella Clark](#/users/isabella-clark) in
 
 ### Confirm
 
-- [ ] **Placeholder content.** Created on, Last sign-in, the four count tiles and the "Member" badge on the Overview are placeholders.
+- [ ] **Placeholder content.** Created on, Last sign-in, Applications, Assigned licenses and the "Member" badge on the Overview are placeholders.
+- [ ] **New: Group memberships and Assigned roles are linked to their tabs.** On the Overview ([3500:18134](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3500-18134), [1378:51604](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1378-51604)) the two numbers are now blue links that open the Memberships and Roles tabs, and each number is the same as the total in its tab's label (Isabella Clark: 30 and 2). Figma draws the tile numbers in the normal text colour and not as links, so this is a change you asked for. Prototype: [Isabella Clark, Overview](#/users/isabella-clark), click a number. Applications and Assigned licenses have no tab, so they stay plain.
+- [ ] **New: totals on the tabs.** Figma's tab row ([ARS_User_Page_Tabs 3598:46761](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS-Primary?node-id=3598-46761)) draws "Memberships (8)" with a sample count and "Roles" with none. The tabs now show each user's own totals, so "Roles" gains a count ("Roles (2)"), which Figma doesn't draw. Both tabs still show only the empty state, because Figma has no content for them. Applies to users opened from the Flat view and the Tree view.
 - [ ] **Two different forms in Figma.** The save-error frame shows other fields (Name, User logon name, Suffix, pre-Windows 2000) from the normal edit form. I kept one form and put "User logon name already exists." on the User principal name field.
 - [ ] **What triggers the error.** A required field left empty, or another user with the same principal name. Figma doesn't say.
 - [ ] **Other tabs.** Every tab except Overview and General shows the Iris empty figure.

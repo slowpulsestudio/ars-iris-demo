@@ -272,6 +272,10 @@ Each item on the "not built" list was checked against Figma again before buildin
 - **Groups and OU Managed units, Roles and History tabs**: nothing to build. Groups has only note titles (64:6814, 64:6809, 64:6811); OU's Change History frame (1403:12579) says only "In progress under Change history Figma file". They stay as empty states.
 - **Copy my ticks**: a button on both review pages (Design review tasks and Figma tidy-up) copies the ticked items as markdown, so a reviewer using the deployed page can send their ticks back.
 
+### 11 Nov: user Overview cards link to their tabs
+
+- **Group memberships and Assigned roles** on a user's Overview are blue links that open the Memberships and Roles tabs, for users in the Flat view and the Tree view. Each number is the same as the total on its tab label (before, the cards had their own numbers and the Memberships tab always said "(8)"). Roles now has a count in its label too, which Figma doesn't draw; see Flow 3 in the review notes. The kit's ARSOverviewTemplate fields gained an optional `onClick`.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
