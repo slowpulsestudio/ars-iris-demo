@@ -229,6 +229,16 @@ All flow 1 to 4 commits and the follow-ups above are on `origin/main`.
 
 Built from a second Figma file, [ARS_WebUI2_Move_Browse_Objects](https://www.figma.com/design/IXKXZpycHiFcKbvHMvlc9r/ARS_WebUI2_Move_Browse_Objects?node-id=2008-1687). Move opens a side sheet (Iris Side sheet with the directory tree) from a row menu, the selection bar or a user page, then shows a toast with Undo and View. In Tree view, rows can also be dragged onto a folder in the left panel. Three kit components are new and listed under "Missing from Figma": Selected objects block, the Move toast and Element-Dragged. The Iris Side sheet gained an optional header icon, and the Iris Tree accepts drops from outside it. Flat view and Tree view keep separate sample data, so a moved Flat view user changes its Location text only. The checks are in Flow 6 of [docs/review-notes.md](docs/review-notes.md).
 
+### 11 Nov: groups, organizational units, managed units and self-service
+
+Four more Figma files, built flow by flow with an audit first; every flow, node and status is in [docs/figma-flows.md](docs/figma-flows.md) and the checks are Flows 7 to 12 in [docs/review-notes.md](docs/review-notes.md).
+
+- **Groups** (Flows 7 to 9, [Groups file](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=58-24)): the group page with Overview, General, Ownership, Memberships and Object details; Rename, Copy and Deprovision (written requirements only in Figma); Add member; the Groups list; New AD Group and New Entra Distribution Group. New: Iris Radio, `FormInput` radio and checkbox, and several kit components under "Missing from Figma".
+- **Organizational units** (Flow 10, [OU Management file](https://www.figma.com/design/DwKW5hhTprayGwhbMtOKMr/ARS_WebUI2_OU_Management?node-id=1009-3972)): the New Organizational Unit modal and the OU page.
+- **Managed units** (Flow 11, [Managed Units file](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=4002-9991)): the list and a unit's members.
+- **Self-service** (Flow 12, [User-View-Approvals file](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-6651)): Home, My Access with the Request Access sheet, Approvals with Approve, Deny and Escalate, and User Profile, in `views/UserView/` from Iris components (the shell had placeholders there before).
+- Not built: Groups Managed units, Roles and History tabs, OU Roles and History, the Managed Units Tree view screen and row menus. Commits after `f324b35` are local and not pushed.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).

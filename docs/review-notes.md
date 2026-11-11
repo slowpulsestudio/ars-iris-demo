@@ -260,3 +260,29 @@ Where: Flat view, Management units in the left panel; open a unit to see its mem
 - [ ] **Selection bar.** It appears when members are ticked, with Select all and close. Its other buttons (Copy, Move, Properties, Delete) do nothing, since members aren't directory objects here. The row "..." menu and Figma's ARS_AD User Actions menu aren't wired on these tables.
 - [ ] **Tree view.** The Managed units folder in Tree view still shows generated objects. Figma's ARS_Treeview_Master ([7051:7736](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7051-7736)) isn't built.
 - [ ] **No create.** The list has a search only; Figma shows no Create button.
+
+## Flow 12: self-service screens (User-View-Approvals file)
+
+Figma: [ARS_WebUI2_User-View-Approvals](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-6651) (page "Iris"; "Ideation" and "As-Is" are not built).
+
+Where: the self-service persona's navigation, Home, User Profile, Approvals and My Access (`#/user-view/home`, `profile`, `approvals`, `my-access`).
+
+### Compare with Figma
+
+- [ ] Home ([home-dashboard 10199:6772](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-6772)).
+- [ ] My Access ([my-access-screen-full 10199:6654](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-6654)) and its Request Access side sheet ([10199:7056](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7056)).
+- [ ] User Profile ([user-profile-settings 10199:7207](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7207), content [10199:7273](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7273)).
+- [ ] Approvals ([Design-1-Approvals-Dashboard 10199:7351](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7351)).
+- [ ] Approve, Deny and Escalate modals ([10199:7617](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7617), [10199:7638](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7638), [10199:7659](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-7659)).
+- [ ] Review, Approved and Denied side sheets ([10300:2178](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10300-2178), [10300:8498](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10300-8498), [10300:8588](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10300-8588)) and the Person card ([10301:2300](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10301-2300)).
+
+### Confirm
+
+- [ ] **Built from Iris components, not the ARS kit.** This file is Iris-only, so nothing was added to "Missing from Figma". The views are in `views/UserView/`.
+- [ ] **Sample data.** The rows, names and counts are Figma's samples (8 access records, 5 named approval requests); I generated 11 more approval requests so the tabs show 16, 3 and 13 as in Figma. "Approved Today 12", "Rejected Today 1", "20 Total" and "4 Objects" on Home and Approvals are Figma's numbers, not computed.
+- [ ] **Charts on Home.** Iris has no line chart, so Response Time is drawn as a bar chart. The bar values and the 75/15/10 split are placeholders because Figma's chart values aren't readable.
+- [ ] **My Access.** Auto Extend is a toggle only on Active rows. Export downloads the visible rows as a CSV (Figma doesn't say what Export does). Submitting a request adds a Pending row and a toast, with the owner and description taken from the chosen object; Submit needs an object and a reason.
+- [ ] **Approvals.** Figma doesn't say how a row opens the sheet; I added a Review button (Pending) or View button (decided) to each row. Approve, Deny and Escalate open the modals from the Review sheet; Approve and Deny move the request to Previous with a toast, and Deny requires a reason. Escalate only shows a toast, since no email is sent.
+- [ ] **Profile.** Fields are editable but there are no Save or Cancel buttons in Figma, so changes aren't kept after leaving the page. Add from File and Copy to File show a "not available" toast; Remove deletes the ticked certificates.
+- [ ] **Person card.** Built as a small shared part (avatar, name, email, role badge) used in the Request Access and Review sheets.
+- [ ] **Not checked in a browser.** The build, type and motion checks pass, but these screens haven't been seen running.
