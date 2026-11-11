@@ -251,6 +251,16 @@ Every screen from the Groups, OU Management, Managed Units and self-service file
 - **Managed Units** (`2ccb0f9`, `fe5ff94`): Figma's column widths and column settings button; the list rows lost a "…" Figma doesn't draw.
 - **Design review tasks** (`fc49f1c`): every flow and Compare item links to its prototype screen.
 
+### 11 Nov: review of Flows 1 to 6 in the app
+
+The screens from the CRUD and Move files (lists, selection bars, create, user page, delete and reset, User Details, move) were compared with Figma's layer values the same way. Almost everything already matched; three things were fixed in local commits, and the rest is marked **New** in [docs/review-notes.md](docs/review-notes.md), with the open questions at the end of that page.
+
+- **Users list tags** (`41f52a3`): the X on each tag now removes it for the session, as in the Groups list.
+- **Directory tree names** (`635690a`): "Access templates" and "Managed units" in sentence case, as in all three Figma frames.
+- **Unsaved changes modal** (`21a5bbc`): "Your unsaved changes will be discarded. To continue, click Confirm. To review your changes and save them later, click Cancel." replaces text with a typo; the earlier note that Figma has the typo was wrong.
+- **Wrong Figma references fixed in the notes**: Flow 5's node is in ARS-Primary, not the CRUD file; node 1369:32139 no longer exists.
+- **Different in the two Figma files, not changed**: the New object menu list, Delete on the one-row action bar, and the directory folder names (CRUD says "Managed directories / Active Directory / Entra ID", the kit and Move file say "Managed Directories / Active Directories / Entra Directories"); the app follows the kit.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
@@ -269,7 +279,7 @@ These files differ from the package installed in `c9b4253`, so they will show as
 - The audit shows the button in [ARS_Create_Menu_Button 3360:40921](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS---Primary?node-id=3360-40921) as a plain frame. The code uses the Iris SplitButton. Not yet re-checked.
 - In [ARS_Tree_Expand_Content 3563:17385](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS---Primary?node-id=3563-17385), Users has an open caret but no children. The stories note this.
 - In [ARS_Treeview_Master 3367:42088](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS---Primary?node-id=3367-42088), the header is a detached frame. The code uses the Iris AppHeader with the same breadcrumb.
-- Commits from `7a13f1a` onward were checked with type checks, the kit and story checks, and builds. Flows 7 to 12 were also reviewed in a browser on 11 Nov; Flows 1 to 6 have not been.
+- Commits from `7a13f1a` onward were checked with type checks, the kit and story checks, and builds. Flows 7 to 12 were also reviewed in a browser on 11 Nov, and Flows 1 to 6 later the same day.
 - The tokens have no `--oi-motion-ease-move`, although the motion skill lists it.
 
 ## ARS components

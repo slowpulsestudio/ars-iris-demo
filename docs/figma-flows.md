@@ -16,7 +16,7 @@ Status: **Built** (in the app, committed and pushed), **Audited** (read in Figma
 | 2. Selection bars and create | ARS_Action_bar, ARS_New_Object_Template, ARS_New_Object_Toast [4029:38684](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=4029-38684) | `50889c1`, `48f0710`, `3a0b56d` | Flow 2 |
 | 3. Object page and edit | ARS_User_Page, Properties card, save error [1369:30614](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1369-30614) | `ad79aee`, `302b679` | Flow 3 |
 | 4. Delete, reset password, unsaved changes | ARS_Delete [1755:15058](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1755-15058), ARS_Modal_Form_Unsaved [3534:19369](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3534-19369) | `b5cb0ff`, `bb4677a`, `128d152` (Back button guard) | Flow 4 |
-| 5. User Details tab | ARS_Object_Content Variant3 [2385:56718](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=2385-56718) | `b4c6f14` | Flow 5 |
+| 5. User Details tab | ARS_Object_Content Variant3 [2385:56718](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS-Primary?node-id=2385-56718) (ARS-Primary file) | `b4c6f14` | Flow 5 |
 
 ### ARS_WebUI2_Move_Browse_Objects
 
@@ -108,4 +108,4 @@ What each file holds, read before building. Every file below is now built (see t
 
 ## Order
 
-Built in this order: Groups, then OU Management (it shares ARS_Managed_by and ARS_Ownership with Groups), then Managed Units, then the self-service screens (a separate layout and persona). All four were then reviewed in the app against Figma (November 2026). Flows 1 to 6 have not had a browser review yet.
+Built in this order: Groups, then OU Management (it shares ARS_Managed_by and ARS_Ownership with Groups), then Managed Units, then the self-service screens (a separate layout and persona). All four were then reviewed in the app against Figma (November 2026), and so were Flows 1 to 6 afterwards: they matched except for the fixes listed in `history.md` (tag removal on the Users list, sentence-case folder names, the Unsaved changes wording) and the open questions at the end of `docs/review-notes.md`. Flow 5's node (2385:56718) is in the ARS-Primary file, and node 1369:32139 in Flow 1 no longer exists in either file.

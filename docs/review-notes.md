@@ -6,7 +6,7 @@ Design review tasks for the ARS_WebUI2_CRUD screens ([Figma](https://www.figma.c
 
 **Prototype links.** Each flow's "Where" line and each Compare item has a **Prototype** link that opens that screen in a new tab. The link signs you in as the flow's persona, so there is no need to pick one first: David Smith (admin) for Flows 1 to 11 and Lisa Fernandez (self-service) for Flow 12. A flow can set its own persona with a `Persona:` line under its heading (the persona's id, for example `self-service-end-user`); without one it is `admin-user`. In the file the links are plain app addresses like `#/users`; the Design review tasks page adds the persona (`#/admin-user/users`). A link also opens the screen in the state the item is about: a tab (`?tab=general`), a card in edit mode (`&edit=general`), an open dialog or side sheet (`?dialog=delete`), ticked rows (`?select=a,b`) or an open request (`?request=REQ-001&modal=approve`); the full list of address parts is in `docs/deep-linking.md`. Only things that can't be set from an address are left as "click…": menus, the second step of the New object modal, the waiting steps of Delete and Reset password, and changing a field before Save. The sample objects (Isabella Clark, Julian Long, Security Users, Test OU, Global Security) are the same every time the app loads.
 
-**Checked on screen (November 2026).** Flows 7 to 12 (Groups, OU Management, Managed Units and the self-service screens) were opened in the running app and compared with Figma's layer values (text, spacing, colours, widths) by reading the page, not by eye. What was wrong was fixed; what still differs or isn't in Figma is listed under each flow's Confirm, marked **New**. Flows 1 to 6 have not been compared in a browser yet.
+**Checked on screen (November 2026).** All twelve flows were opened in the running app and compared with Figma's layer values (text, spacing, colours, widths) by reading the page, not by eye. What was wrong was fixed; what still differs or isn't in Figma is listed under each flow's Confirm, marked **New**. Questions I couldn't settle from Figma are at the end, under "Questions for the designer".
 
 **Figma annotations.** Figma's own annotations can't be read with the read-only tools. Anything an annotation says that isn't in the layers or the kit's component notes is missing.
 
@@ -20,7 +20,7 @@ Where: Flat view ([#/users](#/users)), Tree view ([#/tree](#/tree) and any folde
 - [ ] Directory panel, Tree view: tree rows, indent lines, selected row, the right-click menu ([1369:32139](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1369-32139)). Prototype: [Builtin folder](#/tree/o1d-builtin), right-click a folder in the left panel.
 - [ ] Users list: header, toolbar, the five columns, row height, tags, status badge, pagination ([Flat view 3091:15082](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3091-15082)). Prototype: [Users list](#/users).
 - [ ] Folder list: header, Split Create button, Name / Object type / Description columns, pagination ([1369:32139](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1369-32139)). Prototype: [Builtin folder](#/tree/o1d-builtin).
-- [ ] Search results ([1372:36552](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1372-36552)). Not compared separately; it uses the same toolbar search. Prototype: [Users list](#/users), type in the search box.
+- [ ] Search results ([1372:36552](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1372-36552)). Compared with the Tree view search frame: Name 180, Object type 119, Description flex, config column. Prototype: [Users list](#/users), type in the search box.
 - [ ] No folder selected ([1372:37388](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1372-37388)). Prototype: [Tree view, nothing selected](#/tree).
 - [ ] Menus: filter, page "…", create, New object, AD and Entra user actions. Prototype: [Users list](#/users) and [Builtin folder](#/tree/o1d-builtin): the filter button, the "…" by the title, Create and its arrow, and a row's "…".
 
@@ -32,6 +32,9 @@ Where: Flat view ([#/users](#/users)), Tree view ([#/tree](#/tree) and any folde
 - [ ] **Made-up data.** Users have invented Tags and Location values so the new columns have content.
 - [ ] **Row menus.** Rows with Location `Entra` get the Entra actions menu (no Delete); the rest get the AD actions menu. Figma doesn't say which a Flat view row uses.
 - [ ] **Earlier open items.** `ARS_Create_Menu_Button` is a plain frame in Figma but uses the Iris SplitButton in code. `--oi-content-color-placeholder` is missing. `--oi-motion-ease-move` is listed in the motion skill but not defined.
+- [ ] **New: tags can be removed.** Figma draws an X on every tag in the Users list; the app drew it but it did nothing. It now removes the tag for the session (as in the Groups list). Reload brings them back.
+- [ ] **New: Tree view node missing.** Node 1369:32139 (the Tree view panel and folder list) no longer exists in either Figma file, so those two items were compared with the Tree view search frame (1372:36552) and the kit panel (ARS-Primary 3563:17384).
+- [ ] **New: directory names differ between Figma files.** The CRUD file's panel says "Managed directories / Active Directory / Entra ID"; the kit panel and the Move file say "Managed Directories / Active Directories / Entra Directories". The app follows the kit. "Access templates" and "Managed units" were title case in the app and are now sentence case, as in all three Figma frames.
 
 ## Flow 2: selection bars and create
 
@@ -57,6 +60,9 @@ Where: select rows in either list ([Users list](#/users), [Builtin folder](#/tre
 - [ ] **One form for every type.** All object types use the same two steps (General, Account). Figma draws only the user form.
 - [ ] **What a created object does.** A user joins the Users list or the folder. Other types join a folder as plain objects. A non-user created from the Flat view shows the toast without View and isn't listed.
 - [ ] **Step 1 gating.** Save and continue needs the six Required fields, as the Figma footer variants show.
+- [ ] **New: two different New object menus in Figma.** The CRUD frame (1293:49512) lists "New AD User, Add User, New Group, New Organizational Unit, New Group Managed Service Account, New Shared Folder, New Asset, Bulk create, Bulk invite, Bulk delete". The kit's Create menu (ARS-Primary 3360:40902) lists "User, Group, Computer, Organizational unit, Shared folder, Contact, Group Managed Service Account" in groups. The app uses the kit's. See the questions at the end.
+- [ ] **New: Delete on the single-row bar.** Figma's one-row bar ends at "…" with an empty last group; the kit's version has Delete after it, and the app shows Delete. See the questions at the end.
+- [ ] **New: checked and matching.** Modal title, stepper, field labels, "Select destination folder", footer text, the Select folder sheet text and the created toast text match Figma.
 
 ## Flow 3: object page and edit
 
@@ -79,6 +85,7 @@ Where: open a user from either list ([Isabella Clark](#/users/isabella-clark) in
 - [ ] **Other tabs.** Every tab except Overview and General shows the Iris empty figure.
 - [ ] **Objects that aren't users.** Groups, computers, contacts and OUs in the Tree view still use the old detail page. The CRUD file only draws users.
 - [ ] **Directory dropdown.** Only `@Entra1` and `@O1D.Local`.
+- [ ] **New: Figma typo not copied.** Figma's Object Management line reads "Manage this objects access…" without the apostrophe. The app says "object's". Everything else on Overview, General read and edit, and the save-error banner matches Figma's text.
 
 ## Flow 4: delete, password reset, unsaved changes
 
@@ -103,8 +110,9 @@ Where: Delete and Reset password from a row menu, the selection bar or the objec
 - [ ] **Other object types.** The delete modal is titled with the type (for example "Delete Computer"). Figma draws only the user.
 - [ ] **Entra or AD.** A user is Entra when its Location is `Entra` (Flat view) or its directory is `@Entra1` (user page). Entra goes straight to a generated temporary password. AD gets the form, and Reset password enables when both passwords match. The account options have no effect.
 - [ ] **What triggers Unsaved changes.** Cancel, a tab, the header arrows and back button, J/K, the breadcrumb, the sidebar, the browser's Back button and links that only change the address, such as names in the lists. Check that Back leaves the address as it was when you choose to stay.
-- [ ] **Wording.** The modal says "will be discard", as Figma does.
+- [ ] **Wording.** Fixed: the modal used to say "will be discard", and the earlier note claimed Figma does too. Figma says "Your unsaved changes will be discarded. To continue, click **Confirm**. To review your changes and save them later, click **Cancel**." and the app now matches.
 - [ ] **Update toast.** It says "Successfully updated User". Its View button has nothing else to open, because the object page is already showing.
+- [ ] **New: Figma typo kept.** The AD reset password field's placeholder reads "Enter new passowrd", as in Figma. The Delete success text uses curly quotes in Figma (‘MKim’) and the confirm step uses straight ones; the app uses straight quotes for both.
 
 ## Flow 5: User Details tab
 
@@ -112,13 +120,14 @@ Where: open a user from either list ([Isabella Clark](#/users/isabella-clark)), 
 
 ### Compare with Figma
 
-- [ ] User Details tab ([ARS_Object_Content, Variant3, 2385:56718](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=2385-56718)): Contact information and Job information cards, read and edit. Prototype: [Isabella Clark, User Details](#/users/isabella-clark?tab=user-details).
+- [ ] User Details tab ([ARS_Object_Content, Variant3, 2385:56718](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS-Primary?node-id=2385-56718)): Contact information and Job information cards, read and edit. Prototype: [Isabella Clark, User Details](#/users/isabella-clark?tab=user-details).
 
 ### Confirm
 
 - [ ] **Sample values.** Every user shows Figma's sample values, except Email, which is the user's own. Nothing else about a user feeds these fields.
 - [ ] **Contact edit form.** Figma's edit variant of the Contact information card shows the job fields. The app edits the contact fields instead.
 - [ ] **Session only.** Saved values are kept in memory and reset on reload.
+- [ ] **New: wrong Figma link fixed.** This node is in the ARS-Primary file, not the CRUD file, so the link now points there. The tab names, Contact information and Job information labels and sample values match it, including Figma's "Country/Reigon" typo, which the app keeps.
 - [ ] **Each card on its own.** Edit, Cancel and Save act on one card. Leaving with unsaved changes in either card shows the Unsaved changes modal.
 - [ ] **Not built.** Bulk delete, detail pages for objects other than users, and the user tabs after User Details aren't drawn in the CRUD file, so they stay empty states.
 
@@ -150,6 +159,7 @@ Where: Move in a row menu, in the selection bar, or in Object Management on a us
 - [ ] **Drag and drop.** Rows in the Tree view table can be dragged onto a folder in the left panel; dragging a selected row takes the whole selection. The chip is the Folder variant for folders and the User variant for everything else. A closed folder opens after the pointer rests on it for 0.6 seconds (Figma gives no time). Valid folders use the tree's existing drop highlight; Figma draws no drop state. It isn't available in Flat view, whose left panel has no folders.
 - [ ] **Permissions.** Figma says permission checks are respected. There are none in the sample data, so every folder is allowed except the invalid ones above.
 - [ ] **Unsaved changes.** Moving a user from the page while their form has unsaved changes asks first, as leaving does.
+- [ ] **New: checked and matching.** Sheet title, subtitle, selected-objects text, both toast texts and buttons, and the row menu labels match the Move file. Its drag-and-drop frame spells the third tab "Favourites"; the CRUD file and the app say "Favorites".
 
 ## Flow 7: group page (Groups file, part 1)
 
@@ -308,3 +318,17 @@ Where: the self-service persona's navigation: [Home](#/user-view/home), [User Pr
 - [ ] **Profile.** Fields are editable, with Cancel and Save Changes at the bottom as Figma draws them; both are disabled until something changes. Save checks the required fields and shows a "Profile saved" toast; saved values last until the page is reloaded. Change photo, Add from File and Copy to File show a "not available" toast; Remove deletes the ticked certificates.
 - [ ] **Person card.** Built as a small shared part (avatar, name, email, role badge) used in the Request Access and Review sheets.
 - [ ] **Checked in a browser.** These screens were reworked against Figma and opened in the running app (commits b53cbd5 and c0cb03f).
+
+## Questions for the designer
+
+Things I couldn't settle from Figma. Reply by number and I'll change the app.
+
+### Open questions
+
+- [ ] **1. Which New object menu is right?** The CRUD file's menu (1293:49512) says "New AD User, Add User, New Group, New Organizational Unit, New Group Managed Service Account, New Shared Folder, New Asset, Bulk create, Bulk invite, Bulk delete". The kit's Create menu (3360:40902) says "User, Group, Computer, Organizational unit, Shared folder, Contact, Group Managed Service Account". The app uses the kit's. Prototype: [Builtin folder](#/tree/o1d-builtin), the arrow beside Create.
+- [ ] **2. Delete on the one-row bar?** Figma's one-row action bar (1378:48538) has Select all, Reset password, Move, Properties and "…", with nothing after. The app also shows Delete (as the kit's variant does). Remove it from the single-row bar, or keep it? Prototype: [Users list with one row ticked](#/users?select=isabella-clark).
+- [ ] **3. Directory names.** The CRUD file calls the panel folders "Managed directories / Active Directory / Entra ID". The kit and the Move file say "Managed Directories / Active Directories / Entra Directories". The app uses the kit's. Which should win?
+- [ ] **4. Missing Tree view frame.** Node 1369:32139 (Tree view panel and folder list) is gone from the Figma files. Is there a newer frame to compare against?
+- [ ] **5. Search scope.** A Figma note on the Users search says "Search is for this folder/OU or children below. Does not search parent folders or above". The app's search only filters the rows of the folder you're in. Should searching a folder also look inside its sub-folders?
+- [ ] **6. Typos from Figma.** "Enter new passowrd" (AD reset password placeholder) and "Country/Reigon" (User Details) are copied as Figma has them. Fix them in Figma, or correct them in the app now?
+- [ ] **7. Quote style.** Figma's Delete success text uses curly quotes (‘MKim’) and the confirm step uses straight ones. Use curly quotes in both?
