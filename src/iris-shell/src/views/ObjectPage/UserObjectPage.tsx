@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ARSOverviewTemplate,
   ARSPageMenu,
@@ -89,7 +89,21 @@ function tileCount(id: string, salt: number, max: number): string {
   return String(h % max);
 }
 
-function overviewFor(data: UserObjectData): ARSOverviewData {
+/** The totals shown on the Overview cards and on the Memberships and Roles tab labels, so they always agree. */
+function userCounts(id: string): { memberships: string; roles: string } {
+  return { memberships: tileCount(id, 3, 40), roles: tileCount(id, 7, 8) };
+}
+
+/** The user tabs with this user's totals: Figma's "Memberships (8)" is a sample count. */
+function userTabs(counts: { memberships: string; roles: string }): string[] {
+  return USER_PAGE_TABS.map((t) =>
+    t.startsWith('Memberships') ? `Memberships (${counts.memberships})` : t === 'Roles' ? `Roles (${counts.roles})` : t,
+  );
+}
+
+/** `openTab` opens the tab a card's number counts, by its label without the count. */
+function overviewFor(data: UserObjectData, openTab: (name: 'Memberships' | 'Roles') => void): ARSOverviewData {
+  const counts = userCounts(data.id);
   return {
     profile: {
       name: data.name,
@@ -108,9 +122,9 @@ function overviewFor(data: UserObjectData): ARSOverviewData {
       ],
     ],
     stats: [
-      { label: 'Group memberships', value: tileCount(data.id, 3, 40) },
+      { label: 'Group memberships', value: counts.memberships, onClick: () => openTab('Memberships') },
       { label: 'Applications', value: tileCount(data.id, 5, 40) },
-      { label: 'Assigned roles', value: tileCount(data.id, 7, 8) },
+      { label: 'Assigned roles', value: counts.roles, onClick: () => openTab('Roles') },
       { label: 'Assigned licenses', value: tileCount(data.id, 11, 8) },
     ],
   };
@@ -160,7 +174,9 @@ export function UserObjectPage({
   const { setAiOpen } = useAppShell();
   const pageMenu = useAnchoredMenu();
   // The tab, the card being edited and the open dialog live in the address (?tab=general&edit=general&dialog=delete).
-  const [tab, setTab] = useHashTab(USER_PAGE_TABS);
+  const counts = userCounts(data.id);
+  const tabs = useMemo(() => userTabs(counts), [counts.memberships, counts.roles]);
+  const [tab, setTab] = useHashTab(tabs);
   const [editParam] = useHashParam('edit');
   const [dialog] = useHashParam('dialog');
   const editing = editParam === 'general';
@@ -296,7 +312,13 @@ export function UserObjectPage({
   const hasErrors = Object.values(errors).some(Boolean);
 
   const renderContent = () => {
-    if (tab === TAB_OVERVIEW) return <ARSOverviewTemplate data={overviewFor(data)} />;
+    if (tab === TAB_OVERVIEW) {
+      const openTab = (name: 'Memberships' | 'Roles') => {
+        const target = tabs.find((t) => t.startsWith(name));
+        if (target) leave(() => setTab(target));
+      };
+      return <ARSOverviewTemplate data={overviewFor(data, openTab)} />;
+    }
     if (tab === TAB_DETAILS) {
       return (
         <UserDetailsTab
@@ -359,6 +381,8 @@ export function UserObjectPage({
         objectClass="User"
         objectName={data.location}
         tab={tab}
+        tabs={tabs}
+        tabsLabel="User sections"
         onTabChange={(next) => leave(() => setTab(next))}
         actionGroups={USER_OBJECT_ACTIONS('Revoke sessions')}
         onBack={onBack}
