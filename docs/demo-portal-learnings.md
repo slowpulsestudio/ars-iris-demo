@@ -39,7 +39,7 @@ The prototype opens on a welcome page, not on the product. From there a reviewer
 6. **Split "compare" from "confirm".** Compare items are things a reviewer can check against Figma. Confirm items are decisions where Figma was silent. The second list is where the real design questions are, and it grows with every review. Mark new ones (we used **New:**) so they can be found.
 7. **Checked on screen vs not.** The file says which flows were compared in a browser and which weren't. Without that line a reviewer assumes everything was checked.
 8. **Suggestion:** a count per flow ("4 of 9 done") on the hub, and a filter for unticked items, so a reviewer can pick up where they stopped.
-9. **Stale text.** The hub still says "What to check in the ARS_WebUI2_CRUD screens", although it now covers six Figma files. Update it when the next file is added.
+9. **Stale text (fixed).** The hub subtitle used to say "What to check in the ARS_WebUI2_CRUD screens" although it covers six Figma files; it now says "What to check against the Figma files." Keep it generic when a file is added.
 
 ## Components not in Figma page
 

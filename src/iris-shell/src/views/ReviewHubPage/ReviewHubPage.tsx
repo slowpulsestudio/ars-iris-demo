@@ -10,7 +10,7 @@ export function ReviewHubPage() {
   return (
     <ChoicePage
       title="Design review"
-      subtitle="What to check in the ARS_WebUI2_CRUD screens."
+      subtitle="What to check against the Figma files."
       topStart={
         <Button variant="secondary" iconLead="ArrowLeft" onClick={() => navigate('#/welcome')}>
           Back
