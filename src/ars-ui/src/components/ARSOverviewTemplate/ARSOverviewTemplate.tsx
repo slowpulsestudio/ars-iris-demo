@@ -19,6 +19,8 @@ export interface ARSOverviewData {
   stats: Field[];
   /** OU only: the "Other objects" strip. */
   others?: Field[];
+  /** Title of the strip; the OU file writes "Other Objects". */
+  othersTitle?: string;
 }
 
 const OBJECT_ID: Field = { label: 'Object ID', value: 'b8a5d3e9-7f2c-4b1a-9e6d-3c8f20a1b4c7' };
@@ -96,7 +98,7 @@ export interface ARSOverviewTemplateProps {
  * the ARS file). Figma: 3353:38318.
  */
 export function ARSOverviewTemplate({ variant = 'User', data, className }: ARSOverviewTemplateProps) {
-  const { profile, details, stats, others } = data ?? OVERVIEWS[variant];
+  const { profile, details, stats, others, othersTitle = 'Other objects' } = data ?? OVERVIEWS[variant];
 
   return (
     <div className={cx(styles.root, className)}>
@@ -144,7 +146,7 @@ export function ARSOverviewTemplate({ variant = 'User', data, className }: ARSOv
       </div>
       {others && (
         <div className={styles.strip}>
-          <span className={styles.stripTitle}>Other objects</span>
+          <span className={styles.stripTitle}>{othersTitle}</span>
           <span className={styles.others}>
             {others.map((o, i) => (
               <Fragment key={o.label}>

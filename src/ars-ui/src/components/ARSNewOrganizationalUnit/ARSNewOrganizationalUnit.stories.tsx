@@ -14,7 +14,7 @@ const meta = {
       },
     },
   },
-  args: { values: { name: 'My OU', description: '', protect: true, openProperties: false } },
+  args: { values: { name: 'My OU', description: '', protect: false, openProperties: false } },
 } satisfies Meta<typeof ARSNewOrganizationalUnit>;
 
 export default meta;
@@ -23,5 +23,5 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const NameMissing: Story = {
-  args: { values: { name: '', description: '', protect: true, openProperties: false }, nameError: 'Name is required.' },
+  args: { values: { name: '', description: '', protect: false, openProperties: false }, nameError: 'Name is required.' },
 };

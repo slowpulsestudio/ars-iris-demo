@@ -10,7 +10,7 @@ export type { DetailsRow };
 
 export interface DetailsCardProps {
   title: string;
-  helper: string;
+  helper?: string;
   /** Edit mode shows `fields` with Cancel / Save; read mode shows `rows` with Edit. */
   editing: boolean;
   rows: DetailsRow[];
