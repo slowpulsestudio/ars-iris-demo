@@ -7,10 +7,15 @@ import styles from './ARSUserPage.module.css';
 
 export interface ARSUserPageProps {
   title?: string;
+  /** Header icon; a user by default. */
+  icon?: string;
   objectClass?: string;
   objectName?: string;
   tab?: string;
   onTabChange?: (tab: string) => void;
+  /** Another object's tabs (a group's) in place of the user tabs. */
+  tabs?: string[];
+  tabsLabel?: string;
   /** Replaces the cards beside Object Management. */
   children?: ReactNode;
   actionGroups?: PanelAction[][];
@@ -26,10 +31,13 @@ export interface ARSUserPageProps {
 /** ARS_User_Page — a user's page: header, then tabs, cards and actions. Figma: 3129:8132. */
 export function ARSUserPage({
   title,
+  icon,
   objectClass,
   objectName,
   tab,
   onTabChange,
+  tabs,
+  tabsLabel,
   children,
   actionGroups,
   onBack,
@@ -44,6 +52,7 @@ export function ARSUserPage({
     <div className={cx(styles.root, className)}>
       <ARSUserPageHeader
         title={title}
+        icon={icon}
         objectClass={objectClass}
         objectName={objectName}
         onBack={onBack}
@@ -55,6 +64,8 @@ export function ARSUserPage({
         variant="General"
         tab={tab}
         onTabChange={onTabChange}
+        tabs={tabs}
+        tabsLabel={tabsLabel}
         actionGroups={actionGroups}
         onEdit={onEdit}
         onAction={onAction}

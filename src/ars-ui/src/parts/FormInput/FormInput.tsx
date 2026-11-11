@@ -1,7 +1,9 @@
 import type { Ref } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { FormField } from '@iris/components/FormField/FormField.js';
+import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { Menu, type MenuEntry } from '@iris/components/Menu/Menu.js';
+import { Radio } from '@iris/components/Radio/Radio.js';
 import { Select } from '@iris/components/Select/Select.js';
 import { TextInput } from '@iris/components/TextInput/TextInput.js';
 import { Textarea } from '@iris/components/Textarea/Textarea.js';
@@ -28,6 +30,11 @@ export interface FormInputProps {
   select?: boolean;
   /** Dropdown choices; the dropdown opens a menu of them. */
   options?: string[];
+  /** Shows `options` as radio buttons instead of a dropdown (Figma "Radio buttons"). */
+  radio?: boolean;
+  /** Draws a checkbox labelled with `label`; `value` is "true" or "false". */
+  checkbox?: boolean;
+  disabled?: boolean;
   /** Figma's fixed field width in px (no token); fills the row when omitted. */
   width?: number;
   className?: string;
@@ -50,6 +57,9 @@ export function FormInput({
   multiline,
   select,
   options,
+  radio,
+  checkbox,
+  disabled,
   width,
   className,
 }: FormInputProps) {
@@ -81,8 +91,18 @@ export function FormInput({
 
   return (
     <div className={cx(styles.root, !width && styles.fill, className)} style={width ? { width } : undefined}>
+      {checkbox ? (
+        <Checkbox
+          label={label}
+          checked={value === 'true'}
+          disabled={disabled}
+          onChange={(on) => onChange?.(String(on))}
+        />
+      ) : (
       <FormField label={label} required={required} helperText={info} error={error} className={styles.field}>
-        {select ? (
+        {radio && options ? (
+          <Radio label={label} options={options} value={value ?? ''} onChange={(next) => onChange?.(next)} />
+        ) : select ? (
           options ? dropdown : <Select label={value ?? ''} />
         ) : multiline ? (
           <Textarea {...valueProps} {...change} placeholder={placeholder} className={styles.textarea} />
@@ -93,10 +113,12 @@ export function FormInput({
             {...change}
             placeholder={placeholder}
             iconTrail={iconTrail}
+            disabled={disabled}
             className={styles.input}
           />
         )}
       </FormField>
+      )}
     </div>
   );
 }

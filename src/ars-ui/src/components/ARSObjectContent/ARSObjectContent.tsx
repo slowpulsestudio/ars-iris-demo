@@ -3,6 +3,7 @@ import { cx } from '@iris/lib/cx.js';
 import { ActionPanel, type PanelAction } from '../../parts/ActionPanel/ActionPanel.js';
 import { DetailsCard, type DetailsRow } from '../../parts/DetailsCard/DetailsCard.js';
 import { ARSUserPageTabs } from '../ARSUserPageTabs/ARSUserPageTabs.js';
+import { ObjectTabs } from '../../parts/ObjectTabs/ObjectTabs.js';
 import { ARSUsersContactInfoCard } from '../ARSUsersContactInfoCard/ARSUsersContactInfoCard.js';
 import { ARSUsersJobInfoCard } from '../ARSUsersJobInfoCard/ARSUsersJobInfoCard.js';
 import styles from './ARSObjectContent.module.css';
@@ -36,6 +37,9 @@ export interface ARSObjectContentProps {
   /** The selected tab (controlled); without it the tabs follow the variant. */
   tab?: string;
   onTabChange?: (tab: string) => void;
+  /** Another object's tabs (a group's) in place of the user tabs; needs `tab`. */
+  tabs?: string[];
+  tabsLabel?: string;
   /** Replaces the cards beside Object Management. */
   children?: ReactNode;
   /** Replaces the Object Management actions. */
@@ -51,6 +55,8 @@ export function ARSObjectContent({
   variant = 'General',
   tab,
   onTabChange,
+  tabs,
+  tabsLabel = 'Sections',
   children,
   actionGroups,
   onEdit,
@@ -60,12 +66,16 @@ export function ARSObjectContent({
   const general = variant === 'General';
   return (
     <div className={cx(styles.root, className)}>
-      <ARSUserPageTabs
-        key={tab === undefined ? variant : 'controlled'}
-        defaultValue={general ? 'General' : 'User Details'}
-        value={tab}
-        onChange={onTabChange}
-      />
+      {tabs ? (
+        <ObjectTabs tabs={tabs} value={tab} defaultValue={tabs[0]} onChange={onTabChange} ariaLabel={tabsLabel} />
+      ) : (
+        <ARSUserPageTabs
+          key={tab === undefined ? variant : 'controlled'}
+          defaultValue={general ? 'General' : 'User Details'}
+          value={tab}
+          onChange={onTabChange}
+        />
+      )}
       <div className={styles.content}>
         <div className={styles.cards}>
           {children ??
