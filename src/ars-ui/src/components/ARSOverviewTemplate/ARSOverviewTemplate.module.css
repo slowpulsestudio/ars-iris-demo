@@ -133,6 +133,29 @@
   color: var(--oi-content-color-primary);
 }
 
+/* A clickable count: reset button chrome, link colour (Figma's table links use content-color-link). */
+.widgetLink {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--oi-content-color-link);
+  transition: color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+.widgetLink:hover {
+  color: var(--oi-content-color-link-hover);
+  text-decoration: underline;
+}
+
+.widgetLink:focus-visible {
+  outline: 1.5px solid var(--oi-border-color-focus);
+  outline-offset: 2px;
+  border-radius: var(--oi-border-radius-s);
+}
+
 /* Figma's strip uses 14px vertical padding (no token). */
 .strip {
   display: flex;

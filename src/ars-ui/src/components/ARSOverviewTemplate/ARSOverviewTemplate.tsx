@@ -9,6 +9,8 @@ export type ARSOverviewTemplateVariant = 'User' | 'Group' | 'OU';
 export interface ARSOverviewField {
   label: string;
   value: string;
+  /** Makes a count tile's number a blue link that calls this (e.g. to open the tab that lists them). */
+  onClick?: () => void;
 }
 type Field = ARSOverviewField;
 
@@ -140,7 +142,18 @@ export function ARSOverviewTemplate({ variant = 'User', data, className }: ARSOv
         {stats.map((s) => (
           <div key={s.label} className={styles.widget}>
             <span className={styles.widgetLabel}>{s.label}</span>
-            <span className={styles.widgetValue}>{s.value}</span>
+            {s.onClick ? (
+              <button
+                type="button"
+                className={cx(styles.widgetValue, styles.widgetLink)}
+                onClick={s.onClick}
+                aria-label={`${s.value} ${s.label}, open the list`}
+              >
+                {s.value}
+              </button>
+            ) : (
+              <span className={styles.widgetValue}>{s.value}</span>
+            )}
           </div>
         ))}
       </div>
