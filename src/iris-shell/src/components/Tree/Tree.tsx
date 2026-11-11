@@ -3,6 +3,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type DragEvent,
   type KeyboardEvent,
   type LiHTMLAttributes,
   type MouseEvent,
@@ -43,6 +44,10 @@ export interface TreeProps {
   /** Enables drag and drop: dropping a row onto another calls onMove. */
   onMove?: (id: string, targetId: string) => void;
   canMove?: (id: string, targetId: string) => boolean;
+  /** Data type carried by things dragged in from outside the tree (e.g. table rows); drops of it call onExternalDrop. */
+  externalDropType?: string;
+  canExternalDrop?: (targetId: string) => boolean;
+  onExternalDrop?: (targetId: string) => void;
   className?: string;
 }
 
@@ -99,6 +104,9 @@ export function Tree({
   onContextMenu,
   onMove,
   canMove,
+  externalDropType,
+  canExternalDrop,
+  onExternalDrop,
   className,
 }: TreeProps) {
   const [ownExpanded, setOwnExpanded] = useState<ReadonlySet<string>>(() => new Set(defaultExpandedIds));
@@ -108,6 +116,16 @@ export function Tree({
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dropTargetId, setDropTargetId] = useState<string | null>(null);
   const rowRefs = useRef(new Map<string, HTMLLIElement>());
+  // A closed folder opens once an outside drag has rested on it for a moment.
+  const expandTimer = useRef<{ id: string; timer: number } | null>(null);
+
+  const clearExpandTimer = () => {
+    if (expandTimer.current) window.clearTimeout(expandTimer.current.timer);
+    expandTimer.current = null;
+  };
+  useEffect(() => clearExpandTimer, []);
+  const isExternalDrag = (e: DragEvent) =>
+    !!externalDropType && Array.from(e.dataTransfer.types).includes(externalDropType);
 
   const tabStopId =
     (focusedId && rows.some((r) => r.node.id === focusedId) && focusedId) ||
@@ -132,6 +150,7 @@ export function Tree({
   };
 
   const endDrag = () => {
+    clearExpandTimer();
     setDraggingId(null);
     setDropTargetId(null);
   };
@@ -225,8 +244,24 @@ export function Tree({
             }
             onDragEnd={onMove && endDrag}
             onDragOver={
-              onMove &&
+              (onMove || onExternalDrop) &&
               ((e) => {
+                if (isExternalDrag(e)) {
+                  if (canExternalDrop?.(node.id) === false) {
+                    e.dataTransfer.dropEffect = 'none';
+                    if (dropTargetId === node.id) setDropTargetId(null);
+                    return;
+                  }
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = 'move';
+                  if (dropTargetId !== node.id) setDropTargetId(node.id);
+                  if (!hasChildren || isOpen) clearExpandTimer();
+                  else if (expandTimer.current?.id !== node.id) {
+                    clearExpandTimer();
+                    expandTimer.current = { id: node.id, timer: window.setTimeout(() => setExpanded(node.id, true), 600) };
+                  }
+                  return;
+                }
                 if (!draggingId) return;
                 if (draggingId === node.id || canMove?.(draggingId, node.id) === false) {
                   e.dataTransfer.dropEffect = 'none';
@@ -238,12 +273,26 @@ export function Tree({
                 if (dropTargetId !== node.id) setDropTargetId(node.id);
               })
             }
-            onDrop={
-              onMove &&
+            onDragLeave={
+              onExternalDrop &&
               ((e) => {
+                if (e.currentTarget.contains(e.relatedTarget as Node | null)) return;
+                if (expandTimer.current?.id === node.id) clearExpandTimer();
+                if (dropTargetId === node.id) setDropTargetId(null);
+              })
+            }
+            onDrop={
+              (onMove || onExternalDrop) &&
+              ((e) => {
+                if (isExternalDrag(e)) {
+                  e.preventDefault();
+                  if (canExternalDrop?.(node.id) !== false) onExternalDrop?.(node.id);
+                  endDrag();
+                  return;
+                }
                 e.preventDefault();
                 const sourceId = draggingId ?? e.dataTransfer.getData('text/plain');
-                if (sourceId && sourceId !== node.id) onMove(sourceId, node.id);
+                if (sourceId && sourceId !== node.id) onMove?.(sourceId, node.id);
                 endDrag();
               })
             }

@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import type { DragEvent, MouseEvent } from 'react';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
@@ -30,6 +30,9 @@ export interface ARSTreeViewADContentProps {
   onSelectionChange?: (next: Set<string>) => void;
   onColumns?: () => void;
   onMore?: (id: string, event: MouseEvent<HTMLElement>) => void;
+  /** Makes rows draggable, e.g. onto a folder in the directory tree. */
+  onRowDragStart?: (id: string, event: DragEvent<HTMLElement>) => void;
+  onRowDragEnd?: () => void;
   pagination: ARSPaginationProps;
   className?: string;
 }
@@ -47,6 +50,8 @@ export function ARSTreeViewADContent({
   onSelectionChange,
   onColumns,
   onMore,
+  onRowDragStart,
+  onRowDragEnd,
   pagination,
   className,
 }: ARSTreeViewADContentProps) {
@@ -74,7 +79,14 @@ export function ARSTreeViewADContent({
           actions={<IconButton icon="SlidersHorizontal" ariaLabel="Columns" onClick={onColumns} />}
         />
         {rows.map((row) => (
-          <div key={row.id} role="row" className={styles.row}>
+          <div
+            key={row.id}
+            role="row"
+            className={styles.row}
+            draggable={!!onRowDragStart}
+            onDragStart={onRowDragStart && ((e) => onRowDragStart(row.id, e))}
+            onDragEnd={onRowDragEnd}
+          >
             <TableCell inset="s" className={styles.check}>
               <Checkbox
                 checked={selected.has(row.id)}

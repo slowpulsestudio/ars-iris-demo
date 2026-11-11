@@ -178,6 +178,14 @@ export {
 } from './components/ARSUserPasswordResetAD/ARSUserPasswordResetAD.js';
 export { ARSDelete, type ARSDeleteProps, type ARSDeleteVariant } from './components/ARSDelete/ARSDelete.js';
 export { ARSModalFormUnsaved, type ARSModalFormUnsavedProps } from './components/ARSModalFormUnsaved/ARSModalFormUnsaved.js';
+export {
+  ARSSelectedObjectsBlock,
+  type ARSSelectedObjectsBlockItem,
+  type ARSSelectedObjectsBlockProps,
+} from './components/ARSSelectedObjectsBlock/ARSSelectedObjectsBlock.js';
+export { ARSMoveToast, type ARSMoveToastProps } from './components/ARSMoveToast/ARSMoveToast.js';
+export { ARSElementDragged, type ARSElementDraggedProps } from './components/ARSElementDragged/ARSElementDragged.js';
+export { FolderArrowRightIcon } from './parts/FolderArrowRightIcon.js';
 export { ARSActionBar, type ARSActionBarProps } from './components/ARSActionBar/ARSActionBar.js';
 export { ARSSidebar, type ARSSidebarProps } from './components/ARSSidebar/ARSSidebar.js';
 export {

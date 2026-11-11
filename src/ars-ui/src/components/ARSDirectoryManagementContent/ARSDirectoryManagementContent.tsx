@@ -38,6 +38,9 @@ export interface ARSDirectoryTreeContentProps extends CommonProps {
   onContextMenu?: TreeProps['onContextMenu'];
   onMove?: TreeProps['onMove'];
   canMove?: TreeProps['canMove'];
+  externalDropType?: TreeProps['externalDropType'];
+  canExternalDrop?: TreeProps['canExternalDrop'];
+  onExternalDrop?: TreeProps['onExternalDrop'];
 }
 
 /** Favorites: search plus titled sections of Iris NavItems. */
@@ -78,6 +81,9 @@ export function ARSDirectoryManagementContent(props: ARSDirectoryManagementConte
           onContextMenu={props.onContextMenu}
           onMove={props.onMove}
           canMove={props.canMove}
+          externalDropType={props.externalDropType}
+          canExternalDrop={props.canExternalDrop}
+          onExternalDrop={props.onExternalDrop}
         />
       </div>
     );

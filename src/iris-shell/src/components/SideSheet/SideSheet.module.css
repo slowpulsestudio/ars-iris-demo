@@ -70,6 +70,14 @@
   flex-shrink: 0;
 }
 
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: var(--oi-size-s);
+  height: var(--oi-size-s);
+  color: var(--oi-content-color-primary);
+}
+
 .headerText {
   display: flex;
   flex-direction: column;

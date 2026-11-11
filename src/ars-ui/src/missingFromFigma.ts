@@ -2,6 +2,7 @@
 export const FIGMA_FILES = {
   primary: { name: 'ARS - Primary', key: 'IlG4nne9VhqpONzqc0tfKg' },
   crud: { name: 'ARS_WebUI2_CRUD', key: 'djs9NKqC3YG6KtAhHiQ4iT' },
+  move: { name: 'ARS_WebUI2_Move_Browse_Objects', key: 'IXKXZpycHiFcKbvHMvlc9r' },
 } as const;
 
 export type FigmaFileId = keyof typeof FIGMA_FILES;
@@ -42,5 +43,26 @@ export const MISSING_FROM_FIGMA: MissingFromFigmaEntry[] = [
     figmaNodeId: '3534:19369',
     file: 'crud',
     note: 'Asks before leaving a form with unsaved changes. Content from ARS_Modal_Form_Unsaved_Content (3534:19266). Figma\'s text says "will be discard".',
+  },
+  {
+    component: 'ARSSelectedObjectsBlock',
+    figmaName: 'Selected objects block',
+    figmaNodeId: '2224:16697',
+    file: 'move',
+    note: 'The count and removable Iris Tags of the objects being moved, above the destination tree in the Move Objects side sheet.',
+  },
+  {
+    component: 'ARSMoveToast',
+    figmaName: 'Move User toast',
+    figmaNodeId: '2396:13581',
+    file: 'move',
+    note: 'The success toast after a move, with Undo and View. The file draws it three ways: Toast 2355:28099 (several objects), Move User toast 2396:13581 (View object) and Successfully moved toast 2381:23258 (Undo only).',
+  },
+  {
+    component: 'ARSElementDragged',
+    figmaName: 'Element-Dragged',
+    figmaNodeId: '2281:47208',
+    file: 'move',
+    note: 'The chip that follows the pointer while an object is dragged from the table to a folder in the directory tree. Variants Directory folder and User.',
   },
 ];

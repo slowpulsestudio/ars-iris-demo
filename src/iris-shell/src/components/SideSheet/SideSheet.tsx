@@ -10,6 +10,8 @@ export interface SideSheetProps {
   onClose: () => void;
   title: string;
   subtitle?: string;
+  /** Featured icon before the title (UI Kit "Featured icon"), 24px. */
+  icon?: ReactNode;
   onBack?: () => void;
   children?: ReactNode;
   footer?: ReactNode;
@@ -33,6 +35,7 @@ export function SideSheet({
   onClose,
   title,
   subtitle,
+  icon,
   onBack,
   children,
   footer,
@@ -145,6 +148,11 @@ export function SideSheet({
         <header className={styles.header}>
           {onBack && (
             <IconButton icon="ArrowLeft" ariaLabel="Back" onClick={onBack} />
+          )}
+          {icon && (
+            <span className={styles.icon} aria-hidden="true">
+              {icon}
+            </span>
           )}
           <div className={styles.headerText}>
             <h2 id={titleId} className={styles.title}>

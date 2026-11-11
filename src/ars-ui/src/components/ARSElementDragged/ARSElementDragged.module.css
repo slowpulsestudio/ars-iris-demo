@@ -1,0 +1,47 @@
+.root {
+  display: inline-flex;
+  align-items: flex-start;
+}
+
+/* Figma: the User variant sits on a brand-coloured 128px base with a raised chip. */
+.user {
+  width: 128px;
+  background-color: var(--oi-base-color-brand);
+  border-radius: var(--oi-border-radius-default);
+}
+
+.element {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  gap: var(--oi-spacing-xs);
+  padding: 0 var(--oi-spacing-s);
+  background-color: var(--oi-background-color-primary);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-default);
+}
+
+.user .element {
+  flex: 1 1 0;
+  min-width: 0;
+  box-shadow: var(--oi-shadow-mid);
+}
+
+.icons {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+  height: var(--oi-size-s);
+  color: var(--oi-content-color-primary);
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: var(--oi-spacing-xs) 0;
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+  font-weight: var(--oi-text-caption-font-weight);
+  color: var(--oi-content-color-primary);
+}
