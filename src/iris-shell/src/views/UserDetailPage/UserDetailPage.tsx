@@ -3,6 +3,7 @@ import { AppShell } from '../AppShell/AppShell.js';
 import { navigate } from '../../lib/router.js';
 import { useUsers } from '../../lib/usersStore.js';
 import { useFavorites } from '../../lib/useFavorites.js';
+import { useMoveUsers } from '../../lib/useMoveUsers.js';
 import { isTypingTarget } from '../../lib/keyboard.js';
 import { Button } from '../../components/Button/Button.js';
 import { UserObjectPage, type UserObjectData } from '../ObjectPage/UserObjectPage.js';
@@ -40,6 +41,7 @@ function toObjectData(user: User): UserObjectData {
 export function UserDetailPage({ userId }: UserDetailPageProps) {
   const { users, getUser, getUserIndex, updateUser, removeUser } = useUsers();
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
+  const moveUsers = useMoveUsers();
   const user = getUser(userId);
 
   const idx = getUserIndex(userId);
@@ -126,6 +128,8 @@ export function UserDetailPage({ userId }: UserDetailPageProps) {
       onPrevious={prevUser ? () => navigate(`#/users/${prevUser.id}`) : undefined}
       onNext={nextUser ? () => navigate(`#/users/${nextUser.id}`) : undefined}
       isFavorite={isFavorite(user.id)}
+      canMoveTo={(destId) => moveUsers.canMoveTo([user], destId)}
+      onMove={(destId) => moveUsers.move([user], destId)}
       onToggleFavorite={() =>
         toggleFavorite({
           id: user.id,

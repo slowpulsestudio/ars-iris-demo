@@ -11,6 +11,8 @@ import { navigate, useRoute } from '../../lib/router.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { ALL_NODE_IDS, type DirectoryNodeView } from '../../lib/directoryData.js';
 import { useFavorites } from '../../lib/useFavorites.js';
+import { canMoveItem, moveEntries } from '../../lib/moveObjects.js';
+import { OBJECT_DRAG_TYPE, endObjectDrag, getObjectDrag } from '../../lib/objectDrag.js';
 import { useVertical } from '../../lib/verticals.js';
 import {
   ROUTE_TO_SECONDARY_NAV,
@@ -44,7 +46,7 @@ export function ARSDirectoryPanel() {
   const route = useRoute();
   const vertical = useVertical();
   const secondary = vertical.secondarySidebar;
-  const { nodeTree, getPath, moveNode, canMoveNode } = useDirectory();
+  const { nodeTree, getPath, getNodeName, moveNode, canMoveNode } = useDirectory();
   const { entries: favorites } = useFavorites();
 
   const view = ROUTE_TO_VIEW[route.name] ?? 'flat';
@@ -107,6 +109,16 @@ export function ARSDirectoryPanel() {
         canMove={canMoveNode}
         onMove={(id, targetId) => {
           if (moveNode(id, targetId)) setNodeExpanded(targetId, true);
+        }}
+        externalDropType={OBJECT_DRAG_TYPE}
+        canExternalDrop={(destId) => !!getObjectDrag()?.some((e) => canMoveItem(e.item, destId))}
+        onExternalDrop={(destId) => {
+          const dragged = getObjectDrag();
+          endObjectDrag();
+          if (!dragged) return;
+          if (moveEntries(dragged, destId, getNodeName(destId) ?? 'the folder').length > 0) {
+            setNodeExpanded(destId, true);
+          }
         }}
       />
     ) : view === 'favourites' ? (

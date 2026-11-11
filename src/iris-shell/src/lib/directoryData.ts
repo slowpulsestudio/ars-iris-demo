@@ -469,3 +469,31 @@ export function removeObject(nodeId: string, objectId: string): boolean {
   listeners.forEach((l) => l());
   return true;
 }
+
+/**
+ * Move a leaf object into another node. Returns its former index (so an undo
+ * can put it back in place), or null when nothing moved.
+ */
+export function moveObject(fromNodeId: string, objectId: string, toNodeId: string, toIndex = 0): number | null {
+  const from = nodeById.get(fromNodeId);
+  const to = nodeById.get(toNodeId);
+  if (!from || !to || fromNodeId === toNodeId) return null;
+  const source = getLeaves(from);
+  const i = source.findIndex((o) => o.id === objectId);
+  if (i < 0) return null;
+  const [object] = source.splice(i, 1);
+  const location = getNodePath(toNodeId).map((n) => n.name).join(' / ');
+  getLeaves(to).splice(toIndex, 0, {
+    ...object,
+    parentId: toNodeId,
+    details: { ...object.details, location },
+  });
+  treeVersion += 1;
+  listeners.forEach((l) => l());
+  return i;
+}
+
+/** The node a container object sits in (`null` = top level). */
+export function getParentId(nodeId: string): string | null {
+  return parentIdByNode.get(nodeId) ?? null;
+}

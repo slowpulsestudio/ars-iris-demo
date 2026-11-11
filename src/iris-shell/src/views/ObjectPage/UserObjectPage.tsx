@@ -22,6 +22,7 @@ import type { Crumb } from '../../components/AppHeader/AppHeader.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { UnsavedChangesModal } from '../ObjectModals/UnsavedChangesModal.js';
+import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { UserDetailsTab } from './UserDetailsTab.js';
 import styles from './UserObjectPage.module.css';
 
@@ -125,6 +126,12 @@ export interface UserObjectPageProps {
   onNext?: () => void;
   isFavorite: boolean;
   onToggleFavorite: () => void;
+  /** Folder to open the Move side sheet at; omit for a user outside the tree. */
+  currentNodeId?: string | null;
+  /** Whether the user can move to the folder `destId`. */
+  canMoveTo: (destId: string) => boolean;
+  /** Called when the user chooses Move in the side sheet. */
+  onMove: (destId: string) => void;
 }
 
 /**
@@ -143,6 +150,9 @@ export function UserObjectPage({
   onNext,
   isFavorite,
   onToggleFavorite,
+  currentNodeId,
+  canMoveTo,
+  onMove,
 }: UserObjectPageProps) {
   const { setAiOpen } = useAppShell();
   const pageMenu = useAnchoredMenu();
@@ -153,6 +163,7 @@ export function UserObjectPage({
   const [bannerOpen, setBannerOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [moveOpen, setMoveOpen] = useState(false);
   // What the Unsaved changes modal will do on Confirm; null = closed.
   const [pendingLeave, setPendingLeave] = useState<{ run: () => void } | null>(null);
   // Unsaved changes in the User Details cards.
@@ -352,6 +363,7 @@ export function UserObjectPage({
   const onAction = (label: string) => {
     if (label === 'Reset password') setResetOpen(true);
     if (label === 'Delete') setDeleteOpen(true);
+    if (label === 'Move') setMoveOpen(true);
   };
 
   return (
@@ -399,6 +411,18 @@ export function UserObjectPage({
         open={pendingLeave !== null}
         onCancel={() => setPendingLeave(null)}
         onConfirm={confirmLeave}
+      />
+      <MoveObjectSheet
+        open={moveOpen}
+        onClose={() => setMoveOpen(false)}
+        objects={[{ id: data.id, name: data.displayName }]}
+        objectType="User"
+        currentNodeId={currentNodeId}
+        canMoveTo={canMoveTo}
+        onMove={(destId) => {
+          setMoveOpen(false);
+          leave(() => onMove(destId));
+        }}
       />
     </AppShell>
   );

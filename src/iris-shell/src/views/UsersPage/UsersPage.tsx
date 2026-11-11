@@ -13,9 +13,11 @@ import { AppShell } from '../AppShell/AppShell.js';
 import { useUsers } from '../../lib/usersStore.js';
 import { useAppShell } from '../../lib/appShellContext.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
+import { useMoveUsers } from '../../lib/useMoveUsers.js';
 import type { BadgeTone } from '../../components/Badge/Badge.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
+import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { CreateObjectModal, type CreateObjectResult } from './CreateObjectModal/CreateObjectModal.js';
 import {
   announceCreated,
@@ -57,6 +59,7 @@ const CREATE_ICONS = new Map(
 export function UsersPage() {
   const { users, addUser, removeUser } = useUsers();
   const { setAiOpen, setAiContext } = useAppShell();
+  const moveUsers = useMoveUsers();
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
@@ -66,6 +69,8 @@ export function UsersPage() {
   // Which user (if any) a row-action modal is open for. `null` = closed.
   const [resetUser, setResetUser] = useState<User | null>(null);
   const [deleteUser, setDeleteUser] = useState<User | null>(null);
+  // Which users the Move side sheet is open for. `null` = closed.
+  const [moveTargets, setMoveTargets] = useState<User[] | null>(null);
   // Which object type the Create flow is building. `null` = closed.
   const [createTarget, setCreateTarget] = useState<{ type: string; icon: string } | null>(null);
 
@@ -103,6 +108,7 @@ export function UsersPage() {
     if (!rowUser) return;
     if (label === 'Reset Password') setResetUser(rowUser);
     if (label === 'Delete') setDeleteUser(rowUser);
+    if (label === 'Move') setMoveTargets([rowUser]);
   };
 
   const onPageAction = (label: string) => {
@@ -115,6 +121,7 @@ export function UsersPage() {
     if (label === 'Select all') setSelected(new Set(users.map((u) => u.id)));
     if (label === 'Reset password' && only) setResetUser(only);
     if (label === 'Delete' && only) setDeleteUser(only);
+    if (label === 'Move') setMoveTargets(selectedUsers);
     if (label === 'More actions' && only) {
       setRowUser(only);
       rowMenu.openAt(e);
@@ -232,6 +239,20 @@ export function UsersPage() {
           }}
         />
       )}
+      <MoveObjectSheet
+        open={moveTargets !== null}
+        onClose={() => setMoveTargets(null)}
+        objects={(moveTargets ?? []).map((u) => ({ id: u.id, name: u.name }))}
+        objectType="User"
+        canMoveTo={(destId) => moveUsers.canMoveTo(moveTargets ?? [], destId)}
+        onMove={(destId, objs) => {
+          moveUsers.move(
+            (moveTargets ?? []).filter((u) => objs.some((o) => o.id === u.id)),
+            destId,
+          );
+          setMoveTargets(null);
+        }}
+      />
       {createTarget && (
         <CreateObjectModal
           open

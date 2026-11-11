@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type MouseEvent } from 'react';
+import { useEffect, useMemo, useState, type DragEvent, type MouseEvent } from 'react';
 import {
   ARSADRightClickTreeMenu,
   ARSADUserActions,
@@ -16,10 +16,14 @@ import { useDirectory } from '../../lib/directoryStore.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
 import { useFavorites } from '../../lib/useFavorites.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
+import { canMoveItem, moveEntries, type MoveEntry, type MoveItem } from '../../lib/moveObjects.js';
+import { endObjectDrag, startObjectDrag } from '../../lib/objectDrag.js';
 import { Button } from '../../components/Button/Button.js';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
+import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
+import { setDragPreview } from './dragPreview.js';
 import { CreateObjectModal, type CreateObjectResult } from '../UsersPage/CreateObjectModal/CreateObjectModal.js';
 import {
   announceCreated,
@@ -60,6 +64,8 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
   const [showSelected, setShowSelected] = useState(false);
   const [resetTarget, setResetTarget] = useState<DirectoryObject | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<DirectoryObject | null>(null);
+  // Which objects the Move side sheet is open for. `null` = closed.
+  const [moveTargets, setMoveTargets] = useState<DirectoryObject[] | null>(null);
   // Which object type the Create flow is building. `null` = closed.
   const [createTarget, setCreateTarget] = useState<{ type: string; icon: string } | null>(null);
 
@@ -122,6 +128,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     if (!rowObject) return;
     if (label === 'Reset Password') setResetTarget(rowObject);
     if (label === 'Delete') setDeleteTarget(rowObject);
+    if (label === 'Move') setMoveTargets([rowObject]);
     if (label === 'Add to Favorites') toggleRowFavorite(rowObject);
   };
 
@@ -142,11 +149,43 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     if (label === 'Select all') setSelected(new Set(allRows.map((o) => o.id)));
     if (label === 'Reset password' && only) setResetTarget(only);
     if (label === 'Delete' && only) setDeleteTarget(only);
+    if (label === 'Move') setMoveTargets(selectedObjects);
     if (label === 'More actions' && only) {
       setRowObject(only);
       rowMenu.openAt(e);
     }
   };
+
+  const toMoveItem = (o: DirectoryObject): MoveItem => ({ id: o.id, nodeId, isContainer: o.isContainer });
+  const entryFor = (o: DirectoryObject): MoveEntry => ({
+    item: toMoveItem(o),
+    name: o.name,
+    typeLabel: OBJECT_TYPE_META[o.type].label,
+  });
+
+  const onMoveObjects = (destId: string, objs: Array<{ id: string }>) => {
+    const targets = (moveTargets ?? []).filter((o) => objs.some((x) => x.id === o.id));
+    moveEntries(targets.map(entryFor), destId, getNodeName(destId) ?? 'the folder');
+    setMoveTargets(null);
+  };
+
+  // Dragging a selected row drags the whole selection; any other row drags alone.
+  const onRowDragStart = (id: string, e: DragEvent<HTMLElement>) => {
+    const row = allRows.find((o) => o.id === id);
+    if (!row) return;
+    const dragged = selected.has(id) ? selectedObjects : [row];
+    startObjectDrag(dragged.map(entryFor), e);
+    setDragPreview(e, row.isContainer ? 'Directory folder' : 'User', dragged.length > 1 ? `${dragged.length} objects` : row.name);
+  };
+
+  // Objects that moved away leave the selection.
+  useEffect(() => {
+    const ids = new Set(allRows.map((o) => o.id));
+    setSelected((prev) => {
+      const next = new Set([...prev].filter((id) => ids.has(id)));
+      return next.size === prev.size ? prev : next;
+    });
+  }, [allRows]);
 
   const onCreated = (result: CreateObjectResult) => {
     if (!result.locationId) {
@@ -229,6 +268,8 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
             setRowObject(allRows.find((o) => o.id === id) ?? null);
             rowMenu.openAt(e);
           }}
+          onRowDragStart={onRowDragStart}
+          onRowDragEnd={endObjectDrag}
           pagination={{
             page: safePage,
             pageCount,
@@ -286,6 +327,15 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
           }}
         />
       )}
+      <MoveObjectSheet
+        open={moveTargets !== null}
+        onClose={() => setMoveTargets(null)}
+        objects={(moveTargets ?? []).map((o) => ({ id: o.id, name: o.name }))}
+        objectType={moveTargets?.[0] ? OBJECT_TYPE_META[moveTargets[0].type].label : undefined}
+        currentNodeId={nodeId}
+        canMoveTo={(destId) => (moveTargets ?? []).some((o) => canMoveItem(toMoveItem(o), destId))}
+        onMove={onMoveObjects}
+      />
       {createTarget && (
         <CreateObjectModal
           open

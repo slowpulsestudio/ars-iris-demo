@@ -5,6 +5,7 @@ import { isTypingTarget } from '../../lib/keyboard.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
 import { useFavorites } from '../../lib/useFavorites.js';
+import { announceMoved, canMoveItem, moveItems } from '../../lib/moveObjects.js';
 import { Tabs } from '../../components/Tabs/Tabs.js';
 import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
@@ -17,6 +18,7 @@ import { Menu } from '../../components/Menu/Menu.js';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
+import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { tabsForType, PRIMARY_TAB } from './detailTabs.js';
 import { UserObjectPage, type UserObjectData } from '../ObjectPage/UserObjectPage.js';
 import styles from './TreeView.module.css';
@@ -70,6 +72,7 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
   const [tab, setTab] = useState(PRIMARY_TAB);
   const [resetOpen, setResetOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [moveOpen, setMoveOpen] = useState(false);
 
   // Reset to the primary tab whenever the object changes.
   useEffect(() => {
@@ -129,6 +132,24 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
   const tabs = tabsForType(object.type);
   const canReset = object.type === 'user' || object.type === 'contact';
 
+  const moveItem = { id: object.id, nodeId, isContainer: false };
+  const onMoveObject = (destId: string) => {
+    const { moved, undo } = moveItems([moveItem], destId);
+    if (moved.length === 0) return;
+    const href = `#/tree/${destId}/${object.id}`;
+    navigate(href);
+    announceMoved({
+      names: [object.name],
+      typeLabel: meta.label,
+      destName: getNodeName(destId) ?? 'the folder',
+      undo: () => {
+        undo();
+        navigate(`#/tree/${nodeId}/${object.id}`);
+      },
+      viewHref: href,
+    });
+  };
+
   if (object.type === 'user') {
     return (
       <UserObjectPage
@@ -164,6 +185,9 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
         onPrevious={prev ? () => navigate(`#/tree/${nodeId}/${prev.id}`) : undefined}
         onNext={next ? () => navigate(`#/tree/${nodeId}/${next.id}`) : undefined}
         isFavorite={isFavorite(object.id)}
+        currentNodeId={nodeId}
+        canMoveTo={(destId) => canMoveItem(moveItem, destId)}
+        onMove={onMoveObject}
         onToggleFavorite={() =>
           toggleFavorite({
             id: object.id,
@@ -217,6 +241,7 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
                 ...(canReset
                   ? ([{ kind: 'item', label: 'Reset password', icon: 'Password', onSelect: () => setResetOpen(true) }] as const)
                   : []),
+                { kind: 'item', label: 'Move', icon: 'Folder', onSelect: () => setMoveOpen(true) },
                 {
                   kind: 'item',
                   label: isFavorite(object.id) ? 'Remove from favourites' : 'Add to favourites',
@@ -284,6 +309,18 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
           }}
         />
       )}
+      <MoveObjectSheet
+        open={moveOpen}
+        onClose={() => setMoveOpen(false)}
+        objects={[{ id: object.id, name: object.name }]}
+        objectType={meta.label}
+        currentNodeId={nodeId}
+        canMoveTo={(destId) => canMoveItem(moveItem, destId)}
+        onMove={(destId) => {
+          setMoveOpen(false);
+          onMoveObject(destId);
+        }}
+      />
     </AppShell>
   );
 }

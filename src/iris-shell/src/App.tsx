@@ -3,7 +3,7 @@ import { UsersProvider } from './lib/usersStore.js';
 import { DirectoryProvider } from './lib/directoryStore.js';
 import { AppShellProvider, useAppShell } from './lib/appShellContext.js';
 import { useToastMessage } from './lib/toastStore.js';
-import { ARSNewObjectToast } from '@ars';
+import { ARSMoveToast, ARSNewObjectToast } from '@ars';
 import { CommandPalette } from './components/CommandPalette/CommandPalette.js';
 import { Toast } from './components/Toast/Toast.js';
 import { UsersPage } from './views/UsersPage/UsersPage.js';
@@ -114,7 +114,25 @@ export default function App() {
         <AppShellProvider directoryPanel={<ARSDirectoryPanel />}>
           <RoutedPage />
           <CommandPalette />
-          {toast.viewHref ? (
+          {toast.onUndo ? (
+            <ARSMoveToast
+              message={toast.message}
+              onUndo={() => {
+                toast.onUndo?.();
+                toast.dismiss();
+              }}
+              onView={
+                toast.viewHref
+                  ? () => {
+                      if (toast.viewHref) navigate(toast.viewHref);
+                      toast.dismiss();
+                    }
+                  : undefined
+              }
+              viewLabel={toast.viewLabel}
+              onDismiss={toast.dismiss}
+            />
+          ) : toast.viewHref ? (
             <ARSNewObjectToast
               message={toast.message}
               supportingText={toast.supportingText}

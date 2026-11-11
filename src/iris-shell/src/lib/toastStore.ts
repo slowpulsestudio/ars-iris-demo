@@ -13,6 +13,10 @@ export interface ToastOptions {
   supportingText?: string;
   /** When set, the toast offers a View button that opens this route. */
   viewHref?: string;
+  /** Offers an Undo button (the move toast); View then goes to `viewHref` when set. */
+  onUndo?: () => void;
+  /** Label of the View button; defaults to "View". */
+  viewLabel?: string;
 }
 
 interface CurrentToast extends ToastOptions {
@@ -44,6 +48,8 @@ export interface ToastController {
   message: string | null;
   supportingText?: string;
   viewHref?: string;
+  onUndo?: () => void;
+  viewLabel?: string;
   dismiss: () => void;
 }
 
@@ -53,5 +59,12 @@ export function useToastMessage(): ToastController {
     current = null;
     emit();
   }, []);
-  return { message: toast?.message ?? null, supportingText: last?.supportingText, viewHref: last?.viewHref, dismiss };
+  return {
+    message: toast?.message ?? null,
+    supportingText: last?.supportingText,
+    viewHref: last?.viewHref,
+    onUndo: last?.onUndo,
+    viewLabel: last?.viewLabel,
+    dismiss,
+  };
 }

@@ -7,11 +7,10 @@ import {
   type ARSNewObjectValues,
 } from '@ars';
 import { useDirectory } from '../../../lib/directoryStore.js';
-import type { DirectoryNodeView } from '../../../lib/directoryData.js';
+import { toTreeNode } from '../../../lib/directoryTree.js';
 import { Button } from '../../../components/Button/Button.js';
 import { SideSheet } from '../../../components/SideSheet/SideSheet.js';
 import type { StepperStepItem } from '../../../components/Stepper/Stepper.js';
-import type { TreeNode } from '../../../components/Tree/Tree.js';
 import { ModalOverlay } from '../../ModalOverlay/ModalOverlay.js';
 import type { CreateObjectResult } from './createdObject.js';
 
@@ -36,17 +35,6 @@ const STEPS: StepperStepItem[] = [
   { id: 'general', label: 'General' },
   { id: 'account', label: 'Account' },
 ];
-
-function toTreeNode(node: DirectoryNodeView): TreeNode {
-  return {
-    id: node.id,
-    label: node.name,
-    icon: node.icon ?? 'Folder',
-    openIcon: node.icon ?? 'FolderOpen',
-    children: node.children.map(toTreeNode),
-    separatorBefore: node.id === 'managed-directories',
-  };
-}
 
 /**
  * CreateObjectModal — two-step "New object" flow (ARS_New_Object_Template):

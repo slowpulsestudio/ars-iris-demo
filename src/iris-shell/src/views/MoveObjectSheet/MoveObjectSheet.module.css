@@ -1,0 +1,6 @@
+/* Figma: the tree, then the selected objects block, 12px apart. */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+}
