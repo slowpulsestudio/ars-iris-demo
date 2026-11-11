@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, type ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Button } from '@iris/components/Button/Button.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
@@ -7,7 +7,7 @@ import styles from './ARSModalFormUnsaved.module.css';
 
 export interface ARSModalFormUnsavedProps {
   /** Replaces the warning text. */
-  message?: string;
+  message?: ReactNode;
   onClose?: () => void;
   onCancel?: () => void;
   onConfirm?: () => void;
@@ -20,7 +20,12 @@ export interface ARSModalFormUnsavedProps {
  * ARS_Modal_Form_Unsaved_Content (3534:19266).
  */
 export function ARSModalFormUnsaved({
-  message = 'Your unsaved changes will be discard. Confirm to continue or cancel to review changes and save.',
+  message = (
+    <>
+      Your unsaved changes will be discarded. To continue, click <strong>Confirm</strong>. To review your changes and
+      save them later, click <strong>Cancel</strong>.
+    </>
+  ),
   onClose,
   onCancel,
   onConfirm,
