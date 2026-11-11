@@ -220,9 +220,10 @@ Built flow by flow from the [CRUD file](https://www.figma.com/design/djs9NKqC3YG
 - **Flow 2, create** (`50889c1`, `48f0710`, `3a0b56d`): `ARS_Action_bar` for one or several selected rows, the New object modal (`ARS_New_Object_Template`, two steps, Select folder side sheet) and `ARS_New_Object_Toast` with View.
 - **Flow 3, object page** (`ad79aee`, `302b679`): `ARS_User_Page` with Overview and General, the Properties card edited in place, and the save error (required fields and a taken user principal name).
 - **Flow 4, delete, reset, unsaved** (`b5cb0ff`, `bb4677a`): `ARS_Delete` and `ARS_Modal_Form_Unsaved` (CRUD file only, shown under "Missing from Figma" in Storybook and on the Components to review page), the AD and Entra password reset, and a navigation guard for unsaved changes.
+- **Follow-ups**: the unsaved-changes guard now also covers the browser's Back button and links that only change the address; the User Details tab shows the Contact and Job information cards (`ARS_Users_ContactInfo Card`, `ARS_Users_Job Info Card`), each edited and saved on its own, with values kept in memory for the session.
 - Not built because the CRUD file doesn't draw them: bulk delete, detail pages for objects other than users, and the other user tabs.
 
-All commits up to `6f03878` are on `origin/main`; the flow 2 to 4 commits are local.
+All flow 1 to 4 commits are on `origin/main`; the follow-ups are local until pushed.
 
 ## Iris files changed since the Iris packages were installed
 

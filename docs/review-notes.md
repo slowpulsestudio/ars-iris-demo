@@ -100,6 +100,22 @@ Where: Delete and Reset password from a row menu, the selection bar or the objec
 - [ ] **When the object goes.** Delete removes the object when you close the success step, then returns to the list. Bulk delete from the selection bar isn't built, since Figma doesn't draw it.
 - [ ] **Other object types.** The delete modal is titled with the type (for example "Delete Computer"). Figma draws only the user.
 - [ ] **Entra or AD.** A user is Entra when its Location is `Entra` (Flat view) or its directory is `@Entra1` (user page). Entra goes straight to a generated temporary password. AD gets the form, and Reset password enables when both passwords match. The account options have no effect.
-- [ ] **What triggers Unsaved changes.** Cancel, a tab, the header arrows and back button, J/K, the breadcrumb and the sidebar. It misses the browser's Back button and links that only change the address, such as names in the lists.
+- [ ] **What triggers Unsaved changes.** Cancel, a tab, the header arrows and back button, J/K, the breadcrumb, the sidebar, the browser's Back button and links that only change the address, such as names in the lists. Check that Back leaves the address as it was when you choose to stay.
 - [ ] **Wording.** The modal says "will be discard", as Figma does.
 - [ ] **Update toast.** It says "Successfully updated User". Its View button has nothing else to open, because the object page is already showing.
+
+## Flow 5: User Details tab
+
+Where: open a user from either list, then the User Details tab.
+
+### Compare with Figma
+
+- [ ] User Details tab ([ARS_Object_Content, Variant3, 2385:56718](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=2385-56718)): Contact information and Job information cards, read and edit.
+
+### Confirm
+
+- [ ] **Sample values.** Every user shows Figma's sample values, except Email, which is the user's own. Nothing else about a user feeds these fields.
+- [ ] **Contact edit form.** Figma's edit variant of the Contact information card shows the job fields. The app edits the contact fields instead.
+- [ ] **Session only.** Saved values are kept in memory and reset on reload.
+- [ ] **Each card on its own.** Edit, Cancel and Save act on one card. Leaving with unsaved changes in either card shows the Unsaved changes modal.
+- [ ] **Not built.** Bulk delete, detail pages for objects other than users, and the user tabs after User Details aren't drawn in the CRUD file, so they stay empty states.
