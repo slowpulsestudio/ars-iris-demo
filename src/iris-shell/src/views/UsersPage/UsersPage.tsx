@@ -67,6 +67,7 @@ function createIconFor(type: string): string {
  */
 export function UsersPage() {
   const { users, addUser, removeUser } = useUsers();
+  const [removedTags, setRemovedTags] = useState<Map<string, Set<string>>>(() => new Map());
   const { setAiOpen, setAiContext } = useAppShell();
   const moveUsers = useMoveUsers();
   const [query, setQuery] = useState('');
@@ -190,7 +191,9 @@ export function UsersPage() {
             status: u.status,
             statusTone: statusTone(u.status),
             description: u.description,
-            tags: u.tags,
+            tags: u.tags.filter((t) => !removedTags.get(u.id)?.has(t)),
+            onRemoveTag: (tag) =>
+              setRemovedTags((prev) => new Map(prev).set(u.id, new Set([...(prev.get(u.id) ?? []), tag]))),
             location: u.location,
             onMore: (e) => {
               setRowUser(u);
