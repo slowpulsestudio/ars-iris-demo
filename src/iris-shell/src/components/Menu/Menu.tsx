@@ -103,9 +103,10 @@ export interface MenuProps {
   /**
    * Absolute viewport coordinates to anchor the menu at (e.g. the pointer
    * position from a right-click). Takes precedence over trigger anchoring.
-   * The menu is clamped to stay within the viewport.
+   * The menu is clamped to stay within the viewport; with `yAbove` (the
+   * y to sit above an anchor element) it flips up instead when it fits there.
    */
-  position?: { x: number; y: number };
+  position?: { x: number; y: number; yAbove?: number };
   /**
    * Override the menu's vertical anchor (in viewport pixels from the top).
    * When omitted, the menu drops directly under the trigger. Use this when
@@ -138,7 +139,9 @@ function resolveTriggerTop(rect: DOMRect, menuHeight: number): number {
   const below = rect.bottom + 4;
   const overflowsBelow = below + menuHeight > window.innerHeight - margin;
   const fitsAbove = rect.top - 4 - menuHeight >= margin;
-  return overflowsBelow && fitsAbove ? rect.top - menuHeight - 4 : below;
+  if (!overflowsBelow) return below;
+  if (fitsAbove) return rect.top - menuHeight - 4;
+  return Math.max(margin, window.innerHeight - menuHeight - margin);
 }
 
 /**
@@ -234,10 +237,13 @@ export function Menu({
     let top = position.y;
     if (left + mw > window.innerWidth - margin)
       left = Math.max(margin, window.innerWidth - mw - margin);
-    if (top + mh > window.innerHeight - margin)
-      top = Math.max(margin, window.innerHeight - mh - margin);
+    if (top + mh > window.innerHeight - margin) {
+      const above = position.yAbove != null ? position.yAbove - mh : null;
+      top = above != null && above >= margin ? above : Math.max(margin, window.innerHeight - mh - margin);
+    }
     setPos((p) => (p && (p.left !== left || p.top !== top) ? { ...p, left, top } : p));
-  }, [open, position]);
+    // `pos` is a dependency because the menu only mounts after it is first set.
+  }, [open, position, pos]);
 
   // Trigger-anchored auto-flip, initial-mount corrector: `compute()` can't
   // measure the menu until it's mounted, so on first open it positions below
