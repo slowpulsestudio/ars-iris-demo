@@ -223,13 +223,17 @@ Built flow by flow from the [CRUD file](https://www.figma.com/design/djs9NKqC3YG
 - **Follow-ups**: the unsaved-changes guard now also covers the browser's Back button and links that only change the address; the User Details tab shows the Contact and Job information cards (`ARS_Users_ContactInfo Card`, `ARS_Users_Job Info Card`), each edited and saved on its own, with values kept in memory for the session.
 - Not built because the CRUD file doesn't draw them: bulk delete, detail pages for objects other than users, and the other user tabs.
 
-All flow 1 to 4 commits are on `origin/main`; the follow-ups are local until pushed.
+All flow 1 to 4 commits and the follow-ups above are on `origin/main`.
+
+### 11 Nov: move objects
+
+Built from a second Figma file, [ARS_WebUI2_Move_Browse_Objects](https://www.figma.com/design/IXKXZpycHiFcKbvHMvlc9r/ARS_WebUI2_Move_Browse_Objects?node-id=2008-1687). Move opens a side sheet (Iris Side sheet with the directory tree) from a row menu, the selection bar or a user page, then shows a toast with Undo and View. In Tree view, rows can also be dragged onto a folder in the left panel. Three kit components are new and listed under "Missing from Figma": Selected objects block, the Move toast and Element-Dragged. The Iris Side sheet gained an optional header icon, and the Iris Tree accepts drops from outside it. Flat view and Tree view keep separate sample data, so a moved Flat view user changes its Location text only. The checks are in Flow 6 of [docs/review-notes.md](docs/review-notes.md).
 
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
 
-- **Components changed:** ActionBar, AiPanel, AppHeader, Avatar, Badge, Button, Checkbox, FormField, GlobalSidebar, IconButton, Link, Menu, Modal, MultiSelect, NavItem, Pagination, Select, SideSheet, Sidebar, SplitButton, Stepper, Tabs, TextInput, Textarea, Toast.
+- **Components changed:** ActionBar, AiPanel, AppHeader, Avatar, Badge, Button, Checkbox, FormField, GlobalSidebar, IconButton, Link, Menu, Modal, MultiSelect, NavItem, Pagination, Select, SideSheet, Sidebar, SplitButton, Stepper, Tabs, TextInput, Textarea, Toast, Tree.
 - **Components added:** Banner, Spinner, TableCell, TableHeadItem, Tag, Toggle, Tree.
 - **App files:**
   - `App.tsx` and `main.tsx`;
