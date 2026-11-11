@@ -74,14 +74,14 @@ const TREE: RawNode[] = [
   { id: 'managed-units', name: 'Managed units', type: 'container', description: 'Delegated administrative units.', icon: 'FolderStar', leafCount: 18 },
   {
     id: 'managed-directories',
-    name: 'Managed Directories',
+    name: 'Managed directories',
     type: 'container',
     description: 'Directories under management.',
     icon: 'UserCircleCheck',
     children: [
       {
         id: 'active-directories',
-        name: 'Active Directories',
+        name: 'Active Directory',
         type: 'container',
         description: 'On-premises Active Directory forests.',
         children: [
@@ -119,7 +119,7 @@ const TREE: RawNode[] = [
       },
       {
         id: 'entra-directories',
-        name: 'Entra Directories',
+        name: 'Entra ID',
         type: 'container',
         description: 'Microsoft Entra ID tenants.',
         children: [

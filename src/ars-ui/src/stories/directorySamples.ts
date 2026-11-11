@@ -41,11 +41,11 @@ export const directoryTree: TreeNode[] = [
   { id: 'managed-units', label: 'Managed units', icon: 'FolderSimpleStar', children: collapsed('managed-units') },
   {
     id: 'managed',
-    label: 'Managed Directories',
+    label: 'Managed directories',
     icon: 'UserCircleCheck',
     separatorBefore: true,
     children: [
-      folder('ad', 'Active Directories', [
+      folder('ad', 'Active Directory', [
         folder('o1d', 'O1D.local', [
           folder('builtin', 'Builtin', collapsed('builtin')),
           folder('dg-tests', 'DG-Tests', collapsed('dg-tests')),
@@ -63,7 +63,7 @@ export const directoryTree: TreeNode[] = [
         ]),
         folder('o2d', 'O2D.local', collapsed('o2d')),
       ]),
-      folder('entra', 'Entra Directories', [
+      folder('entra', 'Entra ID', [
         {
           id: 'tenant',
           label: '3bf67d.onmicrosoft.com',

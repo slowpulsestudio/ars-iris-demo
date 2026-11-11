@@ -2,13 +2,13 @@ import { useMemo, useState, type MouseEvent } from 'react';
 import {
   ARSADUserActions,
   ARSActionBar,
-  ARSCreateMenu,
   ARSEntraUserActions,
   ARSFilterMenu,
   ARSFlatViewUserContent,
+  ARSNewObjectMenu,
   ARSPageMenu,
 } from '@ars';
-import { CREATE_MENU } from '@ars/components/ARSCreateMenu/ARSCreateMenu.js';
+import { NEW_OBJECT_MENU } from '@ars/components/ARSNewObjectMenu/ARSNewObjectMenu.js';
 import { AppShell } from '../AppShell/AppShell.js';
 import { useUsers } from '../../lib/usersStore.js';
 import { useAppShell } from '../../lib/appShellContext.js';
@@ -50,9 +50,9 @@ function statusTone(status: string): BadgeTone {
 /** Items-per-page choices offered below the list. */
 const PAGE_SIZE_OPTIONS = [10, 15, 20, 30, 50];
 
-/** Icon of each Create menu entry, by label. */
+/** Icon of each New object menu entry, by label. */
 const CREATE_ICONS = new Map(
-  CREATE_MENU.flatMap((row) => (row === 'divider' || !row.icon ? [] : [[row.label, row.icon] as const])),
+  NEW_OBJECT_MENU.flatMap((row) => (row === 'divider' || !row.icon ? [] : [[row.label, row.icon] as const])),
 );
 
 /** The icon of the Create menu entry for an object type. */
@@ -214,7 +214,7 @@ export function UsersPage() {
       <RowActions {...rowMenu.menuProps} ariaLabel={`Actions for ${rowUser?.name ?? 'user'}`} onAction={onRowAction} />
       <ARSFilterMenu {...filterMenu.menuProps} />
       <ARSPageMenu {...pageMenu.menuProps} onAction={onPageAction} />
-      <ARSCreateMenu
+      <ARSNewObjectMenu
         {...createMenu.menuProps}
         onAction={(label) => {
           const type = objectTypeFromMenuLabel(label);
@@ -232,6 +232,7 @@ export function UsersPage() {
 
       <ARSActionBar
         variant={selectedUsers.length === 1 ? '2' : 'Default'}
+        showDelete={selectedUsers.length !== 1}
         open={selected.size > 0}
         selectedCount={selected.size}
         totalCount={users.length}

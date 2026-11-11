@@ -31,6 +31,8 @@ export interface ARSActionBarProps {
   /** Called with the label of the pressed action and its button. */
   onAction?: (label: string, event: MouseEvent<HTMLButtonElement>) => void;
   onDismiss?: () => void;
+  /** Whether the Delete group is shown; the one-row bar in ARS_WebUI2_CRUD (1378:48538) has none. */
+  showDelete?: boolean;
   /** Where the bar sits; Figma: 21px above the page bottom, centred in the content area. */
   layout?: 'floating' | 'inline';
   className?: string;
@@ -50,15 +52,18 @@ export function ARSActionBar({
   onShowSelectedChange,
   onAction,
   onDismiss,
+  showDelete = true,
   layout = 'floating',
   className,
 }: ARSActionBarProps) {
   const [localShowSelected, setLocalShowSelected] = useState(false);
   const isDefault = variant === 'Default';
   const toggled = showSelected ?? localShowSelected;
-  const groups = GROUPS[variant].map((group) =>
-    group.map((item) => ({ ...item, onClick: (e: MouseEvent<HTMLButtonElement>) => onAction?.(item.label, e) })),
-  );
+  const groups = GROUPS[variant]
+    .filter((group) => showDelete || group[0] !== DELETE)
+    .map((group) =>
+      group.map((item) => ({ ...item, onClick: (e: MouseEvent<HTMLButtonElement>) => onAction?.(item.label, e) })),
+    );
   return (
     <ActionBar
       open={open}
