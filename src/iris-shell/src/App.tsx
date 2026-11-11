@@ -22,6 +22,10 @@ import { GroupsPage } from './views/GroupsPage/GroupsPage.js';
 import { ManagedUnitMembersPage, ManagedUnitsPage } from './views/ManagedUnitsPage/ManagedUnitsPage.js';
 import { IdentitySectionPage } from './views/IdentityManagerPage/IdentitySectionPage.js';
 import { SafeguardPage } from './views/SafeguardPage/SafeguardPage.js';
+import { UserViewHome } from './views/UserView/UserViewHome.js';
+import { ProfilePage } from './views/UserView/ProfilePage.js';
+import { ApprovalsPage } from './views/UserView/ApprovalsPage.js';
+import { MyAccessPage } from './views/UserView/MyAccessPage.js';
 import { WelcomePage } from './views/WelcomePage/WelcomePage.js';
 import { StorybooksPage } from './views/StorybooksPage/StorybooksPage.js';
 import { ComponentsReviewPage } from './views/ComponentsReviewPage/ComponentsReviewPage.js';
@@ -79,21 +83,14 @@ function renderRoute(route: Route) {
       return <SafeguardPage />;
     case 'welcome':
       return <WelcomePage />;
-    // WIP:userview — placeholders until the UserView Figma file is final (docs/ars-component-map.md).
     case 'userViewHome':
-      return <WipPage title="Home" icon="House" section="Active Roles" activeGlobalItem="#/user-view/home" />;
+      return <UserViewHome />;
     case 'userViewProfile':
-      return (
-        <WipPage title="User Profile" icon="User" section="Active Roles" activeGlobalItem="#/user-view/profile" />
-      );
+      return <ProfilePage />;
     case 'userViewApprovals':
-      return (
-        <WipPage title="Approvals" icon="Check" section="Active Roles" activeGlobalItem="#/user-view/approvals" />
-      );
+      return <ApprovalsPage />;
     case 'userViewAccess':
-      return (
-        <WipPage title="My Access" icon="Key" section="Active Roles" activeGlobalItem="#/user-view/my-access" />
-      );
+      return <MyAccessPage />;
     default:
       return null;
   }
