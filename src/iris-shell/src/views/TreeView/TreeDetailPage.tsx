@@ -208,7 +208,7 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
       <OUObjectPage
         breadcrumb={breadcrumb}
         ou={object}
-        onSave={(description) => updateObject(nodeId, object.id, { ...object, description })}
+        onSave={({ name, description }) => updateObject(nodeId, object.id, { ...object, name, description })}
         onBack={() => navigate(`#/tree/${nodeId}`)}
         onMoved={(destId) => {
           const entry = { item: { id: object.id, nodeId, isContainer: true }, name: object.name, typeLabel: meta.label };
@@ -236,8 +236,8 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
       <GroupObjectPage
         breadcrumb={breadcrumb}
         object={object}
-        // ARS_Group_Header writes the location as "AD1\Groups".
-        location={getPath(nodeId).slice(-2).map((n) => n.name).join('\\')}
+        // ARS_Group_Header writes the location as "AD1\Groups": from the directory down (the first two levels are tree folders).
+        location={getPath(nodeId).slice(2).map((n) => n.name).join('\\')}
         onSave={({ name, description }) =>
           updateObject(nodeId, object.id, {
             ...object,

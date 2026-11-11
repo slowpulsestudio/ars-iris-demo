@@ -26,7 +26,7 @@ import { OwnershipTab } from '../ObjectPage/OwnershipTab.js';
 import styles from '../ObjectPage/UserObjectPage.module.css';
 
 /** The tabs as ARS_Header draws them on an OU's page. */
-export const OU_TABS = ['Overview', 'General', 'Ownership', 'Roles', 'Object details', 'History'];
+export const OU_TABS = ['Overview', 'General', 'Ownership', 'Managed units', 'Roles', 'Object details', 'History'];
 
 const TAB_OVERVIEW = 'Overview';
 const TAB_GENERAL = 'General';
@@ -36,14 +36,23 @@ const TAB_DETAILS = 'Object details';
 /** Object Management as the OU's Overview draws it. */
 const OU_ACTIONS = [[{ label: 'Move' }], [{ label: 'Delete', danger: true }]];
 
-type Draft = { description: string; street: string; city: string; state: string; zip: string; country: string };
+type Draft = { name: string; description: string; street: string; city: string; state: string; zip: string; country: string };
 const shown = (value: string) => (value.trim() ? value : '-');
+
+/** Figma writes "Friday, November 7, 2025 …"; the sample data stores "2025-11-07" with no time. */
+function longDate(iso: string | undefined): string {
+  if (!iso) return '-';
+  const date = new Date(`${iso}T00:00:00`);
+  return Number.isNaN(date.getTime())
+    ? iso
+    : date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+}
 
 export interface OUObjectPageProps {
   breadcrumb: Crumb[];
   /** The OU as a row of its parent folder; its id is the OU's own node id. */
   ou: DirectoryObject;
-  onSave: (description: string) => void;
+  onSave: (patch: { name: string; description: string }) => void;
   onBack: () => void;
   /** Called with the folder the OU moved to. */
   onMoved: (destId: string) => void;
@@ -64,13 +73,22 @@ export function OUObjectPage({ breadcrumb, ou, onSave, onBack, onMoved, onDelete
   const p = useGroupProps(ou);
   const [tab, setTab] = useState(TAB_OVERVIEW);
   const [draft, setDraft] = useState<Draft | null>(null);
+  const [nameError, setNameError] = useState('');
   const [ownershipDirty, setOwnershipDirty] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [moveOpen, setMoveOpen] = useState(false);
 
   const saved: Draft = useMemo(
-    () => ({ description: ou.description, street: p.street, city: p.city, state: p.state, zip: p.zip, country: p.country }),
-    [ou.description, p],
+    () => ({
+      name: ou.name,
+      description: ou.description,
+      street: p.street,
+      city: p.city,
+      state: p.state,
+      zip: p.zip,
+      country: p.country,
+    }),
+    [ou.name, ou.description, p],
   );
   const dirty = ownershipDirty || (draft !== null && JSON.stringify(draft) !== JSON.stringify(saved));
   const guard = useLeaveGuard(dirty, () => {
@@ -85,60 +103,83 @@ export function OUObjectPage({ breadcrumb, ou, onSave, onBack, onMoved, onDelete
   }, [ou.id]);
 
   const path = getNodePath(ou.id).map((n) => n.name);
-  const location = path.slice(0, -1).join(' / ');
+  // Figma's header writes the location from the directory down, e.g. "O1D.local" (the first two levels are tree folders).
+  const location = path.slice(2, -1).join('\\');
   const children = getChildren(ou.id);
   const count = (pick: (o: DirectoryObject) => boolean) => String(children.filter(pick).length);
 
+  // OU Overview (1131:10263): four tiles, then the "Other Objects" strip with these four types.
   const overview: ARSOverviewData = {
     stats: [
       { label: 'Total Objects', value: String(children.length) },
       { label: 'Users', value: count((o) => o.type === 'user') },
       { label: 'Groups', value: count((o) => o.type === 'group') },
       { label: 'Organizational Units', value: count((o) => o.type === 'ou') },
-      { label: 'Other Objects', value: count((o) => !['user', 'group', 'ou'].includes(o.type)) },
+    ],
+    // The sample data has no shared folders or printers.
+    othersTitle: 'Other Objects',
+    others: [
+      { label: 'Shared folders', value: '0' },
+      { label: 'Contacts', value: count((o) => o.type === 'contact') },
+      { label: 'Printers', value: '0' },
+      { label: 'GMSAs', value: count((o) => o.type === 'gmsa') },
     ],
   };
 
-  const set = (key: keyof Draft) => (value: string) => setDraft((d) => (d ? { ...d, [key]: value } : d));
+  const set = (key: keyof Draft) => (value: string) => {
+    setDraft((d) => (d ? { ...d, [key]: value } : d));
+    if (key === 'name') setNameError('');
+  };
   const current = draft ?? saved;
 
+  // Labels and widths as "Organizational Unit - Properties [General]" (1065:6047) and its Edit (1069:7492) draw them.
   const generalRows: DetailsRow[] = [
+    { label: 'Name', value: saved.name },
     { label: 'Description', value: shown(saved.description) },
     { label: 'Street address', value: shown(saved.street) },
     { label: 'City', value: shown(saved.city) },
-    { label: 'State/Province', value: shown(saved.state) },
-    { label: 'Zip/Postal Code', value: shown(saved.zip) },
-    { label: 'Country/Region', value: shown(saved.country) },
+    { label: 'State/province', value: shown(saved.state) },
+    { label: 'ZIP/postal code', value: shown(saved.zip) },
+    { label: 'Country/region', value: shown(saved.country) },
   ];
-  const generalFields: FormInputProps[] = [
-    { label: 'Description', multiline: true, value: current.description, onChange: set('description') },
-    { label: 'Street address', multiline: true, value: current.street, onChange: set('street') },
-    { label: 'City', value: current.city, onChange: set('city'), width: 280 },
-    { label: 'State/Province', value: current.state, onChange: set('state'), width: 280 },
-    { label: 'Zip/Postal Code', value: current.zip, onChange: set('zip'), width: 280 },
-    { label: 'Country/Region', value: current.country, onChange: set('country'), width: 280 },
+  const generalFields: (FormInputProps | FormInputProps[])[] = [
+    { label: 'Name', value: current.name, onChange: set('name'), error: nameError, width: 576 },
+    { label: 'Description', multiline: true, value: current.description, onChange: set('description'), width: 576 },
+    [
+      { label: 'Street address', value: current.street, onChange: set('street'), width: 280 },
+      { label: 'City', value: current.city, onChange: set('city'), width: 280 },
+    ],
+    [
+      { label: 'State/province', value: current.state, onChange: set('state'), width: 280 },
+      { label: 'ZIP/postal code', value: current.zip, onChange: set('zip'), width: 280 },
+    ],
+    { label: 'Country/region', value: current.country, onChange: set('country'), width: 280 },
   ];
 
   const saveGeneral = () => {
     if (!draft) return;
-    onSave(draft.description);
+    if (!draft.name.trim()) {
+      setNameError('Name is required.');
+      return;
+    }
+    onSave({ name: draft.name.trim(), description: draft.description });
     saveGroupProps(ou.id, { street: draft.street, city: draft.city, state: draft.state, zip: draft.zip, country: draft.country });
     setDraft(null);
     showToast('Successfully updated Organizational Unit', {
-      supportingText: `Successfully updated properties for Organizational Unit ${ou.name}`,
+      supportingText: `Successfully updated properties for Organizational Unit ${draft.name.trim()}`,
     });
   };
 
-  const dn = `OU=${ou.name},${path
-    .slice(0, -1)
-    .reverse()
-    .map((n) => `OU=${n}`)
-    .join(',')}`;
+  // Figma: "OU=Test OU,DC=roles2,DC=net" — the OUs up to the domain, then the domain's parts (path[2] is the domain).
+  const dn = [
+    ...path.slice(3).reverse().map((n) => `OU=${n}`),
+    ...(path[2] ?? '').split('.').filter(Boolean).map((part) => `DC=${part}`),
+  ].join(',');
   const detailRows: DetailsRow[] = [
     { label: 'Fully qualified domain name of the object', value: ou.name },
     { label: 'Distinguished name', value: dn },
     { label: 'Object class', value: 'organizationalUnit' },
-    { label: 'Created', value: ou.details.created ?? '-' },
+    { label: 'Created', value: longDate(ou.details.created) },
     { label: 'Modified', value: '-' },
     { label: 'Original USN', value: '1234567890123' },
     { label: 'Current USN', value: '1234567890132' },
@@ -158,7 +199,10 @@ export function OUObjectPage({ breadcrumb, ou, onSave, onBack, onMoved, onDelete
           editing={draft !== null}
           rows={generalRows}
           fields={generalFields}
-          onEdit={() => setDraft(saved)}
+          onEdit={() => {
+            setNameError('');
+            setDraft(saved);
+          }}
           onCancel={() => leave(() => setDraft(null))}
           onSave={saveGeneral}
         />
@@ -177,7 +221,7 @@ export function OUObjectPage({ breadcrumb, ou, onSave, onBack, onMoved, onDelete
       );
     }
     if (tab === TAB_DETAILS) {
-      return <DetailsCard title="Properties" helper="View technical LDAP object attributes." editing={false} rows={detailRows} actions={<></>} />;
+      return <DetailsCard title="Properties" editing={false} rows={detailRows} actions={<></>} />;
     }
     return <EmptyFigure figure={Dish} label={tab} />;
   };
@@ -187,7 +231,7 @@ export function OUObjectPage({ breadcrumb, ou, onSave, onBack, onMoved, onDelete
       <ARSUserPage
         title={ou.name}
         icon="Folder"
-        objectClass="Organizational Unit"
+        objectClass="Organizational unit"
         objectName={location}
         tab={tab}
         tabs={OU_TABS}

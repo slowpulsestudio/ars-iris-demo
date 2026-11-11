@@ -7,7 +7,8 @@ import { navigate } from '../../lib/router.js';
 import { showToast } from '../../lib/toastStore.js';
 import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
 
-const EMPTY: ARSNewOrganizationalUnitValues = { name: '', description: '', protect: true, openProperties: false };
+// Figma draws "Protect container from accidental deletion" unticked (1394:14812, 1349:12126).
+const EMPTY: ARSNewOrganizationalUnitValues = { name: '', description: '', protect: false, openProperties: false };
 
 export interface CreateOUModalProps {
   open: boolean;
