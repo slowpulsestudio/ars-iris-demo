@@ -280,6 +280,10 @@ Each item on the "not built" list was checked against Figma again before buildin
 
 Users > Create in the Flat view had the long New object menu (groups, OUs, bulk actions), which I put there by misreading "the CRUD file's menu is correct". It now opens ARS_New User Entra Dir, Variant3 ([2275:91121](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS-Primary?node-id=2275-91121)): New Entra User, New AD User, Add User. The long menu stays on the Tree view's Create. A new Entra user is added with Location "Entra" so its row menu is the Entra one. The group and OU dialogs on the Users page were removed, as nothing opens them any more.
 
+### 11 Nov: user Memberships tab
+
+The user Memberships tab, which was an empty state, now lists the groups the user is a member of, laid out as the Members Of page in the Groups file (search, split Add member button, group table, paging, Add Member modal). The sample data comes from the demo site (https://product-test-pi-indol.vercel.app/#/users): the ten sample users have its two groups each, and other users get two from the same eight groups. The Overview card, the tab label and the list all use the one list, so they agree (Isabella Clark: 2) and adding a group raises all three. Roles is still the empty state, as neither Figma nor the demo site has content for it. Differences from Figma are in the Flow 3 notes (`lib/userMemberships.ts`, `views/ObjectPage/UserMembershipsTab.tsx`).
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).

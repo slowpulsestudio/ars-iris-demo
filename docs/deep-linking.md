@@ -42,6 +42,7 @@ Changing tab clears `edit`, `dialog`, `target` and `view`, so state from one tab
 | Move sheet for two objects in a folder | `#/admin-user/tree/o1d-builtin?select=o1d-builtin-o0,o1d-builtin-o2&dialog=move&target=o1d-builtin-o0,o1d-builtin-o2` |
 | A group's Members of view | `#/admin-user/tree/o1d-builtin/o1d-builtin-o23?tab=memberships&view=members-of` |
 | Add Member with one object chosen | `#/admin-user/tree/o1d-builtin/o1d-builtin-o23?tab=memberships&dialog=add-member&pick=o1d-builtin-o4` |
+| A user's Memberships tab, Add Member with one group chosen | `#/admin-user/users/isabella-clark?tab=memberships&dialog=add-member&pick=helpdesk-operators` |
 | An OU's Ownership card, picking a manager | `#/admin-user/tree/o1d-local/o1d-test-ou?tab=ownership&edit=ownership&dialog=add-manager` |
 | The Approve modal over a pending request | `#/self-service-end-user/user-view/approvals?tab=pending&request=REQ-001&modal=approve` |
 | The Request Access sheet | `#/self-service-end-user/user-view/my-access?sheet=request-access` |
