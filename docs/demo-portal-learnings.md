@@ -24,7 +24,7 @@ The prototype opens on a welcome page, not on the product. From there a reviewer
 ## Welcome page
 
 1. **Personas as the front door.** Choosing who you are first means every later page can show the right navigation, and a review link works for any persona. Each persona is one JSON file (`lib/personas/`) with a name, title, scenario text and start page.
-2. **A link only works after a persona is picked.** A shared link opens the picker first. This surprised us when sharing prototype links, so the review notes now say which persona to pick (David Smith for the admin flows, Lisa Fernandez for self-service).
+2. **Persona links.** An address can start with a persona id: `#/admin-user/groups` signs in as David Smith and opens Groups, in a browser that has never seen the app. `#/admin-user` alone opens that persona's start page. An address with no persona (`#/groups`) still shows the picker first. The review notes use plain addresses and the Design review tasks page adds the persona per flow (a `Persona:` line under the flow heading, `admin-user` by default). The first version of the Prototype links skipped this and every link landed on the persona picker.
 3. **Reviewer tools sit outside the product.** The two icon buttons are in the top corner of the welcome page, away from the product screens, so the prototype itself looks like the real product.
 4. **Suggestion:** a "Reset" button on the welcome page that clears the saved persona and sample data. Today a reviewer has to clear browser storage by hand, and a stale persona is the most common reason a screen "doesn't match".
 5. **Suggestion:** show the build date or commit on the welcome page, so a reviewer can tell whether Vercel has the latest push.

@@ -4,7 +4,7 @@ Design review tasks for the ARS_WebUI2_CRUD screens ([Figma](https://www.figma.c
 
 **How to review.** Start the app with `pnpm dev --port 5193 --strictPort` in `src/iris-shell` and open http://localhost:5193/. The checklist is also in the app: the clipboard button on the welcome page opens Design review, then Design review tasks. While the dev server runs, ticking an item there edits this file. Each flow has two parts: **Compare with Figma** (look at the screen beside its frame) and **Confirm** (design decisions I made where Figma was silent or unclear).
 
-**Prototype links.** Each flow's "Where" line and each Compare item has a **Prototype** link that opens that screen in a new tab. Pick a persona on the welcome screen first, or the link shows the persona picker: David Smith (admin) for Flows 1 to 11, Lisa Fernandez (self-service) for Flow 12. Where the screen is a dialog or a menu, the link opens the page it starts from and says what to click. The sample objects (Isabella Clark, Julian Long, Security Users, Test OU, Global Security) are the same every time the app loads.
+**Prototype links.** Each flow's "Where" line and each Compare item has a **Prototype** link that opens that screen in a new tab. The link signs you in as the flow's persona, so there is no need to pick one first: David Smith (admin) for Flows 1 to 11 and Lisa Fernandez (self-service) for Flow 12. A flow can set its own persona with a `Persona:` line under its heading (the persona's id, for example `self-service-end-user`); without one it is `admin-user`. In the file the links are plain app addresses like `#/users`; the Design review tasks page adds the persona (`#/admin-user/users`). Where the screen is a dialog or a menu, the link opens the page it starts from and says what to click. The sample objects (Isabella Clark, Julian Long, Security Users, Test OU, Global Security) are the same every time the app loads.
 
 **Checked on screen (November 2026).** Flows 7 to 12 (Groups, OU Management, Managed Units and the self-service screens) were opened in the running app and compared with Figma's layer values (text, spacing, colours, widths) by reading the page, not by eye. What was wrong was fixed; what still differs or isn't in Figma is listed under each flow's Confirm, marked **New**. Flows 1 to 6 have not been compared in a browser yet.
 
@@ -285,7 +285,9 @@ Where: Flat view, Management units in the left panel ([Managed Units](#/manageme
 
 Figma: [ARS_WebUI2_User-View-Approvals](https://www.figma.com/design/pM8TUtMbcdF3JrEZaVXrE6/ARS_WebUI2_User-View-Approvals?node-id=10199-6651) (page "Iris"; "Ideation" and "As-Is" are not built).
 
-Where: the self-service persona's navigation: [Home](#/user-view/home), [User Profile](#/user-view/profile), [Approvals](#/user-view/approvals) and [My Access](#/user-view/my-access). Pick Lisa Fernandez on the welcome screen first.
+Persona: self-service-end-user
+
+Where: the self-service persona's navigation: [Home](#/user-view/home), [User Profile](#/user-view/profile), [Approvals](#/user-view/approvals) and [My Access](#/user-view/my-access). The links sign you in as Lisa Fernandez.
 
 ### Compare with Figma
 

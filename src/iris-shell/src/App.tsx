@@ -1,4 +1,5 @@
-import { useRoute, navigate, type Route } from './lib/router.js';
+import { useEffect } from 'react';
+import { useRoute, navigate, splitPersonaHash, type Route } from './lib/router.js';
 import { UsersProvider } from './lib/usersStore.js';
 import { DirectoryProvider } from './lib/directoryStore.js';
 import { AppShellProvider, useAppShell } from './lib/appShellContext.js';
@@ -96,10 +97,21 @@ function renderRoute(route: Route) {
   }
 }
 
-/** Until a persona is picked, every address shows the persona picker (except the Storybooks page). */
+/**
+ * Until a persona is picked, every address shows the persona picker (except the Storybooks page).
+ * An address that starts with a persona id (`#/admin-user/users`) signs that persona in first.
+ */
 function RoutedPage() {
   const route = useRoute();
-  const { persona } = useAppShell();
+  const { persona, setPersonaId } = useAppShell();
+  const { personaId: hashPersonaId } = splitPersonaHash(window.location.hash);
+  const switching = hashPersonaId !== null && persona?.id !== hashPersonaId;
+
+  useEffect(() => {
+    if (hashPersonaId && persona?.id !== hashPersonaId) setPersonaId(hashPersonaId);
+  }, [hashPersonaId, persona?.id, setPersonaId]);
+
+  if (switching) return null;
   if (route.name === 'storybooks') return <StorybooksPage />;
   if (route.name === 'componentsReview') return <ReviewHubPage />;
   if (route.name === 'componentsReviewMissing') return <ComponentsReviewPage />;

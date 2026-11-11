@@ -3,7 +3,7 @@ import { BrandLogo } from '../../components/BrandLogo/BrandLogo.js';
 import { Button } from '../../components/Button/Button.js';
 import { Checkbox } from '../../components/Checkbox/Checkbox.js';
 import { Link } from '../../components/Link/Link.js';
-import { navigate } from '../../lib/router.js';
+import { navigate, personaHash } from '../../lib/router.js';
 import {
   loadReviewNotes,
   parseInline,
@@ -14,15 +14,17 @@ import {
 import { useFixedTheme } from '../../lib/useTheme.js';
 import styles from './ReviewTasksPage.module.css';
 
-function Inline({ markdown }: { markdown: string }) {
+/** `persona` makes in-app links (`#/users`) open as that persona: `#/admin-user/users`. */
+function Inline({ markdown, persona }: { markdown: string; persona: string }) {
   return (
     <>
       {parseInline(markdown).map((part, i) => {
         if (part.kind === 'bold') return <strong key={i}>{part.text}</strong>;
         if (part.kind === 'code') return <code key={i} className={styles.code}>{part.text}</code>;
         if (part.kind === 'link') {
+          const href = part.href.startsWith('#/') ? personaHash(persona, part.href) : part.href;
           return (
-            <Link key={i} href={part.href} target="_blank" rel="noopener noreferrer">
+            <Link key={i} href={href} target="_blank" rel="noopener noreferrer">
               {part.text}
             </Link>
           );
@@ -104,7 +106,7 @@ export function ReviewTasksPage() {
             <h2 className={styles.flowTitle}>{flow.title}</h2>
             {flow.where && (
               <p className={styles.where}>
-                <Inline markdown={`Where: ${flow.where.replace(/^Where:\s*/, '')}`} />
+                <Inline markdown={`Where: ${flow.where.replace(/^Where:\s*/, '')}`} persona={flow.persona} />
               </p>
             )}
             {flow.groups.map((group) => (
@@ -119,7 +121,7 @@ export function ReviewTasksPage() {
                         ariaLabel={task.text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*`]/g, '')}
                       />
                       <span className={task.checked ? styles.done : undefined}>
-                        <Inline markdown={task.text} />
+                        <Inline markdown={task.text} persona={flow.persona} />
                       </span>
                     </li>
                   ))}

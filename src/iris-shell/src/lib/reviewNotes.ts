@@ -17,6 +17,8 @@ export interface ReviewFlow {
   title: string;
   /** The "Where:" line under the heading, as markdown. */
   where?: string;
+  /** The "Persona:" line under the heading: the persona id the flow's prototype links sign in as. */
+  persona: string;
   groups: ReviewGroup[];
 }
 
@@ -31,18 +33,25 @@ const LOCAL_KEY = 'ars.reviewTasks';
 
 const TASK = /^- \[( |x)\] (.*)$/;
 
+/** The persona a flow's prototype links sign in as, unless its "Persona:" line says otherwise. */
+const DEFAULT_REVIEW_PERSONA = 'admin-user';
+
 /** Turns the markdown into flows (## headings), groups (### headings) and tasks. */
 export function parseReviewNotes(markdown: string): ReviewFlow[] {
   const flows: ReviewFlow[] = [];
   markdown.split('\n').forEach((raw, line) => {
     if (raw.startsWith('## ')) {
-      flows.push({ title: raw.slice(3).trim(), groups: [] });
+      flows.push({ title: raw.slice(3).trim(), persona: DEFAULT_REVIEW_PERSONA, groups: [] });
       return;
     }
     const flow = flows[flows.length - 1];
     if (!flow) return;
     if (raw.startsWith('### ')) {
       flow.groups.push({ title: raw.slice(4).trim(), tasks: [] });
+      return;
+    }
+    if (raw.startsWith('Persona:')) {
+      flow.persona = raw.slice('Persona:'.length).trim() || DEFAULT_REVIEW_PERSONA;
       return;
     }
     if (raw.startsWith('Where:')) {

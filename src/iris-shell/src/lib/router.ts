@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { findPersona } from './personas.js';
 
 /**
  * Tiny hash-based router for the PoC. No deps.
@@ -6,6 +7,10 @@ import { useEffect, useState } from 'react';
  *   parseHash('#/users/abc')        -> { name: 'userDetail', params: { id: 'abc' } }
  *   parseHash('#/users')            -> { name: 'usersList',  params: {} }
  *   anything else                    -> { name: 'usersList', params: {} }
+ *
+ * An address can start with a persona id, e.g. `#/admin-user/users/abc`. The
+ * persona is signed in and the rest is the page (see `splitPersonaHash`), so
+ * a link can open a screen as a given persona.
  *
  * To navigate: `navigate('#/users/abc')`. Components subscribe via `useRoute()`.
  */
@@ -86,8 +91,25 @@ const ROUTES: RouteDef[] = [
 /** Start page: the welcome page with the persona picker. */
 const DEFAULT = '#/welcome';
 
-function parseHash(hash: string | null | undefined): Route {
+/**
+ * Splits `#/<persona-id>/<page>` into the persona and the page address. `#/<persona-id>` alone
+ * opens that persona's start page. Addresses without a persona id come back unchanged.
+ */
+export function splitPersonaHash(hash: string | null | undefined): { personaId: string | null; path: string } {
   const h = hash || DEFAULT;
+  const m = h.match(/^#\/([^/]+)(\/.*)?$/);
+  const persona = m ? findPersona(m[1]) : undefined;
+  if (!m || !persona) return { personaId: null, path: h };
+  return { personaId: persona.id, path: m[2] ? `#${m[2]}` : persona.navigation.defaultRoute };
+}
+
+/** The address of a page as seen by one persona, e.g. `#/admin-user/users`. */
+export function personaHash(personaId: string, path: string): string {
+  return `#/${personaId}${path.replace(/^#/, '')}`;
+}
+
+function parseHash(hash: string | null | undefined): Route {
+  const h = splitPersonaHash(hash).path;
   for (const r of ROUTES) {
     const m = h.match(r.pattern);
     if (m) {
