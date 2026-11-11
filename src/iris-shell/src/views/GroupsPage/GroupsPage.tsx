@@ -46,8 +46,12 @@ export function GroupsPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [removedTags, setRemovedTags] = useState<Map<string, Set<string>>>(() => new Map());
 
+  // Only groups inside a directory (under Managed Directories); the Access Templates and Managed Units folders aren't directories.
   const groups = useMemo<DirectoryObject[]>(
-    () => nodeIds(directory.nodeTree).flatMap((id) => directory.getSiblings(id).filter((o) => o.type === 'group')),
+    () =>
+      nodeIds(directory.nodeTree)
+        .filter((id) => directory.getPath(id)[0]?.id === 'managed-directories')
+        .flatMap((id) => directory.getSiblings(id).filter((o) => o.type === 'group')),
     [directory],
   );
   const tagsFor = useMemo(() => {
@@ -55,12 +59,14 @@ export function GroupsPage() {
     return (id: string) => TAG_PAIRS[(index.get(id) ?? 0) % TAG_PAIRS.length].filter((t) => !removedTags.get(id)?.has(t));
   }, [groups, removedTags]);
 
+  // Figma's Directory column: "AD1\Groups" (directory, then folders) or "Entra1" (the directory only).
   const describe = (g: DirectoryObject) => {
     const path = directory.getPath(g.parentId);
-    const entra = path[0]?.id === 'entra-directories';
+    const entra = path[1]?.id === 'entra-directories';
+    const fromDirectory = path.slice(2).map((p) => p.name);
     return {
       groupType: entra ? 'O365Group' : `${getGroupProps(g).type}Group`,
-      directory: path.slice(entra ? 1 : -2).slice(0, 2).map((p) => p.name).join('\\'),
+      directory: (entra ? fromDirectory.slice(0, 1) : fromDirectory).join('\\'),
     };
   };
 
