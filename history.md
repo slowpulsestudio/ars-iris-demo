@@ -256,10 +256,12 @@ Every screen from the Groups, OU Management, Managed Units and self-service file
 The screens from the CRUD and Move files (lists, selection bars, create, user page, delete and reset, User Details, move) were compared with Figma's layer values the same way. Almost everything already matched; three things were fixed in local commits, and the rest is marked **New** in [docs/review-notes.md](docs/review-notes.md), with the open questions at the end of that page.
 
 - **Users list tags** (`41f52a3`): the X on each tag now removes it for the session, as in the Groups list.
-- **Directory tree names** (`635690a`): "Access templates" and "Managed units" in sentence case, as in all three Figma frames.
+- **Directory tree names** (`635690a`, then `63c8fe8`): first sentence case for "Access templates" and "Managed units"; then, once you said the CRUD file wins, "Managed directories / Active Directory / Entra ID" as in its panel.
 - **Unsaved changes modal** (`21a5bbc`): "Your unsaved changes will be discarded. To continue, click Confirm. To review your changes and save them later, click Cancel." replaces text with a typo; the earlier note that Figma has the typo was wrong.
-- **Wrong Figma references fixed in the notes**: Flow 5's node is in ARS-Primary, not the CRUD file; node 1369:32139 no longer exists.
-- **Different in the two Figma files, not changed**: the New object menu list, Delete on the one-row action bar, and the directory folder names (CRUD says "Managed directories / Active Directory / Entra ID", the kit and Move file say "Managed Directories / Active Directories / Entra Directories"); the app follows the kit.
+- **Follow the CRUD file** (`63c8fe8`, `f2b76ac`): the Flat view Create button opens the CRUD New object menu (as the Tree view did); the one-row selection bar has no Delete (new `showDelete` on ARSActionBar); Tree list search also covers the folders below the current one.
+- **Menus stay on screen** (`c02b872`): the viewport clamp in the Iris Menu never ran after the menu mounted; it does now, and menus flip above their button when there is no room below.
+- **Spelling** (`235814d`): "passowrd", "Reigon" and the missing full stop in the created toast are corrected in the app; with quote style and the places where the Figma files disagree they are on the new Figma tidy-up card in the Design review tasks.
+- **Wrong Figma references fixed in the notes**: Flow 5's node is in ARS-Primary, not the CRUD file; nodes 1369:32139 and 4517:19943 no longer exist. Every item and question on the review page now carries its Figma node link.
 
 ## Iris files changed since the Iris packages were installed
 
