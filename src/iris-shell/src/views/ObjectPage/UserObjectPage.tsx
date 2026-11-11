@@ -24,6 +24,7 @@ import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { UnsavedChangesModal } from '../ObjectModals/UnsavedChangesModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { UserDetailsTab } from './UserDetailsTab.js';
+import { useLeaveGuard } from '../../lib/useLeaveGuard.js';
 import styles from './UserObjectPage.module.css';
 
 /** What the page shows and edits for a user, whichever store it comes from. */
@@ -164,8 +165,6 @@ export function UserObjectPage({
   const [resetOpen, setResetOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [moveOpen, setMoveOpen] = useState(false);
-  // What the Unsaved changes modal will do on Confirm; null = closed.
-  const [pendingLeave, setPendingLeave] = useState<{ run: () => void } | null>(null);
   // Unsaved changes in the User Details cards.
   const [detailsDirty, setDetailsDirty] = useState(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
@@ -174,29 +173,11 @@ export function UserObjectPage({
   const directoryName = data.directory.replace(/^@/, '');
 
   // Leaving a form with changes asks first.
-  const leave = (action: () => void) => {
-    if (dirty) setPendingLeave({ run: action });
-    else action();
-  };
-
-  // Holds back navigation while there are unsaved changes.
-  useEffect(() => {
-    if (!dirty) return undefined;
-    setNavigationGuard((path) => {
-      setPendingLeave({ run: () => navigate(path) });
-      return false;
-    });
-    return () => setNavigationGuard(null);
-  }, [dirty]);
-
-  const confirmLeave = () => {
-    const next = pendingLeave;
-    setNavigationGuard(null);
-    setPendingLeave(null);
+  const guard = useLeaveGuard(dirty, () => {
     setDetailsDirty(false);
     cancelEditing();
-    next?.run();
-  };
+  });
+  const { leave } = guard;
 
   // A different object starts from its own Overview.
   useEffect(() => {
@@ -407,11 +388,7 @@ export function UserObjectPage({
         location={directoryName}
         onDeleted={onDeleted}
       />
-      <UnsavedChangesModal
-        open={pendingLeave !== null}
-        onCancel={() => setPendingLeave(null)}
-        onConfirm={confirmLeave}
-      />
+      <UnsavedChangesModal open={guard.open} onCancel={guard.cancel} onConfirm={guard.confirm} />
       <MoveObjectSheet
         open={moveOpen}
         onClose={() => setMoveOpen(false)}

@@ -21,6 +21,7 @@ import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { tabsForType, PRIMARY_TAB } from './detailTabs.js';
 import { UserObjectPage, type UserObjectData } from '../ObjectPage/UserObjectPage.js';
+import { GroupObjectPage } from '../ObjectPage/GroupObjectPage.js';
 import styles from './TreeView.module.css';
 
 /** A stable UUID-looking id for an object that has none. */
@@ -197,6 +198,44 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
             href: `#/tree/${nodeId}/${object.id}`,
           })
         }
+      />
+    );
+  }
+
+  if (object.type === 'group') {
+    return (
+      <GroupObjectPage
+        breadcrumb={breadcrumb}
+        object={object}
+        location={pathTail}
+        onSave={({ name, description }) =>
+          updateObject(nodeId, object.id, {
+            ...object,
+            name,
+            description,
+            details: { ...object.details, displayName: name, description },
+          })
+        }
+        onBack={() => navigate(`#/tree/${nodeId}`)}
+        onDeleted={() => {
+          navigate(`#/tree/${nodeId}`);
+          removeObject(nodeId, object.id);
+        }}
+        onPrevious={prev ? () => navigate(`#/tree/${nodeId}/${prev.id}`) : undefined}
+        onNext={next ? () => navigate(`#/tree/${nodeId}/${next.id}`) : undefined}
+        isFavorite={isFavorite(object.id)}
+        onToggleFavorite={() =>
+          toggleFavorite({
+            id: object.id,
+            name: object.name,
+            type: meta.label,
+            description: object.description,
+            href: `#/tree/${nodeId}/${object.id}`,
+          })
+        }
+        currentNodeId={nodeId}
+        canMoveTo={(destId) => canMoveItem(moveItem, destId)}
+        onMove={onMoveObject}
       />
     );
   }
