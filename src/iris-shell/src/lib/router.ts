@@ -23,6 +23,7 @@ export type Route =
   | { name: 'applications'; params: Record<string, never> }
   | { name: 'accessTemplates'; params: Record<string, never> }
   | { name: 'managementUnits'; params: Record<string, never> }
+  | { name: 'managedUnitMembers'; params: { id: string } }
   | { name: 'insights'; params: Record<string, never> }
   | { name: 'services'; params: Record<string, never> }
   | { name: 'identityHome'; params: Record<string, never> }
@@ -62,6 +63,7 @@ const ROUTES: RouteDef[] = [
   { name: 'applications', pattern: /^#\/applications$/, keys: [] },
   { name: 'accessTemplates', pattern: /^#\/access-templates$/, keys: [] },
   { name: 'managementUnits', pattern: /^#\/management-units$/, keys: [] },
+  { name: 'managedUnitMembers', pattern: /^#\/management-units\/([^/]+)$/, keys: ['id'] },
   { name: 'insights', pattern: /^#\/insights$/, keys: [] },
   { name: 'services', pattern: /^#\/services$/, keys: [] },
   { name: 'identityInsights', pattern: /^#\/identity\/insights$/, keys: [] },

@@ -19,6 +19,7 @@ import { IdentityManagerPage } from './views/IdentityManagerPage/IdentityManager
 import { IdentityInsightsPage } from './views/IdentityManagerPage/IdentityInsightsPage.js';
 import { IdentityPlaceholder } from './views/IdentityManagerPage/IdentityPlaceholder.js';
 import { GroupsPage } from './views/GroupsPage/GroupsPage.js';
+import { ManagedUnitMembersPage, ManagedUnitsPage } from './views/ManagedUnitsPage/ManagedUnitsPage.js';
 import { IdentitySectionPage } from './views/IdentityManagerPage/IdentitySectionPage.js';
 import { SafeguardPage } from './views/SafeguardPage/SafeguardPage.js';
 import { WelcomePage } from './views/WelcomePage/WelcomePage.js';
@@ -53,7 +54,9 @@ function renderRoute(route: Route) {
     case 'accessTemplates':
       return <WipPage title="Access templates" icon="UserCircleCheck" />;
     case 'managementUnits':
-      return <WipPage title="Management units" icon="FolderSimpleStar" />;
+      return <ManagedUnitsPage />;
+    case 'managedUnitMembers':
+      return <ManagedUnitMembersPage unitId={route.params.id} />;
     case 'insights':
       return <InsightsPage />;
     case 'services':

@@ -123,6 +123,7 @@ export const ROUTE_TO_SECONDARY_NAV: Record<string, string> = {
   applications: 'applications',
   accessTemplates: 'access-templates',
   managementUnits: 'management-units',
+  managedUnitMembers: 'management-units',
 };
 
 /** Route name → directory view segment (Flat/Tree/Favourites). Entity/WIP
@@ -136,6 +137,7 @@ export const ROUTE_TO_VIEW: Record<string, string> = {
   applications: 'flat',
   accessTemplates: 'flat',
   managementUnits: 'flat',
+  managedUnitMembers: 'flat',
   treeRoot: 'tree',
   treeList: 'tree',
   treeDetail: 'tree',
