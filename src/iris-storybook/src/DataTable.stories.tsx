@@ -165,6 +165,19 @@ export const Empty: Story = {
   },
 };
 
+export const ClickableRows: Story = {
+  name: 'Clickable rows, no actions',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'hideRowActions leaves out the trailing action column, and onRowClick makes each row open on click, Enter or Space. Used by the self-service Approvals and My Access tables, which draw no action column.',
+      },
+    },
+  },
+  args: { hideRowActions: true, onRowClick: () => {} },
+};
+
 export const EmptyWithAction: Story = {
   name: 'Empty with action',
   args: {

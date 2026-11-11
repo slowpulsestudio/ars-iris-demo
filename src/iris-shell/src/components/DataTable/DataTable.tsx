@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react';
 import { cx } from '../../lib/cx.js';
 import { Checkbox } from '../Checkbox/Checkbox.js';
 import { IconButton } from '../IconButton/IconButton.js';
@@ -54,6 +54,10 @@ export interface DataTableProps<TRow extends DataTableRow> {
   /** Render a custom control (e.g. a menu trigger) in each row's trailing
    *  action cell. Takes precedence over the default `onRowAction` button. */
   rowActions?: (row: TRow, i: number) => ReactNode;
+  /** Leaves out the trailing action column (tables whose rows have no actions). */
+  hideRowActions?: boolean;
+  /** Makes each row clickable and keyboard-focusable (Enter or Space opens it). */
+  onRowClick?: (row: TRow) => void;
   /** Rendered inside the table body when `rows` is empty. */
   emptyState?: DataTableEmptyState;
   className?: string;
@@ -79,6 +83,8 @@ export function DataTable<TRow extends DataTableRow>({
   onSelectionChange,
   onRowAction,
   rowActions,
+  hideRowActions,
+  onRowClick,
   emptyState,
   className,
 }: DataTableProps<TRow>) {
@@ -170,7 +176,9 @@ export function DataTable<TRow extends DataTableRow>({
             <span className={styles.headLabel}>{col.header}</span>
           </HeadCell>
         ))}
-        <HeadCell width="44px" className={styles.actionCell} pin="end" aria-label="Row actions" />
+        {!hideRowActions && (
+          <HeadCell width="44px" className={styles.actionCell} pin="end" aria-label="Row actions" />
+        )}
       </div>
 
       <div className={styles.body} role="rowgroup">
@@ -202,7 +210,16 @@ export function DataTable<TRow extends DataTableRow>({
               key={key}
               role="row"
               aria-selected={isSelected || undefined}
-              className={cx(styles.row, isSelected && styles.rowSelected)}
+              className={cx(styles.row, isSelected && styles.rowSelected, onRowClick && styles.rowClickable)}
+              {...(onRowClick && {
+                tabIndex: 0,
+                onClick: () => onRowClick(row),
+                onKeyDown: (e: KeyboardEvent<HTMLDivElement>) => {
+                  if (e.target !== e.currentTarget || (e.key !== 'Enter' && e.key !== ' ')) return;
+                  e.preventDefault();
+                  onRowClick(row);
+                },
+              })}
             >
               {selectable && (
                 <BodyCell width="40px" className={styles.checkboxCell} pin="startInner">
@@ -223,18 +240,20 @@ export function DataTable<TRow extends DataTableRow>({
                   {col.cell(row, i)}
                 </BodyCell>
               ))}
-              <BodyCell width="44px" className={styles.actionCell} pin="end">
-                {rowActions ? (
-                  rowActions(row, i)
-                ) : (
-                  <IconButton
-                    icon="DotsThree"
-                    ariaLabel={`Actions for ${label}`}
-                    size="s"
-                    onClick={() => onRowAction?.(row)}
-                  />
-                )}
-              </BodyCell>
+              {!hideRowActions && (
+                <BodyCell width="44px" className={styles.actionCell} pin="end">
+                  {rowActions ? (
+                    rowActions(row, i)
+                  ) : (
+                    <IconButton
+                      icon="DotsThree"
+                      ariaLabel={`Actions for ${label}`}
+                      size="s"
+                      onClick={() => onRowAction?.(row)}
+                    />
+                  )}
+                </BodyCell>
+              )}
             </div>
           );
         })}

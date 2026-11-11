@@ -1,0 +1,44 @@
+.svg {
+  display: block;
+  width: 100%;
+  height: 200px;
+  overflow: visible;
+}
+
+.gridline {
+  stroke: var(--oi-border-color-muted);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+
+.tick,
+.axisLabel {
+  font-family: var(--oi-font-family-default);
+  font-size: 10px;
+  fill: var(--oi-content-color-tertiary);
+}
+
+.line {
+  fill: none;
+  stroke: var(--oi-chart-color-1);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.point {
+  stroke: var(--oi-chart-color-1);
+  stroke-width: 8;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  transition: opacity var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+.point:hover {
+  opacity: 0.85;
+}
+
+.point:focus-visible {
+  outline: none;
+  stroke: var(--oi-border-color-focus);
+}

@@ -89,6 +89,15 @@
   background-color: var(--oi-background-color-secondary);
 }
 
+.rowClickable {
+  cursor: pointer;
+}
+
+.rowClickable:focus-visible {
+  outline: 1.5px solid var(--oi-border-color-focus);
+  outline-offset: -1.5px;
+}
+
 .rowSelected,
 .rowSelected:hover {
   background-color: var(--oi-background-color-brand);
