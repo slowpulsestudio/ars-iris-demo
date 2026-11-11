@@ -59,6 +59,12 @@ export interface ARSManagedByProps {
   owners?: OwnerPerson[];
   rows?: DetailsRow[];
   fields?: FormInputProps[];
+  /** Subtitle under "Managed by" (the Groups file draws one; the OU file doesn't). */
+  helper?: string;
+  /** Read rows shown after Secondary owners. */
+  trailingRows?: DetailsRow[];
+  /** Edit fields shown after Secondary owners. */
+  trailingFields?: FormInputProps[];
   onOpenPerson?: (person: OwnerPerson) => void;
   onRemoveManager?: (person: OwnerPerson) => void;
   onRemoveOwner?: (person: OwnerPerson) => void;
@@ -81,6 +87,9 @@ export function ARSManagedBy({
   owners: ownersProp,
   rows,
   fields,
+  helper,
+  trailingRows,
+  trailingFields,
   onOpenPerson,
   onRemoveManager,
   onRemoveOwner,
@@ -119,6 +128,7 @@ export function ARSManagedBy({
   return (
     <Card
       title="Managed by"
+      helper={helper}
       actions={actions}
       className={cx(styles.card, !editing && styles.readable, state === 'Hover' && styles.hovered, className)}
     >
@@ -151,6 +161,9 @@ export function ARSManagedBy({
             <NotSet />
           )}
         </OwnerSection>
+        {editing
+          ? trailingFields?.map((f) => <FormInput key={f.label} {...f} />)
+          : trailingRows && <DetailsList rows={trailingRows} />}
       </div>
     </Card>
   );
