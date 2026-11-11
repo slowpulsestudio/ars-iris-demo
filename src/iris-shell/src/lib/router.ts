@@ -113,14 +113,29 @@ export function navigate(path: string): void {
 }
 
 let guard: ((path: string) => boolean) | null = null;
+let lastHash = typeof window === 'undefined' ? '' : window.location.hash;
 
 /**
- * Lets a page hold back `navigate()` (e.g. a form with unsaved changes): the
+ * Lets a page hold back navigation (e.g. a form with unsaved changes): the
  * guard returns false to block, and the page can call `navigate()` again once
- * it has cleared its guard. Links that only set the hash are not guarded.
+ * it has cleared its guard. It covers `navigate()`, links and the browser's
+ * Back and Forward buttons; a blocked hash change puts the old address back.
  */
 export function setNavigationGuard(next: ((path: string) => boolean) | null): void {
   guard = next;
+}
+
+// Registered when the module loads, so it runs before any `useRoute` listener.
+if (typeof window !== 'undefined') {
+  window.addEventListener('hashchange', (e) => {
+    const next = window.location.hash;
+    if (guard && next !== lastHash && !guard(next)) {
+      e.stopImmediatePropagation();
+      window.history.replaceState(null, '', lastHash || DEFAULT);
+      return;
+    }
+    lastHash = next;
+  });
 }
 
 /**
