@@ -5,6 +5,7 @@ export const FIGMA_FILES = {
   move: { name: 'ARS_WebUI2_Move_Browse_Objects', key: 'IXKXZpycHiFcKbvHMvlc9r' },
   groups: { name: 'ARS_WebUI2_Groups', key: 'KukLyO1RkJ4kYTzxGWd2Q7' },
   ou: { name: 'ARS_WebUI2_OU_Management', key: 'DwKW5hhTprayGwhbMtOKMr' },
+  managedUnits: { name: 'ARS_WebUI2_Managed-Units', key: 'WsXrW6CBUME9thy8z8hPRR' },
 } as const;
 
 export type FigmaFileId = keyof typeof FIGMA_FILES;
@@ -101,5 +102,19 @@ export const MISSING_FROM_FIGMA: MissingFromFigmaEntry[] = [
     figmaNodeId: '1394:14812',
     file: 'ou',
     note: 'The New Organizational Unit modal: Name, Description and protect checkbox beside an explanation. In the ARS_WebUI2_OU_Management file, not in ARS - Primary.',
+  },
+  {
+    component: 'ARSManagedUsersContent',
+    figmaName: 'ARS_Managed_Users_Content',
+    figmaNodeId: '7058:6179',
+    file: 'managedUnits',
+    note: 'The Managed Units list: header, search and a Name, Modified, Description and Type table.',
+  },
+  {
+    component: 'ARSManagedUnitMembers',
+    figmaName: 'ARS_Managed_Unit_Members',
+    figmaNodeId: '7074:6939',
+    file: 'managedUnits',
+    note: 'A managed unit\'s members: group-style header, search and a Name, Description and Type table (ARS_Managed_Unit_Members_Table 7064:12185).',
   },
 ];

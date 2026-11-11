@@ -203,6 +203,16 @@ export {
   type ARSNewOrganizationalUnitProps,
   type ARSNewOrganizationalUnitValues,
 } from './components/ARSNewOrganizationalUnit/ARSNewOrganizationalUnit.js';
+export {
+  ARSManagedUsersContent,
+  type ARSManagedUnitRow,
+  type ARSManagedUsersContentProps,
+} from './components/ARSManagedUsersContent/ARSManagedUsersContent.js';
+export {
+  ARSManagedUnitMembers,
+  type ARSManagedUnitMember,
+  type ARSManagedUnitMembersProps,
+} from './components/ARSManagedUnitMembers/ARSManagedUnitMembers.js';
 export { FolderArrowRightIcon } from './parts/FolderArrowRightIcon.js';
 export { ARSActionBar, type ARSActionBarProps } from './components/ARSActionBar/ARSActionBar.js';
 export { ARSSidebar, type ARSSidebarProps } from './components/ARSSidebar/ARSSidebar.js';
