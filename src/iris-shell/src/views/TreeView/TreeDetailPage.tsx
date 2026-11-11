@@ -236,7 +236,8 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
       <GroupObjectPage
         breadcrumb={breadcrumb}
         object={object}
-        location={pathTail}
+        // ARS_Group_Header writes the location as "AD1\Groups".
+        location={getPath(nodeId).slice(-2).map((n) => n.name).join('\\')}
         onSave={({ name, description }) =>
           updateObject(nodeId, object.id, {
             ...object,

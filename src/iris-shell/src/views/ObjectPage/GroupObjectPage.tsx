@@ -56,6 +56,10 @@ type Editing = typeof TAB_GENERAL | null;
 type Draft = Record<string, string>;
 
 const NOT_SET = 'Not set';
+/** Tooltip for Figma's info icons, which carry no text (as in the New object form). */
+const INFO = 'More information';
+/** Figma's "0/100" on the Description field. */
+const DESCRIPTION_LIMIT = 100;
 const shown = (value: string) => (value.trim() ? value : '-');
 
 function generalDraft(object: DirectoryObject, p: GroupProps): Draft {
@@ -208,15 +212,15 @@ export function GroupObjectPage({
   ];
 
   const generalFields: (FormInputProps | FormInputProps[])[] = [
-    { label: 'Display name', required: true, value: draft.displayName, onChange: set('displayName'), error: errors.displayName, width: 280 },
-    { label: 'Group name (pre-Windows 2000)', required: true, value: draft.groupName, onChange: set('groupName'), error: errors.groupName, width: 280 },
-    { label: 'Description', multiline: true, value: draft.description, onChange: set('description') },
-    { label: 'Resource URL', value: draft.resourceUrl, onChange: set('resourceUrl'), width: 280 },
-    { label: 'Keywords', value: draft.keywords, onChange: set('keywords'), width: 280 },
-    { label: 'Email', value: draft.email, onChange: set('email'), width: 280 },
+    { label: 'Display name', required: true, info: INFO, value: draft.displayName, onChange: set('displayName'), error: errors.displayName, width: 280 },
+    { label: 'Group name (pre-Windows 2000)', required: true, info: INFO, value: draft.groupName, onChange: set('groupName'), error: errors.groupName, width: 280 },
+    { label: 'Description', multiline: true, maxLength: DESCRIPTION_LIMIT, value: draft.description, onChange: set('description'), width: 280 },
+    { label: 'Resource URL', placeholder: 'Resource URL', value: draft.resourceUrl, onChange: set('resourceUrl'), width: 280 },
+    { label: 'Keywords', placeholder: 'Keywords', value: draft.keywords, onChange: set('keywords'), width: 280 },
+    { label: 'Email', placeholder: 'Email', value: draft.email, onChange: set('email'), width: 280 },
     { label: 'Group scope', radio: true, options: GROUP_SCOPES, value: draft.scope, onChange: set('scope') },
     { label: 'Group type', radio: true, options: GROUP_TYPES, value: draft.type, onChange: set('type') },
-    { label: 'Tags', value: draft.tags, onChange: set('tags'), placeholder: 'Enter tags that describe this object.', width: 280 },
+    { label: 'Tags', multiline: true, help: 'Enter tags that describe this object.', value: draft.tags, onChange: set('tags'), width: 280 },
   ];
 
   const dn = `CN=${object.name},OU=Groups,DC=contoso,DC=com`;
