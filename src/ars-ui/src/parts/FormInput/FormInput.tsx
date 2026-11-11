@@ -21,6 +21,10 @@ export interface FormInputProps {
   info?: string;
   /** Error message under the field; also marks the field invalid. */
   error?: string;
+  /** Help message under the field (Figma ".Input feedback messages"). */
+  help?: string;
+  /** Character limit; shows Figma's "0/100" count in the label row. */
+  maxLength?: number;
   type?: 'text' | 'password';
   /** Trailing icon, e.g. CaretDown for a picker or Calendar for a date. */
   iconTrail?: string;
@@ -52,6 +56,8 @@ export function FormInput({
   required,
   info,
   error,
+  help,
+  maxLength,
   type,
   iconTrail,
   multiline,
@@ -99,19 +105,28 @@ export function FormInput({
           onChange={(on) => onChange?.(String(on))}
         />
       ) : (
-      <FormField label={label} required={required} helperText={info} error={error} className={styles.field}>
+      <FormField
+        label={label}
+        required={required}
+        helperText={info}
+        error={error}
+        help={help}
+        count={maxLength === undefined ? undefined : `${(value ?? '').length}/${maxLength}`}
+        className={styles.field}
+      >
         {radio && options ? (
           <Radio label={label} options={options} value={value ?? ''} onChange={(next) => onChange?.(next)} />
         ) : select ? (
           options ? dropdown : <Select label={value ?? ''} />
         ) : multiline ? (
-          <Textarea {...valueProps} {...change} placeholder={placeholder} className={styles.textarea} />
+          <Textarea {...valueProps} {...change} placeholder={placeholder} maxLength={maxLength} className={styles.textarea} />
         ) : (
           <TextInput
             type={type}
             {...valueProps}
             {...change}
             placeholder={placeholder}
+            maxLength={maxLength}
             iconTrail={iconTrail}
             disabled={disabled}
             className={styles.input}
