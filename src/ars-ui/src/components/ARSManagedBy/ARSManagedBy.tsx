@@ -54,6 +54,14 @@ export interface ARSManagedByProps {
   onSave?: () => void;
   onAddManager?: () => void;
   onAddOwner?: () => void;
+  /** Replace the sample manager, secondary owners, read rows and edit fields. */
+  manager?: OwnerPerson[];
+  owners?: OwnerPerson[];
+  rows?: DetailsRow[];
+  fields?: FormInputProps[];
+  onOpenPerson?: (person: OwnerPerson) => void;
+  onRemoveManager?: (person: OwnerPerson) => void;
+  onRemoveOwner?: (person: OwnerPerson) => void;
   className?: string;
 }
 
@@ -69,10 +77,18 @@ export function ARSManagedBy({
   onSave,
   onAddManager,
   onAddOwner,
+  manager: managerPeople = MANAGER,
+  owners: ownersProp,
+  rows,
+  fields,
+  onOpenPerson,
+  onRemoveManager,
+  onRemoveOwner,
   className,
 }: ARSManagedByProps) {
   const editing = state === 'Add manager' || state === 'Edit mode';
   const filled = state === 'Filled';
+  const owners = ownersProp ?? OWNERS;
 
   const actions = editing ? (
     <div className={styles.actions}>
@@ -94,8 +110,8 @@ export function ARSManagedBy({
       <Button variant="ghost" size="s" iconLead="Plus" onClick={onAddManager}>
         Add manager
       </Button>
-    ) : state === 'Edit mode' || filled ? (
-      <OwnerList people={MANAGER} editable={state === 'Edit mode'} showEdit />
+    ) : state === 'Edit mode' || (filled && managerPeople.length > 0) ? (
+      <OwnerList people={managerPeople} editable={state === 'Edit mode'} showEdit onOpen={onOpenPerson} onRemove={onRemoveManager} />
     ) : (
       <NotSet />
     );
@@ -112,23 +128,25 @@ export function ARSManagedBy({
         </OwnerSection>
         {editing ? (
           <div className={styles.grid}>
-            {(state === 'Add manager' ? ADD_FIELDS : EDIT_FIELDS).map((f) => (
+            {(fields ?? (state === 'Add manager' ? ADD_FIELDS : EDIT_FIELDS)).map((f) => (
               <FormInput key={f.label} {...f} />
             ))}
           </div>
         ) : (
-          <DetailsList rows={filled ? FILLED_ROWS : EMPTY_ROWS} />
+          <DetailsList rows={rows ?? (filled ? FILLED_ROWS : EMPTY_ROWS)} />
         )}
         <OwnerSection label="Secondary owners" editing={editing}>
           {editing ? (
             <>
-              {state === 'Edit mode' && <OwnerList people={OWNERS} editable />}
+              {(state === 'Edit mode' || ownersProp !== undefined) && (
+                <OwnerList people={owners} editable onOpen={onOpenPerson} onRemove={onRemoveOwner} />
+              )}
               <Button variant="ghost" size="s" iconLead="Plus" onClick={onAddOwner}>
                 Add owner
               </Button>
             </>
-          ) : filled ? (
-            <OwnerList people={OWNERS} />
+          ) : filled && owners.length > 0 ? (
+            <OwnerList people={owners} onOpen={onOpenPerson} />
           ) : (
             <NotSet />
           )}

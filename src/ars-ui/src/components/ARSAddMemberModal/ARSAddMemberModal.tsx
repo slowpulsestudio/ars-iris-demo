@@ -16,6 +16,10 @@ export interface ARSAddMemberRow {
 }
 
 export interface ARSAddMemberModalProps {
+  /** Defaults to Add Member; the manager picker reuses the modal. */
+  title?: string;
+  /** Defaults to Save. */
+  saveLabel?: string;
   /** "Object found: N". */
   found: number;
   rows: ARSAddMemberRow[];
@@ -37,6 +41,8 @@ export interface ARSAddMemberModalProps {
  * Save. Figma: Modal 215:7485 in ARS_WebUI2_Groups (not in ARS - Primary).
  */
 export function ARSAddMemberModal({
+  title = 'Add Member',
+  saveLabel = 'Save',
   found,
   rows,
   selectedIds,
@@ -57,7 +63,7 @@ export function ARSAddMemberModal({
 
   return (
     <ModalPanel
-      title="Add Member"
+      title={title}
       supportingText={`Object found: ${found}`}
       onClose={onClose}
       className={className}
@@ -67,7 +73,7 @@ export function ARSAddMemberModal({
           <Button variant="secondary" onClick={onCancel}>
             Cancel
           </Button>
-          <Button onClick={onSave}>Save</Button>
+          <Button onClick={onSave}>{saveLabel}</Button>
         </>
       }
     >

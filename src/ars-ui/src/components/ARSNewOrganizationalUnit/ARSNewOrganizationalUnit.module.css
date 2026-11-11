@@ -1,0 +1,41 @@
+.root {
+  width: 1186px;
+  max-width: 100%;
+}
+
+/* Figma: the form is 702px, the explanation 371px, a 1px divider between. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 702px) minmax(0, 371px);
+  column-gap: var(--oi-spacing-xl);
+  padding-inline: var(--oi-spacing-l);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+  padding-right: var(--oi-spacing-l);
+  border-right: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.text {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-secondary);
+}

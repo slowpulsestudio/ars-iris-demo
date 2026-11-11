@@ -4,6 +4,7 @@ export const FIGMA_FILES = {
   crud: { name: 'ARS_WebUI2_CRUD', key: 'djs9NKqC3YG6KtAhHiQ4iT' },
   move: { name: 'ARS_WebUI2_Move_Browse_Objects', key: 'IXKXZpycHiFcKbvHMvlc9r' },
   groups: { name: 'ARS_WebUI2_Groups', key: 'KukLyO1RkJ4kYTzxGWd2Q7' },
+  ou: { name: 'ARS_WebUI2_OU_Management', key: 'DwKW5hhTprayGwhbMtOKMr' },
 } as const;
 
 export type FigmaFileId = keyof typeof FIGMA_FILES;
@@ -93,5 +94,12 @@ export const MISSING_FROM_FIGMA: MissingFromFigmaEntry[] = [
     figmaNodeId: '215:7485',
     file: 'groups',
     note: 'Find objects, tick the ones to add and Save. The frame is named just "Modal" in Figma; its title is Add Member.',
+  },
+  {
+    component: 'ARSNewOrganizationalUnit',
+    figmaName: 'ARS_New_Organizational_Unit',
+    figmaNodeId: '1394:14812',
+    file: 'ou',
+    note: 'The New Organizational Unit modal: Name, Description and protect checkbox beside an explanation. In the ARS_WebUI2_OU_Management file, not in ARS - Primary.',
   },
 ];

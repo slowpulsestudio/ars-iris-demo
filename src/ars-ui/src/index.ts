@@ -198,6 +198,11 @@ export {
   type ARSAddMemberModalProps,
   type ARSAddMemberRow,
 } from './components/ARSAddMemberModal/ARSAddMemberModal.js';
+export {
+  ARSNewOrganizationalUnit,
+  type ARSNewOrganizationalUnitProps,
+  type ARSNewOrganizationalUnitValues,
+} from './components/ARSNewOrganizationalUnit/ARSNewOrganizationalUnit.js';
 export { FolderArrowRightIcon } from './parts/FolderArrowRightIcon.js';
 export { ARSActionBar, type ARSActionBarProps } from './components/ARSActionBar/ARSActionBar.js';
 export { ARSSidebar, type ARSSidebarProps } from './components/ARSSidebar/ARSSidebar.js';
