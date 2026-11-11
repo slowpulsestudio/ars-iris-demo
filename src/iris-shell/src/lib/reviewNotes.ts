@@ -1,4 +1,18 @@
 import bundledNotes from '../../../../docs/review-notes.md?raw';
+import bundledTidyUp from '../../../../docs/figma-tidy-up.md?raw';
+
+/** The two checklists the review pages show: the flow tasks and the Figma tidy-up. */
+export type ReviewSource = 'tasks' | 'tidy-up';
+
+const SOURCES: Record<ReviewSource, { file: string; bundled: string; endpoint: string }> = {
+  tasks: { file: 'docs/review-notes.md', bundled: bundledNotes, endpoint: '/__review-notes' },
+  'tidy-up': { file: 'docs/figma-tidy-up.md', bundled: bundledTidyUp, endpoint: '/__review-notes/tidy-up' },
+};
+
+/** The file a checklist lives in, for the page's own wording. */
+export function reviewFile(source: ReviewSource): string {
+  return SOURCES[source].file;
+}
 
 export interface ReviewTask {
   /** Zero-based line in docs/review-notes.md. */
@@ -28,7 +42,6 @@ export interface ReviewNotes {
   writable: boolean;
 }
 
-const ENDPOINT = '/__review-notes';
 const LOCAL_KEY = 'ars.reviewTasks';
 
 const TASK = /^- \[( |x)\] (.*)$/;
@@ -74,14 +87,15 @@ function readLocal(): Record<string, boolean> {
 }
 
 /** The tasks from the file when the dev server is running, else from the copy built into the app. */
-export async function loadReviewNotes(): Promise<ReviewNotes> {
+export async function loadReviewNotes(source: ReviewSource = 'tasks'): Promise<ReviewNotes> {
+  const { endpoint, bundled } = SOURCES[source];
   try {
-    const res = await fetch(ENDPOINT);
+    const res = await fetch(endpoint);
     if (!res.ok || !(res.headers.get('Content-Type') ?? '').startsWith('text/plain')) throw new Error('no endpoint');
     return { flows: parseReviewNotes(await res.text()), writable: true };
   } catch {
     const local = readLocal();
-    const flows = parseReviewNotes(bundledNotes);
+    const flows = parseReviewNotes(bundled);
     for (const flow of flows) {
       for (const group of flow.groups) {
         for (const task of group.tasks) task.checked = local[task.text] ?? task.checked;
@@ -92,12 +106,17 @@ export async function loadReviewNotes(): Promise<ReviewNotes> {
 }
 
 /** Ticks or unticks a task: in the file when writable, else in this browser only. */
-export async function setReviewTask(task: ReviewTask, checked: boolean, writable: boolean): Promise<ReviewFlow[] | null> {
+export async function setReviewTask(
+  task: ReviewTask,
+  checked: boolean,
+  writable: boolean,
+  source: ReviewSource = 'tasks',
+): Promise<ReviewFlow[] | null> {
   if (!writable) {
     localStorage.setItem(LOCAL_KEY, JSON.stringify({ ...readLocal(), [task.text]: checked }));
     return null;
   }
-  const res = await fetch(ENDPOINT, {
+  const res = await fetch(SOURCES[source].endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ line: task.line, checked }),

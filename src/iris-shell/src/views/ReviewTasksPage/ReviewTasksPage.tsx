@@ -7,8 +7,10 @@ import { navigate, personaHash } from '../../lib/router.js';
 import {
   loadReviewNotes,
   parseInline,
+  reviewFile,
   setReviewTask,
   type ReviewFlow,
+  type ReviewSource,
   type ReviewTask,
 } from '../../lib/reviewNotes.js';
 import { useFixedTheme } from '../../lib/useTheme.js';
@@ -35,19 +37,23 @@ function Inline({ markdown, persona }: { markdown: string; persona: string }) {
   );
 }
 
+const TITLES: Record<ReviewSource, string> = { tasks: 'Design review tasks', 'tidy-up': 'Figma tidy-up' };
+
 /**
- * ReviewTasksPage — the design review checklist from docs/review-notes.md, by
- * flow. While the dev server runs, ticking an item edits that file.
+ * ReviewTasksPage — a review checklist from a markdown file in docs/, by
+ * section: the flow tasks (docs/review-notes.md) or the Figma tidy-up
+ * (docs/figma-tidy-up.md). While the dev server runs, ticking an item edits that file.
  */
-export function ReviewTasksPage() {
+export function ReviewTasksPage({ source = 'tasks' }: { source?: ReviewSource }) {
   useFixedTheme('dark');
+  const file = reviewFile(source);
   const [flows, setFlows] = useState<ReviewFlow[] | null>(null);
   const [writable, setWritable] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
-    loadReviewNotes().then((notes) => {
+    loadReviewNotes(source).then((notes) => {
       if (!alive) return;
       setFlows(notes.flows);
       setWritable(notes.writable);
@@ -55,7 +61,7 @@ export function ReviewTasksPage() {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [source]);
 
   const toggle = async (task: ReviewTask, checked: boolean) => {
     setError(null);
@@ -67,11 +73,11 @@ export function ReviewTasksPage() {
       })) ?? null,
     );
     try {
-      const saved = await setReviewTask(task, checked, writable);
+      const saved = await setReviewTask(task, checked, writable, source);
       if (saved) setFlows(saved);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not save.');
-      setFlows((await loadReviewNotes()).flows);
+      setFlows((await loadReviewNotes(source)).flows);
     }
   };
 
@@ -91,12 +97,12 @@ export function ReviewTasksPage() {
             <BrandLogo size="32px" />
             Active Roles
           </span>
-          <h1 className={styles.title}>Design review tasks</h1>
+          <h1 className={styles.title}>{TITLES[source]}</h1>
           <p className={styles.subtitle}>
             {flows ? `${done} of ${tasks.length} done. ` : ''}
             {writable
-              ? 'Ticking an item updates docs/review-notes.md.'
-              : 'This copy of the app can’t write docs/review-notes.md, so ticks are kept in this browser only.'}
+              ? `Ticking an item updates ${file}.`
+              : `This copy of the app can’t write ${file}, so ticks are kept in this browser only.`}
           </p>
           {error && <p className={styles.error} role="alert">{error}</p>}
         </header>

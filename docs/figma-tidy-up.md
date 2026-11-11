@@ -1,0 +1,22 @@
+# Figma tidy-up
+
+Things to fix in Figma so it matches the app again. Figma is followed everywhere in the app except the items here: spelling and punctuation mistakes in Figma, which the app corrects, and quote style plus places where the Figma files disagree with each other. Every item has its Figma node link. Tick each once it is done in Figma.
+
+## Spelling and punctuation
+
+### The app already has the corrected text
+
+- [ ] **AD reset password placeholder.** "Enter new passowrd" should be "Enter new password" ([ARS_User_Password_Reset_AD, 3269:35695](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=3269-35695)). Prototype: [AD user, Reset password dialog](#/users/isabella-clark?dialog=reset-password).
+- [ ] **Country/Region.** "Country/Reigon" should be "Country/Region" in the Contact information card ([ARS_Object_Content Variant3, 2385:56718](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS-Primary?node-id=2385-56718), [ARS_Users_ContactInfo Card, 2820:30082](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS-Primary?node-id=2820-30082)) and in the Managed by card ([ARS_Managed_by, 3527:16182](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS-Primary?node-id=3527-16182)). Prototype: [Isabella Clark, User Details](#/users/isabella-clark?tab=user-details).
+- [ ] **Created toast.** "[Object type] created in [Object location] To open it, click View." needs a full stop after the location ([ARS_New_Object_Toast, 1697:13458](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1697-13458)).
+- [ ] **Object Management line.** "Manage this objects access, location, and restriction to the domain." should read "object's" ([ARS_Object_Content, 1378:55162](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1378-55162)). Prototype: [Isabella Clark, General](#/users/isabella-clark?tab=general).
+- [ ] **Favorites.** The Move file's drag-and-drop frame writes "Favourites" ([2158:17323](https://www.figma.com/design/IXKXZpycHiFcKbvHMvlc9r/ARS_WebUI2_Move_Browse_Objects?node-id=2158-17323)); the CRUD file and the app write "Favorites" ([1372:37423](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1372-37423)).
+
+## Quote style and files that disagree
+
+### Make Figma consistent
+
+- [ ] **Quote style.** The Delete success text uses curly quotes, ‘MKim’ ([1755:15055](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1755-15055)), and the confirm step uses straight ones, 'MKim' ([1755:15057](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1755-15057)). The app uses straight quotes in both. Pick one style in Figma.
+- [ ] **New object menu.** The kit's Create menu ([ARS_Create_Menu, 3360:40902](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS-Primary?node-id=3360-40902): User, Group, Computer, Organizational unit, Shared folder, Contact, Group Managed Service Account) differs from the CRUD file's ([1293:49512](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1293-49512): New AD User, Add User, New Group, New Organizational Unit, New Group Managed Service Account, New Shared Folder, New Asset, Bulk create, Bulk invite, Bulk delete). The app follows the CRUD file. Prototype: [Users list, Create](#/users).
+- [ ] **One-row action bar.** The kit's ARS_Action_bar variant 2 ([2385:59821](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS-Primary?node-id=2385-59821)) has Delete after "…"; the CRUD file's one-row bar ([1378:48538](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1378-48538)) has none. The app follows the CRUD file. Prototype: [Users list with one row ticked](#/users?select=isabella-clark).
+- [ ] **Directory names.** The CRUD panel ([1372:37423](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1372-37423)) says "Managed directories / Active Directory / Entra ID". The kit panel ([3563:17384](https://www.figma.com/design/IlG4nne9VhqpONzqc0tfKg/ARS-Primary?node-id=3563-17384)) and the Move sheet ([2290:68343](https://www.figma.com/design/IXKXZpycHiFcKbvHMvlc9r/ARS_WebUI2_Move_Browse_Objects?node-id=2290-68343)) say "Managed Directories / Active Directories / Entra Directories". The app follows the CRUD file everywhere, including the Move sheet. Prototype: [Tree view](#/tree).

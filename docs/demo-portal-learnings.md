@@ -8,9 +8,9 @@ The prototype opens on a welcome page, not on the product. From there a reviewer
 
 1. **Welcome page** (`#/welcome`, `views/WelcomePage`). One card per persona. Picking one signs in as that person and opens their start page. It also stands in for any address until a persona is picked, so a link such as `#/users` shows the picker first and then keeps the page that was asked for. The two icon buttons top right (Design review, Storybooks) are the only way to the other portal pages.
 2. **Storybooks page** (`#/storybooks`, `views/StorybooksPage`). One card per Storybook, each opening in a new tab. The list lives in `lib/storybooks.ts`.
-3. **Design review** (`#/components-to-review`, `views/ReviewHubPage`). A hub with two cards: Components not in Figma, and Design review tasks.
+3. **Design review** (`#/components-to-review`, `views/ReviewHubPage`). A hub with three cards: Components not in Figma, Design review tasks, and Figma tidy-up.
 4. **Components not in Figma** (`#/components-to-review/missing`). One card per component the screens use that the Figma kit lacks, each linking to the Figma node it was drawn from. The list lives in `ars-ui/src/missingFromFigma.ts`.
-5. **Design review tasks** (`#/components-to-review/tasks`). The checklist, read from `docs/review-notes.md`.
+5. **Design review tasks** (`#/components-to-review/tasks`). The checklist, read from `docs/review-notes.md`. **Figma tidy-up** (`#/components-to-review/tidy-up`) is the same page for `docs/figma-tidy-up.md`: spelling, quote style and Figma files that disagree, for the designer to fix in Figma. Both are one page component (`ReviewTasksPage`) given a source.
 
 ## Storybook
 

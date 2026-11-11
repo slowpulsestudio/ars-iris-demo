@@ -5,16 +5,18 @@ import react from '@vitejs/plugin-react'
 
 const repoRoot = fileURLToPath(new URL('../..', import.meta.url))
 const reviewNotesFile = fileURLToPath(new URL('../../docs/review-notes.md', import.meta.url))
+const figmaTidyUpFile = fileURLToPath(new URL('../../docs/figma-tidy-up.md', import.meta.url))
 
-/** Dev only: lets the Design review tasks page read and tick items in docs/review-notes.md. */
+/** Dev only: lets the Design review pages read and tick items in docs/review-notes.md and docs/figma-tidy-up.md. */
 function reviewNotesEndpoint(): Plugin {
   return {
     name: 'review-notes-endpoint',
     configureServer(server) {
       server.middlewares.use('/__review-notes', (req, res) => {
+        const file = req.url?.split('?')[0] === '/tidy-up' ? figmaTidyUpFile : reviewNotesFile
         if (req.method === 'GET') {
           res.setHeader('Content-Type', 'text/plain; charset=utf-8')
-          res.end(fs.readFileSync(reviewNotesFile, 'utf8'))
+          res.end(fs.readFileSync(file, 'utf8'))
           return
         }
         if (req.method !== 'POST') {
@@ -27,7 +29,7 @@ function reviewNotesEndpoint(): Plugin {
         req.on('end', () => {
           try {
             const { line, checked } = JSON.parse(body) as { line: number; checked: boolean }
-            const lines = fs.readFileSync(reviewNotesFile, 'utf8').split('\n')
+            const lines = fs.readFileSync(file, 'utf8').split('\n')
             // Only a task line can change, and only its checkbox.
             if (!Number.isInteger(line) || !/^- \[[ x]\] /.test(lines[line] ?? '')) {
               res.statusCode = 400
@@ -36,7 +38,7 @@ function reviewNotesEndpoint(): Plugin {
             }
             lines[line] = lines[line].replace(/^- \[[ x]\]/, checked ? '- [x]' : '- [ ]')
             const text = lines.join('\n')
-            fs.writeFileSync(reviewNotesFile, text)
+            fs.writeFileSync(file, text)
             res.setHeader('Content-Type', 'text/plain; charset=utf-8')
             res.end(text)
           } catch {

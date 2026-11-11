@@ -33,6 +33,14 @@ export function ReviewHubPage() {
         cta="Open the checklist"
         onClick={() => navigate('#/components-to-review/tasks')}
       />
+      <ChoiceCard
+        visual={<Icon name="NotePencil" size="32px" className={styles.visual} />}
+        title="Figma tidy-up"
+        subtitle="Fix in Figma"
+        description="Spelling, quote style and places where the Figma files disagree, for you to fix in Figma. Ticking an item updates docs/figma-tidy-up.md."
+        cta="Open the list"
+        onClick={() => navigate('#/components-to-review/tidy-up')}
+      />
     </ChoicePage>
   );
 }

@@ -116,6 +116,7 @@ function RoutedPage() {
   if (route.name === 'componentsReview') return <ReviewHubPage />;
   if (route.name === 'componentsReviewMissing') return <ComponentsReviewPage />;
   if (route.name === 'componentsReviewTasks') return <ReviewTasksPage />;
+  if (route.name === 'componentsReviewTidyUp') return <ReviewTasksPage source="tidy-up" />;
   return persona ? renderRoute(route) : <WelcomePage />;
 }
 
