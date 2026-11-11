@@ -108,7 +108,7 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
       ...(email && { email }),
     });
     showToast(`${name} successfully created`, {
-      supportingText: `${OBJECT_TYPE_META.group.label} created in ${locationLabel} To open it, click View.`,
+      supportingText: `${OBJECT_TYPE_META.group.label} created in ${locationLabel}. To open it, click View.`,
       viewHref: `#/tree/${locationId}/${id}`,
     });
     onClose();

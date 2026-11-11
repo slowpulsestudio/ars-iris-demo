@@ -8,7 +8,7 @@ export const CONTACT_INFO_ROWS: DetailsRow[] = [
   { label: 'City', value: 'London' },
   { label: 'State', value: 'Greater London' },
   { label: 'ZIP/Postal code', value: 'GL1 1NL' },
-  { label: 'Country/Reigon', value: 'United Kingdom' },
+  { label: 'Country/Region', value: 'United Kingdom' },
   { label: 'Business phone', value: '01268 888000' },
   { label: 'Mobile phone', value: '+44 077788880' },
   { label: 'Email', value: 'MKim@Acme.com' },

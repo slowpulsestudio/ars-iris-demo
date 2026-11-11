@@ -23,7 +23,7 @@ const FILLED_ROWS: DetailsRow[] = [
   { label: 'Street address', value: '123 Baker Street' },
   { label: 'City', value: 'London' },
   { label: 'State/Provance', value: 'Greater London' },
-  { label: 'Country/Reigon', value: 'United Kingdom' },
+  { label: 'Country/Region', value: 'United Kingdom' },
   { label: 'Telephone number', value: '01268 888000' },
   { label: 'Fax number', value: '01268 888000' },
 ];

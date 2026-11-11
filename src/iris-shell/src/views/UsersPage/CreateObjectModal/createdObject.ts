@@ -53,7 +53,7 @@ const nextId = (prefix: string) => `${prefix}-new-${(sequence += 1)}`;
 /** The ARS_New_Object_Toast text; View opens the new object when it has a page. */
 export function announceCreated(result: CreateObjectResult, viewHref?: string): void {
   showToast(`${newObjectName(result.values, result.objectType)} successfully created`, {
-    supportingText: `${result.objectType} created in ${result.locationLabel}${viewHref ? ' To open it, click View.' : ''}`,
+    supportingText: `${result.objectType} created in ${result.locationLabel}${viewHref ? '. To open it, click View.' : ''}`,
     viewHref,
   });
 }

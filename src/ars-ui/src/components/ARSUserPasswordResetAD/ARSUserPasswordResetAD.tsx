@@ -108,7 +108,7 @@ export function ARSUserPasswordResetAD({
       ) : (
         <>
           <FormField label="Password" required help="Use 8-16 characters with a mix of numbers and symbols.">
-            <PasswordInput key={values ? 'controlled' : variant} copyable placeholder="Enter new passowrd" {...field('password')} />
+            <PasswordInput key={values ? 'controlled' : variant} copyable placeholder="Enter new password" {...field('password')} />
           </FormField>
           <FormField label="Confirm password" required>
             <PasswordInput key={values ? 'controlled' : variant} {...field('confirmPassword')} />
