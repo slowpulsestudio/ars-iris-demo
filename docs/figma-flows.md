@@ -79,7 +79,8 @@ The links you gave point at a page in each file, not at one frame. Each file's p
 
 - **Screens:** two ARS_Flat_Master [7051:3954](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7051-3954), [7064:14262](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7064-14262); ARS_Treeview_Master [7051:7736](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7051-7736).
 - **Components:** ARS_Managed_Users_Content [7058:6179](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7058-6179), ARS_Managed_Unit_Members [7074:6939](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7074-6939), ARS_Managed_Unit_Members_Table [7064:12185](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7064-12185), plus ARS_Action_bar [7077:3722](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7077-3722) and ARS_AD User Actions [7077:3917](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7077-3917), which the app already has.
-- **In the app today:** "Managed Units" is a nav item and a tree container with generated rows only.
+- **In the app today:** "Managed Units" was a nav item and a tree container with generated rows only.
+- **Status: built (Flow 11, local commit).** Managed Units list and a unit's members page (sample data), with the selection bar. The Tree view screen (ARS_Treeview_Master) and the row menus are not built. Review tasks: Flow 11.
 
 ## Order
 

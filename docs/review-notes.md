@@ -239,3 +239,24 @@ Where: Tree view, New, New Organizational Unit (or Create in Flat view); a row's
 - [ ] **Ownership (also on groups).** The Managed by card now shows a manager, office details and secondary owners. Add manager and Add owner open the Add Member modal as a picker (the Add/Change Manager frame shows a modal like it); the manager is one person, owners can be several. To change the manager, remove it and add another; Figma's pencil on the manager isn't wired. Groups add the two "can update membership list" checkboxes from the written notes.
 - [ ] **Object details.** A Properties card of read-only values; "Protect object from accidental deletion" is Yes or No, not a disabled checkbox. A new OU is protected unless you untick it.
 - [ ] **Deleting OUs from the list** now removes the OU (before, nothing happened).
+
+## Flow 11: Managed Units
+
+Figma: [ARS_WebUI2_Managed-Units](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=4002-9991) (section "Managed Units" on page "Design"; "As-Is" and "Wires" are not built).
+
+Where: Flat view, Management units in the left panel; open a unit to see its members.
+
+### Compare with Figma
+
+- [ ] Managed Units list ([ARS_Managed_Users_Content 7058:6179](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7058-6179), screen [ARS_Flat_Master 7051:3954](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7051-3954)).
+- [ ] A unit's members ([ARS_Managed_Unit_Members 7074:6939](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7074-6939), [table 7064:12185](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7064-12185), screen [7064:14262](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7064-14262)).
+- [ ] Selection bar ([ARS_Action_bar 7077:3722](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7077-3722)) and row menu ([ARS_AD User Actions 7077:3917](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7077-3917)).
+
+### Confirm
+
+- [ ] **Two new components** under "Missing from Figma": the Managed Units list and the unit's members page.
+- [ ] **Sample data.** The 15 units and the member names are Figma's sample rows; the app has no managed-unit data. Each unit shows 8 to 15 of the sample members, rotated per unit. Figma's list says there are more pages; there is one page of 15.
+- [ ] **Route.** The list is at the existing Management units entry (before, a placeholder); a unit opens at its own address, so it can be linked. Its header's arrows step to the previous and next unit. The header reads "[unit] Members" and "O1D.local · Managed Units", which stands in for Figma's "[Directory name] [Location]".
+- [ ] **Selection bar.** It appears when members are ticked, with Select all and close. Its other buttons (Copy, Move, Properties, Delete) do nothing, since members aren't directory objects here. The row "..." menu and Figma's ARS_AD User Actions menu aren't wired on these tables.
+- [ ] **Tree view.** The Managed units folder in Tree view still shows generated objects. Figma's ARS_Treeview_Master ([7051:7736](https://www.figma.com/design/WsXrW6CBUME9thy8z8hPRR/ARS_WebUI2_Managed-Units?node-id=7051-7736)) isn't built.
+- [ ] **No create.** The list has a search only; Figma shows no Create button.
