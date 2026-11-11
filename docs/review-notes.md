@@ -193,3 +193,23 @@ Where: a group's page, Object Management (Rename, Copy, Deprovision) and the Mem
 - [ ] **Copy** uses the Move side sheet, titled Copy, with a Copy button. It makes "Copy of [name]" in the chosen folder (the same folder is allowed), keeps scope, type and the other fields, and shows a toast with Undo and View object. Figma's note says "New User screen", which I took to mean choosing where the copy goes.
 - [ ] **Deprovision** asks Yes or No, then shows a toast with Undo. The sample data has no status, so a deprovisioned group shows a "Deprovisioned" badge in its Overview. That badge is mine.
 - [ ] **Memberships tab.** Members and Members of buttons, a search, "Add member", the group table and paging. The data has no memberships, so Members are objects from the group's folder (as many as its member count) and Members of are up to three groups from the same folder. "Add member" does nothing yet: Figma's add-members modal ([215:7485](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=215-7485)) is not built. Remove, temporary access and Set primary group (from the notes) aren't built either.
+
+## Flow 9: Add Member, Groups list and creating groups (Groups file, part 3)
+
+Figma: [ARS_WebUI2_Groups](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=58-24).
+
+Where: Memberships tab, Add member; Directory Management, Groups; Create, Group in Flat view, or New, New Group in Tree view.
+
+### Compare with Figma
+
+- [ ] Add Member modal ([215:7485](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=215-7485)).
+- [ ] Groups list ([ARS_Table_Groups 158:33464](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=158-33464), frame [157:14884](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=157-14884)).
+- [ ] The written requirements for New AD Group ([steps 1 and 2: 2111:11197](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=2111-11197), [2111:11198](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=2111-11198)) and New Entra Distribution Group ([2113:12494](https://www.figma.com/design/KukLyO1RkJ4kYTzxGWd2Q7/ARS_WebUI2_Groups?node-id=2113-12494)).
+
+### Confirm
+
+- [ ] **Add Member.** Lists the objects in the group's folder that aren't members yet, with a search, paging, the chosen objects as removable tags and Cancel and Save. Save adds them to Members for the session and shows a toast. A new component under "Missing from Figma".
+- [ ] **Groups list.** It reuses the Tree view list layout with the column "Group type" (Security or Distribution) and every group in the directory. Figma's table has more columns than the two it names, and its toolbar isn't clear, so this follows the Tree view list. Rows open the group page. A row's "..." button does nothing yet.
+- [ ] **Creating a group.** In Tree view, New Group in an Entra directory opens New Entra Distribution Group; anywhere else it opens New AD Group (two steps: General, then the Exchange e-mail address). In Flat view and from the Groups list the group is made in O1D.local. Both flows come from written notes with no frames, so the layout is the New object modal; the Exchange step's Alias is read-only (the group name) and Associated administrative group shows the folder, which is my guess.
+- [ ] **Entra Distribution Group.** One form with Join and Leave toggles (Open or Closed) whose tooltips use Figma's text; the two Closed tooltips both start "Only group owners can add members", as in the notes. A group made here is a Distribution, Universal group.
+- [ ] **Still empty.** Managed units and Roles/access templates (marked NEW, no content in Figma) and History (Change History and User Activity, no frames) show the empty state.
