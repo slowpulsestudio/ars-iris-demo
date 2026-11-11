@@ -23,25 +23,21 @@
 }
 
 .name {
-  width: 220px;
+  width: 180px;
 }
 
 .modified {
-  width: 110px;
+  width: 86px;
 }
 
+/* Spans the head's Type (155) and ARS_Table_Config (44) plus the 1px gap, as Figma's row does. */
 .type {
-  width: 140px;
+  width: 200px;
 }
 
 .fill {
   flex: 1 1 0;
   min-width: 0;
-}
-
-.actions {
-  width: 70px;
-  justify-content: center;
 }
 
 .icon {

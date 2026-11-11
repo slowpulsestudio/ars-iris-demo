@@ -28,7 +28,8 @@ export interface ARSManagedUsersContentProps {
   rows: ARSManagedUnitRow[];
   selected?: Set<string>;
   onSelectionChange?: (next: Set<string>) => void;
-  onMore?: (id: string, event: MouseEvent<HTMLElement>) => void;
+  /** The head's column settings button (Figma ARS_Table_Config). */
+  onColumns?: (event: MouseEvent<HTMLElement>) => void;
   pagination: ARSPaginationProps;
   className?: string;
 }
@@ -44,7 +45,7 @@ export function ARSManagedUsersContent({
   rows,
   selected = new Set(),
   onSelectionChange,
-  onMore,
+  onColumns,
   pagination,
   className,
 }: ARSManagedUsersContentProps) {
@@ -59,17 +60,19 @@ export function ARSManagedUsersContent({
   return (
     <ContentScreen header={header} toolbar={toolbar} className={className}>
       <div role="table" aria-label="Managed units" className={styles.table}>
+        {/* Figma: head 180 / 86 / fill / 155 and the 44px ARS_Table_Config; rows have no "…" and a 200px Type cell under Type and the config. */}
         <TableHeadRow
           columns={[
-            { label: 'Name', width: 220 },
-            { label: 'Modified', width: 110 },
+            { label: 'Name', width: 180 },
+            { label: 'Modified', width: 86 },
             { label: 'Description' },
-            { label: 'Type', width: 140 },
+            { label: 'Type', width: 155 },
           ]}
           allSelected={allSelected}
           someSelected={selected.size > 0}
           onSelectAll={(on) => onSelectionChange?.(on ? new Set(rows.map((r) => r.id)) : new Set())}
-          actionsWidth={70}
+          actions={<IconButton icon="SlidersHorizontal" ariaLabel="Columns" onClick={onColumns} />}
+          actionsWidth={44}
         />
         {rows.map((row) => (
           <div key={row.id} role="row" className={styles.row}>
@@ -90,9 +93,6 @@ export function ARSManagedUsersContent({
             </TableCell>
             <TableCell className={styles.type}>
               <CellText>{row.type}</CellText>
-            </TableCell>
-            <TableCell inset="button" className={styles.actions}>
-              <IconButton icon="DotsThree" ariaLabel={`More actions for ${row.name}`} onClick={(e) => onMore?.(row.id, e)} />
             </TableCell>
           </div>
         ))}
