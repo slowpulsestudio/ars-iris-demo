@@ -39,6 +39,18 @@ function Inline({ markdown, persona }: { markdown: string; persona: string }) {
 
 const TITLES: Record<ReviewSource, string> = { tasks: 'Design review tasks', 'tidy-up': 'Figma tidy-up' };
 
+/** The ticked items as markdown, by section, to paste back to whoever maintains the notes. */
+function ticksAsText(title: string, flows: ReviewFlow[]): string {
+  const sections = flows
+    .map((flow) => ({
+      title: flow.title,
+      lines: flow.groups.flatMap((g) => g.tasks.filter((t) => t.checked).map((t) => `- [x] ${t.text}`)),
+    }))
+    .filter((s) => s.lines.length > 0);
+  if (sections.length === 0) return `${title}: nothing ticked yet.`;
+  return [`${title}: ticked items`, ...sections.map((s) => `\n## ${s.title}\n${s.lines.join('\n')}`)].join('\n');
+}
+
 /**
  * ReviewTasksPage — a review checklist from a markdown file in docs/, by
  * section: the flow tasks (docs/review-notes.md) or the Figma tidy-up
@@ -50,6 +62,7 @@ export function ReviewTasksPage({ source = 'tasks' }: { source?: ReviewSource })
   const [flows, setFlows] = useState<ReviewFlow[] | null>(null);
   const [writable, setWritable] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -84,6 +97,17 @@ export function ReviewTasksPage({ source = 'tasks' }: { source?: ReviewSource })
   const tasks = flows?.flatMap((f) => f.groups.flatMap((g) => g.tasks)) ?? [];
   const done = tasks.filter((t) => t.checked).length;
 
+  const copyTicks = async () => {
+    try {
+      await navigator.clipboard.writeText(ticksAsText(TITLES[source], flows ?? []));
+      setError(null);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setError('Couldn’t copy. Click the page once and try again.');
+    }
+  };
+
   return (
     <div className={styles.page}>
       <div className={styles.topStart}>
@@ -104,6 +128,9 @@ export function ReviewTasksPage({ source = 'tasks' }: { source?: ReviewSource })
               ? `Ticking an item updates ${file}.`
               : `This copy of the app can’t write ${file}, so ticks are kept in this browser only.`}
           </p>
+          <Button variant="secondary" iconLead={copied ? 'Check' : 'Copy'} onClick={copyTicks} disabled={!flows}>
+            {copied ? 'Copied' : 'Copy my ticks'}
+          </Button>
           {error && <p className={styles.error} role="alert">{error}</p>}
         </header>
 
