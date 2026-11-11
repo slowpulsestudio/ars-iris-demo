@@ -1,10 +1,11 @@
 import { useSyncExternalStore } from 'react';
+import { hash, objectIdFor } from './sampleData.js';
 
 /**
  * userMemberships — the groups each user is a member of, kept for the
  * session. The directory data has no memberships, so these are sample
- * groups: the ten sample users have the two each that the demo site gives
- * them; any other user gets two picked from the same groups.
+ * groups in the style of the demo site's: each sample user has two
+ * different ones, and any other user gets two picked from the same forty.
  */
 
 export interface UserGroup {
@@ -12,26 +13,6 @@ export interface UserGroup {
   name: string;
   description: string;
   objectId: string;
-}
-
-function hash(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i += 1) h = (h * 31 + s.charCodeAt(i)) >>> 0;
-  return h;
-}
-
-/** A stable id-shaped string, since the sample groups have no real object ids. */
-function objectIdFor(seed: string): string {
-  let a = hash(seed);
-  const next = () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0).toString(16).padStart(8, '0');
-  };
-  const hex = next() + next() + next() + next();
-  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
 }
 
 function group(name: string, description: string): UserGroup {
@@ -48,30 +29,65 @@ export const SAMPLE_GROUPS: UserGroup[] = [
   group('Audit Reviewers', 'Review audit logs and access certifications.'),
   group('Security Readers', 'Read-only access to security reports.'),
   group('Application Owners', 'Own and approve access to business applications.'),
+  group('Network Operations', 'Monitor and maintain network services.'),
+  group('Database Administrators', 'Run and secure the database servers.'),
+  group('Cloud Architects', 'Design and review cloud infrastructure.'),
+  group('DevOps Engineers', 'Build and operate delivery pipelines.'),
+  group('Incident Responders', 'Respond to security and service incidents.'),
+  group('Compliance Officers', 'Track policy compliance and report on it.'),
+  group('HR Business Partners', 'Support managers with joiners, movers and leavers.'),
+  group('Payroll Processors', 'Run payroll and manage pay records.'),
+  group('Procurement Team', 'Raise and approve purchase orders.'),
+  group('Legal Reviewers', 'Review contracts and data requests.'),
+  group('Marketing Leads', 'Lead campaigns and brand content.'),
+  group('Sales Operations', 'Maintain sales systems and reporting.'),
+  group('Customer Success', 'Look after key customer accounts.'),
+  group('Support Tier 2', 'Second-line support for escalated tickets.'),
+  group('QA Engineers', 'Test releases before they ship.'),
+  group('Release Managers', 'Plan and approve production releases.'),
+  group('Data Analysts', 'Build reports and dashboards.'),
+  group('Data Stewards', 'Own data quality and definitions.'),
+  group('Backup Operators', 'Run and verify backups.'),
+  group('Server Administrators', 'Maintain the Windows and Linux servers.'),
+  group('Desktop Support', 'Set up and repair user devices.'),
+  group('Mobile Device Managers', 'Manage enrolled phones and tablets.'),
+  group('Identity Governance', 'Run access reviews and certifications.'),
+  group('Access Reviewers', 'Approve or remove access during reviews.'),
+  group('Privileged Access Users', 'Use elevated accounts with approval.'),
+  group('VPN Users', 'Remote access through the corporate VPN.'),
+  group('Wi-Fi Guests', 'Visitor access to the guest network.'),
+  group('Contractors', 'External staff with limited access.'),
+  group('Interns', 'Short-term staff on starter access.'),
+  group('Executive Assistants', 'Support the leadership team.'),
+  group('Facilities Team', 'Manage buildings, badges and equipment.'),
+  group('Training Coordinators', 'Run learning programmes and sign-ups.'),
 ];
 
 const BY_ID = new Map(SAMPLE_GROUPS.map((g) => [g.id, g]));
 
-/** The groups the demo site gives each sample user. */
+/** Two different groups for each of the ten sample users, so names rarely repeat. */
 const SAMPLE_MEMBERSHIPS: Record<string, string[]> = {
-  'isabella-clark': ['platform-admins', 'engineering-leads'],
-  'liam-bennett': ['helpdesk-operators', 'regional-managers'],
-  'sophia-martinez': ['finance-approvers', 'audit-reviewers'],
-  'noah-kim': ['security-readers', 'platform-admins'],
-  'mason-patel': ['application-owners', 'helpdesk-operators'],
-  'olivia-nguyen': ['engineering-leads', 'finance-approvers'],
-  'ethan-brooks': ['regional-managers', 'security-readers'],
-  'ava-thompson': ['audit-reviewers', 'platform-admins'],
-  'lucas-rivera': ['platform-admins', 'helpdesk-operators'],
-  'mia-foster': ['helpdesk-operators', 'finance-approvers'],
+  'isabella-clark': ['platform-admins', 'cloud-architects'],
+  'liam-bennett': ['helpdesk-operators', 'incident-responders'],
+  'sophia-martinez': ['finance-approvers', 'payroll-processors'],
+  'noah-kim': ['security-readers', 'compliance-officers'],
+  'mason-patel': ['application-owners', 'release-managers'],
+  'olivia-nguyen': ['engineering-leads', 'devops-engineers'],
+  'ethan-brooks': ['regional-managers', 'sales-operations'],
+  'ava-thompson': ['audit-reviewers', 'identity-governance'],
+  'lucas-rivera': ['network-operations', 'server-administrators'],
+  'mia-foster': ['support-tier-2', 'customer-success'],
 };
 
 function defaultsFor(userId: string): UserGroup[] {
   const ids =
     SAMPLE_MEMBERSHIPS[userId] ??
     (() => {
+      // Two groups a good way apart in the list, so other users rarely share a pair.
       const h = hash(userId);
-      return [SAMPLE_GROUPS[h % SAMPLE_GROUPS.length].id, SAMPLE_GROUPS[(h + 3) % SAMPLE_GROUPS.length].id];
+      const first = h % SAMPLE_GROUPS.length;
+      const second = (first + 7 + ((h >>> 8) % 20)) % SAMPLE_GROUPS.length;
+      return [SAMPLE_GROUPS[first].id, SAMPLE_GROUPS[second].id];
     })();
   return ids.map((id) => BY_ID.get(id)).filter((g): g is UserGroup => Boolean(g));
 }

@@ -27,7 +27,9 @@ import { UnsavedChangesModal } from '../ObjectModals/UnsavedChangesModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { UserDetailsTab } from './UserDetailsTab.js';
 import { UserMembershipsTab } from './UserMembershipsTab.js';
+import { UserRolesTab } from './UserRolesTab.js';
 import { useUserMemberships } from '../../lib/userMemberships.js';
+import { userRoleCount } from '../../lib/userRoles.js';
 import { useLeaveGuard } from '../../lib/useLeaveGuard.js';
 import styles from './UserObjectPage.module.css';
 
@@ -93,7 +95,7 @@ function tileCount(id: string, salt: number, max: number): string {
 
 /** The totals shown on the Overview cards and on the Memberships and Roles tab labels, so they always agree. */
 function userCounts(id: string, memberships: number): { memberships: string; roles: string } {
-  return { memberships: String(memberships), roles: tileCount(id, 7, 8) };
+  return { memberships: String(memberships), roles: String(userRoleCount(id)) };
 }
 
 /** The user tabs with this user's totals: Figma's "Memberships (8)" is a sample count. */
@@ -337,6 +339,7 @@ export function UserObjectPage({
       );
     }
     if (tab.startsWith('Memberships')) return <UserMembershipsTab userId={data.id} userName={data.displayName} />;
+    if (tab.startsWith('Roles')) return <UserRolesTab userId={data.id} />;
     if (tab !== TAB_GENERAL) return <EmptyFigure figure={Dish} label={tab} />;
     return (
       <div className={styles.stack} ref={cardRef}>

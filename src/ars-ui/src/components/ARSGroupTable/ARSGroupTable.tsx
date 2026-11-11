@@ -24,18 +24,20 @@ export interface ARSGroupTableProps {
   selectedIds?: string[];
   onSelectedIdsChange?: (ids: string[]) => void;
   onMore?: (row: ARSGroupTableRow) => void;
+  /** The table's accessible name; Figma's table lists groups. */
+  ariaLabel?: string;
   className?: string;
 }
 
 /** ARS_Group_Table — groups with name, type, description and object ID. Figma: 2843:24904. */
-export function ARSGroupTable({ rows, selectedIds = [], onSelectedIdsChange, onMore, className }: ARSGroupTableProps) {
+export function ARSGroupTable({ rows, selectedIds = [], onSelectedIdsChange, onMore, ariaLabel = 'Groups', className }: ARSGroupTableProps) {
   const selected = new Set(selectedIds);
   const allSelected = rows.length > 0 && rows.every((r) => selected.has(r.id));
   const toggle = (id: string, on: boolean) =>
     onSelectedIdsChange?.(on ? [...selectedIds, id] : selectedIds.filter((s) => s !== id));
 
   return (
-    <div role="table" aria-label="Groups" className={cx(styles.table, className)}>
+    <div role="table" aria-label={ariaLabel} className={cx(styles.table, className)}>
       <TableHeadRow
         columns={COLUMNS}
         allSelected={allSelected}
