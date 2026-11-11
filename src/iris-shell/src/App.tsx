@@ -43,7 +43,12 @@ function renderRoute(route: Route) {
     case 'treeRoot':
       return <TreeRootPage />;
     case 'treeList':
-      return <TreeListPage nodeId={route.params.nodeId} />;
+      // Figma's Tree view screen for Managed units (ARS_Treeview_Master 7051:7736) shows the managed units list.
+      return route.params.nodeId === 'managed-units' ? (
+        <ManagedUnitsPage />
+      ) : (
+        <TreeListPage nodeId={route.params.nodeId} />
+      );
     case 'treeDetail':
       return <TreeDetailPage nodeId={route.params.nodeId} objectId={route.params.objectId} />;
     case 'favoritesList':
