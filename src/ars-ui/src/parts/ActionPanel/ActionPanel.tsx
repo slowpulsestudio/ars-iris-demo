@@ -22,7 +22,7 @@ export function ActionPanel({ groups, onAction, className }: ActionPanelProps) {
     <section className={cx(styles.root, className)}>
       <header className={styles.header}>
         <h3 className={styles.title}>Object Management</h3>
-        <p className={styles.helper}>Manage this objects access, location, and restriction to the domain.</p>
+        <p className={styles.helper}>Manage this object&apos;s access, location, and restriction to the domain.</p>
       </header>
       {groups.map((group, i) => (
         <div key={i} className={styles.card}>
