@@ -1,6 +1,7 @@
 import type { MouseEventHandler } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
+import { IconButton } from '@iris/components/IconButton/IconButton.js';
 import { Link } from '@iris/components/Link/Link.js';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { CellText, TableCell } from '@iris/components/TableCell/TableCell.js';
@@ -35,6 +36,8 @@ export interface ARSManagedUnitMembersProps {
   onNextItem?: () => void;
   onPreviousItem?: () => void;
   onMore?: MouseEventHandler<HTMLElement>;
+  /** The head's column settings button (Figma ARS_Table_Config). */
+  onColumns?: MouseEventHandler<HTMLElement>;
   className?: string;
 }
 
@@ -57,6 +60,7 @@ export function ARSManagedUnitMembers({
   onNextItem,
   onPreviousItem,
   onMore,
+  onColumns,
   className,
 }: ARSManagedUnitMembersProps) {
   const allSelected = rows.length > 0 && rows.every((r) => selected.has(r.id));
@@ -82,11 +86,12 @@ export function ARSManagedUnitMembers({
       <ARSTableToolbar variant="4" search={search} onSearchChange={onSearchChange} searchPlaceholder={`Search all members of ${unitName}`} />
       <div role="table" aria-label="Members" className={styles.table}>
         <TableHeadRow
-          columns={[{ label: 'Name', width: 220 }, { label: 'Description' }, { label: 'Type', width: 140 }]}
+          columns={[{ label: 'Name', width: 180 }, { label: 'Description' }, { label: 'Type' }]}
           allSelected={allSelected}
           someSelected={selected.size > 0}
           onSelectAll={(on) => onSelectionChange?.(on ? new Set(rows.map((r) => r.id)) : new Set())}
-          actionsWidth={0}
+          actions={<IconButton icon="SlidersHorizontal" ariaLabel="Columns" onClick={onColumns} />}
+          actionsWidth={44}
         />
         {rows.map((row) => (
           <div key={row.id} role="row" className={styles.row}>

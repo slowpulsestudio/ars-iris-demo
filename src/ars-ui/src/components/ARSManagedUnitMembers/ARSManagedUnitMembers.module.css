@@ -27,11 +27,16 @@
 }
 
 .name {
-  width: 220px;
+  width: 180px;
 }
 
+/* Figma's rows split Description and Type evenly; the head adds the 44px
+   ARS_Table_Config (+1px gap) after Type, so the row's Type starts 45px wider
+   (plus its own inline padding, which flex counts in the starting width) to keep
+   both columns under their headings. */
 .type {
-  width: 140px;
+  flex: 1 1 calc(45px + 2 * var(--oi-spacing-m));
+  min-width: 0;
 }
 
 .fill {
