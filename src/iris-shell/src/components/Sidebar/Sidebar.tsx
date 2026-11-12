@@ -197,7 +197,7 @@ export function Sidebar({
           <>
             <div className={styles.selectBlock}>
               <MultiSelect
-                label={directoryLabel}
+                label={directories.size === 0 ? 'No directories' : directoryLabel}
                 ariaLabel="Filter by directory"
                 searchPlaceholder="Search directories"
                 options={DIRECTORIES}

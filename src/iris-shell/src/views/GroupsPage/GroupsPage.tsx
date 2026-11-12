@@ -92,7 +92,7 @@ export function GroupsPage() {
     const q = query.trim().toLowerCase();
     return groups.filter(
       (g) =>
-        inDirectories(directories, g.id, directory.getPath(g.parentId)[1]?.id === 'entra-directories' ? 'entra' : 'ad') &&
+        inDirectories(directories, describe(g).directory) &&
         (!q || [g.name, g.description].some((v) => v.toLowerCase().includes(q))),
     );
   }, [groups, query, directories, directory]);

@@ -1,4 +1,5 @@
 /** Mock data for the Users listing + detail PoC. Mirrors the Figma reference. */
+import { directoryForLocation } from '../../lib/directoryFilter.js';
 
 export interface UserDetails {
   firstName: string;
@@ -135,7 +136,12 @@ const TAG_PAIRS = [
   ['Network', 'Security'],
   ['Payroll', 'Finance'],
 ];
-const LOCATIONS = ['AD1\\Users', 'Entra', 'AD2\\OU1', 'AD1\\DataAdmin'];
+// The first four are Figma's sample Locations; the rest spread the users over all nine directories of the panel's filter.
+const LOCATIONS = [
+  'AD1\\Users', 'Entra', 'AD2\\OU1', 'AD1\\DataAdmin',
+  'AD3\\Staff', 'Entra2', 'AD4\\OU2', 'AD2\\Contractors',
+  'AD5\\Users', 'Entra3', 'AD3\\OU1', 'Entra4',
+];
 
 /** Gives each user deterministic list-only fields (tags, location) from its position. */
 function withListFields(seeds: UserSeed[]): User[] {
@@ -255,7 +261,9 @@ export const MOCK_USERS: User[] = withListFields([
 
 /** The directory a user is in, shown after the "@" in the user principal name. */
 export function directoryOf(user: User): string {
-  return user.details.directory ?? (user.location === 'Entra' ? '@Entra1' : '@O1D.Local');
+  if (user.details.directory) return user.details.directory;
+  const dir = directoryForLocation(user.location);
+  return dir.startsWith('entra-') ? `@${dir.replace('entra-', 'Entra')}` : '@O1D.Local';
 }
 export function getUserById(id: string): User | null {
   return MOCK_USERS.find((u) => u.id === id) ?? null;

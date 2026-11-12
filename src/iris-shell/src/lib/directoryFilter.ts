@@ -1,8 +1,7 @@
 import { useSyncExternalStore } from 'react';
 import type { MultiSelectOption } from '../components/MultiSelect/MultiSelect.js';
-import { hash } from './sampleData.js';
 
-/** Directories available in the directory multi-select; every Flat view list is split between them. */
+/** Directories available in the directory multi-select; the Flat view lists are filtered by them. */
 export const DIRECTORIES: MultiSelectOption[] = [
   { value: 'entra-1', title: 'Entra 1', subtitle: 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890', icon: 'WindowsLogo' },
   { value: 'entra-2', title: 'Entra 2', subtitle: 'B2C3D4E5-F6A7-8901-BCDE-F23456789012', icon: 'WindowsLogo' },
@@ -37,18 +36,31 @@ export function useDirectoryFilter(): [Set<string>, (next: Set<string>) => void]
   return [useSyncExternalStore(subscribe, () => selected), setSelected];
 }
 
-/** The directory an item is in: fixed for a given id, but spread across the directories. */
-export function bucketFor(id: string, kind: DirectoryKind = 'any'): string {
-  const pool = DIRECTORIES.filter((d) => kind === 'any' || d.value.startsWith(`${kind}-`));
-  return pool[hash(id) % pool.length].value;
-}
-
 /** The directory for the nth item of a short list, so every directory gets some (4 is coprime with 9, so the order looks scattered). */
 export function bucketAt(index: number): string {
   return DIRECTORIES[(index * 4) % DIRECTORIES.length].value;
 }
 
-/** Whether the filter lets this item through. Nothing ticked reads as "All directories", so it lets everything through. */
-export function inDirectories(selectedDirs: Set<string>, id: string, kind: DirectoryKind = 'any'): boolean {
-  return selectedDirs.size === 0 || selectedDirs.has(bucketFor(id, kind));
+/**
+ * The directory a Location (or Directory) column value belongs to, read from its first part:
+ * "AD3\Staff" and "O1D.local\Test OU" are AD directories (O1D.local is AD-1, O2D.local AD-2),
+ * "Entra" is Entra 1, "Entra2" is Entra 2, and an onmicrosoft.com tenant is Entra 1.
+ */
+export function directoryForLocation(location: string): string {
+  const first = location.split('\\')[0].trim();
+  const entra = /^Entra ?(\d)?$/i.exec(first);
+  if (entra) return `entra-${entra[1] ?? 1}`;
+  if (/onmicrosoft\.com$/i.test(first)) return 'entra-1';
+  const ad = /^AD-?(\d)$/i.exec(first) ?? /^O(\d)D\.local$/i.exec(first);
+  return ad && DIRECTORIES.some((d) => d.value === `ad-${ad[1]}`) ? `ad-${ad[1]}` : 'ad-1';
+}
+
+/** Whether a Location value sits in an Entra directory. */
+export function isEntraLocation(location: string): boolean {
+  return directoryForLocation(location).startsWith('entra-');
+}
+
+/** Whether the filter lets this Location through: only a ticked directory shows, so ticking none shows none. */
+export function inDirectories(selectedDirs: Set<string>, location: string): boolean {
+  return selectedDirs.has(directoryForLocation(location));
 }

@@ -25,7 +25,7 @@ export function ManagedUnitsPage() {
     const q = query.trim().toLowerCase();
     return MANAGED_UNITS.filter(
       (u, i) =>
-        (directories.size === 0 || directories.has(bucketAt(i))) &&
+        directories.has(bucketAt(i)) &&
         (!q || [u.name, u.description].some((v) => v.toLowerCase().includes(q))),
     );
   }, [query, directories]);

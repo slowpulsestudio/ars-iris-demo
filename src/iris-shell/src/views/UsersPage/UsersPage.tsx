@@ -20,7 +20,7 @@ import type { BadgeTone } from '../../components/Badge/Badge.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
-import { inDirectories, useDirectoryFilter } from '../../lib/directoryFilter.js';
+import { inDirectories, isEntraLocation, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { CreateObjectModal, type CreateObjectResult } from './CreateObjectModal/CreateObjectModal.js';
 import {
@@ -71,7 +71,7 @@ export function UsersPage() {
   const [directories] = useDirectoryFilter();
   // The directory filter in the panel: an Entra user sits in one of the Entra directories, an AD user in an AD one.
   const users = useMemo(
-    () => allUsers.filter((u) => inDirectories(directories, u.id, u.location === 'Entra' ? 'entra' : 'ad')),
+    () => allUsers.filter((u) => inDirectories(directories, u.location)),
     [allUsers, directories],
   );
   const [removedTags, setRemovedTags] = useState<Map<string, Set<string>>>(() => new Map());
@@ -178,7 +178,7 @@ export function UsersPage() {
     announceCreated(result, `#/users/${user.id}`);
   };
 
-  const RowActions = rowUser?.location === 'Entra' ? ARSEntraUserActions : ARSADUserActions;
+  const RowActions = isEntraLocation(rowUser?.location ?? '') ? ARSEntraUserActions : ARSADUserActions;
 
   return (
     <AppShell breadcrumb={[{ label: 'Directory Management' }, { label: 'Users' }]}>
@@ -244,7 +244,7 @@ export function UsersPage() {
       <ARSActionBar
         variant={selectedUsers.length === 1 ? '2' : 'Default'}
         showDelete={selectedUsers.length !== 1}
-        hiddenActions={selectedUsers.some((u) => u.location === 'Entra') ? ['Move'] : undefined}
+        hiddenActions={selectedUsers.some((u) => isEntraLocation(u.location)) ? ['Move'] : undefined}
         open={selected.size > 0}
         selectedCount={selected.size}
         totalCount={users.length}
@@ -265,7 +265,7 @@ export function UsersPage() {
           onClose={closeDialog}
           user={{ name: resetUser.details.displayName }}
           location={directoryOf(resetUser).slice(1)}
-          entra={resetUser.location === 'Entra'}
+          entra={isEntraLocation(resetUser.location)}
         />
       )}
       {deleteUser && (

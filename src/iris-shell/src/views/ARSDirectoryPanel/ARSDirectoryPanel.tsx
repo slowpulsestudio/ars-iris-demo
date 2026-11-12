@@ -149,7 +149,7 @@ export function ARSDirectoryPanel() {
             options: DIRECTORIES,
             selected: directories,
             onSelectionChange: setDirectories,
-            label: secondary?.directoryLabel,
+            label: directories.size === 0 ? 'No directories' : secondary?.directoryLabel,
           }}
         >
           {content}
