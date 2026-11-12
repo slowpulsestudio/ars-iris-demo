@@ -9,6 +9,9 @@ import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
 import { DataTable, type DataTableColumn } from '../../components/DataTable/DataTable.js';
 import { EmptyFigure } from '../../components/EmptyFigure/EmptyFigure.js';
 import { Turntable } from '@lucasmarkes/hairline/react';
+import { FilterTrigger } from '@iris-new';
+import type { FilterFieldDef } from '../../lib/advancedFilter.js';
+import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
 import styles from './FavoritesPage.module.css';
 
 const COLUMNS: DataTableColumn<FavoriteEntry>[] = [
@@ -41,16 +44,29 @@ const COLUMNS: DataTableColumn<FavoriteEntry>[] = [
   },
 ];
 
+/** The columns as Advanced filter fields. Favourites use the Bar, not the Panel. */
+const FIELDS: FilterFieldDef<FavoriteEntry>[] = [
+  { id: 'Name', label: 'Name', icon: 'IdentificationCard', get: (f) => f.name },
+  { id: 'Type', label: 'Type', icon: 'Tag', get: (f) => f.type, list: true },
+  { id: 'Description', label: 'Description', icon: 'ArticleNyTimes', get: (f) => f.description ?? '' },
+];
+
 /**
  * FavoritesPage — a curated shortcut list of favorited objects. Rows deep-link
  * to each object's canonical detail.
  */
 export function FavoritesPage() {
   const { entries, remove } = useFavorites();
+  const lf = useAdvancedFilter(entries, FIELDS, 'bar');
 
   return (
     <AppShell breadcrumb={[{ label: 'Directory Management' }, { label: 'Favourites' }]}>
-      <ContentHeader icon="Heart" title="Favourites" />
+      <ContentHeader
+        icon="Heart"
+        title="Favourites"
+        toolbarActions={entries.length > 0 ? <FilterTrigger active={lf.filterCount > 0} onClick={lf.onFilter} /> : undefined}
+        filters={lf.bar}
+      />
 
       {entries.length === 0 ? (
         <EmptyFigure
@@ -61,8 +77,9 @@ export function FavoritesPage() {
       ) : (
         <div className={styles.tableWrap}>
           <DataTable
-            rows={entries}
+            rows={lf.filtered}
             columns={COLUMNS}
+            emptyState={{ title: 'No favourites match', description: 'Nothing matches this filter.' }}
             ariaLabel="Favourites"
             rowLabel={(f) => f.name}
             rowActions={(f) => (
@@ -78,6 +95,7 @@ export function FavoritesPage() {
           />
         </div>
       )}
+      {lf.elements}
     </AppShell>
   );
 }

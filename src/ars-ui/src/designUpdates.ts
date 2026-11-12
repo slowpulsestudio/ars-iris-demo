@@ -86,8 +86,8 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     title: 'Advanced filter Panel on the lists, Bar in the Add Member modal',
     file: 'primary',
     figmaNodeId: '2613:23294',
-    note: 'The Advanced Search file draws the Panel docked beside a list (4090:114583) and a count badge on the Filters button, and the Iris UI Kit draws the Panel (9956:7605) and the Bar (9722:13727). It does not draw the lists other than Users, the Bar in the Add Member modal, or the Favorites filter. The prototype puts the Panel on every list with a Filters button, the Bar in the Add Member modal and the manager and owner pickers, and none on Favorites (no list yet). The Panel shows one "Common" group of fields where Figma has Common, User, Computer and Groups; the query syntax view and the "Read the filters guide" link are not wired.',
-    recommendation: 'Draw the Panel for the Groups, Managed units, Members, Memberships and Roles lists, the Bar inside the Add Member modal, and the Favorites list with its filter.',
+    note: 'The Advanced Search file draws the Panel docked beside a list (4090:114583) and a count badge on the Filters button, and the Iris UI Kit draws the Panel (9956:7605) and the Bar (9722:13727). It does not draw the lists other than Users, the Bar in the Add Member modal, or the Favorites filter. The prototype puts the Panel on every list with a Filters button, the Bar in the Add Member modal, the manager and owner pickers and Favourites. The Panel shows one "Common" group of fields where Figma has Common, User, Computer and Groups; the query syntax view and the "Read the filters guide" link are not wired.',
+    recommendation: 'Draw the Panel for the Groups, Managed units, Members, Memberships and Roles lists, the Bar in the Add Member modal and on the Favourites list.',
     prototype: '#/users?filter=Tags~Security|Helpdesk;Location~Entra',
   },
   {

@@ -98,6 +98,7 @@
   align-items: center;
   gap: var(--oi-spacing-m);
   flex-shrink: 0;
+  margin-inline-start: auto;
 }
 
 .filtersBar {

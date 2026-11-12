@@ -107,15 +107,16 @@ export function useAdvancedFilter<T>(items: T[], fields: FilterFieldDef<T>[], mo
     filterCount: conditions.length,
     onFilter: menu.openAt,
     filterPressed: false,
-    bar: (
-      <AdvancedFilterBar
-        root={root}
-        parameters={parameters}
-        actions={actions}
-        editingId={editingId}
-        onEditingIdChange={setEditingId}
-      />
-    ),
+    bar:
+      root.children.length === 0 ? null : (
+        <AdvancedFilterBar
+          root={root}
+          parameters={parameters}
+          actions={actions}
+          editingId={editingId}
+          onEditingIdChange={setEditingId}
+        />
+      ),
     elements: <Menu {...menu.menuProps} items={entries} ariaLabel="Add filter" />,
   };
 }
