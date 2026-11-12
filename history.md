@@ -300,7 +300,7 @@ The generated directory data (`lib/directoryData.ts`) reused a handful of names 
 
 ### 12 Nov: "Coming soon" satellite everywhere, and a dialog for Deprovision and Deactivate
 
-Unbuilt user, group and OU tabs showed only the satellite with no words. They now say "Coming soon" under it. The pages that said "[WIP]" (Devices, Agents, Applications, Access templates), the Safeguard page and the old Tree detail tabs use the same satellite and wording, through one shared view, `ComingSoon`; the two stylesheets that only styled the old placeholders are gone. In the Users list's row menu, Deprovision and Deactivate used to do nothing; each now opens a dialog (`ComingSoonModal`, built on the Iris Modal) with the satellite and "Coming soon". Deep links: `?dialog=deprovision` and `?dialog=deactivate` with a `target`.
+Unbuilt user, group and OU tabs showed only the satellite with no words. They now say "Coming soon" under it. The pages that said "[WIP]" (Devices, Agents, Applications, Access templates), the Safeguard page and the old Tree detail tabs use the same satellite and wording, through one shared view, `ComingSoon`; the two stylesheets that only styled the old placeholders are gone. In the Users list's row menu, Deprovision and Deactivate used to do nothing; each now opens a dialog (`ComingSoonModal`, built on the Iris Modal) with the satellite and "Coming soon". Deep links: `?dialog=deprovision` and `?dialog=deactivate` with a `target`. On the Users list's Create menu, Add User opens the same dialog (`?dialog=add-user`) instead of a create form, as it has no design.
 
 ### 12 Nov: faces on the user Overview
 

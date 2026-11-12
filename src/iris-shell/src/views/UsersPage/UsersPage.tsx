@@ -224,6 +224,11 @@ export function UsersPage() {
         variant="Variant3"
         {...createMenu.menuProps}
         onAction={(label) => {
+          // "Add User" has no design yet.
+          if (label === 'Add User') {
+            setHashParams({ dialog: 'add-user', type: null, target: null });
+            return;
+          }
           const type = objectTypeFromMenuLabel(label);
           if (type) setHashParams({ dialog: 'create', type, target: null });
         }}
@@ -273,6 +278,7 @@ export function UsersPage() {
           }}
         />
       )}
+      {dialog === 'add-user' && <ComingSoonModal open onClose={closeDialog} title="Add user" />}
       {comingSoonUser && (
         <ComingSoonModal
           open
