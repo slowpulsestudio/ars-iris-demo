@@ -13,6 +13,8 @@ import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.
 import { saveGroupProps, useGroupProps } from '../../lib/groupDetailsStore.js';
 import { showToast } from '../../lib/toastStore.js';
 import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
+import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { DIRECTORY_OBJECT_FIELDS } from './directoryObjectFields.js';
 import styles from './GroupMembersTab.module.css';
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20, 30, 50];
@@ -72,10 +74,16 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
     return [...new Set([...base, ...added])];
   }, [pool, group, props.addedMembers]);
 
+  const chosen = useMemo(
+    () => (view === 'Members' ? members : pick(pool.filter((o) => o.type === 'group'), 3, group.id)),
+    [view, members, pool, group.id],
+  );
+  // The Advanced filter Panel for this list; the Add Member modal below has its own Bar.
+  const mf = useAdvancedFilter(chosen, DIRECTORY_OBJECT_FIELDS);
+
   const rows = useMemo(() => {
-    const chosen = view === 'Members' ? members : pick(pool.filter((o) => o.type === 'group'), 3, group.id);
     const q = query.trim().toLowerCase();
-    return chosen
+    return mf.filtered
       .filter((o) => !q || [o.name, o.description, o.id].some((v) => v.toLowerCase().includes(q)))
       .map((o) => ({
         id: o.id,
@@ -85,17 +93,21 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
         objectId: o.id,
         href: `#/tree/${nodeId}/${o.id}`,
       }));
-  }, [pool, members, group.id, view, query, nodeId]);
+  }, [mf.filtered, nodeId, query]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
   const pageRows = rows.slice((safePage - 1) * pageSize, safePage * pageSize);
 
-  const candidates = useMemo(() => {
+  const available = useMemo(() => {
     const have = new Set(members.map((m) => m.id));
+    return pool.filter((o) => !have.has(o.id));
+  }, [pool, members]);
+  const af = useAdvancedFilter(available, DIRECTORY_OBJECT_FIELDS, 'bar');
+  const candidates = useMemo(() => {
     const q = addQuery.trim().toLowerCase();
-    return pool.filter((o) => !have.has(o.id) && (!q || [o.name, o.description, o.id].some((v) => v.toLowerCase().includes(q))));
-  }, [pool, members, addQuery]);
+    return af.filtered.filter((o) => !q || [o.name, o.description, o.id].some((v) => v.toLowerCase().includes(q)));
+  }, [af.filtered, addQuery]);
   const addPageCount = Math.max(1, Math.ceil(candidates.length / MODAL_PAGE_SIZE));
   const addSafePage = Math.min(addPage, addPageCount);
 
@@ -136,6 +148,9 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
           setQuery(value);
           setPage(1);
         }}
+        onFilter={mf.onFilter}
+        filterCount={mf.filterCount}
+        filterPressed={mf.filterPressed}
       />
       <ARSGroupTable rows={pageRows} selectedIds={selected} onSelectedIdsChange={setSelected} />
       <ARSPagination
@@ -166,6 +181,9 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
             setAddQuery(value);
             setAddPage(1);
           }}
+          onFilter={af.onFilter}
+          filterCount={af.filterCount}
+          filters={af.bar}
           pagination={{
             page: addSafePage,
             pageCount: addPageCount,
@@ -178,6 +196,7 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
           onSave={saveAdd}
         />
       </ModalOverlay>
+      {af.elements}
     </div>
   );
 }

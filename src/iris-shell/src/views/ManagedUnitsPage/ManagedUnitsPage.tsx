@@ -7,7 +7,8 @@ import { useHashSelection } from '../../lib/hashState.js';
 import { MANAGED_UNITS, getManagedUnit, membersOf, type ManagedUnit } from '../../lib/managedUnits.js';
 import { bucketAt, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { sampleDates, sampleTags, type FilterRow } from '../../lib/listFilters.js';
-import { useListFilters } from '../ListFilters/useListFilters.js';
+import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { rowFields, type FilterFieldDef } from '../../lib/advancedFilter.js';
 import { NoDirectoriesSelected } from '../NoDirectoriesSelected/NoDirectoriesSelected.js';
 import { Button } from '../../components/Button/Button.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
@@ -23,6 +24,14 @@ const unitRow = (u: ManagedUnit): FilterRow => ({
   location: 'Managed Units',
   ...sampleDates(u.id),
 });
+const unitFields = rowFields(unitRow);
+
+/** The members list's fields: its three columns. */
+const memberFields: FilterFieldDef<{ id: string; name: string; description: string; type: string }>[] = [
+  { id: 'Name', label: 'Name', icon: 'IdentificationCard', get: (m) => m.name },
+  { id: 'Description', label: 'Description', icon: 'ArticleNyTimes', get: (m) => m.description },
+  { id: 'Type', label: 'Type', icon: 'Lego', get: (m) => m.type, list: true },
+];
 
 /** ManagedUnitsPage — the Managed Units list (ARS_Managed_Users_Content); a row opens the unit's members. */
 export function ManagedUnitsPage() {
@@ -33,7 +42,7 @@ export function ManagedUnitsPage() {
 
   const [directories] = useDirectoryFilter();
   const units = useMemo(() => MANAGED_UNITS.filter((_, i) => directories.has(bucketAt(i))), [directories]);
-  const lf = useListFilters(units, unitRow);
+  const lf = useAdvancedFilter(units, unitFields);
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -48,8 +57,6 @@ export function ManagedUnitsPage() {
         className={screen.screen}
         header={{ title: 'Managed Units', icon: 'FolderStar' }}
         empty={directories.size === 0 ? <NoDirectoriesSelected /> : undefined}
-        filters={lf.bar}
-        filtersOpen={lf.barOpen}
         toolbar={{
           variant: '4',
           search: query,
@@ -57,7 +64,9 @@ export function ManagedUnitsPage() {
             setQuery(value);
             setPage(1);
           },
-          onFilter: lf.openFilters,
+          onFilter: lf.onFilter,
+          filterCount: lf.filterCount,
+          filterPressed: lf.filterPressed,
         }}
         rows={rows.slice((safePage - 1) * pageSize, safePage * pageSize).map((u) => ({
           ...u,
@@ -78,7 +87,6 @@ export function ManagedUnitsPage() {
           },
         }}
       />
-      {lf.elements}
     </AppShell>
   );
 }
@@ -96,10 +104,11 @@ export function ManagedUnitMembersPage({ unitId }: ManagedUnitMembersPageProps) 
   const [selected, setSelected] = useHashSelection();
 
   const members = useMemo(() => membersOf(unitId), [unitId]);
+  const mf = useAdvancedFilter(members, memberFields);
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return members.filter((m) => !q || [m.name, m.description].some((v) => v.toLowerCase().includes(q)));
-  }, [members, query]);
+    return mf.filtered.filter((m) => !q || [m.name, m.description].some((v) => v.toLowerCase().includes(q)));
+  }, [mf.filtered, query]);
 
   if (!unit) {
     return (
@@ -141,6 +150,9 @@ export function ManagedUnitMembersPage({ unitId }: ManagedUnitMembersPageProps) 
           setQuery(value);
           setPage(1);
         }}
+        onFilter={mf.onFilter}
+        filterCount={mf.filterCount}
+        filterPressed={mf.filterPressed}
         rows={rows.slice((safePage - 1) * pageSize, safePage * pageSize)}
         selected={selected}
         onSelectionChange={setSelected}

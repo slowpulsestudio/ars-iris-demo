@@ -14,6 +14,7 @@ import { useVertical } from '../../lib/verticals.js';
 import { IDENTITY_ROLES, filterIdentityGroups } from '../../lib/identityNav.js';
 import { isTypingTarget } from '../../lib/keyboard.js';
 import { useCurrentUser } from '../../lib/currentUser.js';
+import { useDockPanel } from '../../lib/dockPanelStore.js';
 import styles from './AppShell.module.css';
 
 /** Map global-nav item value → route hash. Items without a mapping are no-op. */
@@ -206,6 +207,7 @@ export function AppShell({
   const { aiOpen, setAiOpen, setSearchOpen, identityRole, setIdentityRole, setPersonaId, directoryPanel } =
     useAppShell();
   const currentUser = useCurrentUser();
+  const dock = useDockPanel();
   const [pinned, setPinned] = useSidebarPinned();
   const [peeking, setPeeking] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(readInitialSidebarWidth);
@@ -630,6 +632,12 @@ export function AppShell({
           )}
 
           <main className={styles.main}>{children}</main>
+
+          {dock && (
+            <aside className={styles.dock} data-open={dock.open} aria-hidden={!dock.open} inert={!dock.open}>
+              <div className={styles.dockInner}>{dock.element}</div>
+            </aside>
+          )}
 
           <AiPanel open={aiOpen} onClose={() => setAiOpen(false)} />
         </div>

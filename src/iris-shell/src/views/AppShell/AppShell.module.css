@@ -75,6 +75,45 @@
   overflow: hidden;
 }
 
+/* The docked panel (the Advanced filter Panel) beside the main surface. It slides open by width,
+   so the list narrows to make room; closed it takes no room, gap included, and is out of reach. */
+.dock {
+  --dock-width: 512px;
+
+  flex: 0 0 auto;
+  width: 0;
+  margin-inline-start: calc(-1 * var(--oi-spacing-xs));
+  overflow: hidden;
+  visibility: hidden;
+  transition:
+    width var(--oi-motion-duration-default) var(--oi-motion-ease-exit),
+    margin-inline-start var(--oi-motion-duration-default) var(--oi-motion-ease-exit),
+    visibility 0s linear var(--oi-motion-duration-default);
+}
+
+.dock[data-open='true'] {
+  width: var(--dock-width);
+  margin-inline-start: 0;
+  visibility: visible;
+  transition:
+    width var(--oi-motion-duration-long) var(--oi-motion-ease-drawer),
+    margin-inline-start var(--oi-motion-duration-long) var(--oi-motion-ease-drawer),
+    visibility 0s linear 0s;
+}
+
+.dockInner {
+  box-sizing: border-box;
+  width: var(--dock-width);
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock,
+  .dock[data-open='true'] {
+    transition: none;
+  }
+}
+
 /* Full-screen backdrop shown while the sidebar is in peek (overlay) mode.
    Sits below the sidebar's z-index (40) and above everything else.
    Pointer-events stay off so it never blocks hover/click resolution —

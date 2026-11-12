@@ -22,7 +22,8 @@ import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
 import { inDirectories, isEntraLocation, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { sampleDates, type FilterRow } from '../../lib/listFilters.js';
-import { useListFilters } from '../ListFilters/useListFilters.js';
+import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { rowFields } from '../../lib/advancedFilter.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { CreateObjectModal, type CreateObjectResult } from './CreateObjectModal/CreateObjectModal.js';
 import {
@@ -52,6 +53,7 @@ function statusTone(status: string): BadgeTone {
 
 /** What the Filters menu sees of a user. The dates are sample values: no list shows them. */
 const userRow = (u: User): FilterRow => ({ name: u.name, type: 'User', tags: u.tags, location: u.location, ...sampleDates(u.id) });
+const userFields = rowFields(userRow);
 
 /** Items-per-page choices offered below the list. */
 const PAGE_SIZE_OPTIONS = [10, 15, 20, 30, 50];
@@ -110,7 +112,7 @@ export function UsersPage() {
 
   const [rowUser, setRowUser] = useState<User | null>(null);
   const rowMenu = useAnchoredMenu();
-  const lf = useListFilters(users, userRow);
+  const lf = useAdvancedFilter(users, userFields);
   const createMenu = useAnchoredMenu();
   const pageMenu = useAnchoredMenu();
 
@@ -190,8 +192,6 @@ export function UsersPage() {
       <ARSFlatViewUserContent
         className={cx(screen.screen, selected.size > 0 && screen.withBar)}
         header={{ title: 'Users', icon: 'Users', onMore: pageMenu.openAt }}
-        filters={lf.bar}
-        filtersOpen={lf.barOpen}
         empty={directories.size === 0 ? <NoDirectoriesSelected /> : undefined}
         toolbar={{
           variant: 'Basic',
@@ -200,7 +200,9 @@ export function UsersPage() {
             setQuery(value);
             setPage(1);
           },
-          onFilter: lf.openFilters,
+          onFilter: lf.onFilter,
+          filterCount: lf.filterCount,
+          filterPressed: lf.filterPressed,
           actionLabel: 'Create',
           onAction: createMenu.openAt,
         }}
@@ -233,7 +235,6 @@ export function UsersPage() {
       />
 
       <RowActions {...rowMenu.menuProps} ariaLabel={`Actions for ${rowUser?.name ?? 'user'}`} onAction={onRowAction} />
-      {lf.elements}
       <ARSPageMenu {...pageMenu.menuProps} onAction={onPageAction} />
       <ARSNewUserEntraDir
         variant="Variant3"

@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { ARSGroupTable, ARSPagination, ARSTableToolbar } from '@ars';
 import { useHashSelection } from '../../lib/hashState.js';
 import { userRoles } from '../../lib/userRoles.js';
+import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { NAMED_OBJECT_FIELDS } from './namedObjectFields.js';
 import styles from './GroupMembersTab.module.css';
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20, 30, 50];
@@ -24,9 +26,11 @@ export function UserRolesTab({ userId }: UserRolesTabProps) {
   const [selectedSet, setSelectedSet] = useHashSelection();
   const selected = useMemo(() => [...selectedSet], [selectedSet]);
 
+  const mf = useAdvancedFilter(roles, NAMED_OBJECT_FIELDS);
+
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return roles
+    return mf.filtered
       .filter((r) => !q || [r.name, r.description, r.objectId].some((v) => v.toLowerCase().includes(q)))
       .map((r) => ({
         id: r.id,
@@ -37,7 +41,7 @@ export function UserRolesTab({ userId }: UserRolesTabProps) {
         // The sample roles have no pages of their own, so a name opens Access templates.
         href: '#/access-templates',
       }));
-  }, [roles, query]);
+  }, [mf.filtered, query]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
@@ -51,6 +55,9 @@ export function UserRolesTab({ userId }: UserRolesTabProps) {
           setQuery(value);
           setPage(1);
         }}
+        onFilter={mf.onFilter}
+        filterCount={mf.filterCount}
+        filterPressed={mf.filterPressed}
       />
       <ARSGroupTable
         ariaLabel="Roles"

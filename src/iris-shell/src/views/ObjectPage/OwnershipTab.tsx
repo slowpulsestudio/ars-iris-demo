@@ -6,6 +6,8 @@ import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.
 import { saveGroupProps, useGroupProps } from '../../lib/groupDetailsStore.js';
 import { showToast } from '../../lib/toastStore.js';
 import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
+import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { DIRECTORY_OBJECT_FIELDS } from './directoryObjectFields.js';
 
 type Picker = 'manager' | 'owner' | null;
 type Draft = {
@@ -107,10 +109,11 @@ export function OwnershipTab({
     () => getSiblings(candidateNodeId).filter((o) => o.type === 'user' && o.id !== object.id),
     [getSiblings, candidateNodeId, object.id],
   );
+  const af = useAdvancedFilter(users, DIRECTORY_OBJECT_FIELDS, 'bar');
   const candidates = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return users.filter((o) => !q || [o.name, o.description].some((v) => v.toLowerCase().includes(q)));
-  }, [users, query]);
+    return af.filtered.filter((o) => !q || [o.name, o.description].some((v) => v.toLowerCase().includes(q)));
+  }, [af.filtered, query]);
   const pageCount = Math.max(1, Math.ceil(candidates.length / PICKER_PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
 
@@ -230,12 +233,16 @@ export function OwnershipTab({
             setQuery(value);
             setPage(1);
           }}
+          onFilter={af.onFilter}
+          filterCount={af.filterCount}
+          filters={af.bar}
           pagination={{ page: safePage, pageCount, onPageChange: setPage, pageSize: PICKER_PAGE_SIZE, pageSizeOptions: [PICKER_PAGE_SIZE] }}
           onClose={closePicker}
           onCancel={closePicker}
           onSave={savePicker}
         />
       </ModalOverlay>
+      {af.elements}
     </>
   );
 }

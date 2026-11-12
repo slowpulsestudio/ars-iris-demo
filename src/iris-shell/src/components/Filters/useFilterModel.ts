@@ -26,6 +26,8 @@ export interface FilterModelActions {
   setOp: (id: string, op: BooleanOp) => void;
   /** Reset back to an empty root group. */
   clear: () => void;
+  /** Swap in a whole tree, e.g. to restore the applied filter. */
+  replace: (next: Group) => void;
 }
 
 export interface FilterModel {
@@ -69,9 +71,11 @@ export function useFilterModel(initial?: Group): FilterModel {
 
   const clear = useCallback(() => setRoot(newGroup('and')), []);
 
+  const replace = useCallback((next: Group) => setRoot(next), []);
+
   const actions = useMemo<FilterModelActions>(
-    () => ({ addCondition, addGroup, updateCondition, remove, setOp, clear }),
-    [addCondition, addGroup, updateCondition, remove, setOp, clear],
+    () => ({ addCondition, addGroup, updateCondition, remove, setOp, clear, replace }),
+    [addCondition, addGroup, updateCondition, remove, setOp, clear, replace],
   );
 
   return { root, actions };

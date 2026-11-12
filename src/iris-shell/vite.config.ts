@@ -51,15 +51,18 @@ function reviewNotesEndpoint(): Plugin {
   }
 }
 
-// The ARS kit (src/ars-ui) imports Iris through `@iris`; the app imports the kit through `@ars`.
+// The ARS kit (src/ars-ui) and the draft Iris components (src/iris-new) import Iris through `@iris`;
+// the app imports them through `@ars` and `@iris-new`.
 export default defineConfig({
   plugins: [react(), reviewNotesEndpoint()],
   resolve: {
     alias: {
       '@iris': fileURLToPath(new URL('./src', import.meta.url)),
       '@ars': fileURLToPath(new URL('../ars-ui/src', import.meta.url)),
+      '@iris-new': fileURLToPath(new URL('../iris-new/src', import.meta.url)),
     },
-    dedupe: ['react', 'react-dom'],
+    // iris-new has no installed packages while the app builds, so its imports resolve from here.
+    dedupe: ['react', 'react-dom', '@lucasmarkes/hairline'],
   },
   // The repo root, so the app can read docs/review-notes.md.
   server: { fs: { allow: [repoRoot] } },

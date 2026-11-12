@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ARSTableGroups } from '@ars';
 import { AppShell } from '../AppShell/AppShell.js';
 import { useDirectory } from '../../lib/directoryStore.js';
@@ -6,9 +6,11 @@ import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashSta
 import type { DirectoryNodeView, DirectoryObject } from '../../lib/directoryData.js';
 import { DEPARTMENT_NAMES } from '../../lib/directoryData.js';
 import { inDirectories, useDirectoryFilter } from '../../lib/directoryFilter.js';
+import type { FilterFieldDef } from '../../lib/advancedFilter.js';
 import { getGroupProps } from '../../lib/groupDetailsStore.js';
 import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
 import { NoDirectoriesSelected } from '../NoDirectoriesSelected/NoDirectoriesSelected.js';
+import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 
 const PAGE_SIZE_OPTIONS = [15, 30, 50, 100];
@@ -76,25 +78,40 @@ export function GroupsPage() {
   }, [groups, removedTags]);
 
   // Figma's Directory column: "AD1\Groups" (directory, then folders) or "Entra1" (the directory only).
-  const describe = (g: DirectoryObject) => {
-    const path = directory.getPath(g.parentId);
-    const entra = path[1]?.id === 'entra-directories';
-    const fromDirectory = path.slice(2).map((p) => p.name);
-    return {
-      groupType: entra ? 'O365Group' : `${getGroupProps(g).type}Group`,
-      directory: (entra ? fromDirectory.slice(0, 1) : fromDirectory).join('\\'),
-    };
-  };
+  const describe = useCallback(
+    (g: DirectoryObject) => {
+      const path = directory.getPath(g.parentId);
+      const entra = path[1]?.id === 'entra-directories';
+      const fromDirectory = path.slice(2).map((p) => p.name);
+      return {
+        groupType: entra ? 'O365Group' : `${getGroupProps(g).type}Group`,
+        directory: (entra ? fromDirectory.slice(0, 1) : fromDirectory).join('\\'),
+      };
+    },
+    [directory],
+  );
 
   const [directories] = useDirectoryFilter();
+  const inScope = useMemo(
+    () => groups.filter((g) => inDirectories(directories, describe(g).directory)),
+    [groups, directories, describe],
+  );
+  // The list's columns, as the Advanced filter's fields.
+  const groupFields = useMemo<FilterFieldDef<DirectoryObject>[]>(
+    () => [
+      { id: 'Name', label: 'Name', icon: 'IdentificationCard', get: (g) => g.name },
+      { id: 'Group type', label: 'Group type', icon: 'UserCircleCheck', get: (g) => describe(g).groupType, list: true },
+      { id: 'Description', label: 'Description', icon: 'ArticleNyTimes', get: (g) => g.description },
+      { id: 'Tags', label: 'Tags', icon: 'Tag', get: (g) => tagsFor(g.id), list: true },
+      { id: 'Directory', label: 'Directory', icon: 'BuildingOffice', get: (g) => describe(g).directory, list: true },
+    ],
+    [describe, tagsFor],
+  );
+  const gf = useAdvancedFilter(inScope, groupFields);
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return groups.filter(
-      (g) =>
-        inDirectories(directories, describe(g).directory) &&
-        (!q || [g.name, g.description].some((v) => v.toLowerCase().includes(q))),
-    );
-  }, [groups, query, directories, directory]);
+    return gf.filtered.filter((g) => !q || [g.name, g.description].some((v) => v.toLowerCase().includes(q)));
+  }, [gf.filtered, query]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
@@ -115,6 +132,9 @@ export function GroupsPage() {
           },
           actionLabel: 'Create',
           onAction: () => setCreateOpen(true),
+          onFilter: gf.onFilter,
+          filterCount: gf.filterCount,
+          filterPressed: gf.filterPressed,
         }}
         rows={pageRows.map((g) => ({
           id: g.id,

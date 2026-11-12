@@ -4,6 +4,8 @@ import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashSta
 import { addUserMemberships, SAMPLE_GROUPS, useUserMemberships } from '../../lib/userMemberships.js';
 import { showToast } from '../../lib/toastStore.js';
 import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
+import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { NAMED_OBJECT_FIELDS } from './namedObjectFields.js';
 import styles from './GroupMembersTab.module.css';
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20, 30, 50];
@@ -36,9 +38,12 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
   const [addQuery, setAddQuery] = useState('');
   const [addPage, setAddPage] = useState(1);
 
+  // The Advanced filter Panel for this list; the Add Member modal below has its own Bar.
+  const mf = useAdvancedFilter(groups, NAMED_OBJECT_FIELDS);
+
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return groups
+    return mf.filtered
       .filter((g) => !q || [g.name, g.description, g.objectId].some((v) => v.toLowerCase().includes(q)))
       .map((g) => ({
         id: g.id,
@@ -49,16 +54,20 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
         // The sample groups have no pages of their own, so a name opens the Groups list.
         href: '#/groups',
       }));
-  }, [groups, query]);
+  }, [mf.filtered, query]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
 
-  const candidates = useMemo(() => {
+  const available = useMemo(() => {
     const have = new Set(groups.map((g) => g.id));
+    return SAMPLE_GROUPS.filter((g) => !have.has(g.id));
+  }, [groups]);
+  const af = useAdvancedFilter(available, NAMED_OBJECT_FIELDS, 'bar');
+  const candidates = useMemo(() => {
     const q = addQuery.trim().toLowerCase();
-    return SAMPLE_GROUPS.filter((g) => !have.has(g.id) && (!q || [g.name, g.description].some((v) => v.toLowerCase().includes(q))));
-  }, [groups, addQuery]);
+    return af.filtered.filter((g) => !q || [g.name, g.description].some((v) => v.toLowerCase().includes(q)));
+  }, [af.filtered, addQuery]);
   const addPageCount = Math.max(1, Math.ceil(candidates.length / MODAL_PAGE_SIZE));
   const addSafePage = Math.min(addPage, addPageCount);
 
@@ -94,6 +103,9 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
           setQuery(value);
           setPage(1);
         }}
+        onFilter={mf.onFilter}
+        filterCount={mf.filterCount}
+        filterPressed={mf.filterPressed}
       />
       <ARSGroupTable
         rows={rows.slice((safePage - 1) * pageSize, safePage * pageSize)}
@@ -128,6 +140,9 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
             setAddQuery(value);
             setAddPage(1);
           }}
+          onFilter={af.onFilter}
+          filterCount={af.filterCount}
+          filters={af.bar}
           pagination={{
             page: addSafePage,
             pageCount: addPageCount,
@@ -140,6 +155,7 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
           onSave={saveAdd}
         />
       </ModalOverlay>
+      {af.elements}
     </div>
   );
 }

@@ -20,7 +20,8 @@ import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { canMoveItem, moveEntries, type MoveEntry, type MoveItem } from '../../lib/moveObjects.js';
 import { endObjectDrag, startObjectDrag } from '../../lib/objectDrag.js';
 import { sampleDates, sampleTags, type FilterRow } from '../../lib/listFilters.js';
-import { useListFilters } from '../ListFilters/useListFilters.js';
+import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { rowFields } from '../../lib/advancedFilter.js';
 import { Button } from '../../components/Button/Button.js';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
@@ -133,7 +134,8 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     for (const o of allRows) if (o.isContainer) visit(o.id);
     return [...allRows, ...below];
   }, [searching, allRows, getChildren]);
-  const lf = useListFilters(pool, toFilterRow);
+  const filterFields = useMemo(() => rowFields(toFilterRow), [toFilterRow]);
+  const lf = useAdvancedFilter(pool, filterFields);
 
   const targets = useMemo(() => {
     const ids = targetParam ? targetParam.split(',') : [];
@@ -298,7 +300,9 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
       setQuery(value);
       setPage(1);
     },
-    onFilter: lf.openFilters,
+    onFilter: lf.onFilter,
+    filterCount: lf.filterCount,
+    filterPressed: lf.filterPressed,
     onAction: createMenu.openAt,
     onActionMenu: createMenu.openAt,
   };
@@ -319,8 +323,6 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
           className={cx(screen.screen, selected.size > 0 && screen.withBar)}
           header={header}
           toolbar={toolbar}
-          filters={lf.bar}
-          filtersOpen={lf.barOpen}
           rows={pageRows.map((o) => ({
             id: o.id,
             name: o.name,
@@ -349,7 +351,6 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
       )}
 
       <RowActions {...rowMenu.menuProps} ariaLabel={`Actions for ${rowObject?.name ?? 'object'}`} onAction={onRowAction} />
-      {lf.elements}
       <ARSPageMenu {...pageMenu.menuProps} onAction={onPageAction} />
       <ARSNewObjectMenu {...createMenu.menuProps} onAction={openCreate} />
 
