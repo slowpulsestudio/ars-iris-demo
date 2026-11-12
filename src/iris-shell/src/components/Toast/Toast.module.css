@@ -1,7 +1,8 @@
 /* Toast — bottom-right notification card.
    Visual treatment follows the Figma `Toast` component: white surface,
-   featured success icon, body-small (semibold) message, dismiss X. Slides
-   in from the right; respects `prefers-reduced-motion`. */
+   featured success icon, body-small (semibold) message, dismiss X. Flies in
+   from the right edge and back out the same way; respects
+   `prefers-reduced-motion`. */
 
 .toast {
   position: fixed;
@@ -19,28 +20,24 @@
   border-radius: var(--oi-border-radius-l);
   box-shadow: var(--oi-shadow-mid);
 
-  /* Rise from below with a fade, slight scale, and cross-blur. Resting
-     (hidden) state carries the faster close clock; the visible state below
-     carries the slower open clock, so arriving feels deliberate and leaving
-     feels snappy from a single attribute flip. */
-  transform: translateY(var(--oi-spacing-l)) scale(0.97);
+  /* Fly in from, and out to, the right edge of the window. The resting
+     (hidden) state carries the exit clock and the visible state below the
+     entry clock, so arriving feels deliberate and leaving feels quicker,
+     from a single attribute flip. Transform and opacity only. */
+  transform: translateX(calc(100% + var(--oi-spacing-l)));
   opacity: 0;
-  filter: blur(2px);
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
   transition:
-    transform var(--oi-motion-duration-short) var(--oi-motion-ease-exit),
-    opacity var(--oi-motion-duration-short) var(--oi-motion-ease-exit),
-    filter var(--oi-motion-duration-short) var(--oi-motion-ease-exit);
+    transform var(--oi-motion-duration-default) var(--oi-motion-ease-exit),
+    opacity var(--oi-motion-duration-default) var(--oi-motion-ease-exit);
 }
 
 .toast[data-visible='true'] {
-  transform: translateY(0) scale(1);
+  transform: translateX(0);
   opacity: 1;
-  filter: blur(0);
   transition:
     transform var(--oi-motion-duration-long) var(--oi-motion-ease-enter),
-    opacity var(--oi-motion-duration-long) var(--oi-motion-ease-enter),
-    filter var(--oi-motion-duration-long) var(--oi-motion-ease-enter);
+    opacity var(--oi-motion-duration-long) var(--oi-motion-ease-enter);
 }
 
 /* UI Kit "Featured icon": a round tinted chip per type. */
@@ -116,8 +113,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .toast {
+  .toast,
+  .toast[data-visible='true'] {
+    transform: none;
     transition: opacity var(--oi-motion-duration-default) var(--oi-motion-ease-default);
-    transform: translateX(0);
   }
 }

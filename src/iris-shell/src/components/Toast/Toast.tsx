@@ -56,10 +56,10 @@ export function Toast({
 }: ToastProps) {
   // Two-stage state so the leave transition has time to play after the
   // owner clears `message`. `shown` holds the last non-null text and is
-  // cleared on a short delay after the prop goes null.
+  // cleared after the exit duration once the prop goes null.
   const [shown, setShown] = useState<string | null>(null);
   // Drives `data-visible`. Held false on the first committed frame so the
-  // rise-from-below enter transition actually plays (a node mounted directly
+  // fly-in transition actually plays (a node mounted directly
   // in its final state animates nothing) — flipped true on the next frame.
   const [visible, setVisible] = useState(false);
 
@@ -102,25 +102,31 @@ export function Toast({
   useEffect(() => {
     if (!message) return;
     setShown(message);
-    // Flip to visible on the next frame so the enter transition runs from
-    // the resting (below + faded + blurred) state.
-    const raf = requestAnimationFrame(() => setVisible(true));
+    // Flip to visible two frames later: the first lets the browser paint the
+    // resting (off-screen right + faded) state, the second starts the
+    // fly-in. A store update renders synchronously, so flipping any sooner
+    // can skip the starting state and nothing animates.
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setVisible(true));
+    });
     remainingRef.current = durationMs;
     startTimer();
     return () => {
-      cancelAnimationFrame(raf);
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
       stopTimer();
     };
   }, [message, durationMs, startTimer, stopTimer]);
 
-  // Hide local copy once the owner clears the prop, after a short delay
-  // so the CSS opacity/transform transition can play out.
+  // Hide local copy once the owner clears the prop, after the exit
+  // duration so the CSS transform/opacity transition can play out.
   useEffect(() => {
     if (message === null) {
       setVisible(false);
       const id = setTimeout(
         () => setShown(null),
-        prefersReducedMotion() ? 0 : motionDurationMs('--oi-motion-duration-short'),
+        prefersReducedMotion() ? 0 : motionDurationMs('--oi-motion-duration-default'),
       );
       return () => clearTimeout(id);
     }
