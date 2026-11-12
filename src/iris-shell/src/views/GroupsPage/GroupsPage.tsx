@@ -4,6 +4,7 @@ import { AppShell } from '../AppShell/AppShell.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import type { DirectoryNodeView, DirectoryObject } from '../../lib/directoryData.js';
+import { DEPARTMENT_NAMES } from '../../lib/directoryData.js';
 import { getGroupProps } from '../../lib/groupDetailsStore.js';
 import { CreateGroupModal } from './CreateGroupModal.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
@@ -11,7 +12,8 @@ import screen from '../ARSScreen/ARSScreen.module.css';
 const PAGE_SIZE_OPTIONS = [15, 30, 50, 100];
 /** Where a group made from this list goes. */
 const DEFAULT_FOLDER = 'o1d-local';
-// Figma's sample tag pairs (ARS_Table_Groups); the directory data has no tags, so groups take them in turn.
+// Figma's sample tag pairs (ARS_Table_Groups) for groups that aren't named "[Department] [Role]";
+// the directory data has no tags, so those groups take them in turn.
 const TAG_PAIRS = [
   ['Security', 'Compliance'],
   ['Marketing', 'Strategy'],
@@ -60,7 +62,17 @@ export function GroupsPage() {
   );
   const tagsFor = useMemo(() => {
     const index = new Map(groups.map((g, i) => [g.id, i]));
-    return (id: string) => TAG_PAIRS[(index.get(id) ?? 0) % TAG_PAIRS.length].filter((t) => !removedTags.get(id)?.has(t));
+    const byId = new Map(groups.map((g) => [g.id, g]));
+    const topics = [...new Set(TAG_PAIRS.map((p) => p[1]))];
+    return (id: string) => {
+      const i = index.get(id) ?? 0;
+      // A "[Department] [Role]" group is tagged with its department plus a topic; other names use Figma's pairs.
+      const first = byId.get(id)?.name.split(' ')[0] ?? '';
+      const known = DEPARTMENT_NAMES.has(first);
+      const topic = topics.filter((t) => t !== first)[(i * 5) % (topics.length - 1)];
+      const pair = known ? [first, topic] : TAG_PAIRS[i % TAG_PAIRS.length];
+      return pair.filter((t) => !removedTags.get(id)?.has(t));
+    };
   }, [groups, removedTags]);
 
   // Figma's Directory column: "AD1\Groups" (directory, then folders) or "Entra1" (the directory only).

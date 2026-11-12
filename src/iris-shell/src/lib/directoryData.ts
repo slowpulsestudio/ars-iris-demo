@@ -339,27 +339,148 @@ const LEAF_TYPES: DirectoryObjectType[] = [
 
 const pick = <T,>(rng: () => number, arr: T[]): T => arr[Math.floor(rng() * arr.length)];
 
+/**
+ * Sample content that doesn't repeat: a spread-out pick by position, with no
+ * random draw, so the rest of a folder's objects are unchanged. A step that
+ * shares no factor with the list length visits every entry before repeating.
+ */
+const pickAt = <T,>(arr: T[], node: RawNode, index: number, step: number): T =>
+  arr[(hashSeed(node.id) + index * step) % arr.length];
+
+/** Groups are a department and a role: 24 x 12 = 288 different names. */
+const DEPARTMENTS: { name: string; thing: string }[] = [
+  { name: 'Finance', thing: 'finance and expense' },
+  { name: 'Marketing', thing: 'campaign and brand' },
+  { name: 'Legal', thing: 'contract and legal' },
+  { name: 'HR', thing: 'people and hiring' },
+  { name: 'Sales', thing: 'sales and pricing' },
+  { name: 'Support', thing: 'customer support' },
+  { name: 'Engineering', thing: 'engineering and release' },
+  { name: 'Security', thing: 'security and access' },
+  { name: 'Operations', thing: 'day-to-day operations' },
+  { name: 'IT', thing: 'IT and device' },
+  { name: 'Data', thing: 'data and reporting' },
+  { name: 'Procurement', thing: 'purchasing and supplier' },
+  { name: 'Product', thing: 'product and roadmap' },
+  { name: 'Design', thing: 'design and brand' },
+  { name: 'Compliance', thing: 'compliance and policy' },
+  { name: 'Analytics', thing: 'analytics and insight' },
+  { name: 'Facilities', thing: 'buildings and facilities' },
+  { name: 'Training', thing: 'learning and training' },
+  { name: 'Payroll', thing: 'payroll and benefits' },
+  { name: 'Research', thing: 'research and development' },
+  { name: 'Network', thing: 'network and connectivity' },
+  { name: 'Cloud', thing: 'cloud and hosting' },
+  { name: 'Quality', thing: 'quality and testing' },
+  { name: 'Executive', thing: 'leadership and board' },
+];
+const GROUP_ROLES: { name: string; describe: (thing: string) => string }[] = [
+  { name: 'Admins', describe: (t) => `Administer ${t} systems.` },
+  { name: 'Approvers', describe: (t) => `Approve ${t} requests.` },
+  { name: 'Readers', describe: (t) => `Read-only access to ${t} records.` },
+  { name: 'Owners', describe: (t) => `Own and manage ${t} resources.` },
+  { name: 'Reviewers', describe: (t) => `Review ${t} changes before they go live.` },
+  { name: 'Leads', describe: (t) => `Lead the ${t} teams.` },
+  { name: 'Operators', describe: (t) => `Run ${t} work day to day.` },
+  { name: 'Contributors', describe: (t) => `Contribute to ${t} work.` },
+  { name: 'Auditors', describe: (t) => `Audit ${t} activity.` },
+  { name: 'Requesters', describe: (t) => `Raise ${t} requests on behalf of their teams.` },
+  { name: 'Managers', describe: (t) => `Manage ${t} staff and their access.` },
+  { name: 'Users', describe: (t) => `Everyone who uses the ${t} tools.` },
+];
+const GROUP_STEP = 37;
+export const DEPARTMENT_NAMES = new Set(DEPARTMENTS.map((d) => d.name));
+
+const SITES = ['LON', 'NYC', 'BER', 'SYD', 'TOK', 'PAR', 'AMS', 'DUB', 'SIN', 'TOR'];
+const DEVICE_KINDS = [
+  { code: 'WS', label: 'Workstation' },
+  { code: 'LT', label: 'Laptop' },
+  { code: 'SRV', label: 'Server' },
+  { code: 'VDI', label: 'Virtual desktop' },
+];
+
+const USER_DESCRIPTIONS = [
+  'Oversees platform administration.',
+  'UI/motion designer specializing in micro-interactions and design systems at scale.',
+  'Leads platform engineering, oversees infra and security compliance across all regions.',
+  'Manages CI/CD pipelines and cloud cost optimization. AWS certified architect.',
+  'Senior backend engineer, owns the API gateway and database performance.',
+  'Account manager handling enterprise onboarding and renewals.',
+  'Runs the service desk and trains new support staff.',
+  'Product manager for the self-service portal.',
+  'Security analyst, triages alerts and leads incident reviews.',
+  'Finance partner for the engineering budget.',
+  'Network engineer responsible for the EMEA sites.',
+  'Data analyst building the weekly access reports.',
+  'HR business partner for the sales organisation.',
+  'QA lead for the identity and access releases.',
+  'Compliance officer preparing the annual audit evidence.',
+  'Cloud architect designing the new landing zones.',
+  'Procurement specialist for software licences.',
+  'Technical writer for the admin documentation.',
+  'Desktop support, owns device builds and imaging.',
+  'Release manager, signs off production changes.',
+  'Legal counsel for data protection requests.',
+  'Marketing lead for the product launch.',
+  'Customer success manager for the largest accounts.',
+  'Facilities coordinator for the London office.',
+  'Training coordinator for the onboarding programme.',
+  'Research scientist working on access analytics.',
+  'Systems administrator, patches and monitors the servers.',
+  'Executive assistant to the CTO.',
+  'Contractor supporting the directory migration until June.',
+  'Intern on the identity team, shadows the service desk.',
+];
+const COMPANIES = [
+  'Northwind Traders', 'Contoso Logistics', 'Fabrikam Consulting', 'Adventure Works', 'Tailspin Toys',
+  'Litware', 'Proseware', 'Wide World Importers', 'Alpine Ski House', 'Coho Winery',
+];
+const DEVICE_DESCRIPTIONS = [
+  (who: string, label: string) => `${label} assigned to ${who}.`,
+  (who: string, label: string) => `${label} issued to ${who} for daily work.`,
+  (who: string, label: string) => `${label} managed for ${who}'s team.`,
+  (who: string, label: string) => `${label} in use by ${who}, last patched this month.`,
+];
+
 function makeLeaf(node: RawNode, index: number, rng: () => number, path: string): DirectoryObject {
   const type = pick(rng, LEAF_TYPES);
-  const description = pick(rng, DESCRIPTIONS);
+  // The random draws below are kept as they were, so the names of the rest of
+  // a folder's objects (Julian Long and so on) stay the same.
+  pick(rng, DESCRIPTIONS);
   const id = `${node.id}-o${index}`;
 
   if (type === 'computer') {
     const num = 100 + Math.floor(rng() * 900);
-    const kind = pick(rng, ['Computer', 'Device', 'Operator computer', 'Workstation']);
-    const name = kind.endsWith('computer') ? kind : `${kind} ${String(num).padStart(3, '0')}`;
+    const kind = pick(rng, DEVICE_KINDS);
+    const name = `${pickAt(SITES, node, index, 3)}-${kind.code}-${num}`;
+    const who = `${pickAt(FIRST_NAMES, node, index, 7)} ${pickAt(LAST_NAMES, node, index, 11)}`;
+    const description = pickAt(DEVICE_DESCRIPTIONS, node, index, 1)(who, kind.label);
     return {
       id, name, type, description, parentId: node.id, isContainer: false,
       details: { description, location: path, created: '2024-11-02' },
     };
   }
   if (type === 'group') {
-    const name = `${pick(rng, ['Security', 'Access', 'Admin', 'Ops', 'Finance'])} ${pick(rng, ['Users', 'Admins', 'Readers', 'Owners'])}`;
+    // The draws are kept so the folder's other objects don't change.
+    pick(rng, ['Security', 'Access', 'Admin', 'Ops', 'Finance']);
+    pick(rng, ['Users', 'Admins', 'Readers', 'Owners']);
+    const memberCount = 1 + Math.floor(rng() * 40);
+    // The group the notes and links rely on (Figma's sample, "Security Users") keeps its name.
+    const pinned = id === 'o1d-builtin-o23';
+    const slot = (hashSeed(node.id) + index * GROUP_STEP) % (DEPARTMENTS.length * GROUP_ROLES.length);
+    const department = pinned ? DEPARTMENTS.find((d) => d.name === 'Security')! : DEPARTMENTS[slot % DEPARTMENTS.length];
+    const role = pinned ? GROUP_ROLES.find((r) => r.name === 'Users')! : GROUP_ROLES[Math.floor(slot / DEPARTMENTS.length)];
+    const name = `${department.name} ${role.name}`;
+    const description = role.describe(department.thing);
     return {
       id, name, type, description, parentId: node.id, isContainer: false,
-      details: { description, location: path, memberCount: 1 + Math.floor(rng() * 40), created: '2024-08-14' },
+      details: { description, location: path, memberCount, created: '2024-08-14' },
     };
   }
+  const description =
+    type === 'contact'
+      ? `External contact at ${pickAt(COMPANIES, node, index, 3)}.`
+      : pickAt(USER_DESCRIPTIONS, node, index, 7);
   // user / contact
   const firstName = pick(rng, FIRST_NAMES);
   const lastName = pick(rng, LAST_NAMES);

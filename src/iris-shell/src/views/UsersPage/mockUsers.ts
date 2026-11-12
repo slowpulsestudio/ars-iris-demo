@@ -122,6 +122,18 @@ const TAG_PAIRS = [
   ['Security', 'Helpdesk'],
   ['Design', 'Marketing'],
   ['Analytics', 'Finance'],
+  ['Sales', 'Revenue'],
+  ['Support', 'Onboarding'],
+  ['Legal', 'Compliance'],
+  ['IT', 'Infrastructure'],
+  ['Product', 'Research'],
+  ['Operations', 'Logistics'],
+  ['Cloud', 'DevOps'],
+  ['Training', 'HR'],
+  ['Quality', 'Engineering'],
+  ['Executive', 'Strategy'],
+  ['Network', 'Security'],
+  ['Payroll', 'Finance'],
 ];
 const LOCATIONS = ['AD1\\Users', 'Entra', 'AD2\\OU1', 'AD1\\DataAdmin'];
 

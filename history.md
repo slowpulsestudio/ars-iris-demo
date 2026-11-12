@@ -294,6 +294,10 @@ The action bar does the same, from the bottom edge: it flies up into place and b
 
 On the list screens (Users, Tree view list, Groups, a managed unit's members) the pagination is now sticky at the bottom of the scrolling list, so paging is always in view, and the action bar floats above it instead of over it (before, the bar covered the pagination). While the bar shows, the list keeps one extra row of space above the pagination (`--ars-pagination-space`, set by `withBar` in `ARSScreen.module.css`) so the last row can scroll clear of the bar. The kit's ARSPagination gained `sticky`; the card's bottom padding moves into the sticky pagination (`--ars-pagination-pad-bottom`) so rows never show in a strip beneath it. The kit's ARSActionBar gained `hiddenActions`; on the Users list Move is left out when any selected user has Location Entra, as the Entra row menu already has none.
 
+### 12 Nov: sample content no longer repeats
+
+The generated directory data (`lib/directoryData.ts`) reused a handful of names and descriptions, so a folder showed "Ops Admins" six times, groups carried user descriptions, and computers were all "Computer" or "Device 123". Groups are now named "[Department] [Role]" (24 departments × 12 roles, each with its own description, so a group's description matches what it is), computers get a site-and-type name such as `PAR-LT-303` with a matching description, users and contacts get their own description pools, and the Groups list tags a "[Department] [Role]" group with its department plus a topic. The Users list tags use a longer list of pairs. The random draws are unchanged, so existing ids and names (Julian Long, Security Users) stay as the docs and links expect.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
