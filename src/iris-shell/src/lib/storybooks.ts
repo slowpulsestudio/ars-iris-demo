@@ -7,9 +7,9 @@ export interface StorybookLink {
   href: string;
 }
 
-// While developing, the local servers (ports match the `storybook` scripts in src/iris-storybook and
-// src/ars-ui). In a deployed build, the copies scripts/build-storybooks.mjs puts under /storybook/.
-const href = (id: 'iris' | 'ars', port: number) =>
+// While developing, the local servers (ports match the `storybook` scripts in src/iris-storybook,
+// src/ars-ui and src/iris-new). In a deployed build, the copies scripts/build-storybooks.mjs puts under /storybook/.
+const href = (id: 'iris' | 'ars' | 'iris-new', port: number) =>
   import.meta.env.DEV ? `http://127.0.0.1:${port}/` : `${import.meta.env.BASE_URL}storybook/${id}/index.html`;
 
 export const STORYBOOKS: StorybookLink[] = [
@@ -26,5 +26,12 @@ export const STORYBOOKS: StorybookLink[] = [
     subtitle: 'Active Roles components',
     description: 'The Active Roles components from the ARS - Primary Figma file, built with Iris.',
     href: href('ars', 6106),
+  },
+  {
+    id: 'iris-new',
+    name: 'Iris new Storybook',
+    subtitle: 'Draft Iris components',
+    description: 'Draft components built from the Iris UI Kit: the Advanced filter Bar and Panel.',
+    href: href('iris-new', 6108),
   },
 ];

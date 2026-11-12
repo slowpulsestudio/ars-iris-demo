@@ -10,6 +10,7 @@ What was built in this repo, the decisions behind it, and where everything lives
 | Iris Storybook (one story file per Iris component) | [src/iris-storybook](src/iris-storybook) | `pnpm storybook` (port 6107) · `pnpm -s typecheck && pnpm -s check` |
 | ARS kit (ARS components and their Storybook) | [src/ars-ui](src/ars-ui) | `pnpm storybook` (port 6106) · `pnpm -s typecheck && pnpm -s check && pnpm -s build-storybook --quiet` |
 | Motion section of the ARS Storybook | [src/ars-ui/src/motion](src/ars-ui/src/motion) | Storybook sections Motion/Tokens and Motion/Usage |
+| Iris new (draft Iris components: Advanced filter Bar and Panel) | [src/iris-new](src/iris-new) | `pnpm storybook` (port 6108) · `pnpm -s typecheck` |
 | ARS component audit | [docs/ars-component-map.md](docs/ars-component-map.md) | |
 | Personas | [personas/personas.md](personas/personas.md) | |
 | Project rules for agents | [prototype-specific-agent-instructions.md](prototype-specific-agent-instructions.md) | |

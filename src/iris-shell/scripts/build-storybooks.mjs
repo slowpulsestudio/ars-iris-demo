@@ -1,4 +1,4 @@
-// Builds the Iris and ARS Storybooks into dist/storybook/{iris,ars}, so the deployed app can link to them.
+// Builds the Iris, ARS and Iris new Storybooks into dist/storybook/{iris,ars,iris-new}, so the deployed app can link to them.
 // Run after `vite build` (see vercel.json). Each Storybook is its own pnpm project, so it installs its own packages first.
 import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -13,6 +13,7 @@ if (!existsSync(dist)) {
 const storybooks = [
   { id: 'iris', dir: fileURLToPath(new URL('../../iris-storybook', import.meta.url)) },
   { id: 'ars', dir: fileURLToPath(new URL('../../ars-ui', import.meta.url)) },
+  { id: 'iris-new', dir: fileURLToPath(new URL('../../iris-new', import.meta.url)) },
 ];
 
 for (const { id, dir } of storybooks) {
