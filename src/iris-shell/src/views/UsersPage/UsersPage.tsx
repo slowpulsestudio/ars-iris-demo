@@ -9,6 +9,7 @@ import {
 } from '@ars';
 import { NEW_USER_ENTRA_DIR_MENU } from '@ars/components/ARSNewUserEntraDir/ARSNewUserEntraDir.js';
 import { AppShell } from '../AppShell/AppShell.js';
+import { NoDirectoriesSelected } from '../NoDirectoriesSelected/NoDirectoriesSelected.js';
 import { useUsers } from '../../lib/usersStore.js';
 import { useAppShell } from '../../lib/appShellContext.js';
 import { cx } from '../../lib/cx.js';
@@ -191,6 +192,7 @@ export function UsersPage() {
         header={{ title: 'Users', icon: 'Users', onMore: pageMenu.openAt }}
         filters={lf.bar}
         filtersOpen={lf.barOpen}
+        empty={directories.size === 0 ? <NoDirectoriesSelected /> : undefined}
         toolbar={{
           variant: 'Basic',
           search: query,

@@ -8,6 +8,7 @@ import { MANAGED_UNITS, getManagedUnit, membersOf, type ManagedUnit } from '../.
 import { bucketAt, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { sampleDates, sampleTags, type FilterRow } from '../../lib/listFilters.js';
 import { useListFilters } from '../ListFilters/useListFilters.js';
+import { NoDirectoriesSelected } from '../NoDirectoriesSelected/NoDirectoriesSelected.js';
 import { Button } from '../../components/Button/Button.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 import styles from '../UserDetailPage/UserDetailPage.module.css';
@@ -46,6 +47,7 @@ export function ManagedUnitsPage() {
       <ARSManagedUsersContent
         className={screen.screen}
         header={{ title: 'Managed Units', icon: 'FolderStar' }}
+        empty={directories.size === 0 ? <NoDirectoriesSelected /> : undefined}
         filters={lf.bar}
         filtersOpen={lf.barOpen}
         toolbar={{

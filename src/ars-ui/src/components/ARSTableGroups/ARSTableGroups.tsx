@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { Badge, type BadgeTone } from '@iris/components/Badge/Badge.js';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
@@ -36,6 +36,8 @@ export interface ARSTableGroupsProps {
   onColumns?: () => void;
   onMore?: (id: string, event: MouseEvent<HTMLElement>) => void;
   pagination: ARSPaginationProps;
+  /** Shown in place of the table, e.g. an empty state. Not drawn in Figma. */
+  empty?: ReactNode;
   className?: string;
 }
 
@@ -53,6 +55,7 @@ export function ARSTableGroups({
   onColumns,
   onMore,
   pagination,
+  empty,
   className,
 }: ARSTableGroupsProps) {
   const allSelected = rows.length > 0 && rows.every((r) => selected.has(r.id));
@@ -62,6 +65,14 @@ export function ARSTableGroups({
     else next.delete(id);
     onSelectionChange?.(next);
   };
+
+  if (empty) {
+    return (
+      <ContentScreen header={header} toolbar={toolbar} className={className}>
+        {empty}
+      </ContentScreen>
+    );
+  }
 
   return (
     <ContentScreen header={header} toolbar={toolbar} className={className}>

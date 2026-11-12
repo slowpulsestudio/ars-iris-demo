@@ -8,6 +8,7 @@ import { DEPARTMENT_NAMES } from '../../lib/directoryData.js';
 import { inDirectories, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { getGroupProps } from '../../lib/groupDetailsStore.js';
 import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
+import { NoDirectoriesSelected } from '../NoDirectoriesSelected/NoDirectoriesSelected.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 
 const PAGE_SIZE_OPTIONS = [15, 30, 50, 100];
@@ -104,6 +105,7 @@ export function GroupsPage() {
       <ARSTableGroups
         className={screen.screen}
         header={{ title: 'Groups', icon: 'UsersThree' }}
+        empty={directories.size === 0 ? <NoDirectoriesSelected /> : undefined}
         toolbar={{
           variant: 'Basic',
           search: query,

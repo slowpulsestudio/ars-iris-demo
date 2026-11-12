@@ -94,7 +94,7 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     title: 'Working directory filter',
     file: 'crud',
     figmaNodeId: '1372:37388',
-    note: 'Figma draws the "All directories (9 selected)" picker but not what it does. It now filters Users, Groups and Management units by their Location or Directory column; ticking none shows none and the button reads "No directories".',
+    note: 'Figma draws the "All directories (9 selected)" picker but not what it does. It now filters Users, Groups and Management units by their Location or Directory column; ticking none shows none, the button reads "No directories" and the list shows the Lockers empty figure with "No directories selected."',
     recommendation: 'Draw the filtered list, the "none ticked" state and the empty table.',
     prototype: '#/users',
   },

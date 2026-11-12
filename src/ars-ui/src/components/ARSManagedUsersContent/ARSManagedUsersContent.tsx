@@ -35,6 +35,8 @@ export interface ARSManagedUsersContentProps {
   /** The head's column settings button (Figma ARS_Table_Config). */
   onColumns?: (event: MouseEvent<HTMLElement>) => void;
   pagination: ARSPaginationProps;
+  /** Shown in place of the table, e.g. an empty state. Not drawn in Figma. */
+  empty?: ReactNode;
   className?: string;
 }
 
@@ -53,6 +55,7 @@ export function ARSManagedUsersContent({
   onSelectionChange,
   onColumns,
   pagination,
+  empty,
   className,
 }: ARSManagedUsersContentProps) {
   const allSelected = rows.length > 0 && rows.every((r) => selected.has(r.id));
@@ -62,6 +65,14 @@ export function ARSManagedUsersContent({
     else next.delete(id);
     onSelectionChange?.(next);
   };
+
+  if (empty) {
+    return (
+      <ContentScreen header={header} toolbar={toolbar} filters={filters} filtersOpen={filtersOpen} className={className}>
+        {empty}
+      </ContentScreen>
+    );
+  }
 
   return (
     <ContentScreen header={header} toolbar={toolbar} filters={filters} filtersOpen={filtersOpen} className={className}>
