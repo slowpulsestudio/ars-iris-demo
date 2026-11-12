@@ -1,4 +1,4 @@
-import type { DragEvent, MouseEvent } from 'react';
+import type { DragEvent, MouseEvent, ReactNode } from 'react';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
@@ -25,6 +25,8 @@ export interface ARSTreeViewADContentProps {
   header: ARSHeaderProps;
   /** ARS_Table_Toolbar; Figma uses the "Basic" variant. */
   toolbar?: ARSTableToolbarProps;
+  /** Applied-filter pills between the toolbar and the table (not drawn in Figma). */
+  filters?: ReactNode;
   rows: ARSTreeViewADRow[];
   /** Heading of the middle column; Figma's Groups list calls it "Group type". */
   typeLabel?: string;
@@ -47,6 +49,7 @@ export interface ARSTreeViewADContentProps {
 export function ARSTreeViewADContent({
   header,
   toolbar,
+  filters,
   rows,
   typeLabel = 'Object type',
   selected = new Set(),
@@ -67,7 +70,7 @@ export function ARSTreeViewADContent({
   };
 
   return (
-    <ContentScreen header={header} toolbar={toolbar} className={className}>
+    <ContentScreen header={header} toolbar={toolbar} filters={filters} className={className}>
       <div role="table" className={styles.table}>
         <TableHeadRow
           columns={[

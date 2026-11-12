@@ -4,13 +4,24 @@ import { AppShell } from '../AppShell/AppShell.js';
 import { navigate } from '../../lib/router.js';
 import { cx } from '../../lib/cx.js';
 import { useHashSelection } from '../../lib/hashState.js';
-import { MANAGED_UNITS, getManagedUnit, membersOf } from '../../lib/managedUnits.js';
+import { MANAGED_UNITS, getManagedUnit, membersOf, type ManagedUnit } from '../../lib/managedUnits.js';
 import { bucketAt, useDirectoryFilter } from '../../lib/directoryFilter.js';
+import { sampleDates, sampleTags, type FilterRow } from '../../lib/listFilters.js';
+import { useListFilters } from '../ListFilters/useListFilters.js';
 import { Button } from '../../components/Button/Button.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 import styles from '../UserDetailPage/UserDetailPage.module.css';
 
 const PAGE_SIZE_OPTIONS = [15, 30, 50];
+
+/** What the Filters menu sees of a unit. Tags and dates are sample values; the list shows neither. */
+const unitRow = (u: ManagedUnit): FilterRow => ({
+  name: u.name,
+  type: 'Managed Unit',
+  tags: sampleTags(u.id),
+  location: 'Managed Units',
+  ...sampleDates(u.id),
+});
 
 /** ManagedUnitsPage — the Managed Units list (ARS_Managed_Users_Content); a row opens the unit's members. */
 export function ManagedUnitsPage() {
@@ -20,15 +31,13 @@ export function ManagedUnitsPage() {
   const [selected, setSelected] = useHashSelection();
 
   const [directories] = useDirectoryFilter();
+  const units = useMemo(() => MANAGED_UNITS.filter((_, i) => directories.has(bucketAt(i))), [directories]);
+  const lf = useListFilters(units, unitRow);
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return MANAGED_UNITS.filter(
-      (u, i) =>
-        directories.has(bucketAt(i)) &&
-        (!q || [u.name, u.description].some((v) => v.toLowerCase().includes(q))),
-    );
-  }, [query, directories]);
+    return lf.filtered.filter((u) => !q || [u.name, u.description].some((v) => v.toLowerCase().includes(q)));
+  }, [query, lf.filtered]);
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
 
@@ -37,6 +46,7 @@ export function ManagedUnitsPage() {
       <ARSManagedUsersContent
         className={screen.screen}
         header={{ title: 'Managed Units', icon: 'FolderStar' }}
+        filters={lf.bar}
         toolbar={{
           variant: '4',
           search: query,
@@ -44,6 +54,7 @@ export function ManagedUnitsPage() {
             setQuery(value);
             setPage(1);
           },
+          onFilter: lf.openFilters,
         }}
         rows={rows.slice((safePage - 1) * pageSize, safePage * pageSize).map((u) => ({
           ...u,
@@ -64,6 +75,7 @@ export function ManagedUnitsPage() {
           },
         }}
       />
+      {lf.elements}
     </AppShell>
   );
 }

@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
@@ -25,6 +25,8 @@ export interface ARSManagedUnitRow {
 export interface ARSManagedUsersContentProps {
   header: ARSHeaderProps;
   toolbar?: ARSTableToolbarProps;
+  /** Applied-filter pills between the toolbar and the table (not drawn in Figma). */
+  filters?: ReactNode;
   rows: ARSManagedUnitRow[];
   selected?: Set<string>;
   onSelectionChange?: (next: Set<string>) => void;
@@ -42,6 +44,7 @@ export interface ARSManagedUsersContentProps {
 export function ARSManagedUsersContent({
   header,
   toolbar,
+  filters,
   rows,
   selected = new Set(),
   onSelectionChange,
@@ -58,7 +61,7 @@ export function ARSManagedUsersContent({
   };
 
   return (
-    <ContentScreen header={header} toolbar={toolbar} className={className}>
+    <ContentScreen header={header} toolbar={toolbar} filters={filters} className={className}>
       <div role="table" aria-label="Managed units" className={styles.table}>
         {/* Figma: head 180 / 86 / fill / 155 and the 44px ARS_Table_Config; rows have no "…" and a 200px Type cell under Type and the config. */}
         <TableHeadRow

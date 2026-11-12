@@ -83,6 +83,14 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     prototype: '#/groups?dialog=new-group',
   },
   {
+    title: 'Table filters: choosing the values',
+    file: 'primary',
+    figmaNodeId: '3064:26920',
+    note: 'Figma draws the Filters menu (Display name, Object type, Tags, Location, Date active, Date created) and the filter pill ("× Object type is Computer", also with several values, 2650:24519), but not what happens between them, where the pill row sits, or the filtered list. In the prototype picking a field opens a ticked list of its values (a text box for Display name), the pill appears in a row between the toolbar and the table, and the list filters. The date fields offer Last 7, 30 and 90 days and Older than 90 days.',
+    recommendation: 'Draw the value picker for each field, the pill row under the toolbar, and the filtered and empty list.',
+    prototype: '#/users?filter=Tags~Security|Helpdesk;Location~Entra',
+  },
+  {
     title: 'Working directory filter',
     file: 'crud',
     figmaNodeId: '1372:37388',

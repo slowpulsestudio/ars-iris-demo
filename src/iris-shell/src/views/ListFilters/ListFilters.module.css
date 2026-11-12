@@ -1,0 +1,7 @@
+/* The applied-filter pills, in a row under the table toolbar. */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+}

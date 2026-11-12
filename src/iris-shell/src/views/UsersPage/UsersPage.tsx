@@ -3,7 +3,6 @@ import {
   ARSADUserActions,
   ARSActionBar,
   ARSEntraUserActions,
-  ARSFilterMenu,
   ARSFlatViewUserContent,
   ARSNewUserEntraDir,
   ARSPageMenu,
@@ -21,6 +20,8 @@ import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
 import { inDirectories, isEntraLocation, useDirectoryFilter } from '../../lib/directoryFilter.js';
+import { sampleDates, type FilterRow } from '../../lib/listFilters.js';
+import { useListFilters } from '../ListFilters/useListFilters.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { CreateObjectModal, type CreateObjectResult } from './CreateObjectModal/CreateObjectModal.js';
 import {
@@ -47,6 +48,9 @@ function statusTone(status: string): BadgeTone {
       return 'neutral';
   }
 }
+
+/** What the Filters menu sees of a user. The dates are sample values: no list shows them. */
+const userRow = (u: User): FilterRow => ({ name: u.name, type: 'User', tags: u.tags, location: u.location, ...sampleDates(u.id) });
 
 /** Items-per-page choices offered below the list. */
 const PAGE_SIZE_OPTIONS = [10, 15, 20, 30, 50];
@@ -105,19 +109,19 @@ export function UsersPage() {
 
   const [rowUser, setRowUser] = useState<User | null>(null);
   const rowMenu = useAnchoredMenu();
-  const filterMenu = useAnchoredMenu();
+  const lf = useListFilters(users, userRow);
   const createMenu = useAnchoredMenu();
   const pageMenu = useAnchoredMenu();
 
   const rows = useMemo<User[]>(() => {
     const q = query.trim().toLowerCase();
     const matching = q
-      ? users.filter((u) =>
+      ? lf.filtered.filter((u) =>
           [u.name, u.description, u.email, u.objectId].some((v) => v.toLowerCase().includes(q)),
         )
-      : users;
+      : lf.filtered;
     return showSelected ? matching.filter((u) => selected.has(u.id)) : matching;
-  }, [users, query, showSelected, selected]);
+  }, [lf.filtered, query, showSelected, selected]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
@@ -185,6 +189,7 @@ export function UsersPage() {
       <ARSFlatViewUserContent
         className={cx(screen.screen, selected.size > 0 && screen.withBar)}
         header={{ title: 'Users', icon: 'Users', onMore: pageMenu.openAt }}
+        filters={lf.bar}
         toolbar={{
           variant: 'Basic',
           search: query,
@@ -192,7 +197,7 @@ export function UsersPage() {
             setQuery(value);
             setPage(1);
           },
-          onFilter: filterMenu.openAt,
+          onFilter: lf.openFilters,
           actionLabel: 'Create',
           onAction: createMenu.openAt,
         }}
@@ -225,7 +230,7 @@ export function UsersPage() {
       />
 
       <RowActions {...rowMenu.menuProps} ariaLabel={`Actions for ${rowUser?.name ?? 'user'}`} onAction={onRowAction} />
-      <ARSFilterMenu {...filterMenu.menuProps} />
+      {lf.elements}
       <ARSPageMenu {...pageMenu.menuProps} onAction={onPageAction} />
       <ARSNewUserEntraDir
         variant="Variant3"

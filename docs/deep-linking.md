@@ -25,6 +25,7 @@ An address has three parts:
 | `select` | The ticked rows, so the selection bar shows. | Ids, comma-separated | Lists, group Memberships, Managed Units |
 | `view` | A sub-view of a tab. | `members-of` (Memberships; Members is the default) | Group Memberships |
 | `pick` | The objects chosen in Add Member. | Ids, comma-separated | Add Member |
+| `filter` | The applied table filters: `Field~value1\|value2` joined by `;`, each value URI-encoded. | `Tags~Security\|Helpdesk;Location~Entra` (fields: Display name, Object type, Tags, Location, Date active, Date created; the two dates take `7`, `30`, `90` or `older`) | Users, Tree view folder lists, Managed units |
 | `request` | The open approval request (its side sheet). | `REQ-001`… | Approvals |
 | `modal` | The open approval modal. | `approve`, `deny`, `escalate` | Approvals |
 | `sheet` | The open side sheet. | `request-access` | My Access |

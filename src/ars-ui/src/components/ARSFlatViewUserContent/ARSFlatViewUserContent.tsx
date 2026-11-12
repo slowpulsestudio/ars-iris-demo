@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { ARSTable, type ARSTableProps } from '../ARSTable/ARSTable.js';
 import type { ARSHeaderProps } from '../ARSHeader/ARSHeader.js';
 import type { ARSTableToolbarProps } from '../ARSTableToolbar/ARSTableToolbar.js';
@@ -8,6 +9,8 @@ export interface ARSFlatViewUserContentProps {
   header: ARSHeaderProps;
   /** ARS_Table_Toolbar; Figma uses the "Basic" variant. */
   toolbar?: ARSTableToolbarProps;
+  /** Applied-filter pills between the toolbar and the table (not drawn in Figma). */
+  filters?: ReactNode;
   /** ARS_Table (Default columns). */
   table: Omit<ARSTableProps, 'variant'>;
   className?: string;
@@ -17,9 +20,9 @@ export interface ARSFlatViewUserContentProps {
  * ARS_Flat View_User_Content — the Flat view list of users: ARS_Header,
  * ARS_Table_Toolbar and ARS_Table. Figma: 3423:30755.
  */
-export function ARSFlatViewUserContent({ header, toolbar, table, className }: ARSFlatViewUserContentProps) {
+export function ARSFlatViewUserContent({ header, toolbar, filters, table, className }: ARSFlatViewUserContentProps) {
   return (
-    <ContentScreen header={{ icon: 'User', ...header }} toolbar={toolbar} className={className}>
+    <ContentScreen header={{ icon: 'User', ...header }} toolbar={toolbar} filters={filters} className={className}>
       <ARSTable variant="Default" {...table} />
     </ContentScreen>
   );

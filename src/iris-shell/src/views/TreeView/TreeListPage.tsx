@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState, type DragEvent, type MouseEvent } from 'react';
+import { useCallback, useEffect, useMemo, useState, type DragEvent, type MouseEvent } from 'react';
 import {
   ARSADRightClickTreeMenu,
   ARSADUserActions,
   ARSActionBar,
   ARSEmptyContent,
-  ARSFilterMenu,
   ARSNewObjectMenu,
   ARSPageMenu,
   ARSTreeViewADContent,
@@ -20,6 +19,8 @@ import { useFavorites } from '../../lib/useFavorites.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { canMoveItem, moveEntries, type MoveEntry, type MoveItem } from '../../lib/moveObjects.js';
 import { endObjectDrag, startObjectDrag } from '../../lib/objectDrag.js';
+import { sampleDates, sampleTags, type FilterRow } from '../../lib/listFilters.js';
+import { useListFilters } from '../ListFilters/useListFilters.js';
 import { Button } from '../../components/Button/Button.js';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
@@ -88,7 +89,17 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
 
   const [rowObject, setRowObject] = useState<DirectoryObject | null>(null);
   const rowMenu = useAnchoredMenu();
-  const filterMenu = useAnchoredMenu();
+  // What the Filters menu sees of an object. Tags and dates are sample values; no list shows them.
+  const toFilterRow = useCallback(
+    (o: DirectoryObject): FilterRow => ({
+      name: o.name,
+      type: OBJECT_TYPE_META[o.type].label,
+      tags: sampleTags(o.id),
+      location: getNodeName(o.parentId) ?? '',
+      ...sampleDates(o.id),
+    }),
+    [getNodeName],
+  );
   const createMenu = useAnchoredMenu();
   const pageMenu = useAnchoredMenu();
 
@@ -122,6 +133,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     for (const o of allRows) if (o.isContainer) visit(o.id);
     return [...allRows, ...below];
   }, [searching, allRows, getChildren]);
+  const lf = useListFilters(pool, toFilterRow);
 
   const targets = useMemo(() => {
     const ids = targetParam ? targetParam.split(',') : [];
@@ -138,12 +150,12 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
   const rows = useMemo<DirectoryObject[]>(() => {
     const q = query.trim().toLowerCase();
     const matching = q
-      ? pool.filter((o) =>
+      ? lf.filtered.filter((o) =>
           [o.name, OBJECT_TYPE_META[o.type].label, o.description].some((v) => v.toLowerCase().includes(q)),
         )
-      : allRows;
+      : lf.filtered;
     return showSelected ? matching.filter((o) => selected.has(o.id)) : matching;
-  }, [allRows, pool, query, showSelected, selected]);
+  }, [lf.filtered, query, showSelected, selected]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
@@ -286,7 +298,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
       setQuery(value);
       setPage(1);
     },
-    onFilter: filterMenu.openAt,
+    onFilter: lf.openFilters,
     onAction: createMenu.openAt,
     onActionMenu: createMenu.openAt,
   };
@@ -307,6 +319,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
           className={cx(screen.screen, selected.size > 0 && screen.withBar)}
           header={header}
           toolbar={toolbar}
+          filters={lf.bar}
           rows={pageRows.map((o) => ({
             id: o.id,
             name: o.name,
@@ -335,7 +348,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
       )}
 
       <RowActions {...rowMenu.menuProps} ariaLabel={`Actions for ${rowObject?.name ?? 'object'}`} onAction={onRowAction} />
-      <ARSFilterMenu {...filterMenu.menuProps} />
+      {lf.elements}
       <ARSPageMenu {...pageMenu.menuProps} onAction={onPageAction} />
       <ARSNewObjectMenu {...createMenu.menuProps} onAction={openCreate} />
 
