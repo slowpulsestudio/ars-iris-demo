@@ -6,7 +6,7 @@ import {
   type ARSDirectoryView,
 } from '@ars';
 import type { TreeNode } from '../../components/Tree/Tree.js';
-import { DIRECTORIES } from '../../components/Sidebar/Sidebar.js';
+import { DIRECTORIES, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { navigate, useRoute } from '../../lib/router.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { ALL_NODE_IDS, type DirectoryNodeView } from '../../lib/directoryData.js';
@@ -52,9 +52,7 @@ export function ARSDirectoryPanel() {
   const view = ROUTE_TO_VIEW[route.name] ?? 'flat';
   const selectedId = selectedNodeId(route.name, route.params as Record<string, string>);
 
-  const [directories, setDirectories] = useState<Set<string>>(
-    () => new Set(DIRECTORIES.map((d) => d.value)),
-  );
+  const [directories, setDirectories] = useDirectoryFilter();
   const [favoritesSearch, setFavoritesSearch] = useState('');
   const nodes = useMemo(() => nodeTree.map(toTreeNode), [nodeTree]);
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set(ALL_NODE_IDS));

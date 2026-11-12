@@ -26,6 +26,7 @@ Where: Flat view ([#/users](#/users)), Tree view ([#/tree](#/tree) and any folde
 
 ### Confirm
 
+- [ ] **New: the directory filter works.** In the Flat view's panel ([1372:37388](https://www.figma.com/design/djs9NKqC3YG6KtAhHiQ4iT/ARS_WebUI2_CRUD?node-id=1372-37388)) "All directories (9 selected)" now filters the Users, Groups and Management units lists. Figma draws the picker but not what it does, so this is a change you asked for. Every item is put at random into one of the nine directories (Entra 1 to 4, AD-1 to 5) and always stays in the same one; an Entra user or group goes into an Entra directory and an AD one into an AD directory. Ticking directories shows only what is in them, and clearing all of them reads as "All directories" and shows everything. The Location column on Users and the Directory column on Groups are separate made-up values and do not match the nine names (a user in "AD-1" can show "AD2\OU1"). Devices, Agents, Applications and Access templates have no content yet, so the filter does nothing there. The choice is kept while you move between lists and is reset on reload. Prototype: [Users, choose a directory](#/users).
 - [ ] **Empty states.** `#/tree` uses the Iris empty figure (Branches). A folder with no objects uses `ARS_Empty_Content` with the ARS "No data" drawing. Pick one style.
 - [ ] **Filter pills dropped.** The Figma frames show only the filter button, so the old filter pills are gone. The filter menu items do nothing.
 - [ ] **Panel width.** Fixed at 254px as in Figma. The old drag-to-resize handle is gone.

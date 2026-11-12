@@ -5,6 +5,7 @@ import { navigate } from '../../lib/router.js';
 import { cx } from '../../lib/cx.js';
 import { useHashSelection } from '../../lib/hashState.js';
 import { MANAGED_UNITS, getManagedUnit, membersOf } from '../../lib/managedUnits.js';
+import { bucketAt, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { Button } from '../../components/Button/Button.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 import styles from '../UserDetailPage/UserDetailPage.module.css';
@@ -18,10 +19,16 @@ export function ManagedUnitsPage() {
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
   const [selected, setSelected] = useHashSelection();
 
+  const [directories] = useDirectoryFilter();
+
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return MANAGED_UNITS.filter((u) => !q || [u.name, u.description].some((v) => v.toLowerCase().includes(q)));
-  }, [query]);
+    return MANAGED_UNITS.filter(
+      (u, i) =>
+        (directories.size === 0 || directories.has(bucketAt(i))) &&
+        (!q || [u.name, u.description].some((v) => v.toLowerCase().includes(q))),
+    );
+  }, [query, directories]);
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
 

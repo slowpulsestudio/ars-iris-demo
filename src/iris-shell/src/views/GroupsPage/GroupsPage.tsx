@@ -5,6 +5,7 @@ import { useDirectory } from '../../lib/directoryStore.js';
 import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import type { DirectoryNodeView, DirectoryObject } from '../../lib/directoryData.js';
 import { DEPARTMENT_NAMES } from '../../lib/directoryData.js';
+import { inDirectories, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { getGroupProps } from '../../lib/groupDetailsStore.js';
 import { CreateGroupModal } from './CreateGroupModal.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
@@ -86,10 +87,15 @@ export function GroupsPage() {
     };
   };
 
+  const [directories] = useDirectoryFilter();
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return groups.filter((g) => !q || [g.name, g.description].some((v) => v.toLowerCase().includes(q)));
-  }, [groups, query]);
+    return groups.filter(
+      (g) =>
+        inDirectories(directories, g.id, directory.getPath(g.parentId)[1]?.id === 'entra-directories' ? 'entra' : 'ad') &&
+        (!q || [g.name, g.description].some((v) => v.toLowerCase().includes(q))),
+    );
+  }, [groups, query, directories, directory]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);

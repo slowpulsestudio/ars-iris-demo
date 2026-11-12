@@ -11,7 +11,8 @@ import { navigate } from '../../lib/router.js';
 import { prefersReducedMotion } from '../../lib/motion.js';
 import { useFavorites } from '../../lib/useFavorites.js';
 import { SegmentedControl } from '../SegmentedControl/SegmentedControl.js';
-import { MultiSelect, type MultiSelectOption } from '../MultiSelect/MultiSelect.js';
+import { MultiSelect } from '../MultiSelect/MultiSelect.js';
+import { DIRECTORIES, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { NavItem } from '../NavItem/NavItem.js';
 import { Tooltip } from '../Tooltip/Tooltip.js';
 import { Tree } from './Tree.js';
@@ -51,63 +52,7 @@ const VIEW_OPTIONS = [
 // fresh mount can glide the bar from where it came from.
 let lastActiveNav: string | null = null;
 
-/** Directories available in the directory multi-select. */
-export const DIRECTORIES: MultiSelectOption[] = [
-  {
-    value: 'entra-1',
-    title: 'Entra 1',
-    subtitle: 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890',
-    icon: 'WindowsLogo',
-  },
-  {
-    value: 'entra-2',
-    title: 'Entra 2',
-    subtitle: 'B2C3D4E5-F6A7-8901-BCDE-F23456789012',
-    icon: 'WindowsLogo',
-  },
-  {
-    value: 'ad-1',
-    title: 'AD-1',
-    subtitle: 'C3D4E5F6-A7B8-9012-CDEF-345678901234',
-    icon: 'HardDrives',
-  },
-  {
-    value: 'ad-2',
-    title: 'AD-2',
-    subtitle: 'D4E5F6A7-B8C9-0123-DEF0-456789012345',
-    icon: 'HardDrives',
-  },
-  {
-    value: 'entra-3',
-    title: 'Entra 3',
-    subtitle: 'E5F6A7B8-C9D0-1234-EF01-567890123456',
-    icon: 'WindowsLogo',
-  },
-  {
-    value: 'ad-3',
-    title: 'AD-3',
-    subtitle: 'F6A7B8C9-D0E1-2345-F012-678901234567',
-    icon: 'HardDrives',
-  },
-  {
-    value: 'ad-4',
-    title: 'AD-4',
-    subtitle: 'A7B8C9D0-E1F2-3456-0123-789012345678',
-    icon: 'HardDrives',
-  },
-  {
-    value: 'entra-4',
-    title: 'Entra 4',
-    subtitle: 'B8C9D0E1-F2A3-4567-1234-890123456789',
-    icon: 'WindowsLogo',
-  },
-  {
-    value: 'ad-5',
-    title: 'AD-5',
-    subtitle: 'C9D0E1F2-A3B4-5678-2345-901234567890',
-    icon: 'HardDrives',
-  },
-];
+export { DIRECTORIES } from '../../lib/directoryFilter.js';
 
 /**
  * Sidebar — directory navigation rail.
@@ -124,9 +69,7 @@ export function Sidebar({
   onResizePointerDown,
   className,
 }: SidebarProps) {
-  const [directories, setDirectories] = useState<Set<string>>(
-    () => new Set(DIRECTORIES.map((d) => d.value)),
-  );
+  const [directories, setDirectories] = useDirectoryFilter();
 
   // Shared active indicator that slides between nav rows. NavItem's built-in
   // bar is suppressed (hideIndicator) so this single element can animate

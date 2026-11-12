@@ -20,6 +20,7 @@ import type { BadgeTone } from '../../components/Badge/Badge.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
+import { inDirectories, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { CreateObjectModal, type CreateObjectResult } from './CreateObjectModal/CreateObjectModal.js';
 import {
@@ -66,7 +67,13 @@ function createIconFor(type: string): string {
  * (ARS_Flat View_User_Content) inside the shell's directory layout.
  */
 export function UsersPage() {
-  const { users, addUser, removeUser } = useUsers();
+  const { users: allUsers, addUser, removeUser } = useUsers();
+  const [directories] = useDirectoryFilter();
+  // The directory filter in the panel: an Entra user sits in one of the Entra directories, an AD user in an AD one.
+  const users = useMemo(
+    () => allUsers.filter((u) => inDirectories(directories, u.id, u.location === 'Entra' ? 'entra' : 'ad')),
+    [allUsers, directories],
+  );
   const [removedTags, setRemovedTags] = useState<Map<string, Set<string>>>(() => new Map());
   const { setAiOpen, setAiContext } = useAppShell();
   const moveUsers = useMoveUsers();
@@ -85,8 +92,8 @@ export function UsersPage() {
   const [typeParam] = useHashParam('type');
   const targets = useMemo(() => {
     const ids = targetParam ? targetParam.split(',') : [];
-    return users.filter((u) => ids.includes(u.id));
-  }, [users, targetParam]);
+    return allUsers.filter((u) => ids.includes(u.id));
+  }, [allUsers, targetParam]);
   const resetUser = dialog === 'reset-password' ? (targets[0] ?? null) : null;
   const deleteUser = dialog === 'delete' ? (targets[0] ?? null) : null;
   const comingSoonUser = dialog === 'deprovision' || dialog === 'deactivate' ? (targets[0] ?? null) : null;
