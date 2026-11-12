@@ -47,6 +47,12 @@
   color: var(--oi-content-color-tertiary);
 }
 
+/* For something that isn't available yet ("Coming soon"): the copy reads as disabled. */
+.disabled .title,
+.disabled .description {
+  color: var(--oi-content-color-disabled);
+}
+
 .action {
   margin-top: var(--oi-spacing-xs);
 }

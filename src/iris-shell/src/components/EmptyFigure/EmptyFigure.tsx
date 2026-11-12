@@ -16,6 +16,8 @@ export interface EmptyFigureProps {
   intensity?: number;
   /** Optional call-to-action rendered below the copy. */
   action?: ReactNode;
+  /** The title and description read as disabled, for something that isn't available yet. */
+  disabled?: boolean;
   className?: string;
 }
 
@@ -31,10 +33,11 @@ export function EmptyFigure({
   label,
   intensity,
   action,
+  disabled = false,
   className,
 }: EmptyFigureProps) {
   return (
-    <div className={cx(styles.root, className)}>
+    <div className={cx(styles.root, disabled && styles.disabled, className)}>
       <Figure
         className={styles.figure}
         label={label ?? title}

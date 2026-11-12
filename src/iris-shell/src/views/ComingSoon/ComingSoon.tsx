@@ -8,5 +8,5 @@ export interface ComingSoonProps {
 
 /** ComingSoon — the one placeholder for anything that isn't built yet: the interactive vault figure with "Coming soon". */
 export function ComingSoon({ label }: ComingSoonProps) {
-  return <EmptyFigure figure={Vault} title="Coming soon" label={label} />;
+  return <EmptyFigure figure={Vault} title="Coming soon" label={label} disabled />;
 }

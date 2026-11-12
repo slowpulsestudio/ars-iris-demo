@@ -322,7 +322,7 @@ On a user's Overview the Group memberships and Assigned roles tiles are now one 
 
 ### 12 Nov: "Coming soon" shows the vault
 
-The shared `ComingSoon` view (tabs, former "[WIP]" pages, the Deprovision, Deactivate, Add User and New Group dialogs) now uses the Iris kit's interactive `Vault` figure instead of the `Dish` satellite. One-word change in `views/ComingSoon/ComingSoon.tsx`. The designer also linked a Figma node in Iris UI Illustrations (2002:2507); the Figma connection was down so it wasn't read, and the kit's Vault was kept at the designer's choice, so it is not checked against that node. The entries above that call it a satellite describe what was built then.
+The shared `ComingSoon` view (tabs, former "[WIP]" pages, the Deprovision, Deactivate, Add User and New Group dialogs) now uses the Iris kit's interactive `Vault` figure instead of the `Dish` satellite. One-word change in `views/ComingSoon/ComingSoon.tsx`. The designer also linked a Figma node in Iris UI Illustrations (2002:2507); the Figma connection was down so it wasn't read, and the kit's Vault was kept at the designer's choice, so it is not checked against that node. The "Coming soon" text reads as disabled: the Iris `EmptyFigure` gained a `disabled` prop (title and description in `--oi-content-color-disabled`), with a Disabled story; other empty states are unchanged. The entries above that call it a satellite describe what was built then.
 
 ### 12 Nov: the table filters work
 

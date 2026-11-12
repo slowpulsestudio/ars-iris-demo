@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Dish, Elevator, Riffle, Turntable } from '@lucasmarkes/hairline/react';
+import { Dish, Elevator, Riffle, Turntable, Vault } from '@lucasmarkes/hairline/react';
 import { Button } from '@iris/components/Button/Button.js';
 import { EmptyFigure } from '@iris/components/EmptyFigure/EmptyFigure.js';
 
@@ -35,6 +35,10 @@ export const WithAction: Story = {
     description: 'Connect a directory source to see its breakdown here.',
     action: <Button variant="secondary" iconLead="Plus">Add directory</Button>,
   },
+};
+
+export const Disabled: Story = {
+  args: { figure: Vault, title: 'Coming soon', description: undefined, disabled: true },
 };
 
 export const FigureOnly: Story = {
