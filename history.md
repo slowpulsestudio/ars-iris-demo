@@ -306,6 +306,8 @@ Unbuilt user, group and OU tabs showed only the satellite with no words. They no
 
 The Overview's profile avatar showed initials for everyone. About six in ten users now show a photo: sixteen portraits from randomuser.me (free to use; the demo site hot-links the same source) are saved in `public/avatars/people/` and picked in `lib/userPhotos.ts` from the first name, the same face every time for the same person. The rest keep initials, as in Figma. Names not in the lookup lists keep initials. The kit's ARSOverviewTemplate gained an optional `avatarSrc`.
 
+The ten named sample users on the Users list had emails that belonged to other people (Isabella Clark showed `i.patel@acme.io`; most were shifted by one or two rows). Each now reads initial.lastname, the same as the generated users (`i.clark@acme.io`).
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
