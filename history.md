@@ -284,6 +284,10 @@ Users > Create in the Flat view had the long New object menu (groups, OUs, bulk 
 
 The user Memberships tab, which was an empty state, now lists the groups the user is a member of, laid out as the Members Of page in the Groups file (search, split Add member button, group table, paging, Add Member modal). The sample data follows the demo site (https://product-test-pi-indol.vercel.app/#/users): groups with a name and a description, two per user. The group names were varied later: a list of forty, with two different groups for each of the ten sample users and two spread-out picks for any other user. The Overview card, the tab label and the list all use the one list, so they agree (Isabella Clark: 2) and adding a group raises all three. The Roles tab now has content too, as many sample roles as its label and card say; Figma and the demo site have none for it, so it reuses this tab's layout (flagged in the Flow 3 notes). Differences from Figma are in the Flow 3 notes (`lib/userMemberships.ts`, `lib/userRoles.ts`, `views/ObjectPage/UserMembershipsTab.tsx`, `UserRolesTab.tsx`).
 
+### 12 Nov: toast flies in and out
+
+The toast now flies in from the right edge of the window and back out the same way (before, it rose from below with a blur and scale). It uses only Iris motion tokens and transform and opacity: the entry takes `--oi-motion-duration-long` with `--oi-motion-ease-enter`, the exit `--oi-motion-duration-default` with `--oi-motion-ease-exit`, and with reduced motion it fades with no movement. The entry also wasn't animating at all before: the toast is shown through a store update that renders synchronously, so the "visible" flip could happen before the starting position was ever painted. It now waits for one painted frame. The toast is also used in the AI panel, so it flies the same way there.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
