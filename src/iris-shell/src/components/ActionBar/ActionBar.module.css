@@ -67,11 +67,11 @@
   transition: none;
 }
 
-/* ---------- inline: overlay the pagination footer without reflowing it ---------- */
+/* ---------- inline: float above the pagination without reflowing anything ---------- */
 
-/* The wrapper consumes no flow space (height 0) so the pagination/table above
-   never move. The bar is positioned absolutely, overlapping the pagination row
-   directly above, and fades in on a raised z-index. */
+/* The wrapper consumes no flow space (height 0) so the list and its pagination
+   above never move. The bar is positioned absolutely, just above the pagination
+   row (which stays in view), and flies in on a raised z-index. */
 .inlineWrap {
   flex: 0 0 auto;
   position: relative;
@@ -83,8 +83,12 @@
   position: absolute;
   left: 0;
   right: 0;
-  /* Lift the bar up so it sits over the pagination row directly above. */
-  bottom: var(--oi-spacing-m);
+  /* Sit above the pagination (a button, its padding, and the card's bottom
+     padding the pagination carries) with a gap, so paging stays in view
+     under the bar. */
+  bottom: calc(
+    var(--oi-button-size-height-default) + 2 * var(--oi-spacing-s) + var(--oi-spacing-xxl) + var(--oi-spacing-m)
+  );
   display: flex;
   justify-content: center;
   /* Let clicks fall through everywhere except the bar itself. */

@@ -11,6 +11,23 @@
   height: var(--oi-size-s);
 }
 
+/* Always in view at the bottom of the scrolling list. A screen can reserve room
+   above it for a floating action bar by setting --ars-pagination-space. */
+.sticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  margin-top: var(--ars-pagination-space, 0px);
+  background-color: var(--oi-background-color-primary);
+}
+
+/* A screen that scrolls inside its card hands the card's bottom padding to the
+   pagination, so rows never show in a strip beneath it. Without it, the usual
+   small padding. (Two classes so a table's own padding rule doesn't override it.) */
+.root.sticky {
+  padding-bottom: var(--ars-pagination-pad-bottom, var(--oi-spacing-s));
+}
+
 /* The ARS file's "10 / page" button is a plain frame, not an Iris UI Kit piece. */
 .pageSize {
   display: inline-flex;

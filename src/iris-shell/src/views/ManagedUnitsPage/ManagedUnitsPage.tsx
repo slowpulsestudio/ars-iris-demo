@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { ARSActionBar, ARSManagedUnitMembers, ARSManagedUsersContent } from '@ars';
 import { AppShell } from '../AppShell/AppShell.js';
 import { navigate } from '../../lib/router.js';
+import { cx } from '../../lib/cx.js';
 import { useHashSelection } from '../../lib/hashState.js';
 import { MANAGED_UNITS, getManagedUnit, membersOf } from '../../lib/managedUnits.js';
 import { Button } from '../../components/Button/Button.js';
@@ -109,7 +110,7 @@ export function ManagedUnitMembersPage({ unitId }: ManagedUnitMembersPageProps) 
       ]}
     >
       <ARSManagedUnitMembers
-        className={screen.screen}
+        className={cx(screen.screen, selected.size > 0 && screen.withBar)}
         unitName={unit.name}
         directory="O1D.local"
         location="Managed Units"

@@ -113,7 +113,7 @@ export function ARSManagedUnitMembers({
           </div>
         ))}
       </div>
-      <ARSPagination {...pagination} />
+      <ARSPagination sticky {...pagination} />
     </div>
   );
 }

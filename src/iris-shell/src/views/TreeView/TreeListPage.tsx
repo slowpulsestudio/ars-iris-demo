@@ -12,6 +12,7 @@ import {
 import { NEW_OBJECT_MENU } from '@ars/components/ARSNewObjectMenu/ARSNewObjectMenu.js';
 import { AppShell } from '../AppShell/AppShell.js';
 import { navigate } from '../../lib/router.js';
+import { cx } from '../../lib/cx.js';
 import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
@@ -302,7 +303,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
         />
       ) : (
         <ARSTreeViewADContent
-          className={screen.screen}
+          className={cx(screen.screen, selected.size > 0 && screen.withBar)}
           header={header}
           toolbar={toolbar}
           rows={pageRows.map((o) => ({

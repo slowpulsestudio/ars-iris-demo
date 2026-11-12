@@ -114,7 +114,7 @@ export function ARSTreeViewADContent({
             </TableCell>
           </div>
         ))}
-        <ARSPagination className={styles.pagination} {...pagination} />
+        <ARSPagination sticky className={styles.pagination} {...pagination} />
       </div>
     </ContentScreen>
   );

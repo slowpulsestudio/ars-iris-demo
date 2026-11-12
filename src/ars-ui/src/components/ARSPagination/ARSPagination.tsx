@@ -19,6 +19,8 @@ export interface ARSPaginationProps {
   pageSize?: number;
   pageSizeOptions?: number[];
   onPageSizeChange?: (size: number) => void;
+  /** Keeps the pagination at the bottom of the scrolling list, so paging is always in view. */
+  sticky?: boolean;
   className?: string;
 }
 
@@ -35,10 +37,11 @@ export function ARSPagination({
   pageSize = 10,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   onPageSizeChange,
+  sticky = false,
   className,
 }: ARSPaginationProps) {
   return (
-    <div className={cx(styles.root, className)}>
+    <div className={cx(styles.root, sticky && styles.sticky, className)}>
       <span className={styles.spacer} aria-hidden="true" />
 
       <Pagination

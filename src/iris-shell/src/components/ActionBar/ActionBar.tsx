@@ -52,8 +52,8 @@ export interface ActionBarProps {
   /**
    * Placement mode. `floating` (default) portals a fixed pill to the bottom
    * of the viewport, overlaying whatever sits below. `inline` renders the bar
-   * in the normal document flow but overlays the pagination footer below it on
-   * a raised z-index (fading in) without reflowing or pushing sibling content.
+   * in the normal document flow but floats it just above the pagination of the
+   * list before it, on a raised z-index, without reflowing or pushing content.
    */
   layout?: 'floating' | 'inline';
   className?: string;
@@ -233,7 +233,7 @@ export function ActionBar({
   const bar = renderBar(false);
   const ghost = renderBar(true);
 
-  // Inline: stay in the document flow but overlay the pagination/table below on
+  // Inline: stay in the document flow but float above the list's pagination on
   // a raised z-index instead of pushing it — the wrapper consumes no height.
   if (layout === 'inline') {
     return (

@@ -131,6 +131,7 @@ export function ARSTable({
         />
       ))}
       <ARSPagination
+        sticky
         className={styles.pagination}
         page={page}
         pageCount={pageCount}

@@ -6,4 +6,15 @@
   border: 0;
   border-radius: 0;
   background-color: transparent;
+  /* The card's bottom padding moves into the sticky pagination (see ARSPagination):
+     its own small padding plus the card's. */
+  padding-bottom: 0;
+  --ars-pagination-pad-bottom: calc(var(--oi-spacing-s) + var(--oi-spacing-xxl));
+}
+
+/* While the action bar shows it floats above the pagination, so the list keeps
+   one extra row of space (the bar's height and a gap each side) above the
+   pagination: the last row can scroll clear of the bar. */
+.withBar {
+  --ars-pagination-space: calc(var(--oi-size-l) + 2 * var(--oi-spacing-m));
 }
