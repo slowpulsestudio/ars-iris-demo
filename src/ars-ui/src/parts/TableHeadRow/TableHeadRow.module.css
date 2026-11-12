@@ -1,4 +1,8 @@
 .head {
+  /* The column titles stay in view while the rows scroll beneath them. */
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
   align-items: stretch;
   /* Figma spaces head items 1px apart. */
