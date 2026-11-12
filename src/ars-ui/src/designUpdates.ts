@@ -83,11 +83,11 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     prototype: '#/groups?dialog=new-group',
   },
   {
-    title: 'Table filters: choosing the values',
+    title: 'Advanced filter Panel on the lists, Bar in the Add Member modal',
     file: 'primary',
-    figmaNodeId: '3064:26920',
-    note: 'Figma draws the Filters menu (Display name, Object type, Tags, Location, Date active, Date created) and the filter pill ("× Object type is Computer", also with several values, 2650:24519), but not what happens between them, where the pill row sits, or the filtered list. In the prototype picking a field opens a ticked list of its values (a text box for Display name), the pill appears in a row between the toolbar and the table, and the list filters. The date fields offer Last 7, 30 and 90 days and Older than 90 days.',
-    recommendation: 'Draw the value picker for each field, the pill row under the toolbar, and the filtered and empty list.',
+    figmaNodeId: '2613:23294',
+    note: 'The Advanced Search file draws the Panel docked beside a list (4090:114583) and a count badge on the Filters button, and the Iris UI Kit draws the Panel (9956:7605) and the Bar (9722:13727). It does not draw the lists other than Users, the Bar in the Add Member modal, or the Favorites filter. The prototype puts the Panel on every list with a Filters button, the Bar in the Add Member modal and the manager and owner pickers, and none on Favorites (no list yet). The Panel shows one "Common" group of fields where Figma has Common, User, Computer and Groups; the query syntax view and the "Read the filters guide" link are not wired.',
+    recommendation: 'Draw the Panel for the Groups, Managed units, Members, Memberships and Roles lists, the Bar inside the Add Member modal, and the Favorites list with its filter.',
     prototype: '#/users?filter=Tags~Security|Helpdesk;Location~Entra',
   },
   {
