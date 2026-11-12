@@ -342,7 +342,7 @@ The Groups list's Create button and the Tree view's New AD Group and New Entra D
 
 ### 12 Nov: demo portal learnings
 
-`docs/demo-portal-learnings.md` gained a "Sample data and placeholders" section (repeated content, keeping linked sample objects stable, one source for counts, filters that read the column, photos saved locally, one "Coming soon" placeholder), two points on the Design review tasks list (three kinds of Confirm item; note and link in the same commit) and a line in the reuse list.
+`docs/learnings/demo-portal-learnings.md` gained a "Sample data and placeholders" section (repeated content, keeping linked sample objects stable, one source for counts, filters that read the column, photos saved locally, one "Coming soon" placeholder), two points on the Design review tasks list (three kinds of Confirm item; note and link in the same commit) and a line in the reuse list.
 
 ## Iris files changed since the Iris packages were installed
 
