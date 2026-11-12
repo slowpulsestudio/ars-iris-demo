@@ -1,0 +1,77 @@
+/* Wide: parameter + operator side by side, value and delete beneath.
+   Narrow (the panel's min-width): everything stacks along a tree trail. */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+  width: 100%;
+  --trail-gap: var(--oi-spacing-s);
+  --trail-indent: var(--oi-spacing-xl);
+  --trail-elbow: 14px;
+}
+
+.selectors {
+  display: flex;
+  gap: var(--oi-spacing-l);
+}
+
+.select {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.selectors > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.valueRow {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-l);
+}
+
+.value {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+@container (max-width: 420px) {
+  .root {
+    gap: var(--trail-gap);
+  }
+
+  .selectors {
+    flex-direction: column;
+    gap: var(--trail-gap);
+  }
+
+  /* Operator and value hang off the parameter on an elbowed line. */
+  .selectors > :nth-child(2),
+  .valueRow {
+    position: relative;
+    margin-inline-start: var(--trail-indent);
+  }
+
+  .selectors > :nth-child(2)::before,
+  .valueRow::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: calc(-1 * var(--trail-indent) + var(--oi-spacing-l));
+    width: calc(var(--trail-indent) - var(--oi-spacing-l));
+    border-inline-start: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+    border-bottom: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+    border-end-start-radius: var(--oi-border-radius-l);
+    pointer-events: none;
+  }
+
+  .selectors > :nth-child(2)::before {
+    top: calc(-1 * var(--trail-gap));
+    height: calc(var(--trail-gap) + var(--trail-elbow));
+  }
+
+  .valueRow::before {
+    top: calc(-1 * (var(--trail-gap) + var(--trail-elbow)));
+    height: calc(var(--trail-gap) + var(--trail-elbow) * 2);
+  }
+}

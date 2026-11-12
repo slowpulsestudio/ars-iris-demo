@@ -16,8 +16,8 @@ import {
 export interface FilterModelActions {
   /** Append a blank (or preset) condition to a group. */
   addCondition: (parentId: string, preset?: Partial<Condition>) => void;
-  /** Append a nested group to a group. */
-  addGroup: (parentId: string, op?: BooleanOp) => void;
+  /** Append a nested group to a group, optionally seeded with children. */
+  addGroup: (parentId: string, op?: BooleanOp, children?: FilterNode[]) => void;
   /** Patch a single condition (parameter / operator / values). */
   updateCondition: (id: string, patch: Partial<Omit<Condition, 'kind' | 'id'>>) => void;
   /** Remove any node (condition or group) by id. */
@@ -44,8 +44,8 @@ export function useFilterModel(initial?: Group): FilterModel {
     setRoot((r) => appendChild(r, parentId, newCondition(preset)));
   }, []);
 
-  const addGroup = useCallback((parentId: string, op: BooleanOp = 'and') => {
-    setRoot((r) => appendChild(r, parentId, newGroup(op)));
+  const addGroup = useCallback((parentId: string, op: BooleanOp = 'and', children: FilterNode[] = []) => {
+    setRoot((r) => appendChild(r, parentId, newGroup(op, children)));
   }, []);
 
   const updateCondition = useCallback(

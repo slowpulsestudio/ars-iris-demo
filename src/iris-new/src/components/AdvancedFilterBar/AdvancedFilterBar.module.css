@@ -1,0 +1,33 @@
+/* Figma Content header "Row 6" (10012:3823): secondary tray, wrapping pills. */
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--oi-spacing-m);
+  padding: var(--oi-spacing-m) var(--oi-spacing-xl);
+  background-color: var(--oi-background-color-secondary);
+  border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+}
+
+.item {
+  position: relative;
+  max-width: 100%;
+}
+
+/* Figma "Nesting, interactions" popover (10153:4683): a group editor under the pill. */
+.popover {
+  --popover-width: 435px;
+
+  container-type: inline-size;
+  position: absolute;
+  top: calc(100% + var(--oi-spacing-xs));
+  inset-inline-start: 0;
+  z-index: 10;
+  box-sizing: border-box;
+  width: min(var(--popover-width), 90vw);
+  padding: var(--oi-spacing-m);
+  background-color: var(--oi-background-color-primary);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+  border-radius: var(--oi-border-radius-l);
+  box-shadow: var(--oi-shadow-mid);
+}

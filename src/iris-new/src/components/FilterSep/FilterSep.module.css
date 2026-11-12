@@ -1,0 +1,54 @@
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding-block: var(--oi-spacing-xs);
+}
+
+/* The rule behind the chip spans the whole row. */
+.line {
+  width: 100%;
+}
+
+.line::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+}
+
+.chip {
+  position: relative;
+  max-width: 240px;
+  padding-inline: var(--oi-spacing-s);
+  background-color: var(--oi-background-color-primary);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+  border-radius: var(--oi-border-radius-max);
+  color: var(--oi-content-color-primary);
+  font-family: var(--oi-font-family-code);
+  font-size: var(--oi-font-size-s);
+  line-height: 18px;
+}
+
+.chipButton {
+  cursor: pointer;
+  transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+.chipButton:hover {
+  background-color: var(--oi-background-color-secondary);
+}
+
+.chipButton:focus-visible {
+  outline: var(--oi-border-width-l) var(--oi-border-style-solid) var(--oi-border-color-focus);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chipButton {
+    transition: none;
+  }
+}

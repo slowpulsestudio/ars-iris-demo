@@ -1,0 +1,51 @@
+.group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--oi-spacing-m);
+  width: 100%;
+  background-color: var(--oi-background-color-secondary);
+  transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+.card {
+  padding: var(--oi-spacing-l);
+  border-radius: var(--oi-border-radius-default);
+}
+
+.nested {
+  padding: var(--oi-spacing-m);
+  border: 1.5px dashed var(--oi-border-color-strong);
+  border-radius: var(--oi-border-radius-l);
+}
+
+.active {
+  background-color: var(--oi-background-color-brand);
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+  width: 100%;
+}
+
+/* The group's own AND/OR chip sits beside it. */
+.nestedRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+
+.nestedRow > :last-child {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .group {
+    transition: none;
+  }
+}

@@ -12,6 +12,8 @@ export interface SelectProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'default' | 'l';
   /** Error state (red border + `aria-invalid`). */
   invalid?: boolean;
+  /** Icon name shown before the label (the UI Kit's 20px lead icon). */
+  iconLead?: string;
   /** Trigger element, e.g. to anchor a popover such as MultiSelect. */
   ref?: Ref<HTMLButtonElement>;
 }
@@ -26,6 +28,7 @@ export function Select({
   onClick,
   size = 'default',
   invalid = false,
+  iconLead,
   className,
   ...rest
 }: SelectProps) {
@@ -38,6 +41,7 @@ export function Select({
       className={cx(styles.trigger, styles[`size_${size}`], empty && styles.empty, invalid && styles.invalid, className)}
       {...rest}
     >
+      {iconLead && <Icon name={iconLead} size="20px" className={styles.iconLead} />}
       <span className={styles.label}>{empty ? placeholder : label}</span>
       <Icon name="CaretUpDown" size="16px" className={styles.caret} />
     </button>

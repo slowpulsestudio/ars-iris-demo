@@ -1,0 +1,105 @@
+/* Figma "panel, min-width" 338px and "panel, max-width" 512px (Iris UI Kit, 9722:12155 / 9713:9223). */
+.root {
+  --panel-min-width: 338px;
+  --panel-max-width: 512px;
+
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: var(--panel-min-width);
+  max-width: var(--panel-max-width);
+  height: 100%;
+  background-color: var(--oi-background-color-primary);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+  border-radius: var(--oi-border-radius-l);
+  box-shadow: var(--oi-shadow-low);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--oi-spacing-m);
+  height: 44px;
+  padding-inline: var(--oi-spacing-l);
+  border-bottom: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+}
+
+.switch {
+  display: flex;
+  gap: var(--oi-spacing-xs);
+}
+
+.switchItem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: var(--oi-size-m);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--oi-border-radius-l);
+  color: var(--oi-content-color-secondary);
+  cursor: pointer;
+  transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+.switchItem:hover {
+  background-color: var(--oi-background-color-secondary);
+}
+
+.switchItem:focus-visible {
+  outline: var(--oi-border-width-l) var(--oi-border-style-solid) var(--oi-border-color-focus);
+  outline-offset: 1px;
+}
+
+.selected,
+.selected:hover {
+  background-color: var(--oi-background-color-tertiary);
+  color: var(--oi-content-color-primary);
+}
+
+.title {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--oi-content-color-primary);
+  font-family: var(--oi-font-family-default);
+  font-size: var(--oi-text-body-s-strong-font-size);
+  line-height: var(--oi-text-body-s-strong-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.body {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+  padding: var(--oi-spacing-m) var(--oi-spacing-l);
+  overflow-y: auto;
+}
+
+.footer {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+  padding: var(--oi-spacing-m);
+  border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+}
+
+.spacer {
+  flex: 1 1 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switchItem {
+    transition: none;
+  }
+}

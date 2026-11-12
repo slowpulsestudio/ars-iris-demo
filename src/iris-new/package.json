@@ -1,0 +1,34 @@
+{
+  "name": "iris-new",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Draft Iris UI components built from the Iris UI Kit, on top of the Iris shell. Currently the Advanced filter Bar and Panel.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "storybook": "storybook dev -p 6108 --no-open",
+    "build-storybook": "storybook build",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@lucasmarkes/hairline": "0.5.1",
+    "@storybook/addon-a11y": "^10.6.5",
+    "@storybook/addon-docs": "^10.6.5",
+    "@storybook/react-vite": "^10.6.5",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "storybook": "^10.6.5",
+    "storybook-addon-pseudo-states": "10.6.5",
+    "typescript": "7.0.2",
+    "vite": "8.0.16"
+  }
+}

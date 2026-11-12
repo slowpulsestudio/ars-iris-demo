@@ -1,0 +1,18 @@
+.root {
+  position: relative;
+  display: inline-flex;
+}
+
+/* 6px brand dot with a 1px ring, over the funnel icon's top right. */
+.dot {
+  position: absolute;
+  top: var(--oi-spacing-2);
+  inset-inline-start: var(--oi-spacing-xl);
+  box-sizing: border-box;
+  width: 6px;
+  height: 6px;
+  background-color: var(--oi-base-color-brand);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-background-color-primary);
+  border-radius: var(--oi-border-radius-l);
+  pointer-events: none;
+}

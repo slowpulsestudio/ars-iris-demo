@@ -1,0 +1,29 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-m);
+}
+
+.action {
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: var(--oi-border-radius-default);
+  color: var(--oi-content-color-link);
+  font-family: var(--oi-font-family-default);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-font-weight);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.action:hover {
+  color: var(--oi-content-color-link-hover);
+  text-decoration: underline;
+}
+
+.action:focus-visible {
+  outline: var(--oi-border-width-l) var(--oi-border-style-solid) var(--oi-border-color-focus);
+  outline-offset: 2px;
+}

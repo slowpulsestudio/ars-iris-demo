@@ -1,0 +1,60 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+  width: 100%;
+}
+
+/* Figma "Code multi line" (8766:202): secondary fill, mono 14/18, line numbers behind a rule. */
+.code {
+  position: relative;
+  padding-block: var(--oi-spacing-xs);
+  padding-inline: var(--oi-spacing-m) var(--oi-spacing-xs);
+  background-color: var(--oi-background-color-secondary);
+  border-radius: var(--oi-border-radius-default);
+  overflow: hidden;
+}
+
+.scroll {
+  display: flex;
+  gap: var(--oi-spacing-s);
+  overflow-x: auto;
+}
+
+.numbers {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: var(--oi-spacing-xl);
+  margin: 0;
+  padding: 0 var(--oi-spacing-s) 0 0;
+  list-style: none;
+  border-inline-end: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+  color: var(--oi-content-color-tertiary);
+  font-family: var(--oi-font-family-code);
+  font-size: var(--oi-font-size-s);
+  line-height: 18px;
+  text-align: right;
+  user-select: none;
+}
+
+.text {
+  flex: 1 0 auto;
+  margin: 0;
+  color: var(--oi-content-color-primary);
+  font-family: var(--oi-font-family-code);
+  font-size: var(--oi-font-size-s);
+  line-height: 18px;
+  white-space: pre;
+}
+
+.text:focus-visible {
+  outline: var(--oi-border-width-l) var(--oi-border-style-solid) var(--oi-border-color-focus);
+  outline-offset: 2px;
+}
+
+.copy {
+  position: absolute;
+  top: var(--oi-spacing-xs);
+  inset-inline-end: var(--oi-spacing-xs);
+  background-color: var(--oi-background-color-secondary);
+}
