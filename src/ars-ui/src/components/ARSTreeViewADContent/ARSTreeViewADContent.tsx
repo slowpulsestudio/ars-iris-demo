@@ -40,6 +40,8 @@ export interface ARSTreeViewADContentProps {
   onRowDragStart?: (id: string, event: DragEvent<HTMLElement>) => void;
   onRowDragEnd?: () => void;
   pagination: ARSPaginationProps;
+  /** Shown in place of the table, e.g. an empty state. Not drawn in Figma. */
+  empty?: ReactNode;
   className?: string;
 }
 
@@ -62,6 +64,7 @@ export function ARSTreeViewADContent({
   onRowDragStart,
   onRowDragEnd,
   pagination,
+  empty,
   className,
 }: ARSTreeViewADContentProps) {
   const allSelected = rows.length > 0 && rows.every((r) => selected.has(r.id));
@@ -71,6 +74,14 @@ export function ARSTreeViewADContent({
     else next.delete(id);
     onSelectionChange?.(next);
   };
+
+  if (empty) {
+    return (
+      <ContentScreen header={header} toolbar={toolbar} filters={filters} filtersOpen={filtersOpen} className={className}>
+        {empty}
+      </ContentScreen>
+    );
+  }
 
   return (
     <ContentScreen header={header} toolbar={toolbar} filters={filters} filtersOpen={filtersOpen} className={className}>

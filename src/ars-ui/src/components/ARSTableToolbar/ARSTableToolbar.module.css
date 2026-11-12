@@ -27,16 +27,17 @@
   flex-shrink: 0;
 }
 
+/* The filter indicator on the Filters button: Figma "Filter indicator" 4113:92329. */
 .filterCount {
   position: absolute;
   top: calc(-1 * var(--oi-spacing-2));
   inset-inline-end: calc(-1 * var(--oi-spacing-2));
   box-sizing: border-box;
-  min-width: 16px;
+  min-width: 14px;
   height: 16px;
   padding-inline: var(--oi-spacing-xs);
-  background-color: var(--oi-base-color-brand);
-  border-radius: var(--oi-border-radius-default);
+  background-color: var(--oi-base-color-info);
+  border-radius: var(--oi-border-radius-s);
   color: var(--oi-content-color-constant);
   font-size: var(--oi-text-caption-font-size);
   line-height: 16px;

@@ -6,6 +6,7 @@ export const FIGMA_FILES = {
   groups: { name: 'ARS_WebUI2_Groups', key: 'KukLyO1RkJ4kYTzxGWd2Q7' },
   ou: { name: 'ARS_WebUI2_OU_Management', key: 'DwKW5hhTprayGwhbMtOKMr' },
   managedUnits: { name: 'ARS_WebUI2_Managed-Units', key: 'WsXrW6CBUME9thy8z8hPRR' },
+  advancedSearch: { name: 'ARS_WebUI2_Advanced-Search', key: 'ImuRli8uCOkIfbDX4gN2w1' },
 } as const;
 
 export type FigmaFileId = keyof typeof FIGMA_FILES;
@@ -33,6 +34,20 @@ export interface MissingFromFigmaEntry {
  * They are drawn from the CRUD file and shown in Storybook under "Missing from Figma".
  */
 export const MISSING_FROM_FIGMA: MissingFromFigmaEntry[] = [
+  {
+    component: 'ARSFilterTag',
+    figmaName: 'ARS_Filter_Tag',
+    figmaNodeId: '2099:18646',
+    file: 'advancedSearch',
+    note: 'The filter pill in the Favorites filter area: field, rule, values with a "+3" count, then ×. The Advanced Search file draws it; ARS - Primary only has ARS_filter-select (× first).',
+  },
+  {
+    component: 'ARSFilterArea',
+    figmaName: 'filter area',
+    figmaNodeId: '4145:13713',
+    file: 'advancedSearch',
+    note: 'The grey strip under the toolbar on ARS - Favorites (4145:13627): the pills, "Add" and "Clear".',
+  },
   {
     component: 'ARSDelete',
     figmaName: 'ARS_Delete',

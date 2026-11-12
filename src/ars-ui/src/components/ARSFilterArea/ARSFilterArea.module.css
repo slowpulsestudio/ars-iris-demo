@@ -1,0 +1,18 @@
+.root {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--oi-spacing-s);
+  padding: var(--oi-spacing-s);
+  background-color: var(--oi-background-color-secondary);
+  border-radius: var(--oi-border-radius-default);
+  overflow: clip;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
