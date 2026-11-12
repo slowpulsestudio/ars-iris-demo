@@ -24,7 +24,7 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     title: 'Overview count tiles open their tab',
     file: 'primary',
     figmaNodeId: '3353:38318',
-    note: 'Figma draws the Group memberships and Assigned roles tiles as plain numbers. In the prototype the whole tile is a button: the number is blue, the card shows a hover state, and it opens the Memberships or Roles tab.',
+    note: 'Figma draws the Group memberships and Assigned roles tiles as plain numbers, with no hover variant (Iris has no card hover either). In the prototype the whole tile is a button: the number is blue, the card shows a hover state built from Iris tokens (strong border, mid shadow, link-hover colour), and it opens the Memberships or Roles tab. Long tile text is cut off with an ellipsis, not wrapped.',
     recommendation: 'Draw the clickable tile with a hover and focus state, and a blue number.',
     prototype: '#/users/isabella-clark',
   },

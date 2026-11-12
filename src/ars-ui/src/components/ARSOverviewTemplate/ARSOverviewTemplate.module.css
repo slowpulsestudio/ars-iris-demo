@@ -25,6 +25,10 @@
 .name,
 .email {
   margin: 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   text-align: center;
 }
 
@@ -74,7 +78,9 @@
 
 .label,
 .value {
+  overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .label {
@@ -119,6 +125,9 @@
 }
 
 .widgetLabel {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);
   color: var(--oi-content-color-tertiary);

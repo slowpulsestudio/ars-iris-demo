@@ -318,7 +318,7 @@ The ten named sample users on the Users list had emails that belonged to other p
 
 ### 13 Nov: whole count tiles, and a Design update recommendations page
 
-On a user's Overview the Group memberships and Assigned roles tiles are now one button each (before, only the number was a link): the whole card shows a hover state with the Iris border and shadow tokens, the number stays blue and underlines, and the card takes the focus ring. A new page, Design update recommendations (`#/components-to-review/recommendations`, first card on the Design review hub), lists the 11 things the prototype does beyond Figma, each with what Figma draws, what to draw and a prototype link; the data is `src/ars-ui/src/designUpdates.ts`. The Components not in Figma list is unchanged.
+On a user's Overview the Group memberships and Assigned roles tiles are now one button each (before, only the number was a link): the whole card shows a hover state with the Iris border and shadow tokens, the number stays blue and underlines, and the card takes the focus ring. A new page, Design update recommendations (`#/components-to-review/recommendations`, first card on the Design review hub), lists the 11 things the prototype does beyond Figma, each with what Figma draws, what to draw and a prototype link; the data is `src/ars-ui/src/designUpdates.ts`. The Components not in Figma list is unchanged. Text in the Overview cards no longer wraps: tile labels, the name, email and details are one line with an ellipsis and a tooltip with the full text (tile numbers are left alone, as a clipped number is worse than a wrapped label).
 
 ### 13 Nov: demo portal learnings
 

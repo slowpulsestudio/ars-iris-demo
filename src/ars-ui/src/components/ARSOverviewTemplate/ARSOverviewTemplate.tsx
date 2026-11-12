@@ -115,8 +115,8 @@ export function ARSOverviewTemplate({ variant = 'User', data, className }: ARSOv
           <div className={styles.hero}>
             <div className={styles.profile}>
               <Avatar name={profile.name} src={profile.avatarSrc} size="l" />
-              <p className={styles.name}>{profile.name}</p>
-              <p className={styles.email}>{profile.email}</p>
+              <p className={styles.name} title={profile.name}>{profile.name}</p>
+              <p className={styles.email} title={profile.email}>{profile.email}</p>
               <div className={styles.badges}>
                 {profile.badges.map((b) => (
                   <Badge key={b.label} tone={b.tone}>
@@ -132,8 +132,8 @@ export function ARSOverviewTemplate({ variant = 'User', data, className }: ARSOv
                   <div className={styles.block}>
                     {block.map((f) => (
                       <div key={f.label} className={cx(styles.field, block.length > 1 && styles.fixed)}>
-                        <span className={styles.label}>{f.label}</span>
-                        <span className={styles.value}>{f.value}</span>
+                        <span className={styles.label} title={f.label}>{f.label}</span>
+                        <span className={styles.value} title={f.value}>{f.value}</span>
                       </div>
                     ))}
                   </div>
@@ -148,7 +148,7 @@ export function ARSOverviewTemplate({ variant = 'User', data, className }: ARSOv
         {stats.map((s) => {
           const body = (
             <>
-              <span className={styles.widgetLabel}>{s.label}</span>
+              <span className={styles.widgetLabel} title={s.label}>{s.label}</span>
               <span className={cx(styles.widgetValue, s.onClick && styles.widgetLink)}>{s.value}</span>
             </>
           );
