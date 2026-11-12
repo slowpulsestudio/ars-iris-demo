@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../lib/cx.js';
 import { motionDurationMs, prefersReducedMotion } from '../../lib/motion.js';
+import { registerSideSheet } from '../../lib/sideSheetStore.js';
 import { IconButton } from '../IconButton/IconButton.js';
 import styles from './SideSheet.module.css';
 
@@ -68,6 +69,10 @@ export function SideSheet({
     );
     return () => clearTimeout(t);
   }, [open]);
+
+  // While on screen (including its exit) the sheet is the only hovering layer:
+  // the action bar waits until it has gone.
+  useEffect(() => (mounted ? registerSideSheet() : undefined), [mounted]);
 
   // Esc closes; focus trap + return focus on unmount.
   useEffect(() => {

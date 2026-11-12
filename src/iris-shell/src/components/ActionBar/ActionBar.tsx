@@ -2,6 +2,8 @@ import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type Rea
 import { createPortal } from 'react-dom';
 import { BorderBeam } from 'border-beam';
 import { cx } from '../../lib/cx.js';
+import { motionDurationMs } from '../../lib/motion.js';
+import { useSideSheetOpen } from '../../lib/sideSheetStore.js';
 import { Icon } from '../Icon/Icon.js';
 import { Toggle } from '../Toggle/Toggle.js';
 import { Tooltip } from '../Tooltip/Tooltip.js';
@@ -33,7 +35,7 @@ export interface ActionItem {
 }
 
 export interface ActionBarProps {
-  /** Show / hide the bar. */
+  /** Show / hide the bar. It also steps aside while a side sheet is on screen. */
   open: boolean;
   /** Number of currently selected rows. */
   selectedCount: number;
@@ -73,15 +75,20 @@ export function ActionBar({
   layout = 'floating',
   className,
 }: ActionBarProps) {
-  // Mount/unmount with a small exit animation window so the slide-out can play.
+  // Mount/unmount with an exit window so the fly-out can play.
   const [mounted, setMounted] = useState(open);
+  // Only one hovering layer at a time: while a side sheet is on screen the bar
+  // flies out, and it flies back in once the sheet has gone. The selection is
+  // untouched.
+  const sheetOpen = useSideSheetOpen();
+  const shown = open && !sheetOpen;
   // Drives the open transition. Always starts `false` (even when `open` is
   // true on first mount) so the bar paints its closed state for one frame
   // before the effect flips it open — that initial→open change is what makes
-  // the enter transition (and the inline height push) animate rather than snap.
+  // the enter transition animate rather than snap.
   const [entered, setEntered] = useState(false);
   useEffect(() => {
-    if (open) {
+    if (shown) {
       setMounted(true);
       // Two frames: first lets the closed state paint, second flips to open.
       let raf2 = 0;
@@ -94,19 +101,19 @@ export function ActionBar({
       };
     }
     setEntered(false);
-    const t = setTimeout(() => setMounted(false), 180);
+    const t = setTimeout(() => setMounted(false), motionDurationMs('--oi-motion-duration-default'));
     return () => clearTimeout(t);
-  }, [open]);
+  }, [shown]);
 
   // Esc dismisses the bar while it's visible.
   useEffect(() => {
-    if (!open) return undefined;
+    if (!shown) return undefined;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onDismiss?.();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, onDismiss]);
+  }, [shown, onDismiss]);
 
   // Responsive collapse: measure a hidden, always-fully-labeled copy of the bar
   // (`ghostRef`) against the width actually available to it and switch every

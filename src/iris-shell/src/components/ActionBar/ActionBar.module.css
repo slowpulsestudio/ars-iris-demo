@@ -16,16 +16,23 @@
   border-radius: 12px;
   box-shadow: var(--oi-shadow-mid);
 
-  /* Enter/exit: slide + fade. Positioning (and the axis of the slide) is set
-     by the layout modifier below so floating and inline can differ. */
+  /* Enter/exit: fly in from, and out to, the bottom edge, with a fade. The
+     resting (hidden) state carries the exit clock and `.barOpen` the entry
+     clock, so arriving feels deliberate and leaving feels quicker, from one
+     class flip. Transform and opacity only. Positioning (and the offset of the
+     fly) is set by the layout modifier below so floating and inline can differ. */
   opacity: 0;
+  will-change: transform, opacity;
   transition:
-    transform var(--oi-motion-duration-default) var(--oi-motion-ease-default),
-    opacity var(--oi-motion-duration-default) var(--oi-motion-ease-default);
+    transform var(--oi-motion-duration-default) var(--oi-motion-ease-exit),
+    opacity var(--oi-motion-duration-default) var(--oi-motion-ease-exit);
 }
 
 .barOpen {
   opacity: 1;
+  transition:
+    transform var(--oi-motion-duration-long) var(--oi-motion-ease-enter),
+    opacity var(--oi-motion-duration-long) var(--oi-motion-ease-enter);
 }
 
 /* ---------- floating: fixed pill overlaying the viewport bottom ---------- */
@@ -35,7 +42,7 @@
   bottom: var(--oi-spacing-xl);
   left: 50%;
   z-index: 50;
-  transform: translate(-50%, var(--oi-spacing-m));
+  transform: translate(-50%, calc(100% + var(--oi-spacing-xl)));
   /* Never let the fixed pill run past the viewport on narrow screens; the JS
      responsive collapse aims to prevent this, but this is a hard safety net. */
   max-inline-size: calc(100vw - 2 * var(--oi-spacing-l));
@@ -87,12 +94,28 @@
 .inline {
   position: relative;
   pointer-events: auto;
+  transform: translateY(calc(100% + var(--oi-spacing-xl)));
 }
 
-/* Respect reduced-motion: no fade. */
+.inline.barOpen {
+  transform: none;
+}
+
+/* Respect reduced-motion: fade only, no movement. */
 @media (prefers-reduced-motion: reduce) {
-  .bar {
-    transition: none;
+  .bar,
+  .barOpen {
+    transition: opacity var(--oi-motion-duration-default) var(--oi-motion-ease-default);
+  }
+
+  .floating,
+  .floating.barOpen {
+    transform: translate(-50%, 0);
+  }
+
+  .inline,
+  .inline.barOpen {
+    transform: none;
   }
 }
 
