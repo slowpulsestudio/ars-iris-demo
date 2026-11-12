@@ -9,7 +9,7 @@ export type ARSOverviewTemplateVariant = 'User' | 'Group' | 'OU';
 export interface ARSOverviewField {
   label: string;
   value: string;
-  /** Makes a count tile's number a blue link that calls this (e.g. to open the tab that lists them). */
+  /** Makes the whole count tile a button that calls this (e.g. to open the tab that lists them); its number turns blue. */
   onClick?: () => void;
 }
 type Field = ARSOverviewField;
@@ -145,23 +145,29 @@ export function ARSOverviewTemplate({ variant = 'User', data, className }: ARSOv
         </>
       )}
       <div className={styles.stats}>
-        {stats.map((s) => (
-          <div key={s.label} className={styles.widget}>
-            <span className={styles.widgetLabel}>{s.label}</span>
-            {s.onClick ? (
-              <button
-                type="button"
-                className={cx(styles.widgetValue, styles.widgetLink)}
-                onClick={s.onClick}
-                aria-label={`${s.value} ${s.label}, open the list`}
-              >
-                {s.value}
-              </button>
-            ) : (
-              <span className={styles.widgetValue}>{s.value}</span>
-            )}
-          </div>
-        ))}
+        {stats.map((s) => {
+          const body = (
+            <>
+              <span className={styles.widgetLabel}>{s.label}</span>
+              <span className={cx(styles.widgetValue, s.onClick && styles.widgetLink)}>{s.value}</span>
+            </>
+          );
+          return s.onClick ? (
+            <button
+              key={s.label}
+              type="button"
+              className={cx(styles.widget, styles.widgetButton)}
+              onClick={s.onClick}
+              aria-label={`${s.value} ${s.label}, open the list`}
+            >
+              {body}
+            </button>
+          ) : (
+            <div key={s.label} className={styles.widget}>
+              {body}
+            </div>
+          );
+        })}
       </div>
       {others && (
         <div className={styles.strip}>

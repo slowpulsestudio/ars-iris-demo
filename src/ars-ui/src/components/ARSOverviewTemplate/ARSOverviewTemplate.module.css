@@ -133,27 +133,43 @@
   color: var(--oi-content-color-primary);
 }
 
-/* A clickable count: reset button chrome, link colour (Figma's table links use content-color-link). */
-.widgetLink {
-  align-self: flex-start;
-  padding: 0;
-  border: 0;
-  background: none;
+/* A clickable tile: the whole card is the button, so the card itself shows hover and focus. */
+.widgetButton {
+  width: auto;
+  font: inherit;
   text-align: left;
   cursor: pointer;
+  transition:
+    border-color var(--oi-motion-duration-short) var(--oi-motion-ease-default),
+    box-shadow var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+.widgetButton:hover {
+  border-color: var(--oi-border-color-strong);
+  box-shadow: var(--oi-shadow-mid);
+}
+
+.widgetButton:focus-visible {
+  outline: 1.5px solid var(--oi-border-color-focus);
+  outline-offset: 2px;
+}
+
+/* The count in a clickable tile is link-coloured (Figma's table links use content-color-link). */
+.widgetLink {
   color: var(--oi-content-color-link);
   transition: color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
 }
 
-.widgetLink:hover {
+.widgetButton:hover .widgetLink {
   color: var(--oi-content-color-link-hover);
   text-decoration: underline;
 }
 
-.widgetLink:focus-visible {
-  outline: 1.5px solid var(--oi-border-color-focus);
-  outline-offset: 2px;
-  border-radius: var(--oi-border-radius-s);
+@media (prefers-reduced-motion: reduce) {
+  .widgetButton,
+  .widgetLink {
+    transition: none;
+  }
 }
 
 /* Figma's strip uses 14px vertical padding (no token). */
