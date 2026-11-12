@@ -29,15 +29,15 @@
 }
 
 /* Single underline that slides between tabs. JS writes the active tab's
-   offsetLeft / offsetWidth inline; CSS owns the tween. Sits on the tablist
-   border-bottom so it reads as the active indicator. */
+   offsetLeft / offsetWidth inline; CSS owns the tween. Figma draws the baseline
+   as one 1px line and the active tab as 2px: the baseline pixel plus one extra
+   pixel below it, so it starts on the tablist border and extends 1px past it. */
 .indicator {
   position: absolute;
-  bottom: -1px;
+  bottom: -2px;
   left: 0;
   width: 0;
   height: 2px;
-  border-radius: 1px;
   background-color: var(--oi-border-color-focus);
   transform: translateX(0);
   transition:
@@ -53,12 +53,13 @@
   }
 }
 
+/* The baseline (the tablist border) is 8px below the tab content, as in Figma;
+   the padding keeps that area clickable. */
 .tab {
   display: inline-flex;
   flex-direction: column;
   align-items: stretch;
-  gap: var(--oi-spacing-s);
-  padding: 0;
+  padding: 0 0 var(--oi-spacing-s);
   background: none;
   border: 0;
   color: var(--oi-content-color-tertiary);
@@ -135,19 +136,6 @@
   line-height: var(--oi-text-body-s-line-height);
   font-weight: var(--oi-text-body-s-font-weight);
   color: var(--oi-content-color-primary);
-}
-
-/* UI Kit "Stroke": 1px default-colour line under each tab. */
-.stroke {
-  display: block;
-  height: 1px;
-  width: 100%;
-  background-color: var(--oi-border-color-default);
-}
-
-/* The selected stroke is drawn by the sliding `.indicator`. */
-.strokeSelected {
-  background-color: transparent;
 }
 
 .icon {

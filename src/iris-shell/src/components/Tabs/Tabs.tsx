@@ -204,10 +204,6 @@ export function Tabs({ items, value, onChange, ariaLabel, className }: TabsProps
                   {item.label}
                 </span>
               </span>
-              <span
-                aria-hidden="true"
-                className={cx(styles.stroke, selected && styles.strokeSelected)}
-              />
             </button>
           );
         })}

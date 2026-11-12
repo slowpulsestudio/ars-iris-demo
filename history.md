@@ -320,6 +320,10 @@ The ten named sample users on the Users list had emails that belonged to other p
 
 On a user's Overview the Group memberships and Assigned roles tiles are now one button each (before, only the number was a link): the whole card shows a hover state with the Iris border and shadow tokens, the number stays blue and underlines, and the card takes the focus ring. A new page, Design update recommendations (`#/components-to-review/recommendations`, first card on the Design review hub), lists the 11 things the prototype does beyond Figma, each with what Figma draws, what to draw and a prototype link; the data is `src/ars-ui/src/designUpdates.ts`. The Components not in Figma list is unchanged. Text in the Overview cards no longer wraps: tile labels, the name, email and details are one line with an ellipsis and a tooltip with the full text (tile numbers are left alone, as a clipped number is worse than a wrapped label).
 
+### 12 Nov: tab underline matches Figma
+
+The Iris Tabs drew a 1px stroke under every tab on top of a full-width border, so tabs showed a 2px grey line with a 1px line in the gaps, and the blue active line was centred over them (one pixel above the baseline). Read from Figma's render of ARS_User_Page_Tabs (3598:46761) pixel by pixel: one continuous 1px baseline, and the active tab 2px blue, the baseline pixel plus one extra pixel below it. The per-tab stroke is gone; the baseline is the tab list's border, 8px under the tab content as before (the tab keeps that area as padding, so it stays clickable), and the sliding indicator now starts on the baseline and extends one pixel below it. This is an edit to the Iris `Tabs` component and applies to every tab row.
+
 ### 12 Nov: creating a group is "Coming soon"
 
 The Groups list's Create button and the Tree view's New AD Group and New Entra Distribution Group items now open a "Coming soon" dialog (`ComingSoonModal`, with the satellite) instead of the two-step create form. The form, `views/GroupsPage/CreateGroupModal.tsx`, is kept but unused; groups can't be created for now. Figma has only written notes for these flows, so there is nothing to build to.
