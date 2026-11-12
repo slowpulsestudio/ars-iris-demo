@@ -19,7 +19,7 @@ An address has three parts:
 | --- | --- | --- | --- |
 | `tab` | The active tab. The first tab is the default and has no value. | A slug of the tab's name without its count: `general`, `user-details`, `ownership`, `memberships`, `object-details`; on Approvals `pending`, `previous`; on My Access `active`, `pending`, `inactive`, `revoked` | User, group and OU pages, Approvals, My Access |
 | `edit` | The card in edit mode. | `general` (user, group, OU), `ownership` (group, OU) | Object pages |
-| `dialog` | The open dialog or side sheet. | `delete`, `reset-password`, `move`, `copy`, `rename`, `deprovision`, `add-member`, `add-manager`, `add-owner`, `create`, `new-group`, `new-ou` | Object pages and the lists |
+| `dialog` | The open dialog or side sheet. | `delete`, `reset-password`, `move`, `copy`, `rename`, `deprovision`, `deactivate`, `add-member`, `add-manager`, `add-owner`, `create`, `new-group`, `new-ou` | Object pages and the lists |
 | `target` | The row or rows a dialog is about. | Object ids, comma-separated | Lists |
 | `type` | The object type of `dialog=create`. | `User`, `Computer`, `Contact`… | Lists |
 | `select` | The ticked rows, so the selection bar shows. | Ids, comma-separated | Lists, group Memberships, Managed Units |

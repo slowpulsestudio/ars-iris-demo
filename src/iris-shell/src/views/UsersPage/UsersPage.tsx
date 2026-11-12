@@ -19,6 +19,7 @@ import { useMoveUsers } from '../../lib/useMoveUsers.js';
 import type { BadgeTone } from '../../components/Badge/Badge.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
+import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { CreateObjectModal, type CreateObjectResult } from './CreateObjectModal/CreateObjectModal.js';
 import {
@@ -88,6 +89,7 @@ export function UsersPage() {
   }, [users, targetParam]);
   const resetUser = dialog === 'reset-password' ? (targets[0] ?? null) : null;
   const deleteUser = dialog === 'delete' ? (targets[0] ?? null) : null;
+  const comingSoonUser = dialog === 'deprovision' || dialog === 'deactivate' ? (targets[0] ?? null) : null;
   const moveTargets = dialog === 'move' ? targets : null;
   const createTarget = dialog === 'create' && typeParam ? { type: typeParam, icon: createIconFor(typeParam) } : null;
   const closeDialog = () => setHashParams({ dialog: null, target: null, type: null });
@@ -129,6 +131,8 @@ export function UsersPage() {
     if (label === 'Reset Password') openDialog('reset-password', [rowUser.id]);
     if (label === 'Delete') openDialog('delete', [rowUser.id]);
     if (label === 'Move') openDialog('move', [rowUser.id]);
+    if (label === 'Deprovision') openDialog('deprovision', [rowUser.id]);
+    if (label === 'Deactivate') openDialog('deactivate', [rowUser.id]);
   };
 
   const onPageAction = (label: string) => {
@@ -267,6 +271,14 @@ export function UsersPage() {
               return next;
             });
           }}
+        />
+      )}
+      {comingSoonUser && (
+        <ComingSoonModal
+          open
+          onClose={closeDialog}
+          title={dialog === 'deprovision' ? 'Deprovision user' : 'Deactivate user'}
+          subtitle={comingSoonUser.details.displayName}
         />
       )}
       <MoveObjectSheet
