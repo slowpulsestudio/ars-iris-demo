@@ -1,11 +1,11 @@
-import { MISSING_FROM_FIGMA } from '@ars';
+import { DESIGN_UPDATES, MISSING_FROM_FIGMA } from '@ars';
 import { Button } from '../../components/Button/Button.js';
 import { Icon } from '../../components/Icon/Icon.js';
 import { navigate } from '../../lib/router.js';
 import { ChoiceCard, ChoicePage } from '../ChoicePage/ChoicePage.js';
 import styles from './ReviewHubPage.module.css';
 
-/** ReviewHubPage — opened from the welcome page: the two design review pages, like the Storybooks page. */
+/** ReviewHubPage — opened from the welcome page: the design review pages, like the Storybooks page. */
 export function ReviewHubPage() {
   return (
     <ChoicePage
@@ -17,6 +17,14 @@ export function ReviewHubPage() {
         </Button>
       }
     >
+      <ChoiceCard
+        visual={<Icon name="PencilSimple" size="32px" className={styles.visual} />}
+        title="Design update recommendations"
+        subtitle={`${DESIGN_UPDATES.length} to draw`}
+        description="Things the prototype does beyond Figma, and what to draw in Figma so the design matches."
+        cta="Open the list"
+        onClick={() => navigate('#/components-to-review/recommendations')}
+      />
       <ChoiceCard
         visual={<Icon name="PuzzlePiece" size="32px" className={styles.visual} />}
         title="Components not in Figma"

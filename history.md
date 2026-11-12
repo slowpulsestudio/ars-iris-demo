@@ -316,6 +316,10 @@ The Overview's profile avatar showed initials for everyone. About six in ten use
 
 The ten named sample users on the Users list had emails that belonged to other people (Isabella Clark showed `i.patel@acme.io`; most were shifted by one or two rows). Each now reads initial.lastname, the same as the generated users (`i.clark@acme.io`).
 
+### 13 Nov: whole count tiles, and a Design update recommendations page
+
+On a user's Overview the Group memberships and Assigned roles tiles are now one button each (before, only the number was a link): the whole card shows a hover state with the Iris border and shadow tokens, the number stays blue and underlines, and the card takes the focus ring. A new page, Design update recommendations (`#/components-to-review/recommendations`, first card on the Design review hub), lists the 11 things the prototype does beyond Figma, each with what Figma draws, what to draw and a prototype link; the data is `src/ars-ui/src/designUpdates.ts`. The Components not in Figma list is unchanged.
+
 ### 13 Nov: demo portal learnings
 
 `docs/demo-portal-learnings.md` gained a "Sample data and placeholders" section (repeated content, keeping linked sample objects stable, one source for counts, filters that read the column, photos saved locally, one "Coming soon" placeholder), two points on the Design review tasks list (three kinds of Confirm item; note and link in the same commit) and a line in the reuse list.

@@ -249,6 +249,7 @@ export {
   type FigmaFileId,
   type MissingFromFigmaEntry,
 } from './missingFromFigma.js';
+export { DESIGN_UPDATES, type DesignUpdateEntry } from './designUpdates.js';
 export {
   ARSFlatViewUserContent,
   type ARSFlatViewUserContentProps,

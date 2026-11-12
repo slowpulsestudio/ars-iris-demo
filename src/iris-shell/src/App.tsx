@@ -30,6 +30,7 @@ import { MyAccessPage } from './views/UserView/MyAccessPage.js';
 import { WelcomePage } from './views/WelcomePage/WelcomePage.js';
 import { StorybooksPage } from './views/StorybooksPage/StorybooksPage.js';
 import { ComponentsReviewPage } from './views/ComponentsReviewPage/ComponentsReviewPage.js';
+import { DesignUpdatesPage } from './views/DesignUpdatesPage/DesignUpdatesPage.js';
 import { ReviewHubPage } from './views/ReviewHubPage/ReviewHubPage.js';
 import { ReviewTasksPage } from './views/ReviewTasksPage/ReviewTasksPage.js';
 import { ARSDirectoryPanel } from './views/ARSDirectoryPanel/ARSDirectoryPanel.js';
@@ -122,6 +123,7 @@ function RoutedPage() {
   if (route.name === 'componentsReviewMissing') return <ComponentsReviewPage />;
   if (route.name === 'componentsReviewTasks') return <ReviewTasksPage />;
   if (route.name === 'componentsReviewTidyUp') return <ReviewTasksPage source="tidy-up" />;
+  if (route.name === 'componentsReviewRecommendations') return <DesignUpdatesPage />;
   return persona ? renderRoute(route) : <WelcomePage />;
 }
 
