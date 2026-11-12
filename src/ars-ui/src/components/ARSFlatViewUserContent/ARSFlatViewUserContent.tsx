@@ -11,6 +11,8 @@ export interface ARSFlatViewUserContentProps {
   toolbar?: ARSTableToolbarProps;
   /** Applied-filter pills between the toolbar and the table (not drawn in Figma). */
   filters?: ReactNode;
+  /** Whether the pill row is open; it opens and closes with a height transition. */
+  filtersOpen?: boolean;
   /** ARS_Table (Default columns). */
   table: Omit<ARSTableProps, 'variant'>;
   className?: string;
@@ -20,9 +22,9 @@ export interface ARSFlatViewUserContentProps {
  * ARS_Flat View_User_Content — the Flat view list of users: ARS_Header,
  * ARS_Table_Toolbar and ARS_Table. Figma: 3423:30755.
  */
-export function ARSFlatViewUserContent({ header, toolbar, filters, table, className }: ARSFlatViewUserContentProps) {
+export function ARSFlatViewUserContent({ header, toolbar, filters, filtersOpen, table, className }: ARSFlatViewUserContentProps) {
   return (
-    <ContentScreen header={{ icon: 'User', ...header }} toolbar={toolbar} filters={filters} className={className}>
+    <ContentScreen header={{ icon: 'User', ...header }} toolbar={toolbar} filters={filters} filtersOpen={filtersOpen} className={className}>
       <ARSTable variant="Default" {...table} />
     </ContentScreen>
   );

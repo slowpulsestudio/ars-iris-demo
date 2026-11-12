@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useRef, useState, type ReactNode } from 'react';
 import { ARSFilterMenu, ARSFilterSelect, type ARSFilterSelectPart } from '@ars';
 import { Button } from '../../components/Button/Button.js';
 import { Menu } from '../../components/Menu/Menu.js';
@@ -140,13 +140,18 @@ export function useListFilters<T>(items: T[], toRow: (item: T) => FilterRow) {
     </>
   );
 
-  const bar: ReactNode = filters.length ? (
+  // While the row closes, the pills that were there stay drawn so the row shrinks rather than empties.
+  const lastShown = useRef(filters);
+  if (filters.length) lastShown.current = filters;
+  const shown = filters.length ? filters : lastShown.current;
+
+  const bar: ReactNode = (
     <div className={styles.row} role="group" aria-label="Applied filters">
-      {filters.map((f) => (
+      {shown.map((f) => (
         <ARSFilterSelect key={f.field} parts={pillParts(f)} onRemove={() => update(filters.filter((x) => x.field !== f.field))} />
       ))}
     </div>
-  ) : null;
+  );
 
-  return { filtered, bar, elements, openFilters: fieldMenu.openAt };
+  return { filtered, bar, barOpen: filters.length > 0, elements, openFilters: fieldMenu.openAt };
 }

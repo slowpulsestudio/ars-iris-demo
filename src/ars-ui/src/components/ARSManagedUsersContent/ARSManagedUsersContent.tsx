@@ -27,6 +27,8 @@ export interface ARSManagedUsersContentProps {
   toolbar?: ARSTableToolbarProps;
   /** Applied-filter pills between the toolbar and the table (not drawn in Figma). */
   filters?: ReactNode;
+  /** Whether the pill row is open; it opens and closes with a height transition. */
+  filtersOpen?: boolean;
   rows: ARSManagedUnitRow[];
   selected?: Set<string>;
   onSelectionChange?: (next: Set<string>) => void;
@@ -45,6 +47,7 @@ export function ARSManagedUsersContent({
   header,
   toolbar,
   filters,
+  filtersOpen,
   rows,
   selected = new Set(),
   onSelectionChange,
@@ -61,7 +64,7 @@ export function ARSManagedUsersContent({
   };
 
   return (
-    <ContentScreen header={header} toolbar={toolbar} filters={filters} className={className}>
+    <ContentScreen header={header} toolbar={toolbar} filters={filters} filtersOpen={filtersOpen} className={className}>
       <div role="table" aria-label="Managed units" className={styles.table}>
         {/* Figma: head 180 / 86 / fill / 155 and the 44px ARS_Table_Config; rows have no "…" and a 200px Type cell under Type and the config. */}
         <TableHeadRow

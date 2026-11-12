@@ -320,6 +320,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
           header={header}
           toolbar={toolbar}
           filters={lf.bar}
+          filtersOpen={lf.barOpen}
           rows={pageRows.map((o) => ({
             id: o.id,
             name: o.name,

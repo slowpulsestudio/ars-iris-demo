@@ -47,6 +47,7 @@ export function ManagedUnitsPage() {
         className={screen.screen}
         header={{ title: 'Managed Units', icon: 'FolderStar' }}
         filters={lf.bar}
+        filtersOpen={lf.barOpen}
         toolbar={{
           variant: '4',
           search: query,

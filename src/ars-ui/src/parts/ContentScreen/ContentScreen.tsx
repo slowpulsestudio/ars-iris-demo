@@ -9,6 +9,8 @@ export interface ContentScreenProps {
   toolbar?: ARSTableToolbarProps;
   /** Applied-filter pills, in a row between the toolbar and the table. Not drawn in Figma. */
   filters?: ReactNode;
+  /** Whether the pill row is open; it opens and closes with a height transition. Defaults to open. */
+  filtersOpen?: boolean;
   /** The table, edge to edge. */
   children: ReactNode;
   className?: string;
@@ -19,12 +21,16 @@ export interface ContentScreenProps {
  * Tree_View_AD_Content (4517:19943): ARS_Header and ARS_Table_Toolbar inset
  * xxl, then the table.
  */
-export function ContentScreen({ header, toolbar, filters, children, className }: ContentScreenProps) {
+export function ContentScreen({ header, toolbar, filters, filtersOpen = true, children, className }: ContentScreenProps) {
   return (
     <div className={cx(styles.root, className)}>
       <ARSHeader variant="Variant1" {...header} className={cx(styles.inset, header.className)} />
       <ARSTableToolbar variant="Basic" {...toolbar} className={cx(styles.inset, toolbar?.className)} />
-      {filters && <div className={styles.inset}>{filters}</div>}
+      {filters !== undefined && filters !== null && (
+        <div className={cx(styles.inset, styles.filters)} data-open={filtersOpen} aria-hidden={!filtersOpen}>
+          <div className={styles.filtersInner}>{filters}</div>
+        </div>
+      )}
       {children}
     </div>
   );

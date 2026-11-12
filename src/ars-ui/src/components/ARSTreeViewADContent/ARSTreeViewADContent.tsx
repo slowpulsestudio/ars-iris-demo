@@ -27,6 +27,8 @@ export interface ARSTreeViewADContentProps {
   toolbar?: ARSTableToolbarProps;
   /** Applied-filter pills between the toolbar and the table (not drawn in Figma). */
   filters?: ReactNode;
+  /** Whether the pill row is open; it opens and closes with a height transition. */
+  filtersOpen?: boolean;
   rows: ARSTreeViewADRow[];
   /** Heading of the middle column; Figma's Groups list calls it "Group type". */
   typeLabel?: string;
@@ -50,6 +52,7 @@ export function ARSTreeViewADContent({
   header,
   toolbar,
   filters,
+  filtersOpen,
   rows,
   typeLabel = 'Object type',
   selected = new Set(),
@@ -70,7 +73,7 @@ export function ARSTreeViewADContent({
   };
 
   return (
-    <ContentScreen header={header} toolbar={toolbar} filters={filters} className={className}>
+    <ContentScreen header={header} toolbar={toolbar} filters={filters} filtersOpen={filtersOpen} className={className}>
       <div role="table" className={styles.table}>
         <TableHeadRow
           columns={[

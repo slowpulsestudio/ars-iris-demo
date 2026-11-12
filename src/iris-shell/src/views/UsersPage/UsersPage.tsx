@@ -190,6 +190,7 @@ export function UsersPage() {
         className={cx(screen.screen, selected.size > 0 && screen.withBar)}
         header={{ title: 'Users', icon: 'Users', onMore: pageMenu.openAt }}
         filters={lf.bar}
+        filtersOpen={lf.barOpen}
         toolbar={{
           variant: 'Basic',
           search: query,

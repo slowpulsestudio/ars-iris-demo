@@ -17,3 +17,36 @@
   box-sizing: border-box;
   padding-inline: var(--oi-spacing-xxl);
 }
+
+/* The applied-filter row opens and closes by height, so the table below glides down and back up.
+   While closed its negative top margin cancels the card's gap, so the layout is the same as with no row. */
+.root > .filters {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: calc(-1 * var(--oi-spacing-xl));
+  opacity: 0;
+  transition:
+    grid-template-rows var(--oi-motion-duration-default) var(--oi-motion-ease-emphasized),
+    margin-top var(--oi-motion-duration-default) var(--oi-motion-ease-emphasized),
+    opacity var(--oi-motion-duration-default) var(--oi-motion-ease-emphasized);
+}
+
+.root > .filters[data-open='true'] {
+  grid-template-rows: 1fr;
+  margin-top: 0;
+  opacity: 1;
+}
+
+/* The inner box clips while the row is short; its padding keeps focus rings from being cut off. */
+.filtersInner {
+  min-height: 0;
+  margin: -2px;
+  padding: 2px;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root > .filters {
+    transition: none;
+  }
+}
