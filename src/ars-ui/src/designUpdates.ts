@@ -75,6 +75,14 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     prototype: '#/users?dialog=deactivate&target=liam-bennett',
   },
   {
+    title: 'Coming soon dialogs for creating a group',
+    file: 'groups',
+    figmaNodeId: '2111:11197',
+    note: 'Figma has only written notes for New AD Group and New Entra Distribution Group, no frames. The Groups list\'s Create button and the Tree view\'s New Group items open a dialog with the satellite and "Coming soon".',
+    recommendation: 'Draw the New AD Group steps and the New Entra Distribution Group modal.',
+    prototype: '#/groups?dialog=new-group',
+  },
+  {
     title: 'Working directory filter',
     file: 'crud',
     figmaNodeId: '1372:37388',

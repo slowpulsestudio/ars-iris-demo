@@ -316,11 +316,15 @@ The Overview's profile avatar showed initials for everyone. About six in ten use
 
 The ten named sample users on the Users list had emails that belonged to other people (Isabella Clark showed `i.patel@acme.io`; most were shifted by one or two rows). Each now reads initial.lastname, the same as the generated users (`i.clark@acme.io`).
 
-### 13 Nov: whole count tiles, and a Design update recommendations page
+### 12 Nov: whole count tiles, and a Design update recommendations page
 
 On a user's Overview the Group memberships and Assigned roles tiles are now one button each (before, only the number was a link): the whole card shows a hover state with the Iris border and shadow tokens, the number stays blue and underlines, and the card takes the focus ring. A new page, Design update recommendations (`#/components-to-review/recommendations`, first card on the Design review hub), lists the 11 things the prototype does beyond Figma, each with what Figma draws, what to draw and a prototype link; the data is `src/ars-ui/src/designUpdates.ts`. The Components not in Figma list is unchanged. Text in the Overview cards no longer wraps: tile labels, the name, email and details are one line with an ellipsis and a tooltip with the full text (tile numbers are left alone, as a clipped number is worse than a wrapped label).
 
-### 13 Nov: demo portal learnings
+### 12 Nov: creating a group is "Coming soon"
+
+The Groups list's Create button and the Tree view's New AD Group and New Entra Distribution Group items now open a "Coming soon" dialog (`ComingSoonModal`, with the satellite) instead of the two-step create form. The form, `views/GroupsPage/CreateGroupModal.tsx`, is kept but unused; groups can't be created for now. Figma has only written notes for these flows, so there is nothing to build to.
+
+### 12 Nov: demo portal learnings
 
 `docs/demo-portal-learnings.md` gained a "Sample data and placeholders" section (repeated content, keeping linked sample objects stable, one source for counts, filters that read the column, photos saved locally, one "Coming soon" placeholder), two points on the Design review tasks list (three kinds of Confirm item; note and link in the same commit) and a line in the reuse list.
 

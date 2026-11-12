@@ -7,12 +7,10 @@ import type { DirectoryNodeView, DirectoryObject } from '../../lib/directoryData
 import { DEPARTMENT_NAMES } from '../../lib/directoryData.js';
 import { inDirectories, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { getGroupProps } from '../../lib/groupDetailsStore.js';
-import { CreateGroupModal } from './CreateGroupModal.js';
+import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 
 const PAGE_SIZE_OPTIONS = [15, 30, 50, 100];
-/** Where a group made from this list goes. */
-const DEFAULT_FOLDER = 'o1d-local';
 // Figma's sample tag pairs (ARS_Table_Groups) for groups that aren't named "[Department] [Role]";
 // the directory data has no tags, so those groups take them in turn.
 const TAG_PAIRS = [
@@ -141,7 +139,7 @@ export function GroupsPage() {
           },
         }}
       />
-      <CreateGroupModal open={createOpen} onClose={() => setCreateOpen(false)} kind="AD" locationId={DEFAULT_FOLDER} />
+      <ComingSoonModal open={createOpen} onClose={() => setCreateOpen(false)} title="New AD Group" />
     </AppShell>
   );
 }
