@@ -12,4 +12,4 @@ export {
   type AdvancedFilterPanelProps,
   type AdvancedFilterPanelView,
 } from './components/AdvancedFilterPanel/AdvancedFilterPanel.js';
-export { AdvancedFilterBar, type AdvancedFilterBarProps } from './components/AdvancedFilterBar/AdvancedFilterBar.js';
+export { AdvancedFilterBar, type AdvancedFilterBarProps, type AdvancedFilterBarPill } from './components/AdvancedFilterBar/AdvancedFilterBar.js';

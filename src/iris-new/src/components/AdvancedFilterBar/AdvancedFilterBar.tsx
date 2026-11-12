@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '@iris/lib/cx.js';
 import type { FilterModelActions } from '@iris/components/Filters/useFilterModel.js';
@@ -10,6 +10,7 @@ import {
   type Condition,
   type FilterNode,
   type Group,
+  type OperatorId,
   type ParameterDef,
 } from '@iris/components/Filters/filterModel.js';
 import { FilterGroup } from '../FilterGroup/FilterGroup.js';
@@ -26,7 +27,37 @@ export interface AdvancedFilterBarProps {
   /** The pill whose group is open for editing. Controlled when given; the Bar tracks it itself otherwise. */
   editingId?: string | null;
   onEditingIdChange?: (id: string | null) => void;
+  /** Draws each pill another way, e.g. the ARS filter tag. The Bar still owns opening and removing. */
+  renderPill?: (pill: AdvancedFilterBarPill) => ReactNode;
+  /** Only the pills, with no tray of their own, for a parent that draws the strip (the ARS filter area). */
+  inline?: boolean;
   className?: string;
+}
+
+/** What a pill shows: the first condition of its group, and how many more the group holds. */
+export interface AdvancedFilterBarPill {
+  field: string;
+  operatorId?: OperatorId;
+  /** The operator's label, e.g. "equals". */
+  operator: string;
+  values: string[];
+  /** Conditions in the group beyond the first. */
+  extra: number;
+  onEdit: () => void;
+  onRemove: () => void;
+}
+
+function summarizePill(node: FilterNode, parameters: ParameterDef[]): Omit<AdvancedFilterBarPill, 'onEdit' | 'onRemove'> {
+  const lead = firstCondition(node);
+  const param = parameters.find((p) => p.id === lead?.parameterId);
+  const labels = new Map((param?.options ?? []).map((o) => [o.value, o.label]));
+  return {
+    field: param?.label ?? 'Parameter',
+    operatorId: lead?.operatorId,
+    operator: lead?.operatorId ? OPERATOR_BY_ID[lead.operatorId].label : 'operator',
+    values: (lead?.values ?? []).map((v) => labels.get(v) ?? v),
+    extra: countConditions(node) - 1,
+  };
 }
 
 function pillProps(node: FilterNode, parameters: ParameterDef[]): Pick<FilterPillProps, 'parameter' | 'operator' | 'value' | 'more'> {
@@ -63,6 +94,8 @@ export function AdvancedFilterBar({
   showEmpty = false,
   editingId: editingIdProp,
   onEditingIdChange,
+  renderPill,
+  inline = false,
   className,
 }: AdvancedFilterBarProps) {
   const [internalId, setInternalId] = useState<string | null>(null);
@@ -119,7 +152,7 @@ export function AdvancedFilterBar({
   const editing = root.children.find((n) => n.id === editingId);
 
   return (
-    <div className={cx(styles.root, className)} role="group" aria-label="Applied filters">
+    <div className={cx(styles.root, inline && styles.inline, className)} role="group" aria-label="Applied filters">
       {root.children.length === 0 ? (
         <FilterPill empty parameter={{ label: 'Advanced filter', icon: 'FunnelSimple' }} removeLabel="Clear filter" onRemove={actions.clear} />
       ) : (
@@ -133,15 +166,18 @@ export function AdvancedFilterBar({
               else items.current.delete(node.id);
             }}
           >
-            <FilterPill
-              {...pillProps(node, parameters)}
-              onEdit={() => setEditingId(editingId === node.id ? null : node.id)}
-              onRemove={() => {
+            {(() => {
+              const onEdit = () => setEditingId(editingId === node.id ? null : node.id);
+              const onRemove = () => {
                 if (editingId === node.id) setEditingId(null);
                 actions.remove(node.id);
-              }}
-              removeLabel="Remove filter"
-            />
+              };
+              return renderPill ? (
+                renderPill({ ...summarizePill(node, parameters), onEdit, onRemove })
+              ) : (
+                <FilterPill {...pillProps(node, parameters)} onEdit={onEdit} onRemove={onRemove} removeLabel="Remove filter" />
+              );
+            })()}
           </div>
         ))
       )}

@@ -13,6 +13,11 @@
   max-width: 100%;
 }
 
+/* No tray of its own: the pills join the parent's row. */
+.inline {
+  display: contents;
+}
+
 /* Figma "Nesting, interactions" popover (10153:4683): a group editor under the pill.
    Drawn in a portal at a fixed position so a scrolling parent (a modal) cannot clip it. */
 .popover {
