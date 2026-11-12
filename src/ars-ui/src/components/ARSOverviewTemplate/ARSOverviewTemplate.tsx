@@ -15,7 +15,13 @@ export interface ARSOverviewField {
 type Field = ARSOverviewField;
 
 export interface ARSOverviewData {
-  profile?: { name: string; email: string; badges: { label: string; tone: BadgeTone }[] };
+  profile?: {
+    name: string;
+    email: string;
+    badges: { label: string; tone: BadgeTone }[];
+    /** A photo; without one the avatar shows initials, as Figma draws it. */
+    avatarSrc?: string;
+  };
   /** Each entry is one block between dividers; a block can hold fields side by side. */
   details?: Field[][];
   stats: Field[];
@@ -108,7 +114,7 @@ export function ARSOverviewTemplate({ variant = 'User', data, className }: ARSOv
         <>
           <div className={styles.hero}>
             <div className={styles.profile}>
-              <Avatar name={profile.name} size="l" />
+              <Avatar name={profile.name} src={profile.avatarSrc} size="l" />
               <p className={styles.name}>{profile.name}</p>
               <p className={styles.email}>{profile.email}</p>
               <div className={styles.badges}>

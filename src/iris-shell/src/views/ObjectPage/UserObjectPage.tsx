@@ -19,6 +19,7 @@ import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { Banner } from '../../components/Banner/Banner.js';
 import { Button } from '../../components/Button/Button.js';
 import { ComingSoon } from '../ComingSoon/ComingSoon.js';
+import { photoFor } from '../../lib/userPhotos.js';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
@@ -114,6 +115,7 @@ function overviewFor(
     profile: {
       name: data.name,
       email: data.email,
+      avatarSrc: photoFor(data.name),
       badges: [
         { label: 'Member', tone: 'neutral' },
         { label: data.status, tone: data.status.toLowerCase() === 'active' ? 'success' : 'neutral' },

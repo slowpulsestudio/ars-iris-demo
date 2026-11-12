@@ -302,6 +302,10 @@ The generated directory data (`lib/directoryData.ts`) reused a handful of names 
 
 Unbuilt user, group and OU tabs showed only the satellite with no words. They now say "Coming soon" under it. The pages that said "[WIP]" (Devices, Agents, Applications, Access templates), the Safeguard page and the old Tree detail tabs use the same satellite and wording, through one shared view, `ComingSoon`; the two stylesheets that only styled the old placeholders are gone. In the Users list's row menu, Deprovision and Deactivate used to do nothing; each now opens a dialog (`ComingSoonModal`, built on the Iris Modal) with the satellite and "Coming soon". Deep links: `?dialog=deprovision` and `?dialog=deactivate` with a `target`.
 
+### 12 Nov: faces on the user Overview
+
+The Overview's profile avatar showed initials for everyone. About six in ten users now show a photo: sixteen portraits from randomuser.me (free to use; the demo site hot-links the same source) are saved in `public/avatars/people/` and picked in `lib/userPhotos.ts` from the first name, the same face every time for the same person. The rest keep initials, as in Figma. Names not in the lookup lists keep initials. The kit's ARSOverviewTemplate gained an optional `avatarSrc`.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
