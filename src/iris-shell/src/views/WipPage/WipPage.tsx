@@ -26,7 +26,7 @@ export interface WipPageProps {
 /**
  * WipPage — placeholder for sections that don't have a real view yet.
  * Reuses the UsersPage header treatment (icon + title + page-actions
- * menu) and shows the "Coming soon" satellite in the content area.
+ * menu) and shows the "Coming soon" vault in the content area.
  */
 export function WipPage({
   title,
