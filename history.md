@@ -316,6 +316,10 @@ The Overview's profile avatar showed initials for everyone. About six in ten use
 
 The ten named sample users on the Users list had emails that belonged to other people (Isabella Clark showed `i.patel@acme.io`; most were shifted by one or two rows). Each now reads initial.lastname, the same as the generated users (`i.clark@acme.io`).
 
+### 13 Nov: demo portal learnings
+
+`docs/demo-portal-learnings.md` gained a "Sample data and placeholders" section (repeated content, keeping linked sample objects stable, one source for counts, filters that read the column, photos saved locally, one "Coming soon" placeholder), two points on the Design review tasks list (three kinds of Confirm item; note and link in the same commit) and a line in the reuse list.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
