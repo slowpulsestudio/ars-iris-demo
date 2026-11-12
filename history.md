@@ -308,6 +308,8 @@ Unbuilt user, group and OU tabs showed only the satellite with no words. They no
 
 The filter first used a random directory per item and "nothing ticked" showed everything. It now follows the list's own column and nothing ticked shows nothing. A user's directory is read from the Location it shows (`directoryForLocation` in `lib/directoryFilter.ts`: `AD3\Staff` is AD-3, `Entra2` is Entra 2, `O1D.local\…` is AD-1), a group's from its Directory column, so a user moved to another folder changes directory too. The sample users' Locations now cover all nine directories (the first four rows are unchanged), and the Entra checks (row menu, Move, Reset password) look at "starts with Entra" instead of "is Entra". Managed units, which have no such column, keep a fixed spread. The panel's button reads "No directories" when nothing is ticked.
 
+To give Groups all nine directories, the sample tree gained O3D.local, O4D.local and O5D.local and three more Entra tenants (`ENTRA_TENANTS` in `lib/directoryData.ts`, in the order of Entra 1 to 4). A user moved into another tenant now shows `Entra2`, `Entra3` or `Entra4` as its Location.
+
 ### 12 Nov: faces on the user Overview
 
 The Overview's profile avatar showed initials for everyone. About six in ten users now show a photo: sixteen portraits from randomuser.me (free to use; the demo site hot-links the same source) are saved in `public/avatars/people/` and picked in `lib/userPhotos.ts` from the first name, the same face every time for the same person. The rest keep initials, as in Figma. Names not in the lookup lists keep initials. The kit's ARSOverviewTemplate gained an optional `avatarSrc`.

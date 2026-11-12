@@ -69,6 +69,14 @@ interface RawNode {
   children?: RawNode[];
 }
 
+/** The Entra tenants, in the order of the panel's directories Entra 1 to 4 (the first is Figma's). */
+export const ENTRA_TENANTS = [
+  { id: 'entra-3bf67d', name: '3bf67d.onmicrosoft.com', description: 'Primary Entra tenant.', leafCount: 128 },
+  { id: 'entra-c82a1f', name: 'c82a1f.onmicrosoft.com', description: 'Subsidiary Entra tenant.', leafCount: 110 },
+  { id: 'entra-7de094', name: '7de094.onmicrosoft.com', description: 'Partner Entra tenant.', leafCount: 96 },
+  { id: 'entra-51b3a8', name: '51b3a8.onmicrosoft.com', description: 'Development Entra tenant.', leafCount: 84 },
+];
+
 const TREE: RawNode[] = [
   { id: 'access-templates', name: 'Access templates', type: 'container', description: 'Reusable access-control templates.', icon: 'UserCircleCheck', leafCount: 24 },
   { id: 'managed-units', name: 'Managed units', type: 'container', description: 'Delegated administrative units.', icon: 'FolderStar', leafCount: 18 },
@@ -115,6 +123,9 @@ const TREE: RawNode[] = [
             ],
           },
           { id: 'o2d-local', name: 'O2D.local', type: 'container', description: 'Secondary AD forest.', icon: 'SquaresFour', leafCount: 54 },
+          { id: 'o3d-local', name: 'O3D.local', type: 'container', description: 'Regional AD forest.', icon: 'SquaresFour', leafCount: 62 },
+          { id: 'o4d-local', name: 'O4D.local', type: 'container', description: 'Acquired company AD forest.', icon: 'SquaresFour', leafCount: 48 },
+          { id: 'o5d-local', name: 'O5D.local', type: 'container', description: 'Lab and testing AD forest.', icon: 'SquaresFour', leafCount: 70 },
         ],
       },
       {
@@ -122,9 +133,14 @@ const TREE: RawNode[] = [
         name: 'Entra ID',
         type: 'container',
         description: 'Microsoft Entra ID tenants.',
-        children: [
-          { id: 'entra-3bf67d', name: '3bf67d.onmicrosoft.com', type: 'container', description: 'Primary Entra tenant.', icon: 'SquaresFour', leafCount: 128 },
-        ],
+        children: ENTRA_TENANTS.map((t, i) => ({
+          id: t.id,
+          name: t.name,
+          type: 'container' as const,
+          description: i === 0 ? 'Primary Entra tenant.' : t.description,
+          icon: 'SquaresFour',
+          leafCount: t.leafCount,
+        })),
       },
     ],
   },

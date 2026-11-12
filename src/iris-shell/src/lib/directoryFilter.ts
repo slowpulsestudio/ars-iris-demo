@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import type { MultiSelectOption } from '../components/MultiSelect/MultiSelect.js';
+import { ENTRA_TENANTS } from './directoryData.js';
 
 /** Directories available in the directory multi-select; the Flat view lists are filtered by them. */
 export const DIRECTORIES: MultiSelectOption[] = [
@@ -44,13 +45,14 @@ export function bucketAt(index: number): string {
 /**
  * The directory a Location (or Directory) column value belongs to, read from its first part:
  * "AD3\Staff" and "O1D.local\Test OU" are AD directories (O1D.local is AD-1, O2D.local AD-2),
- * "Entra" is Entra 1, "Entra2" is Entra 2, and an onmicrosoft.com tenant is Entra 1.
+ * "Entra" is Entra 1, "Entra2" is Entra 2, and an Entra tenant (3bf67d.onmicrosoft.com and so on) is Entra 1 to 4 in order.
  */
 export function directoryForLocation(location: string): string {
   const first = location.split('\\')[0].trim();
   const entra = /^Entra ?(\d)?$/i.exec(first);
   if (entra) return `entra-${entra[1] ?? 1}`;
-  if (/onmicrosoft\.com$/i.test(first)) return 'entra-1';
+  const tenant = ENTRA_TENANTS.findIndex((t) => t.name === first);
+  if (tenant >= 0) return `entra-${tenant + 1}`;
   const ad = /^AD-?(\d)$/i.exec(first) ?? /^O(\d)D\.local$/i.exec(first);
   return ad && DIRECTORIES.some((d) => d.value === `ad-${ad[1]}`) ? `ad-${ad[1]}` : 'ad-1';
 }

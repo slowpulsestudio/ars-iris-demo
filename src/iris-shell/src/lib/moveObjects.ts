@@ -1,12 +1,15 @@
-import { canMoveNode, getParentId, moveNode, moveObject } from './directoryData.js';
+import { ENTRA_TENANTS, canMoveNode, getParentId, moveNode, moveObject } from './directoryData.js';
 import { showToast } from './toastStore.js';
 
 /**
  * The Location a Flat view user shows once moved into the folder at `path`:
- * "Entra" for an Entra directory, else the AD path, e.g. "O1D.local\Test OU\Test1".
+ * "Entra" (Entra2, Entra3… for the other tenants) for an Entra directory, else the AD path, e.g. "O1D.local\Test OU\Test1".
  */
 export function userLocationFor(path: Array<{ id: string; name: string }>): string {
-  if (path.some((n) => n.id === 'entra-directories')) return 'Entra';
+  if (path.some((n) => n.id === 'entra-directories')) {
+    const tenant = ENTRA_TENANTS.findIndex((t) => path.some((n) => n.id === t.id));
+    return tenant > 0 ? `Entra${tenant + 1}` : 'Entra';
+  }
   const tier = path.findIndex((n) => n.id === 'active-directories');
   return path.slice(tier + 1).map((n) => n.name).join('\\');
 }
