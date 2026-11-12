@@ -288,6 +288,8 @@ The user Memberships tab, which was an empty state, now lists the groups the use
 
 The toast now flies in from the right edge of the window and back out the same way (before, it rose from below with a blur and scale). It uses only Iris motion tokens and transform and opacity: the entry takes `--oi-motion-duration-long` with `--oi-motion-ease-enter`, the exit `--oi-motion-duration-default` with `--oi-motion-ease-exit`, and with reduced motion it fades with no movement. The entry also wasn't animating at all before: the toast is shown through a store update that renders synchronously, so the "visible" flip could happen before the starting position was ever painted. It now waits for one painted frame. The toast is also used in the AI panel, so it flies the same way there.
 
+The action bar does the same, from the bottom edge: it flies up into place and back down, with the same tokens and a fade-only reduced-motion case (its exit delay was a hardcoded 180ms and is now `--oi-motion-duration-default`). Only one hovering layer shows at a time: while a side sheet is on screen the bar flies out, and it flies back in once the sheet has gone (the selection is kept, and Esc then closes the sheet without clearing the selection). A small store, `lib/sideSheetStore.ts`, tells the bar a sheet is mounted.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
