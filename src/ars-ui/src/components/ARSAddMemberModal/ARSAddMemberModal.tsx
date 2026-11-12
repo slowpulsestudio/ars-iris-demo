@@ -1,3 +1,4 @@
+import type { MouseEventHandler, ReactNode } from 'react';
 import { Button } from '@iris/components/Button/Button.js';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { TableCell, CellText } from '@iris/components/TableCell/TableCell.js';
@@ -29,6 +30,12 @@ export interface ARSAddMemberModalProps {
   selectedItems: ARSSelectedObjectsBlockItem[];
   search?: string;
   onSearchChange?: (value: string) => void;
+  /** The filter button beside the search. */
+  onFilter?: MouseEventHandler<HTMLElement>;
+  /** How many conditions are applied; shown as a badge on the filter button. */
+  filterCount?: number;
+  /** The applied filter as pills under the search (the Advanced filter Bar). Not drawn in the Groups file. */
+  filters?: ReactNode;
   pagination: ARSPaginationProps;
   onClose?: () => void;
   onCancel?: () => void;
@@ -50,6 +57,9 @@ export function ARSAddMemberModal({
   selectedItems,
   search,
   onSearchChange,
+  onFilter,
+  filterCount,
+  filters,
   pagination,
   onClose,
   onCancel,
@@ -77,7 +87,8 @@ export function ARSAddMemberModal({
         </>
       }
     >
-      <ARSTableToolbar variant="4" search={search} onSearchChange={onSearchChange} />
+      <ARSTableToolbar variant="4" search={search} onSearchChange={onSearchChange} onFilter={onFilter} filterCount={filterCount} />
+      {filters}
       <div role="table" aria-label="Objects" className={styles.table}>
         <TableHeadRow
           columns={[{ label: 'Name', width: 150 }, { label: 'Object type', width: 110 }, { label: 'Description' }]}

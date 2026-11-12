@@ -20,6 +20,31 @@
   min-width: 0;
 }
 
+/* The filter button with the count of applied conditions at its top right. */
+.filter {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.filterCount {
+  position: absolute;
+  top: calc(-1 * var(--oi-spacing-2));
+  inset-inline-end: calc(-1 * var(--oi-spacing-2));
+  box-sizing: border-box;
+  min-width: 16px;
+  height: 16px;
+  padding-inline: var(--oi-spacing-xs);
+  background-color: var(--oi-base-color-brand);
+  border-radius: var(--oi-border-radius-default);
+  color: var(--oi-content-color-constant);
+  font-size: var(--oi-text-caption-font-size);
+  line-height: 16px;
+  font-weight: var(--oi-text-caption-strong-font-weight);
+  text-align: center;
+  pointer-events: none;
+}
+
 /* No create: the filter sits at the left of a 96px slot in Figma. */
 .filterSlot {
   display: flex;

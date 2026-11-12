@@ -23,6 +23,10 @@ export interface ARSTableToolbarProps {
   onSearchChange?: (value: string) => void;
   searchPlaceholder?: string;
   onFilter?: MouseEventHandler<HTMLElement>;
+  /** How many conditions are applied; shown as a badge on the filter button, as in the Advanced Search Figma. */
+  filterCount?: number;
+  /** The filter panel is open: the button reads as pressed. */
+  filterPressed?: boolean;
   /** Main action label; defaults to the Figma text for the variant. */
   actionLabel?: string;
   onAction?: MouseEventHandler<HTMLElement>;
@@ -43,6 +47,8 @@ export function ARSTableToolbar({
   onSearchChange,
   searchPlaceholder = 'Search by name, email, object ID etc.',
   onFilter,
+  filterCount = 0,
+  filterPressed,
   actionLabel,
   onAction,
   onActionMenu,
@@ -53,7 +59,21 @@ export function ARSTableToolbar({
 }: ARSTableToolbarProps) {
   const label = actionLabel ?? ACTION_LABEL[variant];
   const searchBox = <SearchInput placeholder={searchPlaceholder} value={search} onChange={onSearchChange} />;
-  const filter = <IconButton icon="FunnelSimple" ariaLabel="Filters" onClick={onFilter} />;
+  const filter = (
+    <span className={styles.filter}>
+      <IconButton
+        icon="FunnelSimple"
+        ariaLabel={filterCount > 0 ? `Filters, ${filterCount} applied` : 'Filters'}
+        aria-pressed={filterPressed}
+        onClick={onFilter}
+      />
+      {filterCount > 0 && (
+        <span className={styles.filterCount} aria-hidden="true">
+          {filterCount}
+        </span>
+      )}
+    </span>
+  );
 
   if (variant === 'No create') {
     return (

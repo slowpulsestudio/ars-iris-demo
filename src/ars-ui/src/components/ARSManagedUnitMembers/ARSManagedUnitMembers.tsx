@@ -28,6 +28,12 @@ export interface ARSManagedUnitMembersProps {
   location: string;
   search?: string;
   onSearchChange?: (value: string) => void;
+  /** The filter button beside the search. */
+  onFilter?: MouseEventHandler<HTMLElement>;
+  /** How many conditions are applied; shown as a badge on the filter button. */
+  filterCount?: number;
+  /** The filter panel is open. */
+  filterPressed?: boolean;
   rows: ARSManagedUnitMember[];
   selected?: Set<string>;
   onSelectionChange?: (next: Set<string>) => void;
@@ -52,6 +58,9 @@ export function ARSManagedUnitMembers({
   location,
   search,
   onSearchChange,
+  onFilter,
+  filterCount,
+  filterPressed,
   rows,
   selected = new Set(),
   onSelectionChange,
@@ -83,7 +92,15 @@ export function ARSManagedUnitMembers({
         onPreviousItem={onPreviousItem}
         onMore={onMore}
       />
-      <ARSTableToolbar variant="4" search={search} onSearchChange={onSearchChange} searchPlaceholder={`Search all members of ${unitName}`} />
+      <ARSTableToolbar
+        variant="4"
+        search={search}
+        onSearchChange={onSearchChange}
+        onFilter={onFilter}
+        filterCount={filterCount}
+        filterPressed={filterPressed}
+        searchPlaceholder={`Search all members of ${unitName}`}
+      />
       <div role="table" aria-label="Members" className={styles.table}>
         <TableHeadRow
           columns={[{ label: 'Name', width: 180 }, { label: 'Description' }, { label: 'Type' }]}
