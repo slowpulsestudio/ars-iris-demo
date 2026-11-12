@@ -11,6 +11,7 @@ import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Button } from '../../components/Button/Button.js';
 import { Card } from '../../components/Card/Card.js';
+import { ComingSoon } from '../ComingSoon/ComingSoon.js';
 import { DescriptionList, type DescriptionListItem } from '../../components/DescriptionList/DescriptionList.js';
 import { Link, type LinkTone } from '../../components/Link/Link.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
@@ -351,9 +352,7 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
             onDelete={() => setDeleteOpen(true)}
           />
         ) : (
-          <Card title={tabs.find((t) => t.value === tab)?.label}>
-            <p className={styles.placeholder}>Coming soon.</p>
-          </Card>
+          <ComingSoon label={tabs.find((t) => t.value === tab)?.label} />
         )}
       </div>
 

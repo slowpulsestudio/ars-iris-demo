@@ -53,13 +53,6 @@
   cursor: default;
 }
 
-.placeholder {
-  margin: 0;
-  font-size: var(--oi-text-body-s-font-size);
-  line-height: var(--oi-text-body-s-line-height);
-  color: var(--oi-content-color-tertiary);
-}
-
 /* ---------- "not found" fallback ---------- */
 
 .missing {

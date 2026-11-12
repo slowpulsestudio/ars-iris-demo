@@ -18,8 +18,7 @@ import { showToast } from '../../lib/toastStore.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { Banner } from '../../components/Banner/Banner.js';
 import { Button } from '../../components/Button/Button.js';
-import { EmptyFigure } from '../../components/EmptyFigure/EmptyFigure.js';
-import { Dish } from '@lucasmarkes/hairline/react';
+import { ComingSoon } from '../ComingSoon/ComingSoon.js';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
 import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
@@ -340,7 +339,7 @@ export function UserObjectPage({
     }
     if (tab.startsWith('Memberships')) return <UserMembershipsTab userId={data.id} userName={data.displayName} />;
     if (tab.startsWith('Roles')) return <UserRolesTab userId={data.id} />;
-    if (tab !== TAB_GENERAL) return <EmptyFigure figure={Dish} label={tab} />;
+    if (tab !== TAB_GENERAL) return <ComingSoon label={tab} />;
     return (
       <div className={styles.stack} ref={cardRef}>
         {editing && bannerOpen && hasErrors && (

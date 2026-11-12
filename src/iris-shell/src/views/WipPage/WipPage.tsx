@@ -4,7 +4,7 @@ import { ContentHeader } from '../../components/ContentHeader/ContentHeader.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Menu, type MenuEntry } from '../../components/Menu/Menu.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
-import styles from './WipPage.module.css';
+import { ComingSoon } from '../ComingSoon/ComingSoon.js';
 
 /** Page-level actions shown in the heading's overflow menu. Mirrors UsersPage. */
 const PAGE_ACTIONS_MENU_ITEMS: MenuEntry[] = [
@@ -26,7 +26,7 @@ export interface WipPageProps {
 /**
  * WipPage — placeholder for sections that don't have a real view yet.
  * Reuses the UsersPage header treatment (icon + title + page-actions
- * menu) and shows a "WIP" marker in the content area.
+ * menu) and shows the "Coming soon" satellite in the content area.
  */
 export function WipPage({
   title,
@@ -63,9 +63,7 @@ export function WipPage({
         }
       />
 
-      <div className={styles.wip}>
-        <code className={styles.wipCode}>[WIP]</code>
-      </div>
+      <ComingSoon label={title} />
     </AppShell>
   );
 }

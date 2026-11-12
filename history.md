@@ -298,6 +298,10 @@ On the list screens (Users, Tree view list, Groups, a managed unit's members) th
 
 The generated directory data (`lib/directoryData.ts`) reused a handful of names and descriptions, so a folder showed "Ops Admins" six times, groups carried user descriptions, and computers were all "Computer" or "Device 123". Groups are now named "[Department] [Role]" (24 departments × 12 roles, each with its own description, so a group's description matches what it is), computers get a site-and-type name such as `PAR-LT-303` with a matching description, users and contacts get their own description pools, and the Groups list tags a "[Department] [Role]" group with its department plus a topic. The Users list tags use a longer list of pairs. The random draws are unchanged, so existing ids and names (Julian Long, Security Users) stay as the docs and links expect.
 
+### 12 Nov: "Coming soon" satellite everywhere, and a dialog for Deprovision and Deactivate
+
+Unbuilt user, group and OU tabs showed only the satellite with no words. They now say "Coming soon" under it. The pages that said "[WIP]" (Devices, Agents, Applications, Access templates), the Safeguard page and the old Tree detail tabs use the same satellite and wording, through one shared view, `ComingSoon`; the two stylesheets that only styled the old placeholders are gone. In the Users list's row menu, Deprovision and Deactivate used to do nothing; each now opens a dialog (`ComingSoonModal`, built on the Iris Modal) with the satellite and "Coming soon". Deep links: `?dialog=deprovision` and `?dialog=deactivate` with a `target`.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).

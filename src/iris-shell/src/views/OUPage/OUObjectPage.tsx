@@ -8,7 +8,6 @@ import {
   type DetailsRow,
   type FormInputProps,
 } from '@ars';
-import { Dish } from '@lucasmarkes/hairline/react';
 import { AppShell } from '../AppShell/AppShell.js';
 import { useAppShell } from '../../lib/appShellContext.js';
 import { setHashParams, useHashParam, useHashTab } from '../../lib/hashState.js';
@@ -18,7 +17,7 @@ import { saveGroupProps, useGroupProps } from '../../lib/groupDetailsStore.js';
 import { showToast } from '../../lib/toastStore.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { useLeaveGuard } from '../../lib/useLeaveGuard.js';
-import { EmptyFigure } from '../../components/EmptyFigure/EmptyFigure.js';
+import { ComingSoon } from '../ComingSoon/ComingSoon.js';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { UnsavedChangesModal } from '../ObjectModals/UnsavedChangesModal.js';
@@ -231,7 +230,7 @@ export function OUObjectPage({ breadcrumb, ou, onSave, onBack, onMoved, onDelete
     if (tab === TAB_DETAILS) {
       return <DetailsCard title="Properties" editing={false} rows={detailRows} actions={<></>} />;
     }
-    return <EmptyFigure figure={Dish} label={tab} />;
+    return <ComingSoon label={tab} />;
   };
 
   return (
