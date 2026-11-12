@@ -10,19 +10,17 @@
 }
 
 .item {
-  position: relative;
   max-width: 100%;
 }
 
-/* Figma "Nesting, interactions" popover (10153:4683): a group editor under the pill. */
+/* Figma "Nesting, interactions" popover (10153:4683): a group editor under the pill.
+   Drawn in a portal at a fixed position so a scrolling parent (a modal) cannot clip it. */
 .popover {
   --popover-width: 435px;
 
   container-type: inline-size;
-  position: absolute;
-  top: calc(100% + var(--oi-spacing-xs));
-  inset-inline-start: 0;
-  z-index: 10;
+  position: fixed;
+  z-index: 100;
   box-sizing: border-box;
   width: min(var(--popover-width), 90vw);
   padding: var(--oi-spacing-m);

@@ -20,6 +20,8 @@ export interface AdvancedFilterBuilderProps {
   /** Groups the "+ Filter" menu offers (Common, User, Computer, Groups). */
   categories: ParamCategory[];
   actions: FilterModelActions;
+  /** Label of the empty state's add button. The Iris UI Kit says "Filter", the ARS Advanced Search examples "Add filter". */
+  addLabel?: string;
   className?: string;
 }
 
@@ -32,7 +34,7 @@ const ROOT_OPTIONS = [
  * AdvancedFilterBuilder — the Advanced filter "Panel" body: an empty state with "+ Filter", then rule
  * cards joined by AND/OR. Figma: Iris UI Kit "Advanced Filter Panel" 9956:7605.
  */
-export function AdvancedFilterBuilder({ root, parameters, categories, actions, className }: AdvancedFilterBuilderProps) {
+export function AdvancedFilterBuilder({ root, parameters, categories, actions, addLabel = 'Filter', className }: AdvancedFilterBuilderProps) {
   const paramById = new Map(parameters.map((p) => [p.id, p]));
   const rootOp = root.op === 'and' ? 'AND' : 'OR';
 
@@ -75,7 +77,7 @@ export function AdvancedFilterBuilder({ root, parameters, categories, actions, c
                   aria-expanded={expanded}
                   onClick={onClick}
                 >
-                  Filter
+                  {addLabel}
                 </Button>
               )}
             />

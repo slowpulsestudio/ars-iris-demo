@@ -20,6 +20,8 @@ export interface AdvancedFilterPanelProps {
   actions: FilterModelActions;
   /** Query text per syntax. Adds the "{ }" view that shows the filter as e.g. LDAP. */
   syntaxes?: QuerySyntaxOption[];
+  /** Label of the empty state's add button. */
+  addLabel?: string;
   /** Controlled view. Uncontrolled starts on the builder. */
   view?: AdvancedFilterPanelView;
   onViewChange?: (view: AdvancedFilterPanelView) => void;
@@ -44,6 +46,7 @@ export function AdvancedFilterPanel({
   categories,
   actions,
   syntaxes,
+  addLabel,
   view: viewProp,
   onViewChange,
   onClose,
@@ -90,7 +93,7 @@ export function AdvancedFilterPanel({
         {view === 'query' && syntaxes?.length ? (
           <QuerySyntax syntaxes={syntaxes} />
         ) : (
-          <AdvancedFilterBuilder root={root} parameters={parameters} categories={categories} actions={actions} />
+          <AdvancedFilterBuilder root={root} parameters={parameters} categories={categories} actions={actions} addLabel={addLabel} />
         )}
       </div>
 
