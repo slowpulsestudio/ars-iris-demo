@@ -290,6 +290,10 @@ The toast now flies in from the right edge of the window and back out the same w
 
 The action bar does the same, from the bottom edge: it flies up into place and back down, with the same tokens and a fade-only reduced-motion case (its exit delay was a hardcoded 180ms and is now `--oi-motion-duration-default`). Only one hovering layer shows at a time: while a side sheet is on screen the bar flies out, and it flies back in once the sheet has gone (the selection is kept, and Esc then closes the sheet without clearing the selection). A small store, `lib/sideSheetStore.ts`, tells the bar a sheet is mounted.
 
+### 12 Nov: paging always visible, action bar above it, Move not for Entra
+
+On the list screens (Users, Tree view list, Groups, a managed unit's members) the pagination is now sticky at the bottom of the scrolling list, so paging is always in view, and the action bar floats above it instead of over it (before, the bar covered the pagination). While the bar shows, the list keeps one extra row of space above the pagination (`--ars-pagination-space`, set by `withBar` in `ARSScreen.module.css`) so the last row can scroll clear of the bar. The kit's ARSPagination gained `sticky`; the card's bottom padding moves into the sticky pagination (`--ars-pagination-pad-bottom`) so rows never show in a strip beneath it. The kit's ARSActionBar gained `hiddenActions`; on the Users list Move is left out when any selected user has Location Entra, as the Entra row menu already has none.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
