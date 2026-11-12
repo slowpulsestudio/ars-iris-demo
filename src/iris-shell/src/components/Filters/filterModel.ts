@@ -14,7 +14,7 @@ export interface FilterOption {
   icon?: string;
 }
 
-/** The 13 operators shown in the hi-fi operator dropdown. */
+/** The 13 operators shown in the hi-fi operator dropdown, plus `between` (not in Figma yet). */
 export type OperatorId =
   | 'eq'
   | 'neq'
@@ -22,6 +22,7 @@ export type OperatorId =
   | 'lte'
   | 'gt'
   | 'gte'
+  | 'between'
   | 'in'
   | 'nin'
   | 'contains'
@@ -37,7 +38,7 @@ export interface OperatorDef {
   icon: string;
 }
 
-/** Ordered exactly as the hi-fi `.Operator` dropdown lists them. */
+/** Ordered as the hi-fi `.Operator` dropdown lists them; `between` is added and is not in Figma. */
 export const OPERATORS: OperatorDef[] = [
   { id: 'eq', label: 'equals', icon: 'Equals' },
   { id: 'neq', label: 'not equals', icon: 'NotEquals' },
@@ -45,6 +46,7 @@ export const OPERATORS: OperatorDef[] = [
   { id: 'lte', label: 'less than or equals', icon: 'LessThanOrEqual' },
   { id: 'gt', label: 'greater than', icon: 'GreaterThan' },
   { id: 'gte', label: 'greater than or equals', icon: 'GreaterThanOrEqual' },
+  { id: 'between', label: 'is between', icon: 'ArrowsLeftRight' },
   { id: 'in', label: 'is one of', icon: 'MemberOf' },
   { id: 'nin', label: 'is not one of', icon: 'NotMemberOf' },
   { id: 'contains', label: 'contains', icon: 'SupersetOf' },
@@ -130,6 +132,8 @@ export function operatorTakesValue(op: OperatorId | undefined): boolean {
 export function isConditionComplete(c: Condition): boolean {
   if (!c.parameterId || !c.operatorId) return false;
   if (!operatorTakesValue(c.operatorId)) return true;
+  // `between` needs both ends.
+  if (c.operatorId === 'between') return Boolean(c.values[0]) && Boolean(c.values[1]);
   return c.values.length > 0;
 }
 

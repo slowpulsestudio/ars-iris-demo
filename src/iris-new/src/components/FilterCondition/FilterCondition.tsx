@@ -48,7 +48,12 @@ export function FilterCondition({ condition, parameters, onChange, onRemove, cla
     label: o.label,
     icon: o.icon,
     selected: o.id === condition.operatorId,
-    onSelect: () => onChange(o.id === 'empty' ? { operatorId: 'empty', values: [] } : { operatorId: o.id }),
+    onSelect: () =>
+      onChange(
+        o.id === 'empty' || o.id === 'between' || condition.operatorId === 'between'
+          ? { operatorId: o.id, values: [] }
+          : { operatorId: o.id },
+      ),
   }));
 
   const optionLabel = useMemo(
@@ -57,8 +62,27 @@ export function FilterCondition({ condition, parameters, onChange, onRemove, cla
   );
 
   const showValue = operatorTakesValue(condition.operatorId);
+  const inputType = param?.date ? 'date' : 'text';
 
-  const valueField = !showValue ? null : param?.options?.length ? (
+  const valueField = !showValue ? null : condition.operatorId === 'between' ? (
+    <div className={styles.range}>
+      <TextInput
+        type={inputType}
+        value={condition.values[0] ?? ''}
+        placeholder="From"
+        aria-label={`${param?.label ?? 'Value'} from`}
+        onChange={(e) => onChange({ values: [e.target.value, condition.values[1] ?? ''] })}
+      />
+      <span className={styles.and}>and</span>
+      <TextInput
+        type={inputType}
+        value={condition.values[1] ?? ''}
+        placeholder="To"
+        aria-label={`${param?.label ?? 'Value'} to`}
+        onChange={(e) => onChange({ values: [condition.values[0] ?? '', e.target.value] })}
+      />
+    </div>
+  ) : param?.options?.length ? (
     <MultiSelect
       options={param.options.map((o) => ({ value: o.value, title: o.label, icon: o.icon }))}
       selected={new Set(condition.values)}
@@ -79,7 +103,7 @@ export function FilterCondition({ condition, parameters, onChange, onRemove, cla
     />
   ) : (
     <TextInput
-      type={param?.date ? 'date' : 'text'}
+      type={inputType}
       value={condition.values[0] ?? ''}
       placeholder="Enter a value..."
       aria-label={param ? `${param.label} value` : 'Value'}

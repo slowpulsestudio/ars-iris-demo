@@ -66,7 +66,7 @@ function pillProps(node: FilterNode, parameters: ParameterDef[]): Pick<FilterPil
   const op = lead?.operatorId ? OPERATOR_BY_ID[lead.operatorId] : undefined;
   const extra = countConditions(node) - 1;
   const labels = new Map((param?.options ?? []).map((o) => [o.value, o.label]));
-  const value = lead?.values.map((v) => labels.get(v) ?? v).join(', ');
+  const value = lead?.values.map((v) => labels.get(v) ?? v).join(lead.operatorId === 'between' ? ' and ' : ', ');
   return {
     parameter: { label: param?.label ?? 'Parameter', icon: param?.icon },
     operator: op ? { label: op.label, icon: op.icon } : { label: 'operator', icon: 'DiamondsFour' },

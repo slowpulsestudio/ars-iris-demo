@@ -7,7 +7,8 @@ import { EmptyFigure } from '../../components/EmptyFigure/EmptyFigure.js';
 import { Menu } from '../../components/Menu/Menu.js';
 import { OBJECT_TYPE_META } from '../../lib/directoryData.js';
 import { cx } from '../../lib/cx.js';
-import type { FilterFieldDef } from '../../lib/advancedFilter.js';
+import { isoDaysAgo, type FilterFieldDef } from '../../lib/advancedFilter.js';
+import { sampleDates } from '../../lib/listFilters.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { useFavorites, type FavoriteEntry } from '../../lib/useFavorites.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
@@ -20,9 +21,14 @@ const FIELDS: FilterFieldDef<FavoriteEntry>[] = [
   { id: 'Name', label: 'Name', icon: 'IdentificationCard', get: (f) => f.name },
   { id: 'Object type', label: 'Object type', icon: 'Lego', get: (f) => f.type, list: true },
   { id: 'Description', label: 'Description', icon: 'ArticleNyTimes', get: (f) => f.description ?? '' },
+  // Sample dates, as on the other lists: a favourite has none of its own.
+  { id: 'Date active', label: 'Date active', icon: 'CalendarDots', get: (f) => isoDaysAgo(sampleDates(f.id).activeDaysAgo), date: true },
 ];
 
-/** The rule word in a filter tag: Figma writes "is". */
+/** Date values arrive as `2026-05-01`; Figma's pill writes them as `01/05/26`. */
+const shortDate = (v: string) => v.replace(/^\d{2}(\d{2})-(\d{2})-(\d{2})$/, '$3/$2/$1');
+
+/** The rule word in a filter tag: Figma writes "is" and "is between". */
 function ruleWord(pill: AdvancedFilterBarPill): string {
   if (pill.operatorId === 'eq' || pill.operatorId === 'in') return 'is';
   if (pill.operatorId === 'neq' || pill.operatorId === 'nin') return 'is not';
@@ -33,7 +39,8 @@ const renderPill = (pill: AdvancedFilterBarPill) => (
   <ARSFilterTag
     field={pill.field}
     rule={ruleWord(pill)}
-    values={pill.values}
+    // "is between" shows its two ends as one value: "01/05/26 and 28/05/26".
+    values={pill.operatorId === 'between' ? [pill.values.map(shortDate).join(' and ')] : pill.values.map(shortDate)}
     extra={pill.extra}
     onEdit={pill.onEdit}
     onRemove={pill.onRemove}

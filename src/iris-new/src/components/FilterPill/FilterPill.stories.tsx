@@ -47,6 +47,15 @@ export const WithMoreOr: Story = {
   },
 };
 
+/** "is between": the two ends in one value. Not in the Iris UI Kit yet. */
+export const Between: Story = {
+  args: {
+    parameter: { label: 'Date active', icon: 'CalendarDots' },
+    operator: { label: 'is between', icon: 'ArrowsLeftRight' },
+    value: '2026-05-01 and 2026-05-28',
+  },
+};
+
 /** No icons (10012:4749). */
 export const WithoutIcons: Story = {
   args: { parameter: { label: 'Created date' }, operator: { label: 'greater than or equals' }, value: '2026-09-21' },

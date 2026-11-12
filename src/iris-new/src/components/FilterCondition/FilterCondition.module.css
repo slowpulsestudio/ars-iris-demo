@@ -36,6 +36,24 @@
   min-width: 0;
 }
 
+/* "is between": two inputs joined by "and". */
+.range {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+}
+
+.range > :not(.and) {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.and {
+  color: var(--oi-content-color-tertiary);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
 @container (max-width: 420px) {
   .root {
     gap: var(--trail-gap);

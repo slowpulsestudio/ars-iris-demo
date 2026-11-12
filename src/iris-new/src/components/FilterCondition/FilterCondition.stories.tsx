@@ -43,6 +43,13 @@ export const Filled: Story = {
   ),
 };
 
+/** "is between": two dates joined by "and". Not in the Iris UI Kit yet; the ARS Favorites filter area draws it (4145:13714). */
+export const Between: Story = {
+  render: () => (
+    <Live initial={newCondition({ parameterId: 'created', operatorId: 'between', values: ['2026-05-01', '2026-05-28'] })} width={448} />
+  ),
+};
+
 /** The parameter has a value list, so the value is a picker. */
 export const WithValueList: Story = {
   render: () => (

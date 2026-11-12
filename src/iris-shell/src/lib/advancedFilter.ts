@@ -95,6 +95,8 @@ function conditionHolds(condition: Condition, held: string[]): boolean {
       return any((a, v) => compare(a, v) > 0);
     case 'gte':
       return any((a, v) => compare(a, v) >= 0);
+    case 'between':
+      return held.some((a) => compare(a, values[0]) >= 0 && compare(a, values[1]) <= 0);
     case 'contains':
       return any((a, v) => lower(a).includes(lower(v)));
     case 'ncontains':
