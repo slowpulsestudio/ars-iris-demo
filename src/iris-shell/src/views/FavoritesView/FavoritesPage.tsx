@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Turntable } from '@lucasmarkes/hairline/react';
-import { ARSFilterArea, ARSFilterTag, ARSTreeViewADContent } from '@ars';
-import type { AdvancedFilterBarPill } from '@iris-new';
+import { ARSFilterArea, ARSTreeViewADContent } from '@ars';
 import { AppShell } from '../AppShell/AppShell.js';
 import { EmptyFigure } from '../../components/EmptyFigure/EmptyFigure.js';
 import { Menu } from '../../components/Menu/Menu.js';
@@ -11,6 +10,7 @@ import { isoDaysAgo, type FilterFieldDef } from '../../lib/advancedFilter.js';
 import { sampleDates } from '../../lib/listFilters.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { useFavorites, type FavoriteEntry } from '../../lib/useFavorites.js';
+import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 
@@ -24,28 +24,6 @@ const FIELDS: FilterFieldDef<FavoriteEntry>[] = [
   // Sample dates, as on the other lists: a favourite has none of its own.
   { id: 'Date active', label: 'Date active', icon: 'CalendarDots', get: (f) => isoDaysAgo(sampleDates(f.id).activeDaysAgo), date: true },
 ];
-
-/** Date values arrive as `2026-05-01`; Figma's pill writes them as `01/05/26`. */
-const shortDate = (v: string) => v.replace(/^\d{2}(\d{2})-(\d{2})-(\d{2})$/, '$3/$2/$1');
-
-/** The rule word in a filter tag: Figma writes "is" and "is between". */
-function ruleWord(pill: AdvancedFilterBarPill): string {
-  if (pill.operatorId === 'eq' || pill.operatorId === 'in') return 'is';
-  if (pill.operatorId === 'neq' || pill.operatorId === 'nin') return 'is not';
-  return pill.operator;
-}
-
-const renderPill = (pill: AdvancedFilterBarPill) => (
-  <ARSFilterTag
-    field={pill.field}
-    rule={ruleWord(pill)}
-    // "is between" shows its two ends as one value: "01/05/26 and 28/05/26".
-    values={pill.operatorId === 'between' ? [pill.values.map(shortDate).join(' and ')] : pill.values.map(shortDate)}
-    extra={pill.extra}
-    onEdit={pill.onEdit}
-    onRemove={pill.onRemove}
-  />
-);
 
 const iconFor = (type: string): string =>
   Object.values(OBJECT_TYPE_META).find((m) => m.label === type)?.icon ?? 'Cube';
@@ -63,7 +41,7 @@ export function FavoritesPage() {
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
   const rowMenu = useAnchoredMenu();
   const [rowId, setRowId] = useState<string | null>(null);
-  const lf = useAdvancedFilter(entries, FIELDS, 'bar', { renderPill, inlinePills: true });
+  const lf = useAdvancedFilter(entries, FIELDS, 'bar', { renderPill: renderArsFilterTag, inlinePills: true });
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -105,7 +83,8 @@ export function FavoritesPage() {
           id: f.id,
           name: f.name,
           icon: iconFor(f.type),
-          href: f.href,
+          // A favourite folder opens in the Favourites view, anything else on its own page.
+          href: f.type === 'Folder' ? `#/favorites/${f.id}` : f.href,
           objectType: f.type,
           description: f.description ?? '',
         }))}

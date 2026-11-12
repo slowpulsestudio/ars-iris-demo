@@ -143,6 +143,7 @@ export const ROUTE_TO_VIEW: Record<string, string> = {
   treeList: 'tree',
   treeDetail: 'tree',
   favoritesList: 'favourites',
+  favoritesFolder: 'favourites',
 };
 
 /** Landing route for each directory view segment. */

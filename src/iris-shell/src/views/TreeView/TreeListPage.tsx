@@ -4,6 +4,7 @@ import {
   ARSADUserActions,
   ARSActionBar,
   ARSEmptyContent,
+  ARSFilterArea,
   ARSNewObjectMenu,
   ARSPageMenu,
   ARSTreeViewADContent,
@@ -21,6 +22,7 @@ import { canMoveItem, moveEntries, type MoveEntry, type MoveItem } from '../../l
 import { endObjectDrag, startObjectDrag } from '../../lib/objectDrag.js';
 import { sampleDates, sampleTags, type FilterRow } from '../../lib/listFilters.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { rowFields } from '../../lib/advancedFilter.js';
 import { Button } from '../../components/Button/Button.js';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
@@ -61,13 +63,16 @@ function hrefFor(obj: DirectoryObject): string {
 
 export interface TreeListPageProps {
   nodeId: string;
+  /** Shown in the Favourites view (a favourite folder): the filter is the Bar with ARS filter tags, not the Panel. */
+  inFavorites?: boolean;
 }
 
 /**
  * TreeListPage — Directory Management, Tree view: the contents of a folder
- * (Tree_View_AD_Content) inside the shell's directory layout.
+ * (Tree_View_AD_Content) inside the shell's directory layout. In the Favourites view it is the
+ * favourite folder's screen (ARS - Favorites 4145:13627 in ARS_WebUI2_Advanced-Search).
  */
-export function TreeListPage({ nodeId }: TreeListPageProps) {
+export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps) {
   const { isContainer, getChildren, getPath, getNodeName, getNodeIcon, addObject, removeObject } = useDirectory();
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
 
@@ -135,7 +140,12 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
     return [...allRows, ...below];
   }, [searching, allRows, getChildren]);
   const filterFields = useMemo(() => rowFields(toFilterRow), [toFilterRow]);
-  const lf = useAdvancedFilter(pool, filterFields);
+  const lf = useAdvancedFilter(
+    pool,
+    filterFields,
+    inFavorites ? 'bar' : 'panel',
+    inFavorites ? { renderPill: renderArsFilterTag, inlinePills: true } : undefined,
+  );
 
   const targets = useMemo(() => {
     const ids = targetParam ? targetParam.split(',') : [];
@@ -267,11 +277,12 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
   const breadcrumb = useMemo<Crumb[]>(() => {
     const path = getPath(nodeId);
     const crumbs: Crumb[] = [{ label: 'Directory Management' }];
-    if (path.length > 1) crumbs.push({ label: '…' });
+    if (inFavorites) crumbs.push({ label: 'Favourites', onClick: () => navigate('#/favorites') });
+    else if (path.length > 1) crumbs.push({ label: '…' });
     const current = path[path.length - 1];
     crumbs.push({ label: current?.name ?? nodeName ?? 'Unknown' });
     return crumbs;
-  }, [getPath, nodeId, nodeName]);
+  }, [getPath, nodeId, nodeName, inFavorites]);
 
   if (!known) {
     return (
@@ -292,7 +303,16 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
   const RowActions = rowObject && (rowObject.type === 'user' || rowObject.type === 'contact')
     ? ARSADUserActions
     : ARSADRightClickTreeMenu;
-  const header = { title: nodeName ?? 'Directory', icon: getNodeIcon(nodeId), onMore: pageMenu.openAt };
+  const header = inFavorites
+    ? {
+        title: nodeName ?? 'Directory',
+        variant: 'Favorites' as const,
+        // "class · directory", as Figma writes "Organizational unit · O1D.local".
+        objectClass: 'Folder',
+        objectName: getPath(nodeId)[2]?.name ?? getPath(nodeId)[1]?.name,
+        onMore: pageMenu.openAt,
+      }
+    : { title: nodeName ?? 'Directory', icon: getNodeIcon(nodeId), onMore: pageMenu.openAt };
   const toolbar = {
     variant: 'Split' as const,
     search: query,
@@ -323,6 +343,14 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
           className={cx(screen.screen, selected.size > 0 && screen.withBar)}
           header={header}
           toolbar={toolbar}
+          filters={
+            inFavorites ? (
+              <ARSFilterArea onAdd={lf.onFilter} onClear={lf.clear}>
+                {lf.bar}
+              </ARSFilterArea>
+            ) : undefined
+          }
+          filtersOpen={inFavorites ? Boolean(lf.bar) : undefined}
           rows={pageRows.map((o) => ({
             id: o.id,
             name: o.name,
@@ -351,6 +379,7 @@ export function TreeListPage({ nodeId }: TreeListPageProps) {
       )}
 
       <RowActions {...rowMenu.menuProps} ariaLabel={`Actions for ${rowObject?.name ?? 'object'}`} onAction={onRowAction} />
+      {lf.elements}
       <ARSPageMenu {...pageMenu.menuProps} onAction={onPageAction} />
       <ARSNewObjectMenu {...createMenu.menuProps} onAction={openCreate} />
 

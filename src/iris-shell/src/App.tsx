@@ -54,6 +54,8 @@ function renderRoute(route: Route) {
       return <TreeDetailPage nodeId={route.params.nodeId} objectId={route.params.objectId} />;
     case 'favoritesList':
       return <FavoritesPage />;
+    case 'favoritesFolder':
+      return <TreeListPage nodeId={route.params.nodeId} inFavorites />;
     case 'groups':
       return <GroupsPage />;
     case 'devices':

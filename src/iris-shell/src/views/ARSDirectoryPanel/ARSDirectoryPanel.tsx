@@ -125,9 +125,11 @@ export function ARSDirectoryPanel() {
         sections={favoriteSections}
         search={favoritesSearch}
         onSearchChange={setFavoritesSearch}
+        selectedId={route.name === 'favoritesFolder' ? (route.params as { nodeId: string }).nodeId : null}
         onSelect={(id) => {
           const entry = favorites.find((f) => f.id === id);
-          if (entry) navigate(entry.href);
+          // A favourite folder opens here, in the Favourites view; anything else opens its own page.
+          if (entry) navigate(entry.type === 'Folder' ? `#/favorites/${entry.id}` : entry.href);
         }}
       />
     ) : (
