@@ -37,3 +37,8 @@ export const BackBar: Story = {
   name: 'Back bar',
   args: { variant: 'Back bar', title: 'Ethan Brooks', objectClass: 'User', objectName: 'Ethan.Brooks2', tag: 'Management' },
 };
+
+/** The header on ARS - Favorites (4145:13699 in ARS_WebUI2_Advanced-Search): FolderStar, "class · name", no back or pager. Not a variant in ARS - Primary. */
+export const Favorites: Story = {
+  args: { variant: 'Favorites', title: 'My OU', objectClass: 'Organizational unit', objectName: 'O1D.local' },
+};

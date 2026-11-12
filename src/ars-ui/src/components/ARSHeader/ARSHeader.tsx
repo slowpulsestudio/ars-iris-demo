@@ -11,7 +11,8 @@ export type ARSHeaderVariant =
   | 'Customize top-right'
   | 'Customize next to object class'
   | 'User'
-  | 'Back bar';
+  | 'Back bar'
+  | 'Favorites';
 
 interface VariantLayout {
   icon: string;
@@ -28,6 +29,8 @@ const LAYOUT: Record<ARSHeaderVariant, VariantLayout> = {
   'Customize next to object class': { icon: 'FolderStar', back: true, supporting: true, customize: true, itemNav: false },
   User: { icon: 'User', back: true, supporting: true, customize: true, itemNav: true },
   'Back bar': { icon: 'User', back: false, supporting: true, customize: true, itemNav: true },
+  // The header as ARS - Favorites draws it (4145:13699): the starred folder, "class · name", no back or pager.
+  Favorites: { icon: 'FolderStar', back: false, supporting: true, customize: false, itemNav: false },
 };
 
 export interface ARSHeaderProps {
