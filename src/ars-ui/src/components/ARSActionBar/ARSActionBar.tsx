@@ -33,6 +33,8 @@ export interface ARSActionBarProps {
   onDismiss?: () => void;
   /** Whether the Delete group is shown; the one-row bar in ARS_WebUI2_CRUD (1378:48538) has none. */
   showDelete?: boolean;
+  /** Labels of actions to leave out, e.g. Move when an Entra user is selected (Entra users can't be moved). */
+  hiddenActions?: string[];
   /** Where the bar sits; Figma: 21px above the page bottom, centred in the content area. */
   layout?: 'floating' | 'inline';
   className?: string;
@@ -53,6 +55,7 @@ export function ARSActionBar({
   onAction,
   onDismiss,
   showDelete = true,
+  hiddenActions,
   layout = 'floating',
   className,
 }: ARSActionBarProps) {
@@ -61,6 +64,8 @@ export function ARSActionBar({
   const toggled = showSelected ?? localShowSelected;
   const groups = GROUPS[variant]
     .filter((group) => showDelete || group[0] !== DELETE)
+    .map((group) => group.filter((item) => !hiddenActions?.includes(item.label)))
+    .filter((group) => group.length > 0)
     .map((group) =>
       group.map((item) => ({ ...item, onClick: (e: MouseEvent<HTMLButtonElement>) => onAction?.(item.label, e) })),
     );

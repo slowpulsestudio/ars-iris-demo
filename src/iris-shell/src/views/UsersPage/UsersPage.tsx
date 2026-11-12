@@ -12,6 +12,7 @@ import { NEW_USER_ENTRA_DIR_MENU } from '@ars/components/ARSNewUserEntraDir/ARSN
 import { AppShell } from '../AppShell/AppShell.js';
 import { useUsers } from '../../lib/usersStore.js';
 import { useAppShell } from '../../lib/appShellContext.js';
+import { cx } from '../../lib/cx.js';
 import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { useMoveUsers } from '../../lib/useMoveUsers.js';
@@ -171,7 +172,7 @@ export function UsersPage() {
   return (
     <AppShell breadcrumb={[{ label: 'Directory Management' }, { label: 'Users' }]}>
       <ARSFlatViewUserContent
-        className={screen.screen}
+        className={cx(screen.screen, selected.size > 0 && screen.withBar)}
         header={{ title: 'Users', icon: 'Users', onMore: pageMenu.openAt }}
         toolbar={{
           variant: 'Basic',
@@ -227,6 +228,7 @@ export function UsersPage() {
       <ARSActionBar
         variant={selectedUsers.length === 1 ? '2' : 'Default'}
         showDelete={selectedUsers.length !== 1}
+        hiddenActions={selectedUsers.some((u) => u.location === 'Entra') ? ['Move'] : undefined}
         open={selected.size > 0}
         selectedCount={selected.size}
         totalCount={users.length}
