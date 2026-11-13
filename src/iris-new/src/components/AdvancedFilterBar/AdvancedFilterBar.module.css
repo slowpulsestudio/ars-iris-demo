@@ -75,6 +75,13 @@
   pointer-events: none;
 }
 
+/* Figma FilterSelect (9710:8598): the 240px value menu under a pill's value. */
+.valuePopover {
+  --popover-width: 240px;
+
+  padding: var(--oi-spacing-s);
+}
+
 /* Reduced motion: fade only, no movement. */
 @media (prefers-reduced-motion: reduce) {
   .item,

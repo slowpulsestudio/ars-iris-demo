@@ -38,11 +38,13 @@ export function FilterPill({
 }: FilterPillProps) {
   const segment = (key: FilterPillSegment, extra: string | false, children: ReactNode) =>
     onEdit ? (
-      <button type="button" className={cx(styles.seg, extra)} onClick={() => onEdit(key)}>
+      <button type="button" className={cx(styles.seg, extra)} data-segment={key} onClick={() => onEdit(key)}>
         {children}
       </button>
     ) : (
-      <span className={cx(styles.seg, extra)}>{children}</span>
+      <span className={cx(styles.seg, extra)} data-segment={key}>
+        {children}
+      </span>
     );
 
   return (

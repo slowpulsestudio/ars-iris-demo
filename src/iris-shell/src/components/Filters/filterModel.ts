@@ -128,6 +128,11 @@ export function operatorTakesValue(op: OperatorId | undefined): boolean {
   return op != null && op !== 'empty';
 }
 
+/** The operator a field starts with once it is picked: "is one of" for a list, "greater than or equals" for a date, "contains" for text. */
+export function defaultOperatorFor(param: ParameterDef): OperatorId {
+  return param.options?.length ? 'in' : param.date ? 'gte' : 'contains';
+}
+
 /** A condition is complete once it can actually filter. */
 export function isConditionComplete(c: Condition): boolean {
   if (!c.parameterId || !c.operatorId) return false;

@@ -1,10 +1,11 @@
 import { useMemo, useState, type MouseEventHandler, type ReactNode } from 'react';
-import { AdvancedFilterBar, AdvancedFilterPanel, type AdvancedFilterBarPill } from '@iris-new';
+import { AdvancedFilterBar, AdvancedFilterPanel, type AdvancedFilterBarEditing, type AdvancedFilterBarPill } from '@iris-new';
 import { Menu, type MenuEntry } from '../../components/Menu/Menu.js';
-import { newCondition, newGroup } from '../../components/Filters/filterModel.js';
+import { defaultOperatorFor, newCondition, newGroup } from '../../components/Filters/filterModel.js';
 import { useFilterModel } from '../../components/Filters/useFilterModel.js';
 import { useHashParam } from '../../lib/hashState.js';
 import { usePublishDockPanel } from '../../lib/dockPanelStore.js';
+import { NoFilterResults } from '../NoFilterResults/NoFilterResults.js';
 import { SAMPLE_LDAP } from '../../lib/sampleLdap.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import {
@@ -25,8 +26,10 @@ export interface AdvancedFilter<T> {
   onFilter: MouseEventHandler<HTMLElement>;
   /** Panel only: the Panel is open. */
   filterPressed: boolean;
-  /** Empties the filter (the Bar's tree, or the Panel's draft). */
+  /** Empties the filter: the Bar's tree, or the Panel's draft and applied filter. */
   clear: () => void;
+  /** The empty state for a list with `count` rows left: shown when a filter is applied and nothing matches, else undefined. */
+  emptyWhen: (count: number) => ReactNode;
   /** Bar only: the applied filter as pills, for under the toolbar. Null while there are none. */
   bar: ReactNode;
   /** Bar only: the menu the filter button opens. Render it once anywhere in the screen. */
@@ -56,7 +59,7 @@ export function useAdvancedFilter<T>(
   const applied = useMemo(() => (mode === 'panel' ? parseApplied(param) : newGroup('and')), [mode, param]);
   const { root, actions } = useFilterModel(applied);
   const [open, setOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editing, setEditing] = useState<AdvancedFilterBarEditing | null>(null);
   const menu = useAnchoredMenu();
 
   const parameters = useMemo(() => parametersFor(fields, items), [fields, items]);
@@ -77,6 +80,15 @@ export function useAdvancedFilter<T>(
     if (!open) actions.replace(applied);
     setOpen(!open);
   };
+
+  // Empties the draft and, in the Panel, the applied filter in the address too.
+  const clearAll = () => {
+    actions.clear();
+    if (mode === 'panel') setParam(null);
+  };
+
+  const emptyWhen = (count: number): ReactNode =>
+    count === 0 && conditions.length > 0 ? <NoFilterResults onClear={clearAll} /> : undefined;
 
   usePublishDockPanel(
     mode === 'panel'
@@ -103,14 +115,26 @@ export function useAdvancedFilter<T>(
   );
 
   if (mode === 'panel') {
-    return { filtered, filterCount: conditions.length, onFilter: togglePanel, filterPressed: open, clear: actions.clear, bar: null, elements: null };
+    return {
+      filtered,
+      filterCount: conditions.length,
+      onFilter: togglePanel,
+      filterPressed: open,
+      clear: clearAll,
+      emptyWhen,
+      bar: null,
+      elements: null,
+    };
   }
 
-  // Bar: the filter button offers the Advanced filter and each field; either adds a pill and opens its editor.
+  // Bar: the filter button offers the Advanced filter and each field. A field adds a pill with its usual
+  // operator and opens the values under it; the Advanced filter adds an empty card and opens its group.
   const addCard = (parameterId?: string) => {
-    const card = newGroup('and', [newCondition({ parameterId })]);
+    const param = parameters.find((p) => p.id === parameterId);
+    const operatorId = param ? defaultOperatorFor(param) : undefined;
+    const card = newGroup('and', [newCondition({ parameterId, operatorId })]);
     actions.replace({ ...root, children: [...root.children, card] });
-    setEditingId(card.id);
+    setEditing({ id: card.id, view: param ? 'value' : 'group' });
   };
   const entries: MenuEntry[] = [
     { kind: 'item', label: 'Advanced filter', icon: 'FunnelSimple', onSelect: () => addCard() },
@@ -123,15 +147,16 @@ export function useAdvancedFilter<T>(
     filterCount: conditions.length,
     onFilter: menu.openAt,
     filterPressed: false,
-    clear: actions.clear,
+    clear: clearAll,
+    emptyWhen,
     bar:
       root.children.length === 0 ? null : (
         <AdvancedFilterBar
           root={root}
           parameters={parameters}
           actions={actions}
-          editingId={editingId}
-          onEditingIdChange={setEditingId}
+          editing={editing}
+          onEditingChange={setEditing}
           renderPill={options.renderPill}
           inline={options.inlinePills}
         />

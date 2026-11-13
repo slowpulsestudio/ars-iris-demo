@@ -44,7 +44,7 @@ The Motion section of the ARS Storybook (Motion/Tokens and Motion/Usage, in [src
 | Advanced filter Panel: new condition, nested group, rule card | fade and drop 8px, `--oi-motion-duration-default`, `--oi-motion-ease-enter` (`@starting-style`) | not animated: the row is removed at once | fade only |
 | Panel: builder and query view switch | the new view fades in, `--oi-motion-duration-short` | | fade |
 | Advanced filter Bar: pill | fade and drop 4px, `--oi-motion-duration-default`, `--oi-motion-ease-enter` | fade and lift out, `--oi-motion-duration-short`, `--oi-motion-ease-exit`; the pill stays until it has faded | fade only |
-| Advanced filter Bar: popover under a pill | fade and drop 8px, `--oi-motion-duration-default`, `--oi-motion-ease-enter` | the same, `--oi-motion-duration-short`, `--oi-motion-ease-exit`; it stays mounted until it has faded | fade only |
+| Advanced filter Bar: popover under a pill (values under the value, operators under the operator, or the whole group) | fade and drop 8px, `--oi-motion-duration-default`, `--oi-motion-ease-enter` | the same, `--oi-motion-duration-short`, `--oi-motion-ease-exit`; it stays mounted until it has faded | fade only |
 | Filters button badge and dot indicator | fade and scale from 0.5, `--oi-motion-duration-short`, `--oi-motion-ease-enter` | not animated | fade only |
 
 ## Learnings
