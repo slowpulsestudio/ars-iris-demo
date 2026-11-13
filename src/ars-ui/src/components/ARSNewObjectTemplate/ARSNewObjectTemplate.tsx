@@ -85,7 +85,8 @@ export function ARSNewObjectTemplate({
       </div>
       <ARSModalNewObjectFooter
         variant={footerVariant}
-        stepLabel={hasSteps ? undefined : null}
+        // Figma's footer counts two steps; a flow with its own steps counts those.
+        stepLabel={!hasSteps ? null : steps ? `Step ${activeIndex + 1} of ${steps.length}` : undefined}
         ctaLabel={ctaLabel}
         onBack={onBack}
         onCta={onContinue}
