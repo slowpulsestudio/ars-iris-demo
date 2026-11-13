@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Button } from '@iris/components/Button/Button.js';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
@@ -66,6 +66,10 @@ export interface ARSNewObjectContentProps {
   accountOptions?: ReadonlySet<string>;
   onAccountOptionsChange?: (next: Set<string>) => void;
   onSelectFolder?: () => void;
+  /** The heading beside the form; Figma's group forms say "Create new AD group" and the like. */
+  heading?: string;
+  /** Another object's fields in place of the user fields (the group create forms), beside the same heading. */
+  children?: ReactNode;
   className?: string;
 }
 
@@ -82,6 +86,8 @@ export function ARSNewObjectContent({
   accountOptions,
   onAccountOptionsChange,
   onSelectFolder,
+  heading = 'Add new object',
+  children,
   className,
 }: ARSNewObjectContentProps) {
   const [localOptions, setLocalOptions] = useState<ReadonlySet<string>>(() => new Set([ARS_ACCOUNT_OPTIONS[0]]));
@@ -96,7 +102,9 @@ export function ARSNewObjectContent({
 
   return (
     <div className={cx(styles.root, layout === 'container' && styles.container, className)}>
-      {variant === 'Default' ? (
+      {children ? (
+        <div className={styles.form}>{children}</div>
+      ) : variant === 'Default' ? (
         <div className={styles.form}>
           <div className={cx(styles.row, !nameWidth && styles.fillRow)}>
             <FormInput label="First name" required {...field('firstName', 'Markus')} width={nameWidth} />
@@ -169,7 +177,7 @@ export function ARSNewObjectContent({
       )}
       <div className={styles.header}>
         <div className={styles.heading}>
-          <h3 className={styles.title}>Add new object</h3>
+          <h3 className={styles.title}>{heading}</h3>
           <p className={styles.description}>{DESCRIPTION[variant]}</p>
         </div>
       </div>
