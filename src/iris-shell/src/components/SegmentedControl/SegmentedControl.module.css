@@ -64,6 +64,29 @@
   font-weight: var(--oi-text-caption-strong-font-weight);
 }
 
+/* Inline layout: the icon beside its label in a 28px row, the selected segment on a grey pill
+   (ARS_WebUI2_Groups Memberships toolbar, Segmented control 167:8053). Figma pads the selected
+   segment 8px and the others 12px; every segment gets 12px here so the labels don't shift when
+   the selection moves. */
+.inline .pill {
+  border-radius: var(--oi-border-radius-default);
+  background-color: var(--oi-background-color-tertiary);
+}
+
+.inline .item {
+  width: auto;
+  height: auto;
+  flex-direction: row;
+  padding: var(--oi-spacing-xs) var(--oi-spacing-m);
+}
+
+.inline .label {
+  white-space: nowrap;
+  font-size: var(--oi-text-body-s-strong-font-size);
+  line-height: var(--oi-text-body-s-strong-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+}
+
 /* Particle-burst celebration ------------------------------------------------
    Opt-in per item via `celebrate`. The icon keeps the standard default/active
    colours; only the particle spray is added on select. Tunables scoped here so

@@ -56,19 +56,25 @@ export interface SegmentedControlProps {
   value: string;
   onChange?: (value: string) => void;
   ariaLabel?: string;
+  /**
+   * "stacked" puts each icon over its label (the Flat view / Tree view / Favorites switch). "inline" puts it
+   * beside the label in a 28px row, as the Memberships toolbar does (ARS_WebUI2_Groups 167:8053).
+   */
+  layout?: 'stacked' | 'inline';
   className?: string;
 }
 
 /**
  * SegmentedControl — single-select option group rendered as a row of segments.
  *
- * Each segment shows an icon stacked over a label, matching the Iris pattern.
+ * Each segment shows an icon stacked over a label, matching the Iris pattern, or beside it in the inline layout.
  */
 export function SegmentedControl({
   items,
   value,
   onChange,
   ariaLabel = 'View',
+  layout = 'stacked',
   className,
 }: SegmentedControlProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -169,7 +175,7 @@ export function SegmentedControl({
   return (
     <div
       ref={rootRef}
-      className={cx(styles.root, className)}
+      className={cx(styles.root, layout === 'inline' && styles.inline, className)}
       role="tablist"
       aria-label={ariaLabel}
     >
