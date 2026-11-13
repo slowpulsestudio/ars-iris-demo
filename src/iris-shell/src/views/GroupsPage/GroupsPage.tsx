@@ -6,14 +6,15 @@ import { cx } from '../../lib/cx.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import type { DirectoryNodeView, DirectoryObject } from '../../lib/directoryData.js';
-import { DEPARTMENT_NAMES } from '../../lib/directoryData.js';
+import { DEPARTMENT_NAMES, ENTRA_TENANTS } from '../../lib/directoryData.js';
 import { inDirectories, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import type { FilterFieldDef } from '../../lib/advancedFilter.js';
 import { getGroupProps } from '../../lib/groupDetailsStore.js';
 import { canMoveItem, moveEntries, type MoveItem } from '../../lib/moveObjects.js';
 import { navigate } from '../../lib/router.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
-import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
+import { Menu } from '../../components/Menu/Menu.js';
+import { CreateGroupModal } from './CreateGroupModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { GroupDialogs } from '../ObjectModals/GroupDialogs.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
@@ -58,12 +59,12 @@ export function GroupsPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
   const [selected, setSelected] = useHashSelection();
-  // The New AD Group dialog lives in the address (?dialog=new-group), as do a row's actions
-  // (?dialog=move&target=id) and the bar's Move (?dialog=move&target=a,b).
+  // The New AD Group and New Entra Distribution Group forms live in the address (?dialog=new-group,
+  // ?dialog=new-entra-group), as do a row's actions (?dialog=move&target=id) and the bar's Move (?dialog=move&target=a,b).
   const [dialog] = useHashParam('dialog');
   const [targetParam] = useHashParam('target');
-  const createOpen = dialog === 'new-group';
-  const setCreateOpen = (open: boolean) => setHashParams({ dialog: open ? 'new-group' : null });
+  const createKind = dialog === 'new-group' ? 'AD' : dialog === 'new-entra-group' ? 'Entra' : null;
+  const createMenu = useAnchoredMenu();
   const closeDialog = () => setHashParams({ dialog: null, target: null });
   const [removedTags, setRemovedTags] = useState<Map<string, Set<string>>>(() => new Map());
   const [rowGroup, setRowGroup] = useState<DirectoryObject | null>(null);
@@ -177,14 +178,17 @@ export function GroupsPage() {
         header={{ title: 'Groups', icon: 'UsersThree' }}
         empty={directories.size === 0 ? <NoDirectoriesSelected /> : gf.emptyWhen(rows.length)}
         toolbar={{
-          variant: 'Basic',
+          // A split Create, as the designer asked (Figma draws a plain "+ Create", 160:9037); both halves open the
+          // AD group or Entra group choice.
+          variant: 'Split',
           search: query,
           onSearchChange: (value) => {
             setQuery(value);
             setPage(1);
           },
           actionLabel: 'Create',
-          onAction: () => setCreateOpen(true),
+          onAction: createMenu.openAt,
+          onActionMenu: createMenu.openAt,
           onFilter: gf.onFilter,
           filterCount: gf.filterCount,
           filterPressed: gf.filterPressed,
@@ -218,7 +222,21 @@ export function GroupsPage() {
           },
         }}
       />
-      <ComingSoonModal open={createOpen} onClose={() => setCreateOpen(false)} title="New AD Group" />
+      <Menu
+        {...createMenu.menuProps}
+        ariaLabel="Create group"
+        items={[
+          { kind: 'item', label: 'AD group', icon: 'UsersThree', onSelect: () => setHashParams({ dialog: 'new-group', target: null }) },
+          { kind: 'item', label: 'Entra group', icon: 'UsersThree', onSelect: () => setHashParams({ dialog: 'new-entra-group', target: null }) },
+        ]}
+      />
+      <CreateGroupModal
+        open={createKind !== null}
+        onClose={closeDialog}
+        kind={createKind ?? 'AD'}
+        // From the Groups list a new group goes in the first directory of its kind unless another folder is chosen.
+        locationId={createKind === 'Entra' ? ENTRA_TENANTS[0].id : 'o1d-local'}
+      />
       <ARSGroupActions
         {...rowMenu.menuProps}
         entra={rowGroup !== null && isEntra(rowGroup)}

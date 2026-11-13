@@ -30,8 +30,7 @@ import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { setDragPreview } from './dragPreview.js';
-import { type CreateGroupKind } from '../GroupsPage/CreateGroupModal.js';
-import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
+import { CreateGroupModal, type CreateGroupKind } from '../GroupsPage/CreateGroupModal.js';
 import { CreateOUModal } from '../OUPage/CreateOUModal.js';
 import { getNode, removeNode } from '../../lib/directoryData.js';
 import { CreateObjectModal, type CreateObjectResult } from '../UsersPage/CreateObjectModal/CreateObjectModal.js';
@@ -439,13 +438,7 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
         onMove={onMoveObjects}
       />
       <CreateOUModal open={ouCreate} onClose={closeDialog} locationId={nodeId} />
-      {groupCreate && (
-        <ComingSoonModal
-          open
-          onClose={closeDialog}
-          title={groupCreate === 'Entra' ? 'New Entra Distribution Group' : 'New AD Group'}
-        />
-      )}
+      <CreateGroupModal open={groupCreate !== null} onClose={closeDialog} kind={groupCreate ?? 'AD'} locationId={nodeId} />
       {createTarget && (
         <CreateObjectModal
           open
