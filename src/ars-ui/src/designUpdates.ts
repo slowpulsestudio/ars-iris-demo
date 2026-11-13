@@ -138,4 +138,12 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     recommendation: 'Draw the two Memberships empty states (no memberships, no search match) for users and groups with the Iris empty state.',
     prototype: '#/users/isabella-clark?tab=memberships',
   },
+  {
+    title: 'Bulk action bar wherever rows can be ticked',
+    file: 'primary',
+    figmaNodeId: '2385:59821',
+    note: 'Figma draws the bar on the Users and Tree view lists and a managed unit\'s members. At the designer\'s request the same bar shows on the Groups and Managed Units lists, the Memberships and Roles tabs and Favourites. Select all, Properties (one row) and Ask AI work everywhere, and on the Groups list Move and More actions work too; Copy, Move and Delete do nothing where there is no flow for them.',
+    recommendation: 'Draw the bar on these screens and decide which actions each needs (for example Remove on Memberships).',
+    prototype: '#/tree/o1d-builtin/o1d-builtin-o1?tab=memberships&select=o1d-test-ou-o2261,o1d-test-ou-o2266',
+  },
 ];
