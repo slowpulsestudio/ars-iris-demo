@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   ARSDeprovisionGroup,
-  ARSGroupOverview,
+  ARSOverviewTemplate,
   ARSPageMenu,
   ARSRenameGroup,
   ARSUserPage,
   DetailsCard,
+  type ARSOverviewData,
   type DetailsRow,
   type FormInputProps,
 } from '@ars';
@@ -86,11 +87,43 @@ function generalDraft(object: DirectoryObject, p: GroupProps): Draft {
   };
 }
 
-/** A stable share of `total`, so the sample member counts add up. */
-/** The Overview's member counts, from the group's members (the same list as the Memberships tab). */
-function memberCounts(object: DirectoryObject, p: GroupProps, pool: DirectoryObject[]) {
-  const owners = (p.manager ? 1 : 0) + p.secondaryOwners.length;
-  return { ...memberTotals(groupMembers(object, pool, p)), owners };
+/**
+ * The Overview as ARS_Overview_Template draws a group (kit Group variant 3353:38319), with the fields the
+ * business rules list for a group overview: Membership type, Group type, Object ID, Created on, the email,
+ * the parent directory chip and the member counts, counted from the Memberships tab's own list. Every count
+ * opens the Memberships tab, as before; the rules' destinations for them are still to be confirmed.
+ */
+function overviewFor(
+  object: DirectoryObject,
+  p: GroupProps,
+  pool: DirectoryObject[],
+  directory: 'On-prem' | 'Cloud',
+  openMembers: () => void,
+): ARSOverviewData {
+  const totals = memberTotals(groupMembers(object, pool, p));
+  const count = (label: string, value: number) => ({ label, value: String(value), onClick: openMembers });
+  return {
+    profile: {
+      name: object.name,
+      email: shown(p.email),
+      badges: p.deprovisioned
+        ? [{ label: directory, tone: 'neutral' }, { label: 'Deprovisioned', tone: 'warning' }]
+        : [{ label: directory, tone: 'neutral' }],
+    },
+    details: [
+      [{ label: 'Membership type', value: `${p.type} Group` }],
+      [{ label: 'Group type', value: p.type }],
+      [{ label: 'Object ID', value: object.id }],
+      [{ label: 'Created on', value: figmaDate(object.details.created) }],
+    ],
+    stats: [
+      count('Total members', totals.total),
+      count('Users', totals.users),
+      count('Groups', totals.groups),
+      count('Devices', totals.devices),
+      count('Others', totals.others),
+    ],
+  };
 }
 
 export interface GroupObjectPageProps {
@@ -151,8 +184,10 @@ export function GroupObjectPage({
   const [errors, setErrors] = useState<Draft>({});
   const [renameDraft, setRenameDraft] = useState({ name: '', groupName: '' });
   const [renameErrors, setRenameErrors] = useState({ name: '', groupName: '' });
-  const { getNodeName, getSiblings } = useDirectory();
+  const { getNodeName, getSiblings, getPath } = useDirectory();
   const memberPool = useMemo(() => nearbyObjects(currentNodeId, getSiblings), [currentNodeId, getSiblings]);
+  // The parent directory chip (business rules: Cloud, on-Prem or Hybrid): AD groups are on-premises, Entra groups cloud.
+  const directory = getPath(currentNodeId).some((n) => n.id === 'entra-directories') ? 'Cloud' : 'On-prem';
 
   const initial = useMemo(
     () => (editing === TAB_GENERAL ? generalDraft(object, p) : {}),
@@ -260,20 +295,9 @@ export function GroupObjectPage({
   const renderContent = () => {
     if (tab === TAB_OVERVIEW) {
       return (
-        <ARSGroupOverview
-          name={object.name}
-          membershipType={`${p.type} Group`}
-          source="Cloud"
-          objectId={object.id}
-          createdOn={figmaDate(object.details.created)}
-          email={shown(p.email)}
-          badges={p.deprovisioned ? [{ label: 'Deprovisioned', tone: 'warning' }] : []}
-          counts={memberCounts(object, p, memberPool)}
-          onCopyName={() => {
-            void navigator.clipboard?.writeText(object.name);
-            showToast('Name copied');
-          }}
-          onOpenMembers={() => setTab('Memberships')}
+        <ARSOverviewTemplate
+          variant="Group"
+          data={overviewFor(object, p, memberPool, directory, () => setTab('Memberships'))}
         />
       );
     }
