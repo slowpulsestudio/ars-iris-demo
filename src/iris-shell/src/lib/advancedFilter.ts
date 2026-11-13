@@ -8,7 +8,22 @@ import {
   type Group,
   type ParameterDef,
 } from '../components/Filters/filterModel.js';
+import type { ParamCategory } from '../components/Filters/AdvancedFilter.js';
 import { parseFilters, type FilterRow } from './listFilters.js';
+
+/**
+ * The property groups of the "Add filter" menu, in Figma's order and with Figma's icons
+ * (ARS_WebUI2_Advanced-Search "Add filter dropdown" 4145:57189).
+ */
+export const FILTER_CATEGORIES = [
+  { label: 'Common', icon: 'IdentificationCard' },
+  { label: 'User', icon: 'DiamondsFour' },
+  { label: 'Computer', icon: 'MapPinSimpleArea' },
+  { label: 'Groups', icon: 'CalendarDots' },
+  { label: 'Other properties' },
+] as const;
+
+export type FilterCategory = (typeof FILTER_CATEGORIES)[number]['label'];
 
 /** One field a list can be filtered by: what the Panel and Bar offer as a parameter. */
 export interface FilterFieldDef<T> {
@@ -20,7 +35,39 @@ export interface FilterFieldDef<T> {
   /** Offer the distinct values in the list as the value picker (object type, tags, location). */
   list?: boolean;
   date?: boolean;
+  /** The "Add filter" menu group it is listed under. Defaults to Common. */
+  category?: FilterCategory;
 }
+
+/** The "Add filter" menu groups for these fields: Figma's groups in order, each listed when it has a field. */
+export function categoriesFor<T>(fields: FilterFieldDef<T>[]): ParamCategory[] {
+  return FILTER_CATEGORIES.map((c) => ({
+    label: c.label,
+    icon: 'icon' in c ? c.icon : undefined,
+    parameterIds: fields.filter((f) => (f.category ?? 'Common') === c.label).map((f) => f.id),
+  })).filter((c) => c.parameterIds.length > 0);
+}
+
+/** Where the empty Panel's "Read the filters guide" goes: the filter guidance linked from the Iris UI Kit notes (9747:14118). */
+export const FILTERS_GUIDE_URL = 'https://qsft.atlassian.net/wiki/x/h4BX6';
+
+/** The AD attribute each field is written as in the Panel's Query syntax view. Tags have no AD attribute; extensionAttribute1 stands in. */
+export const LDAP_ATTRIBUTES: Record<string, string> = {
+  'Display name': 'displayName',
+  Name: 'name',
+  'Object type': 'objectClass',
+  Type: 'objectClass',
+  Tags: 'extensionAttribute1',
+  Location: 'distinguishedName',
+  Directory: 'distinguishedName',
+  'Date active': 'lastLogonTimestamp',
+  'Date created': 'whenCreated',
+  Description: 'description',
+  Email: 'mail',
+  Status: 'userAccountControl',
+  'Group type': 'groupType',
+  'Object ID': 'objectGUID',
+};
 
 const asList = (value: string | string[]): string[] => (Array.isArray(value) ? value : [value]);
 

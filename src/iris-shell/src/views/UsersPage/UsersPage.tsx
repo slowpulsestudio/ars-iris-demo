@@ -23,7 +23,7 @@ import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
 import { inDirectories, isEntraLocation, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { sampleDates, type FilterRow } from '../../lib/listFilters.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
-import { rowFields } from '../../lib/advancedFilter.js';
+import { rowFields, type FilterFieldDef } from '../../lib/advancedFilter.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { CreateObjectModal, type CreateObjectResult } from './CreateObjectModal/CreateObjectModal.js';
 import {
@@ -53,7 +53,12 @@ function statusTone(status: string): BadgeTone {
 
 /** What the Filters menu sees of a user. The dates are sample values: no list shows them. */
 const userRow = (u: User): FilterRow => ({ name: u.name, type: 'User', tags: u.tags, location: u.location, ...sampleDates(u.id) });
-const userFields = rowFields(userRow);
+/** Figma's Common fields, and the user's own under User (the "Add filter" menu, 4145:57189). */
+const userFields: FilterFieldDef<User>[] = [
+  ...rowFields(userRow),
+  { id: 'Status', label: 'Status', icon: 'UserCircleCheck', get: (u) => u.status, list: true, category: 'User' },
+  { id: 'Email', label: 'Email', icon: 'EnvelopeSimple', get: (u) => u.email, category: 'User' },
+];
 
 /** Items-per-page choices offered below the list. */
 const PAGE_SIZE_OPTIONS = [10, 15, 20, 30, 50];
@@ -112,7 +117,7 @@ export function UsersPage() {
 
   const [rowUser, setRowUser] = useState<User | null>(null);
   const rowMenu = useAnchoredMenu();
-  const lf = useAdvancedFilter(users, userFields);
+  const lf = useAdvancedFilter(users, userFields, 'panel', { viewName: 'Users' });
   const createMenu = useAnchoredMenu();
   const pageMenu = useAnchoredMenu();
 

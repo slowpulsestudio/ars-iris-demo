@@ -42,7 +42,7 @@ export function ManagedUnitsPage() {
 
   const [directories] = useDirectoryFilter();
   const units = useMemo(() => MANAGED_UNITS.filter((_, i) => directories.has(bucketAt(i))), [directories]);
-  const lf = useAdvancedFilter(units, unitFields);
+  const lf = useAdvancedFilter(units, unitFields, 'panel', { viewName: 'Management units' });
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();

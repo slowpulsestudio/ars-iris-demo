@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ARSAddMemberModal, ARSManagedBy, type DetailsRow, type FormInputProps } from '@ars';
+import { ARSAddMemberModal, ARSFilterArea, ARSManagedBy, type DetailsRow, type FormInputProps } from '@ars';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { setHashParams, useHashParam } from '../../lib/hashState.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
@@ -7,6 +7,7 @@ import { saveGroupProps, useGroupProps } from '../../lib/groupDetailsStore.js';
 import { showToast } from '../../lib/toastStore.js';
 import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { DIRECTORY_OBJECT_FIELDS } from './directoryObjectFields.js';
 
 type Picker = 'manager' | 'owner' | null;
@@ -109,7 +110,8 @@ export function OwnershipTab({
     () => getSiblings(candidateNodeId).filter((o) => o.type === 'user' && o.id !== object.id),
     [getSiblings, candidateNodeId, object.id],
   );
-  const af = useAdvancedFilter(users, DIRECTORY_OBJECT_FIELDS, 'bar');
+  // The picker's filter is the ARS filter area (Figma Modal 4145:59111).
+  const af = useAdvancedFilter(users, DIRECTORY_OBJECT_FIELDS, 'bar', { renderPill: renderArsFilterTag, inlinePills: true });
   const candidates = useMemo(() => {
     const q = query.trim().toLowerCase();
     return af.filtered.filter((o) => !q || [o.name, o.description].some((v) => v.toLowerCase().includes(q)));
@@ -235,7 +237,13 @@ export function OwnershipTab({
           }}
           onFilter={af.onFilter}
           filterCount={af.filterCount}
-          filters={af.bar}
+          filters={
+            af.bar && (
+              <ARSFilterArea onAdd={af.onFilter} onClear={af.clear}>
+                {af.bar}
+              </ARSFilterArea>
+            )
+          }
           empty={af.emptyWhen(candidates.length)}
           pagination={{ page: safePage, pageCount, onPageChange: setPage, pageSize: PICKER_PAGE_SIZE, pageSizeOptions: [PICKER_PAGE_SIZE] }}
           onClose={closePicker}

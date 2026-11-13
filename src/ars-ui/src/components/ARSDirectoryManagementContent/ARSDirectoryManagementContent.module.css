@@ -62,3 +62,27 @@
   font-weight: var(--oi-text-caption-font-weight);
   color: var(--oi-content-color-tertiary);
 }
+
+/* Figma "Filter indicator" (4145:13400): the 12px funnel, then the info-blue count, 16px high, radius s. */
+.filterIndicator {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+  color: var(--oi-content-color-secondary);
+}
+
+.filterCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: var(--oi-size-xs);
+  padding: var(--oi-spacing-xs);
+  background-color: var(--oi-base-color-info);
+  border-radius: var(--oi-border-radius-s);
+  color: var(--oi-content-color-constant);
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+  font-weight: var(--oi-text-caption-strong-font-weight);
+}

@@ -64,6 +64,7 @@ export {
 export { FormInput } from './parts/FormInput/FormInput.js';
 export type { FormInputProps } from './parts/FormInput/FormInput.js';
 export { DetailsCard, type DetailsCardProps, type DetailsRow } from './parts/DetailsCard/DetailsCard.js';
+export { EmptyState, type EmptyStateProps } from './parts/EmptyState/EmptyState.js';
 export type { PanelAction } from './parts/ActionPanel/ActionPanel.js';
 export {
   ARSUsersPropertiesCard,

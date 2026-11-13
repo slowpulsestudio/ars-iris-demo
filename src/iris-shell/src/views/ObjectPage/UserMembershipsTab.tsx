@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
-import { ARSAddMemberModal, ARSGroupTable, ARSPagination, ARSTableToolbar } from '@ars';
+import { ARSAddMemberModal, ARSFilterArea, ARSGroupTable, ARSPagination, ARSTableToolbar } from '@ars';
 import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import { addUserMemberships, SAMPLE_GROUPS, useUserMemberships } from '../../lib/userMemberships.js';
 import { showToast } from '../../lib/toastStore.js';
 import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { NAMED_OBJECT_FIELDS } from './namedObjectFields.js';
 import styles from './GroupMembersTab.module.css';
 
@@ -63,7 +64,8 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
     const have = new Set(groups.map((g) => g.id));
     return SAMPLE_GROUPS.filter((g) => !have.has(g.id));
   }, [groups]);
-  const af = useAdvancedFilter(available, NAMED_OBJECT_FIELDS, 'bar');
+  // The modal's filter is the ARS filter area (Figma Modal 4145:59111).
+  const af = useAdvancedFilter(available, NAMED_OBJECT_FIELDS, 'bar', { renderPill: renderArsFilterTag, inlinePills: true });
   const candidates = useMemo(() => {
     const q = addQuery.trim().toLowerCase();
     return af.filtered.filter((g) => !q || [g.name, g.description].some((v) => v.toLowerCase().includes(q)));
@@ -146,7 +148,13 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
           }}
           onFilter={af.onFilter}
           filterCount={af.filterCount}
-          filters={af.bar}
+          filters={
+            af.bar && (
+              <ARSFilterArea onAdd={af.onFilter} onClear={af.clear}>
+                {af.bar}
+              </ARSFilterArea>
+            )
+          }
           empty={af.emptyWhen(candidates.length)}
           pagination={{
             page: addSafePage,

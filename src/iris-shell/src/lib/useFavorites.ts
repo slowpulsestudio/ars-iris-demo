@@ -15,11 +15,13 @@ const STORAGE_KEY = 'ars.favorites';
 export interface FavoriteEntry {
   id: string;
   name: string;
-  /** Human label, e.g. an object-type label. */
+  /** Human label, e.g. an object-type label. `View` is a saved filtered list. */
   type: string;
   description?: string;
   /** Hash route the row links to. */
   href: string;
+  /** A saved view: how many conditions its filter has (the Favourites panel's filter indicator). */
+  filterCount?: number;
 }
 
 function read(): FavoriteEntry[] {
@@ -62,6 +64,8 @@ export interface FavoritesApi {
   isFavorite: (id: string) => boolean;
   /** Add if absent, remove if present. */
   toggle: (entry: FavoriteEntry) => void;
+  /** Add, or replace the entry with the same id (saving a view again updates it). */
+  save: (entry: FavoriteEntry) => void;
   remove: (id: string) => void;
 }
 
@@ -78,6 +82,14 @@ export function useFavorites(): FavoritesApi {
     );
   }, []);
 
+  const save = useCallback((entry: FavoriteEntry) => {
+    const exists = current.some((e) => e.id === entry.id);
+    current = exists ? current.map((e) => (e.id === entry.id ? entry : e)) : [...current, entry];
+    persist();
+    emit();
+    showToast(`${entry.name} saved to favourites`);
+  }, []);
+
   const remove = useCallback((id: string) => {
     const entry = current.find((e) => e.id === id);
     current = current.filter((e) => e.id !== id);
@@ -88,5 +100,5 @@ export function useFavorites(): FavoritesApi {
 
   const isFavorite = useCallback((id: string) => entries.some((e) => e.id === id), [entries]);
 
-  return { entries, isFavorite, toggle, remove };
+  return { entries, isFavorite, toggle, save, remove };
 }

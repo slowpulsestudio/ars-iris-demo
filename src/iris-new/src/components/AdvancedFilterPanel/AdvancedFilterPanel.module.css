@@ -98,6 +98,33 @@
   flex: 1 1 0;
 }
 
+/* Figma "Filter guide footer" (4090:112825): 56px, the link centred, no rule above. Shown while the filter is empty. */
+.guide {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--oi-size-l) + var(--oi-spacing-l));
+}
+
+.guideLink {
+  color: var(--oi-content-color-secondary);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-font-weight);
+  text-decoration: none;
+  border-radius: var(--oi-border-radius-s);
+}
+
+.guideLink:hover {
+  text-decoration: underline;
+}
+
+.guideLink:focus-visible {
+  outline: none;
+  box-shadow: var(--oi-focus-ring);
+}
+
 /* Switching between the builder and the query view fades the new one in. */
 .view {
   display: flex;

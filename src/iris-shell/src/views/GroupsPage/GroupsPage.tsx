@@ -100,14 +100,14 @@ export function GroupsPage() {
   const groupFields = useMemo<FilterFieldDef<DirectoryObject>[]>(
     () => [
       { id: 'Name', label: 'Name', icon: 'IdentificationCard', get: (g) => g.name },
-      { id: 'Group type', label: 'Group type', icon: 'UserCircleCheck', get: (g) => describe(g).groupType, list: true },
+      { id: 'Group type', label: 'Group type', icon: 'UserCircleCheck', get: (g) => describe(g).groupType, list: true, category: 'Groups' },
       { id: 'Description', label: 'Description', icon: 'ArticleNyTimes', get: (g) => g.description },
       { id: 'Tags', label: 'Tags', icon: 'Tag', get: (g) => tagsFor(g.id), list: true },
       { id: 'Directory', label: 'Directory', icon: 'BuildingOffice', get: (g) => describe(g).directory, list: true },
     ],
     [describe, tagsFor],
   );
-  const gf = useAdvancedFilter(inScope, groupFields);
+  const gf = useAdvancedFilter(inScope, groupFields, 'panel', { viewName: 'Groups' });
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
     return gf.filtered.filter((g) => !q || [g.name, g.description].some((v) => v.toLowerCase().includes(q)));

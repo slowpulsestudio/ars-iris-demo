@@ -32,6 +32,10 @@ export interface AdvancedFilterPanelProps {
   onApply?: () => void;
   /** The chevron beside "Apply filter". */
   onApplyMenu?: MouseEventHandler<HTMLButtonElement>;
+  /** Where "Read the filters guide" goes. */
+  guideHref?: string;
+  /** Show the guide in place of the footer. Defaults to while the filter is empty; a caller with a filter applied keeps the footer so it can be cleared. */
+  showGuide?: boolean;
   className?: string;
 }
 
@@ -54,6 +58,8 @@ export function AdvancedFilterPanel({
   onCancel,
   onApply,
   onApplyMenu,
+  guideHref,
+  showGuide,
   className,
 }: AdvancedFilterPanelProps) {
   const [internalView, setInternalView] = useState<AdvancedFilterPanelView>('builder');
@@ -99,18 +105,26 @@ export function AdvancedFilterPanel({
         </div>
       </div>
 
-      <footer className={styles.footer}>
-        <Button variant="ghost" onClick={onClearAll ?? actions.clear}>
-          Clear all
-        </Button>
-        <span className={styles.spacer} />
-        <Button variant="secondary" onClick={onCancel}>
-          Cancel
-        </Button>
-        <SplitButton onClick={onApply} onMenuClick={onApplyMenu} ariaMenuLabel="More apply options">
-          Apply filter
-        </SplitButton>
-      </footer>
+      {(showGuide ?? root.children.length === 0) ? (
+        <footer className={styles.guide}>
+          <a className={styles.guideLink} href={guideHref} target="_blank" rel="noreferrer">
+            Read the filters guide
+          </a>
+        </footer>
+      ) : (
+        <footer className={styles.footer}>
+          <Button variant="ghost" onClick={onClearAll ?? actions.clear}>
+            Clear all
+          </Button>
+          <span className={styles.spacer} />
+          <Button variant="secondary" onClick={onCancel}>
+            Cancel
+          </Button>
+          <SplitButton onClick={onApply} onMenuClick={onApplyMenu} ariaMenuLabel="More apply options">
+            Apply filter
+          </SplitButton>
+        </footer>
+      )}
     </section>
   );
 }

@@ -1,24 +1,14 @@
-import { Loupe } from '@lucasmarkes/hairline/react';
-import { Button } from '../../components/Button/Button.js';
-import { EmptyFigure } from '../../components/EmptyFigure/EmptyFigure.js';
+import { EmptyState } from '@ars';
 
 export interface NoFilterResultsProps {
   /** Empties the applied filter. */
   onClear: () => void;
 }
 
-/** NoFilterResults — a list's empty state when the applied filter leaves nothing to show. Not drawn in Figma. */
+/**
+ * NoFilterResults — a list's empty state when the applied filter leaves nothing to show: the ARS "No data"
+ * empty state (Figma ARS_Empty_Content 3423:30769) with Clear filter (as the filter area's Clear, 4145:13713).
+ */
 export function NoFilterResults({ onClear }: NoFilterResultsProps) {
-  return (
-    <EmptyFigure
-      figure={Loupe}
-      title="No results match the filter."
-      description="Change or clear the filter to see more."
-      action={
-        <Button variant="secondary" onClick={onClear}>
-          Clear filter
-        </Button>
-      }
-    />
-  );
+  return <EmptyState message="No objects match the filter." actionLabel="Clear filter" actionIcon="XCircle" onAction={onClear} />;
 }

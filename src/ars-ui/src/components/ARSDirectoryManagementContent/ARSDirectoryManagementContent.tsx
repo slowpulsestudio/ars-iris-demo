@@ -1,4 +1,5 @@
 import { cx } from '@iris/lib/cx.js';
+import { Icon } from '@iris/components/Icon/Icon.js';
 import { NavItem } from '@iris/components/NavItem/NavItem.js';
 import { Tree, type TreeNode, type TreeProps } from '@iris/components/Tree/Tree.js';
 import { SearchInput } from '../../parts/SearchInput/SearchInput.js';
@@ -8,6 +9,8 @@ export interface ARSDirectoryNavItem {
   id: string;
   label: string;
   icon: string;
+  /** A saved view's filter: shown as the Filter indicator, the funnel and the count (Figma 4145:13400). */
+  filterCount?: number;
 }
 
 export interface ARSDirectoryFavoritesSection {
@@ -96,6 +99,14 @@ export function ARSDirectoryManagementContent(props: ARSDirectoryManagementConte
         label={item.label}
         selected={item.id === selectedId}
         onClick={() => onSelect?.(item.id)}
+        trailing={
+          item.filterCount ? (
+            <span className={styles.filterIndicator} role="img" aria-label={`${item.filterCount} filters`}>
+              <Icon name="FunnelSimple" size="12px" />
+              <span className={styles.filterCount}>{item.filterCount}</span>
+            </span>
+          ) : undefined
+        }
       />
     </li>
   );

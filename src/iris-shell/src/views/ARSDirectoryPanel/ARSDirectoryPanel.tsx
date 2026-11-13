@@ -84,14 +84,17 @@ export function ARSDirectoryPanel() {
     setMenuPos({ x: e.clientX, y: e.clientY });
   };
 
+  // Figma's Favorites panel (4145:13665): "Views" (saved filtered lists, with their filter indicator), then
+  // "Objects and folders".
   const favoriteSections = useMemo(() => {
     const q = favoritesSearch.trim().toLowerCase();
-    const byType = new Map<string, { id: string; label: string; icon: string }[]>();
-    for (const f of favorites) {
-      if (q && !f.name.toLowerCase().includes(q)) continue;
-      byType.set(f.type, [...(byType.get(f.type) ?? []), { id: f.id, label: f.name, icon: 'Star' }]);
-    }
-    return [...byType].map(([title, items]) => ({ title, items }));
+    const shown = favorites.filter((f) => !q || f.name.toLowerCase().includes(q));
+    const views = shown.filter((f) => f.type === 'View');
+    const objects = shown.filter((f) => f.type !== 'View');
+    return [
+      { title: 'Views', items: views.map((f) => ({ id: f.id, label: f.name, icon: 'Star', filterCount: f.filterCount })) },
+      { title: 'Objects and folders', items: objects.map((f) => ({ id: f.id, label: f.name, icon: 'TreeView' })) },
+    ].filter((s) => s.items.length > 0);
   }, [favorites, favoritesSearch]);
 
   const content =

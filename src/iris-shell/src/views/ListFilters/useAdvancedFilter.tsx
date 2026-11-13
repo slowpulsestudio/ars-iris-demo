@@ -1,14 +1,25 @@
 import { useMemo, useState, type MouseEventHandler, type ReactNode } from 'react';
-import { AdvancedFilterBar, AdvancedFilterPanel, type AdvancedFilterBarEditing, type AdvancedFilterBarPill } from '@iris-new';
-import { Menu, type MenuEntry } from '../../components/Menu/Menu.js';
+import {
+  AdvancedFilterBar,
+  AdvancedFilterPanel,
+  addFilterMenu,
+  toLdap,
+  type AdvancedFilterBarEditing,
+  type AdvancedFilterBarPill,
+} from '@iris-new';
+import { Menu } from '../../components/Menu/Menu.js';
 import { defaultOperatorFor, newCondition, newGroup } from '../../components/Filters/filterModel.js';
 import { useFilterModel } from '../../components/Filters/useFilterModel.js';
 import { useHashParam } from '../../lib/hashState.js';
 import { usePublishDockPanel } from '../../lib/dockPanelStore.js';
+import { splitPersonaHash } from '../../lib/router.js';
+import { useFavorites } from '../../lib/useFavorites.js';
 import { NoFilterResults } from '../NoFilterResults/NoFilterResults.js';
-import { SAMPLE_LDAP } from '../../lib/sampleLdap.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import {
+  FILTERS_GUIDE_URL,
+  LDAP_ATTRIBUTES,
+  categoriesFor,
   completeConditions,
   matchesTree,
   parseApplied,
@@ -41,6 +52,8 @@ export interface AdvancedFilterOptions {
   renderPill?: (pill: AdvancedFilterBarPill) => ReactNode;
   /** Bar only: the pills have no tray of their own, because the screen draws the strip. */
   inlinePills?: boolean;
+  /** Panel only: the name the list is saved under as a view in Favourites, e.g. "Users". */
+  viewName?: string;
 }
 
 /**
@@ -63,10 +76,7 @@ export function useAdvancedFilter<T>(
   const menu = useAnchoredMenu();
 
   const parameters = useMemo(() => parametersFor(fields, items), [fields, items]);
-  const categories = useMemo(
-    () => [{ label: 'Common', icon: 'IdentificationCard', parameterIds: fields.map((f) => f.id) }],
-    [fields],
-  );
+  const categories = useMemo(() => categoriesFor(fields), [fields]);
 
   // The Panel edits a draft until Apply; the Bar edits the filter itself.
   const tree = mode === 'panel' ? applied : root;
@@ -90,25 +100,54 @@ export function useAdvancedFilter<T>(
   const emptyWhen = (count: number): ReactNode =>
     count === 0 && conditions.length > 0 ? <NoFilterResults onClear={clearAll} /> : undefined;
 
+  // The chevron beside "Apply filter": apply, and keep the filtered list as a view in Favourites (Figma's
+  // Favorites panel lists views with their filter indicator, 4145:13665).
+  const applyMenu = useAnchoredMenu();
+  const { save: saveFavorite } = useFavorites();
+  const applyAndSave = () => {
+    const serialized = serializeApplied(root);
+    setParam(serialized);
+    if (!serialized) return;
+    const page = splitPersonaHash(window.location.hash).path.split('?')[0];
+    saveFavorite({
+      id: `view:${page}`,
+      name: options.viewName ?? 'Saved view',
+      type: 'View',
+      href: `${page}?filter=${encodeURIComponent(serialized)}`,
+      filterCount: completeConditions(root).length,
+    });
+  };
+
   usePublishDockPanel(
     mode === 'panel'
       ? {
           open,
           element: (
-            <AdvancedFilterPanel
-              root={root}
-              parameters={parameters}
-              categories={categories}
-              actions={actions}
-              addLabel="Add filter"
-              syntaxes={[{ id: 'ldap', label: 'LDAP', code: SAMPLE_LDAP }]}
-              onClose={() => setOpen(false)}
-              onCancel={() => {
-                actions.replace(applied);
-                setOpen(false);
-              }}
-              onApply={() => setParam(serializeApplied(root))}
-            />
+            <>
+              <AdvancedFilterPanel
+                root={root}
+                parameters={parameters}
+                categories={categories}
+                actions={actions}
+                addLabel="Add filter"
+                syntaxes={[{ id: 'ldap', label: 'LDAP', code: toLdap(root, LDAP_ATTRIBUTES) }]}
+                onClose={() => setOpen(false)}
+                onCancel={() => {
+                  actions.replace(applied);
+                  setOpen(false);
+                }}
+                onApply={() => setParam(serializeApplied(root))}
+                onApplyMenu={applyMenu.openAt}
+                guideHref={FILTERS_GUIDE_URL}
+                // With a filter applied, keep the footer so a cleared draft can still be applied.
+                showGuide={root.children.length === 0 && applied.children.length === 0}
+              />
+              <Menu
+                {...applyMenu.menuProps}
+                ariaLabel="More apply options"
+                items={[{ kind: 'item', label: 'Apply and save as view', icon: 'Star', onSelect: applyAndSave }]}
+              />
+            </>
           ),
         }
       : undefined,
@@ -127,20 +166,17 @@ export function useAdvancedFilter<T>(
     };
   }
 
-  // Bar: the filter button offers the Advanced filter and each field. A field adds a pill with its usual
-  // operator and opens the values under it; the Advanced filter adds an empty filter and opens its group,
-  // which holds only "+ Filter" (Figma 10126:3944).
+  // Bar: the filter button opens the "Add filter" menu. A field adds a pill with its usual operator and
+  // opens the values under it; "Add filter group" adds the grey "Advanced filter" pill and opens its group,
+  // which holds only "+ Filter" (Figma 4145:57189, 10126:3944).
   const addCard = (parameterId?: string) => {
     const param = parameters.find((p) => p.id === parameterId);
-    const card = newGroup('and', param ? [newCondition({ parameterId, operatorId: defaultOperatorFor(param) })] : []);
+    // A field's pill holds one card, as the popover draws everything at its top as a card (Figma 10126:4485).
+    const card = newGroup('and', param ? [newGroup('and', [newCondition({ parameterId, operatorId: defaultOperatorFor(param) })])] : []);
     actions.replace({ ...root, children: [...root.children, card] });
     setEditing({ id: card.id, view: param ? 'value' : 'group' });
   };
-  const entries: MenuEntry[] = [
-    { kind: 'item', label: 'Advanced filter', icon: 'FunnelSimple', onSelect: () => addCard() },
-    { kind: 'divider' },
-    ...fields.map((f): MenuEntry => ({ kind: 'item', label: f.label, icon: f.icon, onSelect: () => addCard(f.id) })),
-  ];
+  const entries = addFilterMenu(parameters, categories, (parameterId) => addCard(parameterId), () => addCard());
 
   return {
     filtered,

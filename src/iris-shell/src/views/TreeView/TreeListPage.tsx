@@ -33,7 +33,7 @@ import { setDragPreview } from './dragPreview.js';
 import { type CreateGroupKind } from '../GroupsPage/CreateGroupModal.js';
 import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
 import { CreateOUModal } from '../OUPage/CreateOUModal.js';
-import { removeNode } from '../../lib/directoryData.js';
+import { getNode, removeNode } from '../../lib/directoryData.js';
 import { CreateObjectModal, type CreateObjectResult } from '../UsersPage/CreateObjectModal/CreateObjectModal.js';
 import {
   announceCreated,
@@ -144,7 +144,8 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
     pool,
     filterFields,
     inFavorites ? 'bar' : 'panel',
-    inFavorites ? { renderPill: renderArsFilterTag, inlinePills: true } : undefined,
+    // A saved view is named as Figma's "Users in My OU".
+    inFavorites ? { renderPill: renderArsFilterTag, inlinePills: true } : { viewName: `Objects in ${nodeName ?? 'folder'}` },
   );
 
   const targets = useMemo(() => {
@@ -307,8 +308,8 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
     ? {
         title: nodeName ?? 'Directory',
         variant: 'Favorites' as const,
-        // "class · directory", as Figma writes "Organizational unit · O1D.local".
-        objectClass: 'Folder',
+        // "class · directory", as Figma writes "Organizational unit · O1D.local" (ARS_Header 4145:13699).
+        objectClass: getNode(nodeId)?.type === 'container' ? 'Container' : 'Organizational unit',
         objectName: getPath(nodeId)[2]?.name ?? getPath(nodeId)[1]?.name,
         onMore: pageMenu.openAt,
       }

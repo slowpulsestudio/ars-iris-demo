@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { cx } from '../../lib/cx.js';
 import { Icon } from '../Icon/Icon.js';
 import styles from './NavItem.module.css';
@@ -13,6 +14,8 @@ export interface NavItemProps {
   className?: string;
   /** Suppress the built-in active bar (parent renders a shared sliding one). */
   hideIndicator?: boolean;
+  /** Shown after the label, e.g. a saved view's filter indicator. */
+  trailing?: ReactNode;
 }
 
 /**
@@ -26,6 +29,7 @@ export function NavItem({
   onClick,
   className,
   hideIndicator = false,
+  trailing,
 }: NavItemProps) {
   const commonProps = {
     'aria-current': selected ? ('page' as const) : undefined,
@@ -38,6 +42,7 @@ export function NavItem({
           <Icon name={icon} size="16px" />
         </span>
         <span className={styles.label}>{label}</span>
+        {trailing}
         {selected && !hideIndicator && (
           <span className={styles.indicator} aria-hidden="true" />
         )}
@@ -50,6 +55,7 @@ export function NavItem({
         <Icon name={icon} size="16px" />
       </span>
       <span className={styles.label}>{label}</span>
+      {trailing}
       {selected && !hideIndicator && (
         <span className={styles.indicator} aria-hidden="true" />
       )}

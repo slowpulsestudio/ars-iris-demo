@@ -1,8 +1,7 @@
 import { cx } from '@iris/lib/cx.js';
-import { Button } from '@iris/components/Button/Button.js';
 import { ARSHeader, type ARSHeaderProps } from '../ARSHeader/ARSHeader.js';
 import { ARSTableToolbar, type ARSTableToolbarProps } from '../ARSTableToolbar/ARSTableToolbar.js';
-import { NoDataIllustration } from '../../parts/NoDataIllustration/NoDataIllustration.js';
+import { EmptyState } from '../../parts/EmptyState/EmptyState.js';
 import styles from './ARSEmptyContent.module.css';
 
 export interface ARSEmptyContentProps {
@@ -36,19 +35,7 @@ export function ARSEmptyContent({
     <div className={cx(styles.root, className)}>
       <ARSHeader variant="Customize next to object class" {...header} />
       <ARSTableToolbar variant="Split" {...toolbar} />
-      <div className={styles.placeholder}>
-        <div className={styles.emptyState}>
-          <NoDataIllustration />
-          <div className={styles.content}>
-            <p className={styles.message}>{message}</p>
-            <div className={styles.buttons}>
-              <Button variant="secondary" iconLead={actionIcon} onClick={onAction}>
-                {actionLabel}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <EmptyState message={message} actionLabel={actionLabel} actionIcon={actionIcon} onAction={onAction} />
     </div>
   );
 }

@@ -13,6 +13,14 @@
   justify-content: center;
 }
 
+/* Figma "Frame 8" (9956:7780): the drawing, then the button 12px below. */
+.emptyContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--oi-spacing-m);
+}
+
 .title {
   display: inline-flex;
   align-self: flex-start;

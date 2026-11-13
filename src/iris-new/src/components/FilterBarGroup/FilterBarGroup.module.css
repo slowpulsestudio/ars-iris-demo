@@ -1,6 +1,4 @@
-/* Figma "Default, interactions" / "Nesting, interactions" (10126:4485, 10153:4683). Figma spaces the
-   card's rows 10px and draws the nested border 1.5px; neither has a token, so the nearest are used
-   (listed in docs/figma-tidy-up.md). */
+/* Figma "Default, interactions" / "Nesting, interactions" (10126:4485, 10153:4683). */
 .root {
   display: flex;
   flex-direction: column;
@@ -26,12 +24,15 @@
   min-width: 0;
 }
 
+/* Figma spaces a group's rows 10px, which has no token: 8px + 2px. */
 .card {
+  --row-gap: calc(var(--oi-spacing-s) + var(--oi-spacing-2));
+
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--oi-spacing-s);
+  gap: var(--row-gap);
   width: 100%;
   padding: var(--oi-spacing-m);
   background-color: var(--oi-background-color-secondary);
@@ -39,18 +40,34 @@
   transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
 }
 
-.card .joined {
-  gap: var(--oi-spacing-s);
-}
-
-/* A group inside a group. */
+/* A group inside a group: Figma draws a 1.5px dashed border, which has no token. */
 .nested {
-  border: var(--oi-border-width-default) dashed var(--oi-border-color-strong);
+  border: calc(var(--oi-border-width-default) * 1.5) dashed var(--oi-border-color-strong);
 }
 
-/* The group being worked in (the innermost one holding focus) is tinted, as Figma marks the new group. */
-.card:focus-within:not(:has(.card:focus-within)) {
+/* The group just added. */
+.active {
   background-color: var(--oi-background-color-brand);
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--row-gap);
+  width: 100%;
+}
+
+.row > :last-child {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--row-gap);
+  min-width: 0;
 }
 
 .pill {

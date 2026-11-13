@@ -1,13 +1,13 @@
 import type { Ref } from 'react';
-import { Format } from '@lucasmarkes/hairline/react';
 import { Button } from '@iris/components/Button/Button.js';
-import { EmptyFigure } from '@iris/components/EmptyFigure/EmptyFigure.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
-import { Menu, type MenuEntry } from '@iris/components/Menu/Menu.js';
+import { Menu } from '@iris/components/Menu/Menu.js';
 import type { ParamCategory } from '@iris/components/Filters/AdvancedFilter.js';
 import type { FilterModelActions } from '@iris/components/Filters/useFilterModel.js';
 import { newCondition, type Group, type ParameterDef } from '@iris/components/Filters/filterModel.js';
 import { cx } from '@iris/lib/cx.js';
+import { addFilterMenu } from '../../lib/addFilterMenu.js';
+import { EmptyFilterGraphic } from '../EmptyFilterGraphic/EmptyFilterGraphic.js';
 import { FilterGroup } from '../FilterGroup/FilterGroup.js';
 import { FilterJoinButton } from '../FilterJoinButton/FilterJoinButton.js';
 import { FilterSep } from '../FilterSep/FilterSep.js';
@@ -35,54 +35,36 @@ const ROOT_OPTIONS = [
  * cards joined by AND/OR. Figma: Iris UI Kit "Advanced Filter Panel" 9956:7605.
  */
 export function AdvancedFilterBuilder({ root, parameters, categories, actions, addLabel = 'Filter', className }: AdvancedFilterBuilderProps) {
-  const paramById = new Map(parameters.map((p) => [p.id, p]));
   const rootOp = root.op === 'and' ? 'AND' : 'OR';
 
   // A new card starts with one condition, as in the Figma.
   const addCard = (parameterId?: string) => actions.addGroup(root.id, 'and', [newCondition({ parameterId })]);
 
-  const addMenu: MenuEntry[] = [
-    { kind: 'item', label: 'Add filter group', icon: 'FunnelSimple', onSelect: () => addCard() },
-    { kind: 'divider' },
-    ...categories.map(
-      (cat): MenuEntry => ({
-        kind: 'submenu',
-        label: cat.label,
-        icon: cat.icon,
-        items: cat.parameterIds
-          .map((id) => paramById.get(id))
-          .filter((p): p is ParameterDef => Boolean(p))
-          .map((p) => ({ kind: 'item', label: p.label, icon: p.icon, onSelect: () => addCard(p.id) })),
-      }),
-    ),
-  ];
+  const addMenu = addFilterMenu(parameters, categories, (parameterId) => addCard(parameterId), () => addCard());
 
   if (root.children.length === 0) {
     return (
       <div className={cx(styles.root, styles.empty, className)}>
-        <EmptyFigure
-          figure={Format}
-          label="No filter yet"
-          action={
-            <Menu
-              ariaLabel="Add filter"
-              align="start"
-              items={addMenu}
-              trigger={({ ref, onClick, expanded }) => (
-                <Button
-                  ref={ref as Ref<HTMLButtonElement>}
-                  variant="secondary"
-                  iconLead="Plus"
-                  aria-haspopup="menu"
-                  aria-expanded={expanded}
-                  onClick={onClick}
-                >
-                  {addLabel}
-                </Button>
-              )}
-            />
-          }
-        />
+        <div className={styles.emptyContent}>
+          <EmptyFilterGraphic />
+          <Menu
+            ariaLabel="Add filter"
+            align="start"
+            items={addMenu}
+            trigger={({ ref, onClick, expanded }) => (
+              <Button
+                ref={ref as Ref<HTMLButtonElement>}
+                variant="secondary"
+                iconLead="Plus"
+                aria-haspopup="menu"
+                aria-expanded={expanded}
+                onClick={onClick}
+              >
+                {addLabel}
+              </Button>
+            )}
+          />
+        </div>
       </div>
     );
   }

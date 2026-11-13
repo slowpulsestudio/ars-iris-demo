@@ -23,10 +23,11 @@
   overflow-y: auto;
 }
 
+/* Figma ".MultiSelect, Item" in the FilterSelect menu (9710:8598): 36px rows, no token for 36: 28 + 8. */
 .row {
   display: flex;
   align-items: center;
-  min-height: var(--oi-size-l);
+  min-height: calc(var(--oi-size-m) + var(--oi-spacing-s));
   padding-inline: var(--oi-spacing-s);
   border-radius: var(--oi-border-radius-default);
 }

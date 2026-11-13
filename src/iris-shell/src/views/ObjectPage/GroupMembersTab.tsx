@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import {
   ARSAddMemberModal,
+  ARSFilterArea,
   ARSGroupMembershipButtonSelect,
   ARSGroupTable,
   ARSPagination,
@@ -14,6 +15,7 @@ import { saveGroupProps, useGroupProps } from '../../lib/groupDetailsStore.js';
 import { showToast } from '../../lib/toastStore.js';
 import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { DIRECTORY_OBJECT_FIELDS } from './directoryObjectFields.js';
 import styles from './GroupMembersTab.module.css';
 
@@ -103,7 +105,8 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
     const have = new Set(members.map((m) => m.id));
     return pool.filter((o) => !have.has(o.id));
   }, [pool, members]);
-  const af = useAdvancedFilter(available, DIRECTORY_OBJECT_FIELDS, 'bar');
+  // The modal's filter is the ARS filter area (Figma Modal 4145:59111).
+  const af = useAdvancedFilter(available, DIRECTORY_OBJECT_FIELDS, 'bar', { renderPill: renderArsFilterTag, inlinePills: true });
   const candidates = useMemo(() => {
     const q = addQuery.trim().toLowerCase();
     return af.filtered.filter((o) => !q || [o.name, o.description, o.id].some((v) => v.toLowerCase().includes(q)));
@@ -187,7 +190,13 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
           }}
           onFilter={af.onFilter}
           filterCount={af.filterCount}
-          filters={af.bar}
+          filters={
+            af.bar && (
+              <ARSFilterArea onAdd={af.onFilter} onClear={af.clear}>
+                {af.bar}
+              </ARSFilterArea>
+            )
+          }
           empty={af.emptyWhen(candidates.length)}
           pagination={{
             page: addSafePage,

@@ -26,7 +26,15 @@ export const Default: Story = {
   render: () => (
     <ARSFilterArea onAdd={() => {}} onClear={() => {}}>
       <ARSFilterTag field="Object type" rule="is" values={['Computer', 'Group', 'User', 'Contact', 'Printer']} />
-      <ARSFilterSelect parts={[{ kind: 'field', label: 'Date active' }, { kind: 'rule', label: 'is between' }, { kind: 'field', label: '01/05/26 and 28/05/26' }]} />
+      <ARSFilterSelect
+        parts={[
+          { kind: 'field', label: 'Date active' },
+          { kind: 'rule', label: 'is between' },
+          { kind: 'object', label: '01/05/26', icon: 'CalendarBlank' },
+          { kind: 'rule', label: 'and', plain: true },
+          { kind: 'object', label: '28/05/26', icon: 'CalendarBlank' },
+        ]}
+      />
     </ARSFilterArea>
   ),
 };

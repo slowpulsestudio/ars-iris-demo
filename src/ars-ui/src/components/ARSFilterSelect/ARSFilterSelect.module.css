@@ -22,3 +22,17 @@
   font-weight: var(--oi-text-body-s-strong-font-weight);
   color: var(--oi-content-color-primary);
 }
+
+.fieldButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: var(--oi-border-radius-s);
+}
+
+.fieldButton:focus-visible {
+  outline: none;
+  box-shadow: var(--oi-focus-ring);
+}

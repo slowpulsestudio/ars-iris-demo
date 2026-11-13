@@ -64,6 +64,8 @@ export interface AdvancedFilterBarPill {
   values: string[];
   /** Conditions in the group beyond the first. */
   extra: number;
+  /** The field holds dates: the ARS filter draws it as a date pill. */
+  date?: boolean;
   /** Opens the editor; without a segment it is the pill's value. */
   onEdit: (segment?: FilterPillSegment) => void;
   onRemove: () => void;
@@ -82,6 +84,7 @@ function summarizePill(node: FilterNode, parameters: ParameterDef[]): Omit<Advan
     operator: lead?.operatorId ? OPERATOR_BY_ID[lead.operatorId].label : lead ? 'operator' : '',
     values: (lead?.values ?? []).map((v) => labels.get(v) ?? v),
     extra: Math.max(0, countConditions(node) - 1),
+    date: param?.date,
   };
 }
 
@@ -216,7 +219,12 @@ export function AdvancedFilterBar({
   // A condition inside the open group being edited: its values, operator or field, under that segment.
   const [inner, setInner] = useState<{ conditionId: string; segment: Segment } | null>(null);
   const [innerPlace, setInnerPlace] = useState<Place | null>(null);
-  useEffect(() => setInner(null), [editingId, editingView]);
+  // The group just added: tinted as the group being worked in, until another is added or the popover closes.
+  const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
+  useEffect(() => {
+    setInner(null);
+    setActiveGroupId(null);
+  }, [editingId, editingView]);
 
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const items = useRef(new Map<string, HTMLElement>());
@@ -329,14 +337,16 @@ export function AdvancedFilterBar({
     focusGroupId.current = null;
     // After the "+ Filter" menu has returned focus to its own button.
     window.requestAnimationFrame(() =>
-      popoverRef.current?.querySelector<HTMLElement>(`[data-group-id="${id}"] > [data-add-filter] button`)?.focus(),
+      popoverRef.current?.querySelector<HTMLElement>(`[data-group-id="${id}"] [data-add-filter] button`)?.focus(),
     );
   });
 
   const addCondition = (parentId: string, parameterId: string) => {
     const param = parameters.find((p) => p.id === parameterId);
     const condition = newCondition({ parameterId, operatorId: param ? defaultOperatorFor(param) : undefined });
-    actions.replace(appendChild(root, parentId, condition));
+    // Everything at the top of the popover is a card, so a field added there starts a new card.
+    const child = parentId === editingId ? newGroup('and', [condition]) : condition;
+    actions.replace(appendChild(root, parentId, child));
     setInner({ conditionId: condition.id, segment: 'value' });
   };
 
@@ -344,6 +354,7 @@ export function AdvancedFilterBar({
     const group = newGroup('and');
     actions.replace(appendChild(root, parentId, group));
     focusGroupId.current = group.id;
+    setActiveGroupId(group.id);
   };
 
   const removeCondition = (id: string) => {
@@ -420,6 +431,7 @@ export function AdvancedFilterBar({
                 group={mountedNode}
                 parameters={parameters}
                 categories={fieldGroups}
+                activeGroupId={activeGroupId}
                 onAddCondition={addCondition}
                 onAddGroup={addGroup}
                 onRemove={removeCondition}

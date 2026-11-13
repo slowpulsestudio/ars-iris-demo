@@ -21,3 +21,6 @@ export {
 } from './components/AdvancedFilterBar/AdvancedFilterBar.js';
 export { FilterValueEditor, type FilterValueEditorProps } from './components/FilterValueEditor/FilterValueEditor.js';
 export { FilterBarGroup, type FilterBarGroupProps } from './components/FilterBarGroup/FilterBarGroup.js';
+export { EmptyFilterGraphic, type EmptyFilterGraphicProps } from './components/EmptyFilterGraphic/EmptyFilterGraphic.js';
+export { addFilterMenu } from './lib/addFilterMenu.js';
+export { toLdap, type LdapAttributes } from './lib/toLdap.js';
