@@ -9,7 +9,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Figma: ARS_Empty_Content · ARS - Primary · 3423:30769. ARS_Header ("Customize next to object class"), ARS_Table_Toolbar ("Split") and the "No data" empty state (3367:42208) with a Secondary Icon + Text button.',
+          'Figma: ARS_Empty_Content · ARS - Primary · 3423:30769. ARS_Header ("Customize next to object class"), ARS_Table_Toolbar ("Split") and the empty state with a Secondary Icon + Text button. The empty state is the Iris one (EmptyFigure) with the Hairline Drawer figure, which replaces Figma\'s older "No data" drawing (3367:42208), as the designer asked; see Design update recommendations.',
       },
     },
   },
