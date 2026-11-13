@@ -1,17 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
-  ARSDirectoryManagementContent,
   ARSNewObjectContent,
   ARSNewObjectTemplate,
   ARS_EMPTY_NEW_OBJECT_VALUES,
   type ARSNewObjectValues,
 } from '@ars';
 import { useDirectory } from '../../../lib/directoryStore.js';
-import { toTreeNode } from '../../../lib/directoryTree.js';
-import { Button } from '../../../components/Button/Button.js';
-import { SideSheet } from '../../../components/SideSheet/SideSheet.js';
 import type { StepperStepItem } from '../../../components/Stepper/Stepper.js';
 import { ModalOverlay } from '../../ModalOverlay/ModalOverlay.js';
+import { SelectFolderSheet } from '../../SelectFolderSheet/SelectFolderSheet.js';
 import type { CreateObjectResult } from './createdObject.js';
 
 export type { CreateObjectResult } from './createdObject.js';
@@ -50,7 +47,7 @@ export function CreateObjectModal({
   locationId = null,
   onCreate,
 }: CreateObjectModalProps) {
-  const { nodeTree, getPath } = useDirectory();
+  const { getPath } = useDirectory();
   const [step, setStep] = useState(0);
   const [values, setValues] = useState<ARSNewObjectValues>(ARS_EMPTY_NEW_OBJECT_VALUES);
   const [accountOptions, setAccountOptions] = useState<ReadonlySet<string>>(
@@ -58,7 +55,6 @@ export function CreateObjectModal({
   );
   const [destinationId, setDestinationId] = useState<string | null>(locationId);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [sheetChoice, setSheetChoice] = useState<string | null>(null);
 
   // Reset the flow whenever the modal (re)opens.
   useEffect(() => {
@@ -74,7 +70,6 @@ export function CreateObjectModal({
   const sheetOpenRef = useRef(false);
   sheetOpenRef.current = sheetOpen;
 
-  const nodes = useMemo(() => nodeTree.map(toTreeNode), [nodeTree]);
   const locationLabel = destinationId ? getPath(destinationId).map((n) => n.name).join(' / ') : location;
 
   const setV = (patch: Partial<ARSNewObjectValues>) => setValues((p) => ({ ...p, ...patch }));
@@ -102,10 +97,7 @@ export function CreateObjectModal({
     onClose();
   };
 
-  const openSheet = () => {
-    setSheetChoice(destinationId);
-    setSheetOpen(true);
-  };
+  const openSheet = () => setSheetOpen(true);
 
   const sheetFor =
     values.displayName.trim() || `${values.firstName} ${values.lastName}`.trim() || `this ${objectType.toLowerCase()}`;
@@ -146,36 +138,13 @@ export function CreateObjectModal({
         </ARSNewObjectTemplate>
       </ModalOverlay>
 
-      <SideSheet
+      <SelectFolderSheet
         open={sheetOpen}
         onClose={() => setSheetOpen(false)}
-        title="Select folder"
-        subtitle={`Browse and select a destination folder for ${sheetFor}`}
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setSheetOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              disabled={!sheetChoice}
-              onClick={() => {
-                setDestinationId(sheetChoice);
-                setSheetOpen(false);
-              }}
-            >
-              Select
-            </Button>
-          </>
-        }
-      >
-        <ARSDirectoryManagementContent
-          variant="tree"
-          nodes={nodes}
-          selectedId={sheetChoice}
-          onSelect={setSheetChoice}
-          defaultExpandedIds={sheetChoice ? getPath(sheetChoice).map((n) => n.id) : []}
-        />
-      </SideSheet>
+        objectName={sheetFor}
+        initialId={destinationId}
+        onSelect={setDestinationId}
+      />
     </>
   );
 }
