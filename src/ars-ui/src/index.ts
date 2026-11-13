@@ -112,6 +112,7 @@ export {
   ARSGroupTable,
   type ARSGroupTableProps,
   type ARSGroupTableRow,
+  type ARSGroupTableVariant,
 } from './components/ARSGroupTable/ARSGroupTable.js';
 export {
   ARSManagedBy,

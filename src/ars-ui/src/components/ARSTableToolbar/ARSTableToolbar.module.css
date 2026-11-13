@@ -20,6 +20,27 @@
   min-width: 0;
 }
 
+/* The Groups file's Memberships toolbar: the view switch, a divider and the search, 12px apart (167:7971). */
+.lhs {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  gap: var(--oi-spacing-m);
+  min-width: 0;
+}
+
+.lhs > :first-child {
+  flex-shrink: 0;
+}
+
+/* A 1×22px rule in the default border colour (167:8396); 22px has no size token. */
+.divider {
+  flex-shrink: 0;
+  width: var(--oi-border-width-default);
+  height: 22px;
+  background-color: var(--oi-border-color-default);
+}
+
 /* The filter button with the count of applied conditions at its top right. */
 .filter {
   position: relative;

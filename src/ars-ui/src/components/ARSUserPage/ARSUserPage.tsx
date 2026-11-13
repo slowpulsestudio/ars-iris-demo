@@ -19,6 +19,8 @@ export interface ARSUserPageProps {
   /** Replaces the cards beside Object Management. */
   children?: ReactNode;
   actionGroups?: PanelAction[][];
+  /** Leaves Object Management out, so the tab content is full width (the Groups file's Memberships tab, 167:6877). */
+  hideActions?: boolean;
   onBack?: () => void;
   onNextItem?: () => void;
   onPreviousItem?: () => void;
@@ -40,6 +42,7 @@ export function ARSUserPage({
   tabsLabel,
   children,
   actionGroups,
+  hideActions,
   onBack,
   onNextItem,
   onPreviousItem,
@@ -67,6 +70,7 @@ export function ARSUserPage({
         tabs={tabs}
         tabsLabel={tabsLabel}
         actionGroups={actionGroups}
+        hideActions={hideActions}
         onEdit={onEdit}
         onAction={onAction}
       >

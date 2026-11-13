@@ -1,4 +1,4 @@
-import type { MouseEventHandler } from 'react';
+import type { MouseEventHandler, ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Button } from '@iris/components/Button/Button.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
@@ -37,6 +37,13 @@ export interface ARSTableToolbarProps {
   onMore?: MouseEventHandler<HTMLElement>;
   /** Split variant: hide the main action's Plus icon (the Groups file draws none). */
   hideActionIcon?: boolean;
+  /**
+   * Content before the search, with a divider after it: the Memberships view switch. The search then fills
+   * the rest of the row (ARS_WebUI2_Groups 167:7971). All variants except "No create".
+   */
+  leading?: ReactNode;
+  /** Leaves out the filter button; the Groups file's Memberships toolbar has none (167:7970). */
+  hideFilter?: boolean;
   className?: string;
 }
 
@@ -55,11 +62,22 @@ export function ARSTableToolbar({
   showMore = false,
   onMore,
   hideActionIcon = false,
+  leading,
+  hideFilter = false,
   className,
 }: ARSTableToolbarProps) {
   const label = actionLabel ?? ACTION_LABEL[variant];
   const searchBox = <SearchInput placeholder={searchPlaceholder} value={search} onChange={onSearchChange} />;
-  const filter = (
+  const searchArea = leading ? (
+    <div className={styles.lhs}>
+      {leading}
+      <span className={styles.divider} aria-hidden="true" />
+      <div className={styles.searchSlot}>{searchBox}</div>
+    </div>
+  ) : (
+    <div className={styles.searchSlot}>{searchBox}</div>
+  );
+  const filter = hideFilter ? null : (
     <span className={styles.filter}>
       <IconButton
         icon="FunnelSimple"
@@ -90,7 +108,7 @@ export function ARSTableToolbar({
   if (variant === 'Split') {
     return (
       <div className={cx(styles.root, styles.spread, className)}>
-        <div className={styles.searchSlot}>{searchBox}</div>
+        {searchArea}
         {showMore && <IconButton icon="DotsThree" ariaLabel="More options" onClick={onMore} />}
         {filter}
         <SplitButton
@@ -107,7 +125,7 @@ export function ARSTableToolbar({
 
   return (
     <div className={cx(styles.root, styles.tight, className)}>
-      <div className={styles.searchSlot}>{searchBox}</div>
+      {searchArea}
       {filter}
       {variant === 'Basic' && (
         <Button iconLead="Plus" onClick={onAction}>

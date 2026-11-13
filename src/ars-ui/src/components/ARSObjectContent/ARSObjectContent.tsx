@@ -44,6 +44,8 @@ export interface ARSObjectContentProps {
   children?: ReactNode;
   /** Replaces the Object Management actions. */
   actionGroups?: PanelAction[][];
+  /** Leaves Object Management out, so the tab content is full width (the Groups file's Memberships tab, 167:6877). */
+  hideActions?: boolean;
   onEdit?: () => void;
   /** Called with the label of the action picked in Object Management. */
   onAction?: (label: string) => void;
@@ -59,6 +61,7 @@ export function ARSObjectContent({
   tabsLabel = 'Sections',
   children,
   actionGroups,
+  hideActions = false,
   onEdit,
   onAction,
   className,
@@ -94,10 +97,12 @@ export function ARSObjectContent({
               </>
             ))}
         </div>
-        <ActionPanel
-          groups={actionGroups ?? USER_OBJECT_ACTIONS(general ? 'Revoke sessions' : 'Revoke Sessions')}
-          onAction={onAction}
-        />
+        {!hideActions && (
+          <ActionPanel
+            groups={actionGroups ?? USER_OBJECT_ACTIONS(general ? 'Revoke sessions' : 'Revoke Sessions')}
+            onAction={onAction}
+          />
+        )}
       </div>
     </div>
   );

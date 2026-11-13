@@ -24,3 +24,9 @@ export const General: Story = { args: { variant: 'General' } };
 
 /** Figma "Variant=Variant3" (2654:24986): the User Details tab. */
 export const Variant3: Story = { args: { variant: 'Variant3' } };
+
+/** No Object Management, so the tab content is full width: the Groups file's Memberships tab (ARS_WebUI2_Groups 167:6877). */
+export const WithoutObjectManagement: Story = {
+  name: 'Without Object Management',
+  args: { variant: 'General', hideActions: true },
+};

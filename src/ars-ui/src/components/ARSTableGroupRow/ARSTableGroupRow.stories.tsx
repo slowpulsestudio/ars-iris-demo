@@ -40,6 +40,9 @@ export const Hovered: Story = { parameters: { pseudo: { hover: true } } };
 /** Figma "Property 1=SecUser3" (2843:24840). */
 export const Selected: Story = { args: { selected: true } };
 
+/** A row of the Groups file's Memberships table (ARS_WebUI2_Groups 167:8097): the type icon, the name in primary text and a remove button. */
+export const Memberships: Story = { args: { variant: 'Memberships', icon: 'UsersThree' } };
+
 /** All 24 Figma variants: each group default, hovered, then selected. */
 export const AllVariants: Story = {
   name: 'All variants',
