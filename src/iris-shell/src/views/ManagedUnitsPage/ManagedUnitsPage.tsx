@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ARSActionBar, ARSManagedUnitMembers, ARSManagedUsersContent } from '@ars';
 import { AppShell } from '../AppShell/AppShell.js';
+import { useAppShell } from '../../lib/appShellContext.js';
 import { navigate } from '../../lib/router.js';
 import { cx } from '../../lib/cx.js';
 import { useHashSelection } from '../../lib/hashState.js';
@@ -39,6 +40,7 @@ export function ManagedUnitsPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
   const [selected, setSelected] = useHashSelection();
+  const { setAiOpen } = useAppShell();
 
   const [directories] = useDirectoryFilter();
   const units = useMemo(() => MANAGED_UNITS.filter((_, i) => directories.has(bucketAt(i))), [directories]);
@@ -54,7 +56,7 @@ export function ManagedUnitsPage() {
   return (
     <AppShell breadcrumb={[{ label: 'Directory Management' }, { label: 'Managed Units' }]}>
       <ARSManagedUsersContent
-        className={screen.screen}
+        className={cx(screen.screen, selected.size > 0 && screen.withBar)}
         header={{ title: 'Managed Units', icon: 'FolderStar' }}
         empty={directories.size === 0 ? <NoDirectoriesSelected /> : lf.emptyWhen(rows.length)}
         toolbar={{
@@ -86,6 +88,21 @@ export function ManagedUnitsPage() {
             setPage(1);
           },
         }}
+      />
+      {/* The same bar as a unit's members (ARS_Action_bar 7077:3722). */}
+      <ARSActionBar
+        open={selected.size > 0}
+        selectedCount={selected.size}
+        totalCount={rows.length}
+        showTotal
+        layout="inline"
+        onAction={(label) => {
+          const picked = units.filter((u) => selected.has(u.id));
+          if (label === 'Select all') setSelected(new Set(rows.map((u) => u.id)));
+          if (label === 'Properties' && picked.length === 1) navigate(`#/management-units/${picked[0].id}`);
+          if (label === 'Ask AI') setAiOpen(true);
+        }}
+        onDismiss={() => setSelected(new Set())}
       />
     </AppShell>
   );
