@@ -91,6 +91,14 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     prototype: '#/groups?dialog=new-entra-group',
   },
   {
+    title: 'Destination folder step in the group forms',
+    file: 'groups',
+    figmaNodeId: '2109:10097',
+    note: 'Figma puts a "Select destination folder" button on New AD Group\'s General step, which opens the Select folder side sheet. At the designer\'s request both group forms pick the folder in a last step instead, Destination folder: the tree of AD folders (or Entra directories) opens at the destination, and the location under the title follows the ticked folder. New AD Group is General, Exchange options, Destination folder; New Entra Distribution Group is General, Destination folder.',
+    recommendation: 'Draw the Destination folder step for both group forms and take the folder button off General.',
+    prototype: '#/groups?dialog=new-group',
+  },
+  {
     title: 'Advanced filter Panel on the lists, Bar in the Add Member modal',
     file: 'primary',
     figmaNodeId: '2613:23294',
