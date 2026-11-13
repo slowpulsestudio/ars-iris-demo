@@ -29,6 +29,10 @@ export interface GroupProps {
   deprovisioned: boolean;
   /** Ids of objects added on the Memberships tab. */
   addedMembers: string[];
+  /** Ids of members removed on the Memberships tab. */
+  removedMembers: string[];
+  /** Ids of the groups this group was taken out of on the Memberships tab (Members Of). */
+  leftGroups: string[];
   manager: string;
   managerCanUpdate: boolean;
   secondaryOwners: string[];
@@ -71,6 +75,8 @@ function defaultsFor(object: DirectoryObject): GroupProps {
     secondaryCanUpdate: false,
     deprovisioned: false,
     addedMembers: [],
+    removedMembers: [],
+    leftGroups: [],
     manager: '',
     managerCanUpdate: false,
     secondaryOwners: [],

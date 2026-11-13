@@ -1,62 +1,69 @@
 import { useMemo, useState } from 'react';
-import {
-  ARSAddMemberModal,
-  ARSFilterArea,
-  ARSGroupMembershipButtonSelect,
-  ARSGroupTable,
-  ARSPagination,
-  ARSTableToolbar,
-  type ARSGroupMembershipView,
-} from '@ars';
+import { ARSAddMemberModal, ARSFilterArea, ARSGroupTable, ARSTableToolbar, EmptyState, type ARSGroupTableRow } from '@ars';
+import { Pagination } from '../../components/Pagination/Pagination.js';
+import { SegmentedControl, type SegmentedItem } from '../../components/SegmentedControl/SegmentedControl.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
-import { saveGroupProps, useGroupProps } from '../../lib/groupDetailsStore.js';
+import { getGroupProps, saveGroupProps, useGroupProps } from '../../lib/groupDetailsStore.js';
+import { groupMemberOf, groupMembers, nearbyObjects } from '../../lib/groupMembers.js';
 import { showToast } from '../../lib/toastStore.js';
 import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
 import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { DIRECTORY_OBJECT_FIELDS } from './directoryObjectFields.js';
+import { MEMBERSHIPS_PAGE_SIZE, MEMBERSHIPS_SEARCH, TABLE_SETTINGS_TOAST } from './membershipsTab.js';
 import styles from './GroupMembersTab.module.css';
 
-const PAGE_SIZE_OPTIONS = [10, 15, 20, 30, 50];
 const MODAL_PAGE_SIZE = 10;
 
-/** A stable pick of `count` entries from `pool`, spread by a step from the group's id. */
-function pick<T>(pool: T[], count: number, seed: string): T[] {
-  if (pool.length === 0) return [];
-  let h = 0;
-  for (let i = 0; i < seed.length; i += 1) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  const step = (h % 5) + 1;
-  const out: T[] = [];
-  for (let i = 0; i < Math.min(count, pool.length); i += 1) out.push(pool[(h + i * step) % pool.length]);
-  return [...new Set(out)];
-}
+type View = 'all' | 'members' | 'members-of';
+
+/** The view switch (Segmented control 167:8053). Figma shows Members selected, so the tab opens on it. */
+const VIEWS: SegmentedItem[] = [
+  { value: 'all', label: 'All', icon: 'UsersFour' },
+  { value: 'members', label: 'Members', icon: 'Users' },
+  { value: 'members-of', label: 'Members Of', icon: 'UserGear' },
+];
+
+const TABLE_LABEL: Record<View, string> = { all: 'Memberships', members: 'Members', 'members-of': 'Members of' };
+
+const EMPTY_MESSAGE: Record<View, string> = {
+  all: 'This group has no members and is not a member of any group.',
+  members: 'This group has no members.',
+  'members-of': 'This group is not a member of any group.',
+};
+
+const toRow = (o: DirectoryObject): ARSGroupTableRow => ({
+  id: o.id,
+  name: o.name,
+  objectType: OBJECT_TYPE_META[o.type].label,
+  description: o.description,
+  objectId: o.id,
+  href: `#/tree/${o.parentId}/${o.id}`,
+  icon: OBJECT_TYPE_META[o.type].icon,
+});
 
 export interface GroupMembersTabProps {
   group: DirectoryObject;
-  /** The folder the group is in; its objects stand in for members. */
+  /** The folder the group is in; its objects and those of the folders beside it stand in for members. */
   nodeId: string;
 }
 
 /**
- * GroupMembersTab — the Memberships tab (ARS_Group_Members_Content): Members
- * and Members of, a search, the group table with paging, and the Add Member
- * modal. The directory data has no memberships, so the rows are objects from
- * the group's folder.
+ * GroupMembersTab — the Memberships tab (ARS_Group_Members_Content, ARS_WebUI2_Groups 167:7662): All, Members
+ * and Members Of, a search, the memberships table with a remove button on each row, paging and the Add Member
+ * modal. The directory data has no memberships, so they are picked from the objects near the group.
  */
 export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
   const { getSiblings } = useDirectory();
   const props = useGroupProps(group);
-  // The sub-view, the ticked rows, the Add Member dialog and its chosen objects live in the address
+  // The view, the ticked rows, the Add Member dialog and its chosen objects live in the address
   // (?tab=memberships&view=members-of&select=a,b&dialog=add-member&pick=c).
   const [viewParam, setViewParam] = useHashParam('view');
-  const view: ARSGroupMembershipView = viewParam === 'members-of' ? 'Members of' : 'Members';
-  const setView = (next: ARSGroupMembershipView) => setViewParam(next === 'Members' ? null : 'members-of');
+  const view: View = viewParam === 'all' || viewParam === 'members-of' ? viewParam : 'members';
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
-  // Figma's Memberships pagination shows "15 / page".
-  const [pageSize, setPageSize] = useState(15);
   const [selectedSet, setSelectedSet] = useHashSelection();
   const selected = useMemo(() => [...selectedSet], [selectedSet]);
   const setSelected = (ids: string[]) => setSelectedSet(new Set(ids));
@@ -68,43 +75,25 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
   const [addQuery, setAddQuery] = useState('');
   const [addPage, setAddPage] = useState(1);
 
-  const pool = useMemo(() => getSiblings(nodeId).filter((o) => o.id !== group.id), [getSiblings, nodeId, group.id]);
-
-  const members = useMemo(() => {
-    const base = pick(pool, group.details.memberCount ?? 0, group.id);
-    const added = pool.filter((o) => props.addedMembers.includes(o.id));
-    return [...new Set([...base, ...added])];
-  }, [pool, group, props.addedMembers]);
-
-  const chosen = useMemo(
-    () => (view === 'Members' ? members : pick(pool.filter((o) => o.type === 'group'), 3, group.id)),
-    [view, members, pool, group.id],
-  );
-  // The Advanced filter Panel for this list; the Add Member modal below has its own Bar.
-  const mf = useAdvancedFilter(chosen, DIRECTORY_OBJECT_FIELDS);
+  const pool = useMemo(() => nearbyObjects(nodeId, getSiblings), [nodeId, getSiblings]);
+  const members = useMemo(() => groupMembers(group, pool, props), [group, pool, props]);
+  const memberOf = useMemo(() => groupMemberOf(group, pool, members, props), [group, pool, members, props]);
+  const memberIds = useMemo(() => new Set(members.map((o) => o.id)), [members]);
 
   const rows = useMemo(() => {
+    const list = view === 'members' ? members : view === 'members-of' ? memberOf : [...members, ...memberOf];
     const q = query.trim().toLowerCase();
-    return mf.filtered
-      .filter((o) => !q || [o.name, o.description, o.id].some((v) => v.toLowerCase().includes(q)))
-      .map((o) => ({
-        id: o.id,
-        name: o.name,
-        objectType: OBJECT_TYPE_META[o.type].label,
-        description: o.description,
-        objectId: o.id,
-        href: `#/tree/${nodeId}/${o.id}`,
-      }));
-  }, [mf.filtered, nodeId, query]);
+    return list.filter((o) => !q || [o.name, o.description, o.id].some((v) => v.toLowerCase().includes(q))).map(toRow);
+  }, [view, members, memberOf, query]);
 
-  const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
+  const pageCount = Math.max(1, Math.ceil(rows.length / MEMBERSHIPS_PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
-  const pageRows = rows.slice((safePage - 1) * pageSize, safePage * pageSize);
+  const pageRows = rows.slice((safePage - 1) * MEMBERSHIPS_PAGE_SIZE, safePage * MEMBERSHIPS_PAGE_SIZE);
 
-  const available = useMemo(() => {
-    const have = new Set(members.map((m) => m.id));
-    return pool.filter((o) => !have.has(o.id));
-  }, [pool, members]);
+  const available = useMemo(
+    () => pool.filter((o) => o.id !== group.id && !memberIds.has(o.id)),
+    [pool, group.id, memberIds],
+  );
   // The modal's filter is the ARS filter area (Figma Modal 4145:59111).
   const af = useAdvancedFilter(available, DIRECTORY_OBJECT_FIELDS, 'bar', { renderPill: renderArsFilterTag, inlinePills: true });
   const candidates = useMemo(() => {
@@ -123,7 +112,12 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
   const closeAdd = () => setHashParams({ dialog: null, pick: null });
 
   const saveAdd = () => {
-    saveGroupProps(group.id, { addedMembers: [...props.addedMembers, ...addSelected] });
+    const current = getGroupProps(group);
+    saveGroupProps(group.id, {
+      addedMembers: [...current.addedMembers, ...addSelected],
+      // A member removed earlier and added again shows again.
+      removedMembers: current.removedMembers.filter((id) => !addSelected.includes(id)),
+    });
     setHashParams({ dialog: null, pick: null, view: null });
     showToast(
       addSelected.length === 1 ? 'Member added successfully' : `${addSelected.length} members added successfully`,
@@ -131,19 +125,59 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
     );
   };
 
-  const switchView = (next: ARSGroupMembershipView) => {
-    setView(next);
+  // Figma's remove button on each row (167:8103) doesn't say what it does: it takes the member out of the
+  // group (or the group out of the other group in Members Of), with Undo on the toast.
+  const remove = (row: ARSGroupTableRow) => {
+    setSelected(selected.filter((id) => id !== row.id));
+    if (memberIds.has(row.id)) {
+      saveGroupProps(group.id, { removedMembers: [...getGroupProps(group).removedMembers, row.id] });
+      showToast(`${row.name} removed from ${group.name}.`, {
+        onUndo: () =>
+          saveGroupProps(group.id, { removedMembers: getGroupProps(group).removedMembers.filter((id) => id !== row.id) }),
+      });
+      return;
+    }
+    saveGroupProps(group.id, { leftGroups: [...getGroupProps(group).leftGroups, row.id] });
+    showToast(`${group.name} removed from ${row.name}.`, {
+      onUndo: () => saveGroupProps(group.id, { leftGroups: getGroupProps(group).leftGroups.filter((id) => id !== row.id) }),
+    });
+  };
+
+  const switchView = (next: string) => {
+    setViewParam(next === 'members' ? null : next);
     setPage(1);
     setSelected([]);
   };
 
+  const search = query.trim();
+  const empty =
+    rows.length === 0 &&
+    (search ? (
+      <EmptyState
+        className={styles.empty}
+        message={`No memberships match “${search}”.`}
+        actionLabel="Clear search"
+        actionIcon="XCircle"
+        onAction={() => setQuery('')}
+      />
+    ) : (
+      <EmptyState
+        className={styles.empty}
+        message={EMPTY_MESSAGE[view]}
+        actionLabel={view === 'members-of' ? undefined : 'Add member'}
+        onAction={openAdd}
+      />
+    ));
+
   return (
     <div className={styles.root}>
-      <ARSGroupMembershipButtonSelect value={view} onChange={switchView} />
       <ARSTableToolbar
-        variant="Split"
-        showMore
-        hideActionIcon
+        variant="Basic"
+        hideFilter
+        leading={
+          <SegmentedControl layout="inline" ariaLabel="Memberships view" items={VIEWS} value={view} onChange={switchView} />
+        }
+        searchPlaceholder={MEMBERSHIPS_SEARCH}
         actionLabel="Add member"
         onAction={openAdd}
         search={query}
@@ -151,24 +185,21 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
           setQuery(value);
           setPage(1);
         }}
-        onFilter={mf.onFilter}
-        filterCount={mf.filterCount}
-        filterPressed={mf.filterPressed}
       />
-      {mf.emptyWhen(rows.length) ?? (
+      {empty || (
         <>
-          <ARSGroupTable rows={pageRows} selectedIds={selected} onSelectedIdsChange={setSelected} />
-          <ARSPagination
-            page={safePage}
-            pageCount={pageCount}
-            onPageChange={setPage}
-            pageSize={pageSize}
-            pageSizeOptions={PAGE_SIZE_OPTIONS}
-            onPageSizeChange={(size) => {
-              setPageSize(size);
-              setPage(1);
-            }}
+          <ARSGroupTable
+            variant="Memberships"
+            ariaLabel={TABLE_LABEL[view]}
+            rows={pageRows}
+            selectedIds={selected}
+            onSelectedIdsChange={setSelected}
+            onRemove={remove}
+            onSettings={() => showToast(TABLE_SETTINGS_TOAST)}
           />
+          <div className={styles.pagination}>
+            <Pagination page={safePage} pageCount={pageCount} onPageChange={setPage} ariaLabel={`${TABLE_LABEL[view]} pages`} />
+          </div>
         </>
       )}
       <ModalOverlay open={addOpen} onClose={closeAdd} label="Add Member">

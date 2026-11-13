@@ -1,15 +1,16 @@
 import { useMemo, useState } from 'react';
-import { ARSAddMemberModal, ARSFilterArea, ARSGroupTable, ARSPagination, ARSTableToolbar } from '@ars';
+import { ARSAddMemberModal, ARSFilterArea, ARSGroupTable, ARSTableToolbar, EmptyState, type ARSGroupTableRow } from '@ars';
+import { Pagination } from '../../components/Pagination/Pagination.js';
 import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
-import { addUserMemberships, SAMPLE_GROUPS, useUserMemberships } from '../../lib/userMemberships.js';
+import { addUserMemberships, removeUserMembership, SAMPLE_GROUPS, useUserMemberships } from '../../lib/userMemberships.js';
 import { showToast } from '../../lib/toastStore.js';
 import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
 import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { NAMED_OBJECT_FIELDS } from './namedObjectFields.js';
+import { MEMBERSHIPS_PAGE_SIZE, MEMBERSHIPS_SEARCH, TABLE_SETTINGS_TOAST } from './membershipsTab.js';
 import styles from './GroupMembersTab.module.css';
 
-const PAGE_SIZE_OPTIONS = [10, 15, 20, 30, 50];
 const MODAL_PAGE_SIZE = 10;
 
 export interface UserMembershipsTabProps {
@@ -18,16 +19,15 @@ export interface UserMembershipsTabProps {
 }
 
 /**
- * UserMembershipsTab — a user's Memberships tab: the groups the user is a
- * member of ("Groups object is member of", the Members Of page of
- * ARS_Group_Members_Content), with a search, the group table, paging and the
- * Add Member modal to pick more groups. The data is sample content.
+ * UserMembershipsTab — a user's Memberships tab: the groups the user is a member of, laid out as the group's
+ * Memberships tab (ARS_Group_Members_Content, ARS_WebUI2_Groups 167:7662) without the view switch, since a
+ * user has no members. A search, the memberships table with a remove button on each row, paging and the Add
+ * Member modal to pick more groups. The data is sample content.
  */
 export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps) {
   const groups = useUserMemberships(userId);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(15);
   // The ticked rows, the Add Member dialog and its chosen groups live in the address
   // (?tab=memberships&select=a,b&dialog=add-member&pick=c).
   const [selectedSet, setSelectedSet] = useHashSelection();
@@ -39,12 +39,9 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
   const [addQuery, setAddQuery] = useState('');
   const [addPage, setAddPage] = useState(1);
 
-  // The Advanced filter Panel for this list; the Add Member modal below has its own Bar.
-  const mf = useAdvancedFilter(groups, NAMED_OBJECT_FIELDS);
-
-  const rows = useMemo(() => {
+  const rows = useMemo<ARSGroupTableRow[]>(() => {
     const q = query.trim().toLowerCase();
-    return mf.filtered
+    return groups
       .filter((g) => !q || [g.name, g.description, g.objectId].some((v) => v.toLowerCase().includes(q)))
       .map((g) => ({
         id: g.id,
@@ -54,10 +51,11 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
         objectId: g.objectId,
         // The sample groups have no pages of their own, so a name opens the Groups list.
         href: '#/groups',
+        icon: 'UsersThree',
       }));
-  }, [mf.filtered, query]);
+  }, [groups, query]);
 
-  const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
+  const pageCount = Math.max(1, Math.ceil(rows.length / MEMBERSHIPS_PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
 
   const available = useMemo(() => {
@@ -92,12 +90,38 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
     );
   };
 
+  // Figma's remove button (167:8103) doesn't say what it does: it takes the user out of the group, with Undo.
+  const remove = (row: ARSGroupTableRow) => {
+    setSelectedSet(new Set(selected.filter((id) => id !== row.id)));
+    showToast(`${userName} removed from ${row.name}.`, { onUndo: removeUserMembership(userId, row.id) });
+  };
+
+  const search = query.trim();
+  const empty =
+    rows.length === 0 &&
+    (search ? (
+      <EmptyState
+        className={styles.empty}
+        message={`No memberships match “${search}”.`}
+        actionLabel="Clear search"
+        actionIcon="XCircle"
+        onAction={() => setQuery('')}
+      />
+    ) : (
+      <EmptyState
+        className={styles.empty}
+        message={`${userName} is not a member of any group.`}
+        actionLabel="Add member"
+        onAction={openAdd}
+      />
+    ));
+
   return (
     <div className={styles.root}>
       <ARSTableToolbar
-        variant="Split"
-        showMore
-        hideActionIcon
+        variant="Basic"
+        hideFilter
+        searchPlaceholder={MEMBERSHIPS_SEARCH}
         actionLabel="Add member"
         onAction={openAdd}
         search={query}
@@ -105,28 +129,21 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
           setQuery(value);
           setPage(1);
         }}
-        onFilter={mf.onFilter}
-        filterCount={mf.filterCount}
-        filterPressed={mf.filterPressed}
       />
-      {mf.emptyWhen(rows.length) ?? (
+      {empty || (
         <>
           <ARSGroupTable
-            rows={rows.slice((safePage - 1) * pageSize, safePage * pageSize)}
+            variant="Memberships"
+            ariaLabel="Memberships"
+            rows={rows.slice((safePage - 1) * MEMBERSHIPS_PAGE_SIZE, safePage * MEMBERSHIPS_PAGE_SIZE)}
             selectedIds={selected}
             onSelectedIdsChange={(ids) => setSelectedSet(new Set(ids))}
+            onRemove={remove}
+            onSettings={() => showToast(TABLE_SETTINGS_TOAST)}
           />
-          <ARSPagination
-            page={safePage}
-            pageCount={pageCount}
-            onPageChange={setPage}
-            pageSize={pageSize}
-            pageSizeOptions={PAGE_SIZE_OPTIONS}
-            onPageSizeChange={(size) => {
-              setPageSize(size);
-              setPage(1);
-            }}
-          />
+          <div className={styles.pagination}>
+            <Pagination page={safePage} pageCount={pageCount} onPageChange={setPage} ariaLabel="Memberships pages" />
+          </div>
         </>
       )}
       <ModalOverlay open={addOpen} onClose={closeAdd} label="Add Member">

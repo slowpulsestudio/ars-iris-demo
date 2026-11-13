@@ -396,6 +396,7 @@ export function UserObjectPage({
         tabsLabel="User sections"
         onTabChange={(next) => leave(() => setTab(next))}
         actionGroups={USER_OBJECT_ACTIONS('Revoke sessions')}
+        hideActions={tab.startsWith('Memberships')}
         onBack={onBack}
         onNextItem={onNext}
         onPreviousItem={onPrevious}

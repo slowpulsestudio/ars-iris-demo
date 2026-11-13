@@ -18,6 +18,7 @@ import { showToast } from '../../lib/toastStore.js';
 import { copyObject } from '../../lib/copyObject.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
+import { groupMembers, memberTotals, nearbyObjects } from '../../lib/groupMembers.js';
 import { useLeaveGuard } from '../../lib/useLeaveGuard.js';
 import { ComingSoon } from '../ComingSoon/ComingSoon.js';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
@@ -86,13 +87,10 @@ function generalDraft(object: DirectoryObject, p: GroupProps): Draft {
 }
 
 /** A stable share of `total`, so the sample member counts add up. */
-function memberCounts(object: DirectoryObject, p: GroupProps) {
-  const total = (object.details.memberCount ?? 0) + p.addedMembers.length;
-  const users = Math.round(total * 0.68);
-  const groups = Math.round(total * 0.17);
-  const devices = Math.round(total * 0.11);
+/** The Overview's member counts, from the group's members (the same list as the Memberships tab). */
+function memberCounts(object: DirectoryObject, p: GroupProps, pool: DirectoryObject[]) {
   const owners = (p.manager ? 1 : 0) + p.secondaryOwners.length;
-  return { total, users, groups, devices, others: Math.max(0, total - users - groups - devices), owners };
+  return { ...memberTotals(groupMembers(object, pool, p)), owners };
 }
 
 export interface GroupObjectPageProps {
@@ -153,7 +151,8 @@ export function GroupObjectPage({
   const [errors, setErrors] = useState<Draft>({});
   const [renameDraft, setRenameDraft] = useState({ name: '', groupName: '' });
   const [renameErrors, setRenameErrors] = useState({ name: '', groupName: '' });
-  const { getNodeName } = useDirectory();
+  const { getNodeName, getSiblings } = useDirectory();
+  const memberPool = useMemo(() => nearbyObjects(currentNodeId, getSiblings), [currentNodeId, getSiblings]);
 
   const initial = useMemo(
     () => (editing === TAB_GENERAL ? generalDraft(object, p) : {}),
@@ -269,7 +268,7 @@ export function GroupObjectPage({
           createdOn={figmaDate(object.details.created)}
           email={shown(p.email)}
           badges={p.deprovisioned ? [{ label: 'Deprovisioned', tone: 'warning' }] : []}
-          counts={memberCounts(object, p)}
+          counts={memberCounts(object, p, memberPool)}
           onCopyName={() => {
             void navigator.clipboard?.writeText(object.name);
             showToast('Name copied');
@@ -374,6 +373,7 @@ export function GroupObjectPage({
         tabsLabel="Group sections"
         onTabChange={(next) => leave(() => setTab(next))}
         actionGroups={GROUP_ACTIONS}
+        hideActions={tab === 'Memberships'}
         onBack={onBack}
         onNextItem={onNext}
         onPreviousItem={onPrevious}

@@ -122,3 +122,19 @@ export function addUserMemberships(userId: string, groupIds: string[]): void {
   lists.set(userId, [...listFor(userId), ...added]);
   listeners.forEach((cb) => cb());
 }
+
+/** Takes a group out of a user's memberships and returns a function that puts it back where it was. */
+export function removeUserMembership(userId: string, groupId: string): () => void {
+  const list = listFor(userId);
+  const at = list.findIndex((g) => g.id === groupId);
+  if (at < 0) return () => {};
+  const removed = list[at];
+  lists.set(userId, list.filter((g) => g.id !== groupId));
+  listeners.forEach((cb) => cb());
+  return () => {
+    const now = listFor(userId);
+    if (now.some((g) => g.id === groupId)) return;
+    lists.set(userId, [...now.slice(0, at), removed, ...now.slice(at)]);
+    listeners.forEach((cb) => cb());
+  };
+}

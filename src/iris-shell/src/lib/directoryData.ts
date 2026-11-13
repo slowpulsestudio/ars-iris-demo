@@ -481,7 +481,8 @@ function makeLeaf(node: RawNode, index: number, rng: () => number, path: string)
     pick(rng, ['Security', 'Access', 'Admin', 'Ops', 'Finance']);
     pick(rng, ['Users', 'Admins', 'Readers', 'Owners']);
     const memberCount = 1 + Math.floor(rng() * 40);
-    // The group the notes and links rely on (Figma's sample, "Security Users") keeps its name.
+    // The group the notes and links rely on (Figma's sample, "Security Users") keeps its name, and the 47
+    // members Figma's Overview gives it (ARS_Group_Overview 158:33626).
     const pinned = id === 'o1d-builtin-o23';
     const slot = (hashSeed(node.id) + index * GROUP_STEP) % (DEPARTMENTS.length * GROUP_ROLES.length);
     const department = pinned ? DEPARTMENTS.find((d) => d.name === 'Security')! : DEPARTMENTS[slot % DEPARTMENTS.length];
@@ -490,7 +491,7 @@ function makeLeaf(node: RawNode, index: number, rng: () => number, path: string)
     const description = role.describe(department.thing);
     return {
       id, name, type, description, parentId: node.id, isContainer: false,
-      details: { description, location: path, memberCount, created: '2024-08-14' },
+      details: { description, location: path, memberCount: pinned ? 47 : memberCount, created: '2024-08-14' },
     };
   }
   const description =

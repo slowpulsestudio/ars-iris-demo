@@ -1,11 +1,26 @@
+/* ARS_Group_Members_Content (ARS_WebUI2_Groups 167:7662): 28px under the tabs (the object content's own 20px
+   plus 8px here), the toolbar, 24px, the table, then the pagination 28px below it (Figma's 16px bottom
+   padding and the 12px before Pagination 2151:9363). */
 .root {
   display: flex;
   flex-direction: column;
-  gap: var(--oi-spacing-l);
+  gap: var(--oi-spacing-xl);
   min-width: 0;
+  padding-top: var(--oi-spacing-s);
 }
 
-/* The members table is wider than the column beside Object Management; scroll it instead of overlapping. */
+/* On narrow windows the table scrolls sideways instead of overlapping. */
 .root > [role='table'] {
   overflow-x: auto;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--oi-spacing-xs);
+}
+
+/* The ARS empty state fills the space left in a list; this tab is only as tall as its content, so it takes its own height. */
+.root .empty {
+  flex: none;
 }
