@@ -2,14 +2,17 @@ import { useMemo, useState } from 'react';
 import { Hub, Loupe } from '@lucasmarkes/hairline/react';
 import { ARSAddMemberModal, ARSFilterArea, ARSGroupTable, ARSTableToolbar, EmptyState, type ARSGroupTableRow } from '@ars';
 import { Pagination } from '../../components/Pagination/Pagination.js';
+import { cx } from '../../lib/cx.js';
 import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import { addUserMemberships, removeUserMembership, SAMPLE_GROUPS, useUserMemberships } from '../../lib/userMemberships.js';
 import { showToast } from '../../lib/toastStore.js';
 import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
 import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
+import { ListBulkBar } from '../ListBulkBar/ListBulkBar.js';
 import { NAMED_OBJECT_FIELDS } from './namedObjectFields.js';
 import { MEMBERSHIPS_PAGE_SIZE, MEMBERSHIPS_SEARCH, TABLE_SETTINGS_TOAST } from './membershipsTab.js';
+import screen from '../ARSScreen/ARSScreen.module.css';
 import styles from './GroupMembersTab.module.css';
 
 const MODAL_PAGE_SIZE = 10;
@@ -120,7 +123,7 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
     ));
 
   return (
-    <div className={styles.root}>
+    <div className={cx(styles.root, selected.length > 0 && screen.withBar)}>
       <ARSTableToolbar
         variant="Basic"
         hideFilter
@@ -147,6 +150,7 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
           <div className={styles.pagination}>
             <Pagination page={safePage} pageCount={pageCount} onPageChange={setPage} ariaLabel="Memberships pages" />
           </div>
+          <ListBulkBar rows={rows} selectedIds={selected} onSelectedIdsChange={(ids) => setSelectedSet(new Set(ids))} />
         </>
       )}
       <ModalOverlay open={addOpen} onClose={closeAdd} label="Add groups">

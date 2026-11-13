@@ -12,6 +12,7 @@ import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { useFavorites, type FavoriteEntry } from '../../lib/useFavorites.js';
 import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { ListBulkBar } from '../ListBulkBar/ListBulkBar.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 
 const PAGE_SIZE_OPTIONS = [15, 30, 50];
@@ -27,6 +28,9 @@ const FIELDS: FilterFieldDef<FavoriteEntry>[] = [
 
 const iconFor = (type: string): string =>
   Object.values(OBJECT_TYPE_META).find((m) => m.label === type)?.icon ?? 'Cube';
+
+/** A favourite folder opens in the Favourites view, anything else on its own page. */
+const hrefFor = (f: FavoriteEntry): string => (f.type === 'Folder' ? `#/favorites/${f.id}` : f.href);
 
 /**
  * FavoritesPage — the favourited objects as a list: ARS_Header, the toolbar with the Filters button,
@@ -61,7 +65,7 @@ export function FavoritesPage() {
   return (
     <AppShell breadcrumb={[{ label: 'Directory Management' }, { label: 'Favourites' }]}>
       <ARSTreeViewADContent
-        className={cx(screen.screen)}
+        className={cx(screen.screen, selected.size > 0 && screen.withBar)}
         header={{ title: 'Favourites', icon: 'Star' }}
         toolbar={{
           variant: '4',
@@ -83,8 +87,7 @@ export function FavoritesPage() {
           id: f.id,
           name: f.name,
           icon: iconFor(f.type),
-          // A favourite folder opens in the Favourites view, anything else on its own page.
-          href: f.type === 'Folder' ? `#/favorites/${f.id}` : f.href,
+          href: hrefFor(f),
           objectType: f.type,
           description: f.description ?? '',
         }))}
@@ -106,6 +109,11 @@ export function FavoritesPage() {
           },
         }}
         empty={empty}
+      />
+      <ListBulkBar
+        rows={rows.map((f) => ({ id: f.id, href: hrefFor(f) }))}
+        selectedIds={[...selected]}
+        onSelectedIdsChange={(ids) => setSelected(new Set(ids))}
       />
       <Menu
         {...rowMenu.menuProps}
