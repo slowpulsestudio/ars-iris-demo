@@ -31,6 +31,7 @@ export { ARSEntraUserActions } from './components/ARSEntraUserActions/ARSEntraUs
 export { ARSADBulkUserActions } from './components/ARSADBulkUserActions/ARSADBulkUserActions.js';
 export { ARSEntraUserBulkActions } from './components/ARSEntraUserBulkActions/ARSEntraUserBulkActions.js';
 export { ARSADRightClickTreeMenu } from './components/ARSADRightClickTreeMenu/ARSADRightClickTreeMenu.js';
+export { ARSGroupActions, type ARSGroupActionsProps } from './components/ARSGroupActions/ARSGroupActions.js';
 export { ARSADBulkUserFlatView } from './components/ARSADBulkUserFlatView/ARSADBulkUserFlatView.js';
 export { ARSNewObjectMenu } from './components/ARSNewObjectMenu/ARSNewObjectMenu.js';
 export { ARSFilterMenu } from './components/ARSFilterMenu/ARSFilterMenu.js';

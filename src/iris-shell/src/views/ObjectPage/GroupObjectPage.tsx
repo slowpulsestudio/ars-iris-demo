@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  ARSDeprovisionGroup,
   ARSOverviewTemplate,
   ARSPageMenu,
-  ARSRenameGroup,
   ARSUserPage,
   DetailsCard,
   type ARSOverviewData,
@@ -16,7 +14,6 @@ import { setHashParams, useHashParam, useHashTab } from '../../lib/hashState.js'
 import { GROUP_SCOPES, GROUP_TYPES, saveGroupProps, useGroupProps, type GroupProps } from '../../lib/groupDetailsStore.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
 import { showToast } from '../../lib/toastStore.js';
-import { copyObject } from '../../lib/copyObject.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { groupMembers, memberTotals, nearbyObjects } from '../../lib/groupMembers.js';
@@ -24,11 +21,11 @@ import { useLeaveGuard } from '../../lib/useLeaveGuard.js';
 import { ComingSoon } from '../ComingSoon/ComingSoon.js';
 import type { Crumb } from '../../components/AppHeader/AppHeader.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
+import { GroupDialogs } from '../ObjectModals/GroupDialogs.js';
 import { UnsavedChangesModal } from '../ObjectModals/UnsavedChangesModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { GroupMembersTab } from './GroupMembersTab.js';
 import { OwnershipTab } from './OwnershipTab.js';
-import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
 import styles from './UserObjectPage.module.css';
 
 /** The tabs as ARS_Group_Tabs draws them. */
@@ -174,17 +171,12 @@ export function GroupObjectPage({
   const editing: Editing = editParam === 'general' ? TAB_GENERAL : null;
   const deleteOpen = dialog === 'delete';
   const moveOpen = dialog === 'move';
-  const copyOpen = dialog === 'copy';
-  const deprovisionOpen = dialog === 'deprovision';
-  const renameOpen = dialog === 'rename';
   const closeDialog = () => setHashParams({ dialog: null });
   // Unsaved changes in the Ownership card.
   const [ownershipDirty, setOwnershipDirty] = useState(false);
   const [draft, setDraft] = useState<Draft>({});
   const [errors, setErrors] = useState<Draft>({});
-  const [renameDraft, setRenameDraft] = useState({ name: '', groupName: '' });
-  const [renameErrors, setRenameErrors] = useState({ name: '', groupName: '' });
-  const { getNodeName, getSiblings, getPath } = useDirectory();
+  const { getSiblings, getPath } = useDirectory();
   const memberPool = useMemo(() => nearbyObjects(currentNodeId, getSiblings), [currentNodeId, getSiblings]);
   // The parent directory chip (business rules: Cloud, on-Prem or Hybrid): AD groups are on-premises, Entra groups cloud.
   const directory = getPath(currentNodeId).some((n) => n.id === 'entra-directories') ? 'Cloud' : 'On-prem';
@@ -211,12 +203,6 @@ export function GroupObjectPage({
     setErrors({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [object.id, editing]);
-  useEffect(() => {
-    if (!renameOpen) return;
-    setRenameDraft({ name: object.name, groupName: p.groupName });
-    setRenameErrors({ name: '', groupName: '' });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [renameOpen, object.id]);
 
   const startEditing = (which: Exclude<Editing, null>) => {
     setDraft(generalDraft(object, p));
@@ -352,39 +338,6 @@ export function GroupObjectPage({
     if (label === 'Delete') setHashParams({ dialog: 'delete' });
   };
 
-  const rename = () => {
-    const next = {
-      name: renameDraft.name.trim() ? '' : 'Name is required.',
-      groupName: renameDraft.groupName.trim() ? '' : 'Group name (Pre-Windows 2000) is required.',
-    };
-    setRenameErrors(next);
-    if (next.name || next.groupName) return;
-    onSave({ name: renameDraft.name.trim(), description: object.description });
-    saveGroupProps(object.id, { groupName: renameDraft.groupName.trim() });
-    closeDialog();
-    showToast('Successfully renamed Group', { supportingText: `Group renamed to ${renameDraft.name.trim()}` });
-  };
-
-  const deprovision = () => {
-    closeDialog();
-    saveGroupProps(object.id, { deprovisioned: true });
-    showToast(`Group ${object.name} deprovisioned successfully.`, {
-      onUndo: () => saveGroupProps(object.id, { deprovisioned: false }),
-    });
-  };
-
-  const copyTo = (destId: string) => {
-    closeDialog();
-    const result = copyObject(currentNodeId, object.id, destId);
-    if (!result) return;
-    saveGroupProps(result.copy.id, { ...p, groupName: result.copy.name });
-    showToast(`Group ${object.name} copied to ${getNodeName(destId) ?? 'the folder'} successfully.`, {
-      onUndo: result.undo,
-      viewHref: `#/tree/${destId}/${result.copy.id}`,
-      viewLabel: 'View object',
-    });
-  };
-
   return (
     <AppShell breadcrumb={breadcrumb}>
       <ARSUserPage
@@ -436,37 +389,13 @@ export function GroupObjectPage({
         }}
       />
       <UnsavedChangesModal open={guard.open} onCancel={guard.cancel} onConfirm={guard.confirm} />
-      <MoveObjectSheet
-        open={copyOpen}
-        mode="copy"
+      <GroupDialogs
+        dialog={dialog}
+        group={object}
+        nodeId={currentNodeId}
         onClose={closeDialog}
-        objects={[{ id: object.id, name: object.name }]}
-        objectType={OBJECT_TYPE_META.group.label}
-        currentNodeId={currentNodeId}
-        canMoveTo={() => true}
-        onMove={copyTo}
+        onRename={(name) => onSave({ name, description: object.description })}
       />
-      <ModalOverlay open={renameOpen} onClose={closeDialog} label="Rename Group">
-        <ARSRenameGroup
-          name={renameDraft.name}
-          onNameChange={(name) => setRenameDraft((d) => ({ ...d, name }))}
-          groupName={renameDraft.groupName}
-          onGroupNameChange={(groupName) => setRenameDraft((d) => ({ ...d, groupName }))}
-          nameError={renameErrors.name}
-          groupNameError={renameErrors.groupName}
-          onClose={closeDialog}
-          onCancel={closeDialog}
-          onRename={rename}
-        />
-      </ModalOverlay>
-      <ModalOverlay open={deprovisionOpen} onClose={closeDialog} label="Deprovision AD Group">
-        <ARSDeprovisionGroup
-          name={object.name}
-          onClose={closeDialog}
-          onNo={closeDialog}
-          onYes={deprovision}
-        />
-      </ModalOverlay>
     </AppShell>
   );
 }
