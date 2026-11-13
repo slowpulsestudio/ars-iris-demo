@@ -1,15 +1,24 @@
-.form {
+/* Primary SMTP address and its domain, side by side as the draft draws them (2109:10890). */
+.row {
   display: flex;
-  flex-direction: column;
+  align-items: flex-start;
   gap: var(--oi-spacing-l);
 }
 
-.row {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--oi-spacing-s);
+.row > * {
+  flex: 1 1 0;
 }
 
-.toggle {
+/* A join or leave toggle with its info icon, as the draft draws them. */
+.toggleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+}
+
+/* As FormField's info icon. */
+.info {
   display: inline-flex;
+  color: var(--oi-content-color-tertiary);
+  cursor: help;
 }
