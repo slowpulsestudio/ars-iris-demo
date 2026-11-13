@@ -94,6 +94,7 @@ const NO_ACTIONS: FilterModelActions = {
   remove: () => {},
   setOp: () => {},
   clear: () => {},
+  replace: () => {},
 };
 
 function FilterBarDemo(args: FilterBarProps) {
