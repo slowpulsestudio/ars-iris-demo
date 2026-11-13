@@ -239,18 +239,23 @@ function isSelfOrDescendant(candidateId: string, ancestorId: string): boolean {
   return false;
 }
 
+/** Access templates and Managed units take nothing moved or copied: the Move sheet hides them (Figma 2290:68343). */
+const NOT_MOVE_DESTINATIONS = new Set(['access-templates', 'managed-units']);
+
+/** Whether objects can be copied into `nodeId`. */
+export function isCopyDestination(nodeId: string): boolean {
+  return !NOT_MOVE_DESTINATIONS.has(nodeId);
+}
+
+/** Whether objects and folders can be moved into `nodeId`: nothing is moved into Entra ID either. */
+export function isMoveDestination(nodeId: string): boolean {
+  return isCopyDestination(nodeId) && !isSelfOrDescendant(nodeId, 'entra-directories');
+}
+
 /**
  * Whether `nodeId` may be reparented under `newParentId` (`null` = top level).
  * Rejects no-ops and moving a node into itself or one of its descendants.
  */
-/** Access templates and Managed units are not move destinations: the Move sheet hides them (Figma 2290:68343). */
-const NOT_MOVE_DESTINATIONS = new Set(['access-templates', 'managed-units']);
-
-/** Whether objects and folders can be moved (or copied) into `nodeId`. */
-export function isMoveDestination(nodeId: string): boolean {
-  return !NOT_MOVE_DESTINATIONS.has(nodeId);
-}
-
 export function canMoveNode(nodeId: string, newParentId: string | null): boolean {
   if (!nodeById.has(nodeId)) return false;
   if (newParentId !== null && !nodeById.has(newParentId)) return false;
