@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { ARSTableGroups } from '@ars';
+import { ARSGroupActions, ARSTableGroups } from '@ars';
 import { AppShell } from '../AppShell/AppShell.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
@@ -8,12 +8,20 @@ import { DEPARTMENT_NAMES } from '../../lib/directoryData.js';
 import { inDirectories, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import type { FilterFieldDef } from '../../lib/advancedFilter.js';
 import { getGroupProps } from '../../lib/groupDetailsStore.js';
+import { canMoveItem, moveEntries, type MoveItem } from '../../lib/moveObjects.js';
+import { navigate } from '../../lib/router.js';
+import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
+import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
+import { GroupDialogs } from '../ObjectModals/GroupDialogs.js';
+import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { NoDirectoriesSelected } from '../NoDirectoriesSelected/NoDirectoriesSelected.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 
 const PAGE_SIZE_OPTIONS = [15, 30, 50, 100];
+/** The row menu's actions that open a dialog over the list, named after the action (?dialog=rename&target=id). */
+const ROW_DIALOGS = ['Rename', 'Move', 'Copy', 'Deprovision', 'Delete'];
 // Figma's sample tag pairs (ARS_Table_Groups) for groups that aren't named "[Department] [Role]";
 // the directory data has no tags, so those groups take them in turn.
 const TAG_PAIRS = [
@@ -48,11 +56,16 @@ export function GroupsPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
   const [selected, setSelected] = useHashSelection();
-  // The New AD Group dialog lives in the address (?dialog=new-group).
+  // The New AD Group dialog lives in the address (?dialog=new-group), as do a row's actions
+  // (?dialog=move&target=id).
   const [dialog] = useHashParam('dialog');
+  const [targetParam] = useHashParam('target');
   const createOpen = dialog === 'new-group';
   const setCreateOpen = (open: boolean) => setHashParams({ dialog: open ? 'new-group' : null });
+  const closeDialog = () => setHashParams({ dialog: null, target: null });
   const [removedTags, setRemovedTags] = useState<Map<string, Set<string>>>(() => new Map());
+  const [rowGroup, setRowGroup] = useState<DirectoryObject | null>(null);
+  const rowMenu = useAnchoredMenu();
 
   // Only groups inside a directory (under Managed Directories); the Access Templates and Managed Units folders aren't directories.
   const groups = useMemo<DirectoryObject[]>(
@@ -117,6 +130,21 @@ export function GroupsPage() {
   const safePage = Math.min(page, pageCount);
   const pageRows = rows.slice((safePage - 1) * pageSize, safePage * pageSize);
 
+  const hrefFor = (g: DirectoryObject) => `#/tree/${g.parentId}/${g.id}`;
+  const moveItemFor = (g: DirectoryObject): MoveItem => ({ id: g.id, nodeId: g.parentId, isContainer: false });
+  const target = groups.find((g) => g.id === targetParam) ?? null;
+  const moveTarget = dialog === 'move' ? target : null;
+  const deleteTarget = dialog === 'delete' ? target : null;
+
+  // A row's "…" opens the group's actions from the written requirements ("Object Actions" 64:6801;
+  // requirements board: AD group 453:2930, Entra group 531:1408 without Move).
+  const onRowAction = (label: string) => {
+    const g = rowGroup;
+    if (!g) return;
+    if (label === 'Properties') navigate(hrefFor(g));
+    else if (ROW_DIALOGS.includes(label)) setHashParams({ dialog: label.toLowerCase(), target: g.id });
+  };
+
   return (
     <AppShell breadcrumb={[{ label: 'Directory Management' }, { label: 'Groups' }]}>
       <ARSTableGroups
@@ -149,6 +177,10 @@ export function GroupsPage() {
         }
         selected={selected}
         onSelectionChange={setSelected}
+        onMore={(id, e) => {
+          setRowGroup(groups.find((g) => g.id === id) ?? null);
+          rowMenu.openAt(e);
+        }}
         pagination={{
           page: safePage,
           pageCount,
@@ -162,6 +194,58 @@ export function GroupsPage() {
         }}
       />
       <ComingSoonModal open={createOpen} onClose={() => setCreateOpen(false)} title="New AD Group" />
+      <ARSGroupActions
+        {...rowMenu.menuProps}
+        entra={rowGroup !== null && describe(rowGroup).groupType === 'O365Group'}
+        ariaLabel={`Actions for ${rowGroup?.name ?? 'group'}`}
+        onAction={onRowAction}
+      />
+      <MoveObjectSheet
+        open={moveTarget !== null}
+        onClose={closeDialog}
+        objects={moveTarget ? [{ id: moveTarget.id, name: moveTarget.name }] : []}
+        objectType="Group"
+        currentNodeId={moveTarget?.parentId ?? null}
+        canMoveTo={(destId) => !!moveTarget && canMoveItem(moveItemFor(moveTarget), destId)}
+        onMove={(destId) => {
+          if (moveTarget) {
+            moveEntries(
+              [{ item: moveItemFor(moveTarget), name: moveTarget.name, typeLabel: 'Group' }],
+              destId,
+              directory.getNodeName(destId) ?? 'the folder',
+            );
+          }
+          closeDialog();
+        }}
+      />
+      {deleteTarget && (
+        <DeleteObjectModal
+          open
+          onClose={closeDialog}
+          objectClass="Group"
+          name={deleteTarget.name}
+          location={describe(deleteTarget).directory}
+          onDeleted={() => {
+            directory.removeObject(deleteTarget.parentId, deleteTarget.id);
+            setSelected(new Set([...selected].filter((id) => id !== deleteTarget.id)));
+          }}
+        />
+      )}
+      {target && (
+        <GroupDialogs
+          dialog={dialog}
+          group={target}
+          nodeId={target.parentId}
+          onClose={closeDialog}
+          onRename={(name) =>
+            directory.updateObject(target.parentId, target.id, {
+              ...target,
+              name,
+              details: { ...target.details, displayName: name },
+            })
+          }
+        />
+      )}
     </AppShell>
   );
 }

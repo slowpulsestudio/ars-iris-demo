@@ -98,6 +98,13 @@ export const MISSING_FROM_FIGMA: MissingFromFigmaEntry[] = [
     note: 'Only a written requirement in Figma: a Yes or No confirmation, then a toast with Undo. No frame, so the question text is mine.',
   },
   {
+    component: 'ARSGroupActions',
+    figmaName: 'Object Actions',
+    figmaNodeId: '64:6801',
+    file: 'groups',
+    note: 'Only written requirements: "Object Actions" in the Groups file and the ARS 9.0 WebUI requirements board (AD group 453:2930, Entra group 531:1408): Properties, Rename, Move, Copy, Deprovision and Delete; Entra groups have no Move. The Groups list opens it from a row\'s "…".',
+  },
+  {
     component: 'ARSGroupMembershipButtonSelect',
     figmaName: 'ARS_Group_Membership_Button_Select',
     figmaNodeId: '160:9082',
