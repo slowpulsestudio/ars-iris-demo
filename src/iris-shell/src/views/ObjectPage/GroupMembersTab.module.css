@@ -17,7 +17,13 @@
 .pagination {
   display: flex;
   justify-content: center;
-  margin-top: var(--oi-spacing-xs);
+  /* While the bulk action bar shows, the tab keeps the lists' room for it above the paging (ARSScreen withBar). */
+  margin-top: var(--ars-pagination-space, var(--oi-spacing-xs));
+}
+
+/* The same room above ARSPagination, which only takes it itself when sticky. */
+.room {
+  margin-top: var(--ars-pagination-space, 0px);
 }
 
 /* The ARS empty state fills the space left in a list; this tab is only as tall as its content, so it takes its own height. */

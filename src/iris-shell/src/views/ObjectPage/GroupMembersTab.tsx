@@ -4,6 +4,7 @@ import { ARSAddMemberModal, ARSFilterArea, ARSGroupTable, ARSTableToolbar, Empty
 import { Pagination } from '../../components/Pagination/Pagination.js';
 import { SegmentedControl, type SegmentedItem } from '../../components/SegmentedControl/SegmentedControl.js';
 import { useDirectory } from '../../lib/directoryStore.js';
+import { cx } from '../../lib/cx.js';
 import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
 import { getGroupProps, saveGroupProps, useGroupProps } from '../../lib/groupDetailsStore.js';
@@ -12,8 +13,10 @@ import { showToast } from '../../lib/toastStore.js';
 import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
 import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
+import { ListBulkBar } from '../ListBulkBar/ListBulkBar.js';
 import { DIRECTORY_OBJECT_FIELDS } from './directoryObjectFields.js';
 import { MEMBERSHIPS_PAGE_SIZE, MEMBERSHIPS_SEARCH, TABLE_SETTINGS_TOAST } from './membershipsTab.js';
+import screen from '../ARSScreen/ARSScreen.module.css';
 import styles from './GroupMembersTab.module.css';
 
 const MODAL_PAGE_SIZE = 10;
@@ -173,7 +176,7 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
     ));
 
   return (
-    <div className={styles.root}>
+    <div className={cx(styles.root, selected.length > 0 && screen.withBar)}>
       <ARSTableToolbar
         variant="Basic"
         hideFilter
@@ -203,6 +206,7 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
           <div className={styles.pagination}>
             <Pagination page={safePage} pageCount={pageCount} onPageChange={setPage} ariaLabel={`${TABLE_LABEL[view]} pages`} />
           </div>
+          <ListBulkBar rows={rows} selectedIds={selected} onSelectedIdsChange={setSelected} />
         </>
       )}
       <ModalOverlay open={addOpen} onClose={closeAdd} label="Add members">

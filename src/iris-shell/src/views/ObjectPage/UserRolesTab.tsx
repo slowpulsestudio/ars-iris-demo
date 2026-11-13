@@ -1,9 +1,12 @@
 import { useMemo, useState } from 'react';
 import { ARSGroupTable, ARSPagination, ARSTableToolbar } from '@ars';
+import { cx } from '../../lib/cx.js';
 import { useHashSelection } from '../../lib/hashState.js';
 import { userRoles } from '../../lib/userRoles.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { ListBulkBar } from '../ListBulkBar/ListBulkBar.js';
 import { NAMED_OBJECT_FIELDS } from './namedObjectFields.js';
+import screen from '../ARSScreen/ARSScreen.module.css';
 import styles from './GroupMembersTab.module.css';
 
 const PAGE_SIZE_OPTIONS = [10, 15, 20, 30, 50];
@@ -47,7 +50,7 @@ export function UserRolesTab({ userId }: UserRolesTabProps) {
   const safePage = Math.min(page, pageCount);
 
   return (
-    <div className={styles.root}>
+    <div className={cx(styles.root, selected.length > 0 && screen.withBar)}>
       <ARSTableToolbar
         variant="4"
         search={query}
@@ -68,6 +71,7 @@ export function UserRolesTab({ userId }: UserRolesTabProps) {
             onSelectedIdsChange={(ids) => setSelectedSet(new Set(ids))}
           />
           <ARSPagination
+            className={styles.room}
             page={safePage}
             pageCount={pageCount}
             onPageChange={setPage}
@@ -78,6 +82,7 @@ export function UserRolesTab({ userId }: UserRolesTabProps) {
               setPage(1);
             }}
           />
+          <ListBulkBar rows={rows} selectedIds={selected} onSelectedIdsChange={(ids) => setSelectedSet(new Set(ids))} />
         </>
       )}
     </div>
