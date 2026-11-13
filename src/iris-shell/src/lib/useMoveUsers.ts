@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import type { User } from '../views/UsersPage/mockUsers.js';
+import { isMoveDestination } from './directoryData.js';
 import { useDirectory } from './directoryStore.js';
 import { announceMoved, userLocationFor } from './moveObjects.js';
 import { useUsers } from './usersStore.js';
@@ -12,6 +13,7 @@ export function useMoveUsers() {
   /** Whether at least one of `targets` isn't already in the folder `destId`. */
   const canMoveTo = useCallback(
     (targets: User[], destId: string) => {
+      if (!isMoveDestination(destId)) return false;
       const location = userLocationFor(getPath(destId));
       return targets.some((u) => u.location !== location);
     },

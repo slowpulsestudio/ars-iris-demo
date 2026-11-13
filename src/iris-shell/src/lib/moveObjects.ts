@@ -1,4 +1,4 @@
-import { ENTRA_TENANTS, canMoveNode, getParentId, moveNode, moveObject } from './directoryData.js';
+import { ENTRA_TENANTS, canMoveNode, getParentId, isMoveDestination, moveNode, moveObject } from './directoryData.js';
 import { showToast } from './toastStore.js';
 
 /**
@@ -41,7 +41,7 @@ export interface MoveItem {
 
 /** Whether `item` can go into `destId`: not where it already is, and an OU never into itself or its child. */
 export function canMoveItem(item: MoveItem, destId: string): boolean {
-  return item.isContainer ? canMoveNode(item.id, destId) : item.nodeId !== destId;
+  return item.isContainer ? canMoveNode(item.id, destId) : item.nodeId !== destId && isMoveDestination(destId);
 }
 
 /** Moves every item that can go to `destId`; `undo` puts each one back where it was. */

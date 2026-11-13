@@ -243,9 +243,18 @@ function isSelfOrDescendant(candidateId: string, ancestorId: string): boolean {
  * Whether `nodeId` may be reparented under `newParentId` (`null` = top level).
  * Rejects no-ops and moving a node into itself or one of its descendants.
  */
+/** Access templates and Managed units are not move destinations: the Move sheet hides them (Figma 2290:68343). */
+const NOT_MOVE_DESTINATIONS = new Set(['access-templates', 'managed-units']);
+
+/** Whether objects and folders can be moved (or copied) into `nodeId`. */
+export function isMoveDestination(nodeId: string): boolean {
+  return !NOT_MOVE_DESTINATIONS.has(nodeId);
+}
+
 export function canMoveNode(nodeId: string, newParentId: string | null): boolean {
   if (!nodeById.has(nodeId)) return false;
   if (newParentId !== null && !nodeById.has(newParentId)) return false;
+  if (newParentId !== null && !isMoveDestination(newParentId)) return false;
   if (newParentId !== null && isSelfOrDescendant(newParentId, nodeId)) return false;
   const currentParentId = parentIdByNode.get(nodeId) ?? null;
   return currentParentId !== newParentId;
