@@ -4,7 +4,7 @@ import { Button } from '../../components/Button/Button.js';
 import { Icon } from '../../components/Icon/Icon.js';
 import { SideSheet } from '../../components/SideSheet/SideSheet.js';
 import { useDirectory } from '../../lib/directoryStore.js';
-import { isMoveDestination } from '../../lib/directoryData.js';
+import { isCopyDestination, isMoveDestination, type DirectoryNodeView } from '../../lib/directoryData.js';
 import { toTreeNode } from '../../lib/directoryTree.js';
 import styles from './MoveObjectSheet.module.css';
 
@@ -66,11 +66,14 @@ export function MoveObjectSheet({
   }, [open]);
 
   // Figma's sheet hides Access templates, Managed units and the divider under them (2290:68343): the tree
-  // starts at Managed directories, as nothing is moved or copied into those two.
-  const nodes = useMemo(
-    () => nodeTree.filter((n) => isMoveDestination(n.id)).map((n) => ({ ...toTreeNode(n), separatorBefore: false })),
-    [nodeTree],
-  );
+  // starts at Managed directories, as nothing is moved or copied into those two. A Move also leaves out
+  // Entra ID, as nothing is moved into Entra; a Copy keeps it.
+  const nodes = useMemo(() => {
+    const keep = mode === 'copy' ? isCopyDestination : isMoveDestination;
+    const prune = (list: DirectoryNodeView[]): DirectoryNodeView[] =>
+      list.filter((n) => keep(n.id)).map((n) => ({ ...n, children: prune(n.children) }));
+    return prune(nodeTree).map((n) => ({ ...toTreeNode(n), separatorBefore: false }));
+  }, [nodeTree, mode]);
   const remaining = objects.filter((o) => !removed.has(o.id));
   const several = objects.length > 1;
   const ready = !!choice && remaining.length > 0 && canMoveTo(choice);
