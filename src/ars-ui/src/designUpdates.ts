@@ -122,4 +122,20 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     recommendation: 'Draw the sticky pagination with the action bar above it.',
     prototype: '#/users?select=isabella-clark',
   },
+  {
+    title: 'Empty states: Iris empty state with Hairline figures',
+    file: 'primary',
+    figmaNodeId: '3423:30769',
+    note: 'ARS_Empty_Content draws the older "No data" drawing (3367:42208) above the message and button. At the designer\'s request every empty state in the prototype uses the Iris empty state with a Hairline figure, the style the Tree view and the directory picker already had: an empty filing cabinet (Drawer) for a folder with no objects, and sieves (Sieve) when a filter matches nothing on any list.',
+    recommendation: 'Swap the "No data" drawing in ARS_Empty_Content for the Iris empty state with a Hairline figure, and draw the "No objects match the filter." state with Clear filter.',
+    prototype: '#/users?filter=Tags~Zzzz',
+  },
+  {
+    title: 'Memberships empty states',
+    file: 'groups',
+    figmaNodeId: '167:6097',
+    note: 'Figma draws the Memberships tab with rows only, no empty state. The prototype uses the Iris empty state: a hub (Hub) with "[name] is not a member of any group." or "This group has no members." and Add groups or Add members, and a loupe (Loupe) with Clear search when the search finds nothing. To see it, remove both of Isabella Clark\'s groups or search for a name that isn\'t there.',
+    recommendation: 'Draw the two Memberships empty states (no memberships, no search match) for users and groups with the Iris empty state.',
+    prototype: '#/users/isabella-clark?tab=memberships',
+  },
 ];
