@@ -30,6 +30,7 @@
   "navigation": {
     "defaultRoute": "#/users",
     "showDirectoryPanel": true,
+    "globalNavOpen": false,
     "mainNav": [
       { "value": "directory", "label": "Directory management", "icon": "TreeView" },
       { "value": "insights", "label": "Insights", "icon": "PresentationChart" },

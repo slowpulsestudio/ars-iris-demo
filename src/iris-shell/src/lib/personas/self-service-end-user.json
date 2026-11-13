@@ -26,6 +26,7 @@
   "navigation": {
     "defaultRoute": "#/user-view/home",
     "showDirectoryPanel": false,
+    "globalNavOpen": true,
     "mainNav": [
       { "value": "user-view-home", "label": "Home", "icon": "House", "route": "#/user-view/home", "wip": true, "figmaNode": "10199:6772" },
       { "value": "user-view-profile", "label": "User Profile", "icon": "User", "route": "#/user-view/profile", "wip": true, "figmaNode": "10199:7207" },

@@ -205,11 +205,12 @@ export function AppShell({
   // `activeNav` and `aiOpen` are lifted to AppShellContext so they survive
   // page navigations (each page wraps its own AppShell, which would otherwise
   // remount and lose state).
-  const { aiOpen, setAiOpen, setSearchOpen, identityRole, setIdentityRole, setPersonaId, directoryPanel } =
+  const { aiOpen, setAiOpen, setSearchOpen, identityRole, setIdentityRole, persona, setPersonaId, directoryPanel } =
     useAppShell();
   const currentUser = useCurrentUser();
   const dock = useDockPanel();
-  const [pinned, setPinned] = useSidebarPinned();
+  // Each persona keeps its own open/closed navigation; David and Werner start closed.
+  const [pinned, setPinned] = useSidebarPinned(persona?.id ?? 'none', persona?.navigation.globalNavOpen ?? true);
   const [peeking, setPeeking] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(readInitialSidebarWidth);
   const [sidebarDragging, setSidebarDragging] = useState(false);

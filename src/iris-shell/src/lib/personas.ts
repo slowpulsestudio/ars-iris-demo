@@ -17,6 +17,11 @@ export interface PersonaNavigation {
   defaultRoute: string;
   /** Show the directory panel (the second left rail). */
   showDirectoryPanel: boolean;
+  /**
+   * The global navigation starts open. David and Werner start with it closed, as the Figma screens draw it
+   * (e.g. ARS_WebUI2_Groups 167:6097); each persona's own choice is remembered once they open or close it.
+   */
+  globalNavOpen: boolean;
   mainNav: PersonaNavEntry[];
   otherNav: PersonaNavEntry[];
 }

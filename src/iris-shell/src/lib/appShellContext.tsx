@@ -96,8 +96,8 @@ export interface AppShellContextValue {
  * change. Lifting that state here lets it persist for the session while
  * keeping the per-page AppShell API unchanged.
  *
- * `pinned` is handled separately by useSidebarPinned (localStorage-backed)
- * because users expect that one to survive reloads, not just navigations.
+ * `pinned` is handled separately by useSidebarPinned (localStorage-backed, per
+ * persona) because users expect that one to survive reloads, not just navigations.
  */
 const AppShellContext = createContext<AppShellContextValue | null>(null);
 
