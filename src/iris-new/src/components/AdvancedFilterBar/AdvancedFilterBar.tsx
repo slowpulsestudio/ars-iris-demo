@@ -3,12 +3,18 @@ import { createPortal } from 'react-dom';
 import { cx } from '@iris/lib/cx.js';
 import { motionDurationMs, prefersReducedMotion } from '@iris/lib/motion.js';
 import { Menu, type MenuEntry } from '@iris/components/Menu/Menu.js';
+import type { ParamCategory } from '@iris/components/Filters/AdvancedFilter.js';
 import type { FilterModelActions } from '@iris/components/Filters/useFilterModel.js';
 import {
   OPERATORS,
   OPERATOR_BY_ID,
-  firstCondition,
+  appendChild,
   countConditions,
+  defaultOperatorFor,
+  findNode,
+  firstCondition,
+  newCondition,
+  newGroup,
   operatorTakesValue,
   type Condition,
   type FilterNode,
@@ -16,8 +22,8 @@ import {
   type OperatorId,
   type ParameterDef,
 } from '@iris/components/Filters/filterModel.js';
-import { FilterGroup } from '../FilterGroup/FilterGroup.js';
-import { FilterPill, type FilterPillProps, type FilterPillSegment } from '../FilterPill/FilterPill.js';
+import { FilterBarGroup, pillProps } from '../FilterBarGroup/FilterBarGroup.js';
+import { FilterPill, type FilterPillSegment } from '../FilterPill/FilterPill.js';
 import { FilterValueEditor } from '../FilterValueEditor/FilterValueEditor.js';
 import styles from './AdvancedFilterBar.module.css';
 
@@ -34,6 +40,8 @@ export interface AdvancedFilterBarProps {
   /** The filter tree. Each top-level rule card (or condition) becomes one pill. */
   root: Group;
   parameters: ParameterDef[];
+  /** The field groups the "+ Filter" menu lists. Defaults to one "Common" group of every parameter. */
+  categories?: ParamCategory[];
   actions: FilterModelActions;
   /** Shows the grey "Advanced filter" pill while the tree is empty. */
   showEmpty?: boolean;
@@ -61,55 +69,125 @@ export interface AdvancedFilterBarPill {
   onRemove: () => void;
 }
 
+type Place = { top: number; left: number };
+type Segment = 'value' | 'operator' | 'parameter';
 
 function summarizePill(node: FilterNode, parameters: ParameterDef[]): Omit<AdvancedFilterBarPill, 'onEdit' | 'onRemove'> {
   const lead = firstCondition(node);
   const param = parameters.find((p) => p.id === lead?.parameterId);
   const labels = new Map((param?.options ?? []).map((o) => [o.value, o.label]));
   return {
-    field: param?.label ?? 'Parameter',
+    field: lead ? (param?.label ?? 'Parameter') : 'Advanced filter',
     operatorId: lead?.operatorId,
-    operator: lead?.operatorId ? OPERATOR_BY_ID[lead.operatorId].label : 'operator',
+    operator: lead?.operatorId ? OPERATOR_BY_ID[lead.operatorId].label : lead ? 'operator' : '',
     values: (lead?.values ?? []).map((v) => labels.get(v) ?? v),
-    extra: countConditions(node) - 1,
+    extra: Math.max(0, countConditions(node) - 1),
   };
 }
 
-function pillProps(node: FilterNode, parameters: ParameterDef[]): Pick<FilterPillProps, 'parameter' | 'operator' | 'value' | 'more'> {
-  const lead: Condition | null = firstCondition(node);
-  const param = parameters.find((p) => p.id === lead?.parameterId);
-  const op = lead?.operatorId ? OPERATOR_BY_ID[lead.operatorId] : undefined;
-  const extra = countConditions(node) - 1;
-  const labels = new Map((param?.options ?? []).map((o) => [o.value, o.label]));
-  const value = lead?.values.map((v) => labels.get(v) ?? v).join(lead.operatorId === 'between' ? ' and ' : ', ');
-  return {
-    parameter: { label: param?.label ?? 'Parameter', icon: param?.icon },
-    operator: op ? { label: op.label, icon: op.icon } : { label: 'operator', icon: 'DiamondsFour' },
-    value: operatorTakesValue(lead?.operatorId) ? value || 'Value' : undefined,
-    more: extra > 0 ? { connector: node.kind === 'group' ? node.op : 'and', count: extra } : undefined,
-  };
-}
-
-/** Where the popover sits: under its anchor (a pill or one segment of it), kept inside the window. */
-function placeUnder(anchor: HTMLElement, popoverWidth: number): { top: number; left: number } {
+/** Where a popover sits: under its anchor (a pill or one segment of it), kept inside the window. */
+function placeUnder(anchor: HTMLElement, popoverWidth: number): Place {
   const rect = anchor.getBoundingClientRect();
   const margin = 8;
   const width = Math.min(popoverWidth, window.innerWidth * 0.9);
   return { top: rect.bottom + 4, left: Math.max(margin, Math.min(rect.left, window.innerWidth - width - margin)) };
 }
 
-/** The popover under a pill's value is the 240px FilterSelect menu; the group editor is the wide card. */
+/** The value popover is the 240px FilterSelect menu; the group popover hugs its pills. */
 const VALUE_POPOVER_WIDTH = 240;
-const GROUP_POPOVER_WIDTH = 435;
+const GROUP_POPOVER_WIDTH = 480;
+
+interface ConditionEditorProps {
+  condition: Condition;
+  parameters: ParameterDef[];
+  segment: Segment;
+  place: Place;
+  actions: FilterModelActions;
+  onClose: () => void;
+  /** After a new operator or field, what to edit next (the value), or nothing. */
+  onNext: (segment: Segment | null) => void;
+}
+
+/** The small editor for one condition: its values in a popover, or a menu of its operators or fields. */
+function ConditionEditor({ condition, parameters, segment, place, actions, onClose, onNext }: ConditionEditorProps) {
+  // The Menu closes itself after a pick; a pick goes on to the value instead of closing.
+  const picked = useRef(false);
+  const param = parameters.find((p) => p.id === condition.parameterId);
+
+  if (segment === 'value') {
+    return createPortal(
+      <div
+        className={cx(styles.popover, styles.valuePopover)}
+        data-filter-popover
+        style={place}
+        role="dialog"
+        aria-label={`Edit ${param?.label ?? 'filter'}`}
+      >
+        <FilterValueEditor
+          condition={condition}
+          parameter={param}
+          onChange={(patch) => actions.updateCondition(condition.id, patch)}
+          onDone={onClose}
+        />
+      </div>,
+      document.body,
+    );
+  }
+
+  const items: MenuEntry[] =
+    segment === 'operator'
+      ? OPERATORS.map((o) => ({
+          kind: 'item',
+          label: o.label,
+          icon: o.icon,
+          selected: o.id === condition.operatorId,
+          onSelect: () => {
+            actions.updateCondition(
+              condition.id,
+              o.id === 'empty' || o.id === 'between' || condition.operatorId === 'between' ? { operatorId: o.id, values: [] } : { operatorId: o.id },
+            );
+            picked.current = true;
+            onNext(operatorTakesValue(o.id) ? 'value' : null);
+          },
+        }))
+      : parameters.map((p) => ({
+          kind: 'item',
+          label: p.label,
+          icon: p.icon,
+          selected: p.id === condition.parameterId,
+          onSelect: () => {
+            // The value type can differ between fields, so a new field clears the value.
+            actions.updateCondition(condition.id, { parameterId: p.id, operatorId: defaultOperatorFor(p), values: [] });
+            picked.current = true;
+            onNext('value');
+          },
+        }));
+
+  return (
+    <Menu
+      open
+      ariaLabel={segment === 'operator' ? 'Select an operator' : 'Select a field'}
+      items={items}
+      position={{ x: place.left, y: place.top }}
+      onOpenChange={(open) => {
+        if (open) return;
+        if (picked.current) picked.current = false;
+        else onClose();
+      }}
+    />
+  );
+}
 
 /**
  * AdvancedFilterBar — the Advanced filter "Bar": the applied filter as pills under the content header.
- * Pressing a pill's value opens its values under it, its operator opens the operators, and "and N more
- * conditions" opens the whole group. Figma: Iris UI Kit "Advanced Filter Bar" 9722:13727.
+ * A one-condition pill edits its value and operator in place, under the segment pressed. Its field, "and N
+ * more conditions" and the "Advanced filter" pill open the pill's group: conditions as pills, groups as
+ * cards, AND/OR chips and "+ Filter". Figma: Iris UI Kit "Advanced Filter Bar" 9722:13727.
  */
 export function AdvancedFilterBar({
   root,
   parameters,
+  categories,
   actions,
   showEmpty = false,
   editing: editingProp,
@@ -118,6 +196,11 @@ export function AdvancedFilterBar({
   inline = false,
   className,
 }: AdvancedFilterBarProps) {
+  const fieldGroups = useMemo<ParamCategory[]>(
+    () => categories ?? [{ label: 'Common', icon: 'IdentificationCard', parameterIds: parameters.map((p) => p.id) }],
+    [categories, parameters],
+  );
+
   const [internal, setInternal] = useState<AdvancedFilterBarEditing | null>(null);
   const editing = editingProp !== undefined ? editingProp : internal;
   const setEditing = useCallback(
@@ -130,19 +213,32 @@ export function AdvancedFilterBar({
   const editingId = editing?.id ?? null;
   const editingView = editing?.view ?? null;
 
+  // A condition inside the open group being edited: its values, operator or field, under that segment.
+  const [inner, setInner] = useState<{ conditionId: string; segment: Segment } | null>(null);
+  const [innerPlace, setInnerPlace] = useState<Place | null>(null);
+  useEffect(() => setInner(null), [editingId, editingView]);
+
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const items = useRef(new Map<string, HTMLElement>());
-  const [place, setPlace] = useState<{ top: number; left: number } | null>(null);
+  const [place, setPlace] = useState<Place | null>(null);
 
   const reposition = useCallback(() => {
     // Keep the last place while the popover fades out.
     if (!editingId || !editingView) return;
     const item = items.current.get(editingId);
     const anchor = editingView === 'group' ? item : (item?.querySelector<HTMLElement>(`[data-segment="${editingView}"]`) ?? item);
-    setPlace(anchor ? placeUnder(anchor, editingView === 'value' ? VALUE_POPOVER_WIDTH : GROUP_POPOVER_WIDTH) : null);
+    setPlace(anchor ? placeUnder(anchor, editingView === 'group' ? GROUP_POPOVER_WIDTH : VALUE_POPOVER_WIDTH) : null);
   }, [editingId, editingView]);
 
+  const placeInner = useCallback(() => {
+    if (!inner) return;
+    const pill = popoverRef.current?.querySelector<HTMLElement>(`[data-condition-id="${inner.conditionId}"]`);
+    const anchor = pill?.querySelector<HTMLElement>(`[data-segment="${inner.segment}"]`) ?? pill;
+    setInnerPlace(anchor ? placeUnder(anchor, VALUE_POPOVER_WIDTH) : null);
+  }, [inner]);
+
   useLayoutEffect(reposition, [reposition, root]);
+  useLayoutEffect(placeInner, [placeInner, root, place]);
 
   // The pill and its tray animate in, so measure again once they have settled.
   useEffect(() => {
@@ -191,51 +287,69 @@ export function AdvancedFilterBar({
     if (!editingId) return;
     const onPointerDown = (e: PointerEvent) => {
       const target = e.target as Element;
-      // Menus and pickers opened from inside the popover render in portals of their own.
-      if (popoverRef.current?.contains(target)) return;
-      if (target.closest('[role="menu"], [role="listbox"]')) return;
+      // Menus and the value popover render in portals of their own.
+      if (target.closest('[data-filter-popover], [role="menu"], [role="listbox"]')) return;
+      if (popoverRef.current?.contains(target)) {
+        // Elsewhere in the group: close the condition's editor (a pressed segment opens its own after).
+        setInner(null);
+        return;
+      }
       if (target.closest('[data-filter-pill]')) return;
       setEditing(null);
     };
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return;
-      // Close only the popover, not a dialog the Bar sits in.
+      // An open menu closes itself on Escape.
+      if (e.key !== 'Escape' || document.querySelector('[role="menu"]')) return;
+      // Close one layer, and not a dialog the Bar sits in.
       e.stopPropagation();
-      setEditing(null);
+      if (inner) setInner(null);
+      else setEditing(null);
+    };
+    const onMove = () => {
+      reposition();
+      placeInner();
     };
     document.addEventListener('pointerdown', onPointerDown);
     document.addEventListener('keydown', onKeyDown, true);
-    window.addEventListener('resize', reposition);
-    window.addEventListener('scroll', reposition, true);
+    window.addEventListener('resize', onMove);
+    window.addEventListener('scroll', onMove, true);
     return () => {
       document.removeEventListener('pointerdown', onPointerDown);
       document.removeEventListener('keydown', onKeyDown, true);
-      window.removeEventListener('resize', reposition);
-      window.removeEventListener('scroll', reposition, true);
+      window.removeEventListener('resize', onMove);
+      window.removeEventListener('scroll', onMove, true);
     };
-  }, [editingId, reposition, setEditing]);
+  }, [editingId, inner, reposition, placeInner, setEditing]);
 
-  const operatorPicked = useRef(false);
-  const operatorItems = useMemo<MenuEntry[]>(() => {
-    const target = root.children.find((n) => n.id === editingId);
-    const lead = target ? firstCondition(target) : null;
-    if (!lead) return [];
-    return OPERATORS.map((o) => ({
-      kind: 'item',
-      label: o.label,
-      icon: o.icon,
-      selected: o.id === lead.operatorId,
-      onSelect: () => {
-        actions.updateCondition(
-          lead.id,
-          o.id === 'empty' || o.id === 'between' || lead.operatorId === 'between' ? { operatorId: o.id, values: [] } : { operatorId: o.id },
-        );
-        // The Menu closes itself after a pick; most operators then need a value, so go on to it.
-        operatorPicked.current = true;
-        setEditing(operatorTakesValue(o.id) ? { id: target.id, view: 'value' } : null);
-      },
-    }));
-  }, [root, editingId, actions, setEditing]);
+  // A new group gets focus on its "+ Filter", which also marks it as the group being worked in.
+  const focusGroupId = useRef<string | null>(null);
+  useEffect(() => {
+    const id = focusGroupId.current;
+    if (!id) return;
+    focusGroupId.current = null;
+    // After the "+ Filter" menu has returned focus to its own button.
+    window.requestAnimationFrame(() =>
+      popoverRef.current?.querySelector<HTMLElement>(`[data-group-id="${id}"] > [data-add-filter] button`)?.focus(),
+    );
+  });
+
+  const addCondition = (parentId: string, parameterId: string) => {
+    const param = parameters.find((p) => p.id === parameterId);
+    const condition = newCondition({ parameterId, operatorId: param ? defaultOperatorFor(param) : undefined });
+    actions.replace(appendChild(root, parentId, condition));
+    setInner({ conditionId: condition.id, segment: 'value' });
+  };
+
+  const addGroup = (parentId: string) => {
+    const group = newGroup('and');
+    actions.replace(appendChild(root, parentId, group));
+    focusGroupId.current = group.id;
+  };
+
+  const removeCondition = (id: string) => {
+    if (inner?.conditionId === id) setInner(null);
+    actions.remove(id);
+  };
 
   if (root.children.length === 0 && !showEmpty) return null;
 
@@ -243,8 +357,11 @@ export function AdvancedFilterBar({
   const mountedLead = mountedNode ? firstCondition(mountedNode) : null;
   const mountedParam = parameters.find((p) => p.id === mountedLead?.parameterId);
   const wide = mounted?.view === 'group';
+  const editingNode = root.children.find((n) => n.id === editingId);
+  const editingLead = editingNode ? firstCondition(editingNode) : null;
+  const innerNode = inner ? findNode(root, inner.conditionId) : null;
 
-  /** A pill with one condition edits its value and operator in place; a longer one opens its whole group. */
+  /** A pill with one condition edits its value and operator in place; anything else opens the group. */
   const editSegment = (node: FilterNode, segment: FilterPillSegment = 'value') => {
     const single = countConditions(node) === 1;
     const view: AdvancedFilterBarEditView =
@@ -271,8 +388,16 @@ export function AdvancedFilterBar({
             {(() => {
               const onEdit = (segment?: FilterPillSegment) => editSegment(node, segment);
               const onRemove = () => removePill(node.id);
-              return renderPill ? (
-                renderPill({ ...summarizePill(node, parameters), onEdit, onRemove })
+              if (renderPill) return renderPill({ ...summarizePill(node, parameters), onEdit, onRemove });
+              // A filter with no conditions yet is the grey "Advanced filter" pill (Figma 10153:6602).
+              return countConditions(node) === 0 ? (
+                <FilterPill
+                  empty
+                  parameter={{ label: 'Advanced filter', icon: 'FunnelSimple' }}
+                  onEdit={() => editSegment(node, 'parameter')}
+                  onRemove={onRemove}
+                  removeLabel="Remove filter"
+                />
               ) : (
                 <FilterPill {...pillProps(node, parameters)} onEdit={onEdit} onRemove={onRemove} removeLabel="Remove filter" />
               );
@@ -291,7 +416,16 @@ export function AdvancedFilterBar({
             aria-label={wide ? 'Edit filter' : `Edit ${mountedParam?.label ?? 'filter'}`}
           >
             {wide && mountedNode.kind === 'group' ? (
-              <FilterGroup group={mountedNode} parameters={parameters} actions={actions} />
+              <FilterBarGroup
+                group={mountedNode}
+                parameters={parameters}
+                categories={fieldGroups}
+                onAddCondition={addCondition}
+                onAddGroup={addGroup}
+                onRemove={removeCondition}
+                onSetOp={actions.setOp}
+                onEditCondition={(conditionId, segment) => setInner(segment === 'more' ? null : { conditionId, segment })}
+              />
             ) : (
               mountedLead && (
                 <FilterValueEditor
@@ -305,17 +439,27 @@ export function AdvancedFilterBar({
           </div>,
           document.body,
         )}
-      {editing?.view === 'operator' && place && (
-        <Menu
-          open
-          ariaLabel="Select an operator"
-          items={operatorItems}
-          position={{ x: place.left, y: place.top }}
-          onOpenChange={(open) => {
-            if (open) return;
-            if (operatorPicked.current) operatorPicked.current = false;
-            else setEditing(null);
-          }}
+      {editing?.view === 'operator' && place && editingLead && (
+        <ConditionEditor
+          condition={editingLead}
+          parameters={parameters}
+          segment="operator"
+          place={place}
+          actions={actions}
+          onClose={() => setEditing(null)}
+          onNext={(next) => setEditing(next === 'value' ? { id: editing.id, view: 'value' } : null)}
+        />
+      )}
+      {inner && innerPlace && innerNode?.kind === 'condition' && (
+        <ConditionEditor
+          key={`${inner.conditionId}-${inner.segment}`}
+          condition={innerNode}
+          parameters={parameters}
+          segment={inner.segment}
+          place={innerPlace}
+          actions={actions}
+          onClose={() => setInner(null)}
+          onNext={(next) => setInner(next ? { conditionId: innerNode.id, segment: next } : null)}
         />
       )}
     </div>

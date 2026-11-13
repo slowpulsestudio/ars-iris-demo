@@ -1,0 +1,71 @@
+/* Figma "Default, interactions" / "Nesting, interactions" (10126:4485, 10153:4683). Figma spaces the
+   card's rows 10px and draws the nested border 1.5px; neither has a token, so the nearest are used
+   (listed in docs/figma-tidy-up.md). */
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--oi-spacing-m);
+  min-width: 0;
+}
+
+.full {
+  width: 100%;
+}
+
+/* A group after the first, with the AND / OR chip on its left. */
+.joined {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--oi-spacing-m);
+  width: 100%;
+}
+
+.joined > :last-child {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--oi-spacing-s);
+  width: 100%;
+  padding: var(--oi-spacing-m);
+  background-color: var(--oi-background-color-secondary);
+  border-radius: var(--oi-border-radius-default);
+  transition: background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+.card .joined {
+  gap: var(--oi-spacing-s);
+}
+
+/* A group inside a group. */
+.nested {
+  border: var(--oi-border-width-default) dashed var(--oi-border-color-strong);
+}
+
+/* The group being worked in (the innermost one holding focus) is tinted, as Figma marks the new group. */
+.card:focus-within:not(:has(.card:focus-within)) {
+  background-color: var(--oi-background-color-brand);
+}
+
+.pill {
+  display: inline-flex;
+  max-width: 100%;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}

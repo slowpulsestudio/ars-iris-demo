@@ -11,7 +11,7 @@ const meta = {
       description: {
         component:
           'Advanced filter "Bar": the applied filter as pills under the content header. Used in modals and Favorites; everywhere else uses the Panel. ' +
-          'Press the value of a pill to pick its values, the operator to change it, and "and N more conditions" to edit the whole group. ' +
+          'Press the value of a one-condition pill to pick its values and the operator to change it. The field, "and N more conditions" and the grey "Advanced filter" pill open the pill\'s group: conditions as pills, groups as cards, AND/OR chips and "+ Filter". ' +
           'Figma: Iris UI Kit · Pattern / Advanced filter patterns · 9722:13727 (Content header 10012:3544).',
       },
     },

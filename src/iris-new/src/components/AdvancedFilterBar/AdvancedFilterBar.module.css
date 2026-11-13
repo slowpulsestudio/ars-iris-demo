@@ -38,21 +38,20 @@
   display: contents;
 }
 
-/* Figma "Nesting, interactions" popover (10153:4683): a group editor under the pill.
-   Drawn in a portal at a fixed position so a scrolling parent (a modal) cannot clip it. */
+/* Figma "Default, interactions" / "Nesting, interactions" popover (10126:4485, 10153:4683): the pill's
+   group under the pill, sized to its pills. Drawn in a portal at a fixed position so a scrolling parent
+   (a modal) cannot clip it. */
 .popover {
-  --popover-width: 435px;
-
-  container-type: inline-size;
   position: fixed;
   z-index: 100;
   box-sizing: border-box;
-  width: min(var(--popover-width), 90vw);
+  width: max-content;
+  min-width: 320px;
+  max-width: min(560px, 90vw);
   padding: var(--oi-spacing-m);
   background-color: var(--oi-background-color-primary);
-  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
   border-radius: var(--oi-border-radius-l);
-  box-shadow: var(--oi-shadow-mid);
+  box-shadow: var(--oi-shadow-high);
   opacity: 1;
   transform: none;
   transition:
@@ -77,8 +76,8 @@
 
 /* Figma FilterSelect (9710:8598): the 240px value menu under a pill's value. */
 .valuePopover {
-  --popover-width: 240px;
-
+  width: min(240px, 90vw);
+  min-width: 0;
   padding: var(--oi-spacing-s);
 }
 

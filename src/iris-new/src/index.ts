@@ -20,3 +20,4 @@ export {
   type AdvancedFilterBarEditView,
 } from './components/AdvancedFilterBar/AdvancedFilterBar.js';
 export { FilterValueEditor, type FilterValueEditorProps } from './components/FilterValueEditor/FilterValueEditor.js';
+export { FilterBarGroup, type FilterBarGroupProps } from './components/FilterBarGroup/FilterBarGroup.js';

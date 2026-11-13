@@ -128,11 +128,11 @@ export function useAdvancedFilter<T>(
   }
 
   // Bar: the filter button offers the Advanced filter and each field. A field adds a pill with its usual
-  // operator and opens the values under it; the Advanced filter adds an empty card and opens its group.
+  // operator and opens the values under it; the Advanced filter adds an empty filter and opens its group,
+  // which holds only "+ Filter" (Figma 10126:3944).
   const addCard = (parameterId?: string) => {
     const param = parameters.find((p) => p.id === parameterId);
-    const operatorId = param ? defaultOperatorFor(param) : undefined;
-    const card = newGroup('and', [newCondition({ parameterId, operatorId })]);
+    const card = newGroup('and', param ? [newCondition({ parameterId, operatorId: defaultOperatorFor(param) })] : []);
     actions.replace({ ...root, children: [...root.children, card] });
     setEditing({ id: card.id, view: param ? 'value' : 'group' });
   };
@@ -154,6 +154,7 @@ export function useAdvancedFilter<T>(
         <AdvancedFilterBar
           root={root}
           parameters={parameters}
+          categories={categories}
           actions={actions}
           editing={editing}
           onEditingChange={setEditing}
