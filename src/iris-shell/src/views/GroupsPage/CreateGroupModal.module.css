@@ -22,3 +22,19 @@
   color: var(--oi-content-color-tertiary);
   cursor: help;
 }
+
+/* Destination folder step: the Select folder sheet's subtitle. */
+.hint {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-secondary);
+}
+
+/* Not in Figma: the tree scrolls in a box about as tall as the General step's fields, so the modal keeps its size (no token). */
+.folders {
+  height: 370px;
+  overflow: hidden;
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-default);
+}
