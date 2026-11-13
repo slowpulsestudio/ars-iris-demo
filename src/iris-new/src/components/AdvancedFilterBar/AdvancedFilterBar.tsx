@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '@iris/lib/cx.js';
+import { motionDurationMs, prefersReducedMotion } from '@iris/lib/motion.js';
 import type { FilterModelActions } from '@iris/components/Filters/useFilterModel.js';
 import {
   OPERATOR_BY_ID,
@@ -113,11 +114,45 @@ export function AdvancedFilterBar({
   const [place, setPlace] = useState<{ top: number; left: number } | null>(null);
 
   const reposition = useCallback(() => {
-    const pill = editingId ? items.current.get(editingId) : undefined;
+    // Keep the last place while the popover fades out.
+    if (!editingId) return;
+    const pill = items.current.get(editingId);
     setPlace(pill ? placeUnder(pill) : null);
   }, [editingId]);
 
   useLayoutEffect(reposition, [reposition, root]);
+
+  // The popover stays mounted while it fades out; a pill being removed stays until it has faded.
+  const [mountedId, setMountedId] = useState<string | null>(editingId);
+  const [leaving, setLeaving] = useState<ReadonlySet<string>>(() => new Set());
+  const exitMs = () => (prefersReducedMotion() ? 0 : motionDurationMs('--oi-motion-duration-short'));
+
+  useEffect(() => {
+    if (editingId) {
+      setMountedId(editingId);
+      return undefined;
+    }
+    if (!mountedId) return undefined;
+    const t = window.setTimeout(() => setMountedId(null), exitMs());
+    return () => window.clearTimeout(t);
+  }, [editingId, mountedId]);
+
+  const removePill = (id: string) => {
+    if (editingId === id) setEditingId(null);
+    if (exitMs() === 0) {
+      actions.remove(id);
+      return;
+    }
+    setLeaving((s) => new Set(s).add(id));
+    window.setTimeout(() => {
+      actions.remove(id);
+      setLeaving((s) => {
+        const next = new Set(s);
+        next.delete(id);
+        return next;
+      });
+    }, exitMs());
+  };
 
   useEffect(() => {
     if (!editingId) return;
@@ -125,7 +160,7 @@ export function AdvancedFilterBar({
       const target = e.target as Element;
       // Menus and pickers opened from inside the popover render in portals of their own.
       if (popoverRef.current?.contains(target)) return;
-      if (target.closest('[role="menu"], [role="listbox"], [role="dialog"]')) return;
+      if (target.closest('[role="menu"], [role="listbox"]')) return;
       if (target.closest('[data-filter-pill]')) return;
       setEditingId(null);
     };
@@ -149,7 +184,7 @@ export function AdvancedFilterBar({
 
   if (root.children.length === 0 && !showEmpty) return null;
 
-  const editing = root.children.find((n) => n.id === editingId);
+  const editing = root.children.find((n) => n.id === mountedId);
 
   return (
     <div className={cx(styles.root, inline && styles.inline, className)} role="group" aria-label="Applied filters">
@@ -161,6 +196,7 @@ export function AdvancedFilterBar({
             key={node.id}
             className={styles.item}
             data-filter-pill
+            data-leaving={leaving.has(node.id) || undefined}
             ref={(el) => {
               if (el) items.current.set(node.id, el);
               else items.current.delete(node.id);
@@ -168,10 +204,7 @@ export function AdvancedFilterBar({
           >
             {(() => {
               const onEdit = () => setEditingId(editingId === node.id ? null : node.id);
-              const onRemove = () => {
-                if (editingId === node.id) setEditingId(null);
-                actions.remove(node.id);
-              };
+              const onRemove = () => removePill(node.id);
               return renderPill ? (
                 renderPill({ ...summarizePill(node, parameters), onEdit, onRemove })
               ) : (
@@ -186,6 +219,7 @@ export function AdvancedFilterBar({
           <div
             ref={popoverRef}
             className={styles.popover}
+            data-state={editingId ? 'open' : 'closing'}
             style={{ top: place.top, left: place.left }}
             role="dialog"
             aria-label="Edit filter"

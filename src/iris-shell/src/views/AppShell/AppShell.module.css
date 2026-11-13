@@ -105,12 +105,33 @@
   box-sizing: border-box;
   width: var(--dock-width);
   height: 100%;
+  /* The Panel also fades and slides in a little as the dock opens. */
+  opacity: 0;
+  transform: translateX(var(--oi-spacing-s));
+  transition:
+    opacity var(--oi-motion-duration-default) var(--oi-motion-ease-exit),
+    transform var(--oi-motion-duration-default) var(--oi-motion-ease-exit);
+}
+
+.dock[data-open='true'] .dockInner {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--oi-motion-duration-long) var(--oi-motion-ease-enter),
+    transform var(--oi-motion-duration-long) var(--oi-motion-ease-drawer);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .dock,
   .dock[data-open='true'] {
     transition: none;
+  }
+
+  /* Fade only: no movement. */
+  .dockInner,
+  .dock[data-open='true'] .dockInner {
+    transform: none;
+    transition: opacity var(--oi-motion-duration-short) var(--oi-motion-ease-default);
   }
 }
 

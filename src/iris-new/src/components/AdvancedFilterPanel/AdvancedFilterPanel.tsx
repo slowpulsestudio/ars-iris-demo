@@ -90,11 +90,13 @@ export function AdvancedFilterPanel({
       </header>
 
       <div className={styles.body}>
-        {view === 'query' && syntaxes?.length ? (
-          <QuerySyntax syntaxes={syntaxes} />
-        ) : (
-          <AdvancedFilterBuilder root={root} parameters={parameters} categories={categories} actions={actions} addLabel={addLabel} />
-        )}
+        <div key={view} className={styles.view}>
+          {view === 'query' && syntaxes?.length ? (
+            <QuerySyntax syntaxes={syntaxes} />
+          ) : (
+            <AdvancedFilterBuilder root={root} parameters={parameters} categories={categories} actions={actions} addLabel={addLabel} />
+          )}
+        </div>
       </div>
 
       <footer className={styles.footer}>

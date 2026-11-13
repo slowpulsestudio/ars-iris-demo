@@ -44,6 +44,41 @@
   width: auto;
 }
 
+/* A new condition or group fades and drops in on the Iris enter clock. */
+.row,
+.nestedRow {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--oi-motion-duration-default) var(--oi-motion-ease-enter),
+    transform var(--oi-motion-duration-default) var(--oi-motion-ease-enter);
+}
+
+@starting-style {
+  .row,
+  .nestedRow {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--oi-spacing-s)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row,
+  .nestedRow {
+    transform: none;
+    transition-property: opacity;
+  }
+}
+
+@starting-style {
+  @media (prefers-reduced-motion: reduce) {
+    .row,
+    .nestedRow {
+      transform: none;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .group {
     transition: none;

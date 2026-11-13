@@ -9,8 +9,28 @@
   border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
 }
 
+/* A new pill fades and drops in; a removed one fades and lifts out. Enter and exit use Iris motion tokens. */
 .item {
   max-width: 100%;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--oi-motion-duration-default) var(--oi-motion-ease-enter),
+    transform var(--oi-motion-duration-default) var(--oi-motion-ease-enter);
+}
+
+@starting-style {
+  .item {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--oi-spacing-xs)));
+  }
+}
+
+.item[data-leaving] {
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--oi-spacing-xs)));
+  transition-duration: var(--oi-motion-duration-short);
+  transition-timing-function: var(--oi-motion-ease-exit);
 }
 
 /* No tray of its own: the pills join the parent's row. */
@@ -33,4 +53,47 @@
   border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
   border-radius: var(--oi-border-radius-l);
   box-shadow: var(--oi-shadow-mid);
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--oi-motion-duration-default) var(--oi-motion-ease-enter),
+    transform var(--oi-motion-duration-default) var(--oi-motion-ease-enter);
+}
+
+@starting-style {
+  .popover {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--oi-spacing-s)));
+  }
+}
+
+.popover[data-state='closing'] {
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--oi-spacing-s)));
+  transition-duration: var(--oi-motion-duration-short);
+  transition-timing-function: var(--oi-motion-ease-exit);
+  pointer-events: none;
+}
+
+/* Reduced motion: fade only, no movement. */
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .popover {
+    transform: none;
+    transition-property: opacity;
+  }
+
+  .item[data-leaving],
+  .popover[data-state='closing'] {
+    transform: none;
+  }
+}
+
+@starting-style {
+  @media (prefers-reduced-motion: reduce) {
+    .item,
+    .popover {
+      transform: none;
+    }
+  }
 }

@@ -44,6 +44,34 @@
   font-weight: var(--oi-text-caption-strong-font-weight);
   text-align: center;
   pointer-events: none;
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity var(--oi-motion-duration-short) var(--oi-motion-ease-enter),
+    transform var(--oi-motion-duration-short) var(--oi-motion-ease-enter);
+}
+
+/* The badge pops in when the first condition is applied. */
+@starting-style {
+  .filterCount {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filterCount {
+    transform: none;
+    transition-property: opacity;
+  }
+}
+
+@starting-style {
+  @media (prefers-reduced-motion: reduce) {
+    .filterCount {
+      transform: none;
+    }
+  }
 }
 
 /* No create: the filter sits at the left of a 96px slot in Figma. */

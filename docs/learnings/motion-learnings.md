@@ -39,7 +39,13 @@ The Motion section of the ARS Storybook (Motion/Tokens and Motion/Usage, in [src
 | Ask-AI panel | fades and slides 8px on the enter token | the same on the exit token, stays mounted (inert) while closing | off |
 | Filter row under the toolbar | opens by height on `--oi-motion-ease-emphasized`, `--oi-motion-duration-default`, so the table glides down | closes the same way, so the table glides up | no transition |
 | Card reveal (Insights, Identity Manager, Identity Insights) | `--oi-motion-ease-enter`, 500ms with a 40ms stagger | | |
-| Iris UI Kit filter parts (`src/iris-new`) | hover and press on `--oi-motion-duration-short` and `--oi-motion-ease-default` | | transitions off |
+| Iris UI Kit filter parts (`src/iris-new`): hover and press | `--oi-motion-duration-short`, `--oi-motion-ease-default` | | transitions off |
+| Advanced filter Panel dock (AppShell) | the dock opens by width and the Panel slides 8px and fades: `--oi-motion-duration-long` with `--oi-motion-ease-drawer` (opacity on `--oi-motion-ease-enter`) | closes on `--oi-motion-duration-default` with `--oi-motion-ease-exit` | fade only |
+| Advanced filter Panel: new condition, nested group, rule card | fade and drop 8px, `--oi-motion-duration-default`, `--oi-motion-ease-enter` (`@starting-style`) | not animated: the row is removed at once | fade only |
+| Panel: builder and query view switch | the new view fades in, `--oi-motion-duration-short` | | fade |
+| Advanced filter Bar: pill | fade and drop 4px, `--oi-motion-duration-default`, `--oi-motion-ease-enter` | fade and lift out, `--oi-motion-duration-short`, `--oi-motion-ease-exit`; the pill stays until it has faded | fade only |
+| Advanced filter Bar: popover under a pill | fade and drop 8px, `--oi-motion-duration-default`, `--oi-motion-ease-enter` | the same, `--oi-motion-duration-short`, `--oi-motion-ease-exit`; it stays mounted until it has faded | fade only |
+| Filters button badge and dot indicator | fade and scale from 0.5, `--oi-motion-duration-short`, `--oi-motion-ease-enter` | not animated | fade only |
 
 ## Learnings
 
@@ -53,6 +59,9 @@ The Motion section of the ARS Storybook (Motion/Tokens and Motion/Usage, in [src
 8. **A forked curve is a bug.** The card reveal used its own copy of `cubic-bezier(0.22, 1, 0.36, 1)` that came with the Iris packages. It now uses `--oi-motion-ease-enter`.
 9. **A slower token is a token swap, not a new number.** When an animation feels too fast, move up a duration token (`short`, `default`, `long`) instead of typing a longer time.
 10. **Check the motion tokens in Figma first.** For resizing something vertically the Figma asks for the motion-move easing, not a default transition (see "Token gaps").
+11. **Things that mount already visible animate with `@starting-style`; things that unmount need the exit built in.** The filter Panel's new rows and cards, the Bar's pills and popover, and the Filters badge all enter with `@starting-style`. The pill and the popover also exit: the component marks them as leaving, waits `motionDurationMs('--oi-motion-duration-short')` (nothing under reduced motion), then removes them. Removing a condition row or a rule card from the Panel is not animated yet.
+12. **Put `@starting-style` at the top level of the stylesheet, not nested in the rule,** as `SideSheet.module.css` does. A `@media (prefers-reduced-motion)` can sit inside it for the fade-only case.
+13. **A popover in a portal has to handle Escape itself.** The Bar's popover listens for Escape in the capture phase and stops it, so a dialog the Bar sits in does not close too.
 
 ## Token gaps
 

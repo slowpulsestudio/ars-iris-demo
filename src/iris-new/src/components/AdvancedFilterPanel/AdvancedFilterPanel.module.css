@@ -98,6 +98,22 @@
   flex: 1 1 0;
 }
 
+/* Switching between the builder and the query view fades the new one in. */
+.view {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  opacity: 1;
+  transition: opacity var(--oi-motion-duration-short) var(--oi-motion-ease-enter);
+}
+
+@starting-style {
+  .view {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .switchItem {
     transition: none;

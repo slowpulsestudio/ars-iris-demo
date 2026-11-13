@@ -15,4 +15,32 @@
   border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-background-color-primary);
   border-radius: var(--oi-border-radius-l);
   pointer-events: none;
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity var(--oi-motion-duration-short) var(--oi-motion-ease-enter),
+    transform var(--oi-motion-duration-short) var(--oi-motion-ease-enter);
+}
+
+/* The dot appears when a filter is first applied. */
+@starting-style {
+  .dot {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot {
+    transform: none;
+    transition-property: opacity;
+  }
+}
+
+@starting-style {
+  @media (prefers-reduced-motion: reduce) {
+    .dot {
+      transform: none;
+    }
+  }
 }
