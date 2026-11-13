@@ -19,3 +19,12 @@
   flex: 1 1 0;
   min-height: 0;
 }
+
+/* Fits the step's content (not in Figma, which keeps 729px for every step). */
+.fit {
+  height: auto;
+}
+
+.fit .content {
+  flex: none;
+}

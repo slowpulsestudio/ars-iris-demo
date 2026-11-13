@@ -127,6 +127,8 @@ export function CreateObjectModal({
           activeIndex={step}
           interactiveSteps
           onStepSelect={setStep}
+          // You asked for the body to fit each step; Figma keeps it 729px tall (on the Figma tidy-up list).
+          fitContent
           footerVariant={footerVariant}
           onClose={onClose}
           onBack={() => setStep(0)}

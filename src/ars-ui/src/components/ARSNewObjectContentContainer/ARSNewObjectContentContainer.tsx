@@ -17,6 +17,8 @@ export interface ARSNewObjectContentContainerProps {
   activeIndex?: number;
   interactive?: boolean;
   onStepSelect?: (index: number) => void;
+  /** Sizes the body to the step's content instead of Figma's fixed 729px, so the modal height follows the step. */
+  fitContent?: boolean;
   /** Replaces the content, as ARS_New_Object_Template does. */
   children?: ReactNode;
   className?: string;
@@ -32,11 +34,12 @@ export function ARSNewObjectContentContainer({
   activeIndex = 0,
   interactive,
   onStepSelect,
+  fitContent = false,
   children,
   className,
 }: ARSNewObjectContentContainerProps) {
   return (
-    <div className={cx(styles.root, className)}>
+    <div className={cx(styles.root, fitContent && styles.fit, className)}>
       {showStepper && (
         <ARSStepperWithDiv
           steps={steps}

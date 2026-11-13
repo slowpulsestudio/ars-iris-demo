@@ -27,6 +27,8 @@ export interface ARSNewObjectTemplateProps {
   /** Footer variant; follows the step by default. */
   footerVariant?: ARSModalNewObjectFooterVariant;
   ctaLabel?: string;
+  /** Sizes the body to each step's content instead of Figma's fixed height. */
+  fitContent?: boolean;
   /** Replaces the form, as Figma's content slot does. */
   children?: ReactNode;
   onClose?: () => void;
@@ -50,6 +52,7 @@ export function ARSNewObjectTemplate({
   onStepSelect,
   footerVariant = '1',
   ctaLabel,
+  fitContent = false,
   children,
   onClose,
   onBack,
@@ -75,6 +78,7 @@ export function ARSNewObjectTemplate({
           activeIndex={activeIndex}
           interactive={interactiveSteps}
           onStepSelect={onStepSelect}
+          fitContent={fitContent}
         >
           {children ?? <ARSNewObjectContent showFolderButton />}
         </ARSNewObjectContentContainer>
