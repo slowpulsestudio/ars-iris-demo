@@ -20,7 +20,8 @@ export interface ARSEmptyContentProps {
 
 /**
  * ARS_Empty_Content — an object list with no items: ARS_Header,
- * ARS_Table_Toolbar and the "No data" empty state. Figma: 3423:30769.
+ * ARS_Table_Toolbar and the empty state (the Iris one with a Hairline
+ * figure, in place of Figma's older "No data" drawing). Figma: 3423:30769.
  */
 export function ARSEmptyContent({
   header,

@@ -14,10 +14,12 @@
     "check": "node scripts/check-kit.mjs"
   },
   "peerDependencies": {
+    "@lucasmarkes/hairline": "^0.5.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@lucasmarkes/hairline": "0.5.1",
     "@storybook/addon-a11y": "^10.6.5",
     "@storybook/addon-docs": "^10.6.5",
     "@storybook/react-vite": "^10.6.5",

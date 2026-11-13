@@ -1,7 +1,6 @@
-import { cx } from '@iris/lib/cx.js';
+import { Drawer } from '@lucasmarkes/hairline/react';
 import { Button } from '@iris/components/Button/Button.js';
-import { NoDataIllustration } from '../NoDataIllustration/NoDataIllustration.js';
-import styles from './EmptyState.module.css';
+import { EmptyFigure, type EmptyFigureProps } from '@iris/components/EmptyFigure/EmptyFigure.js';
 
 export interface EmptyStateProps {
   /** e.g. "This Organizational Unit has no objects." */
@@ -10,29 +9,29 @@ export interface EmptyStateProps {
   actionLabel?: string;
   actionIcon?: string;
   onAction?: () => void;
+  /** The Hairline figure; an empty filing cabinet (Drawer) unless the case has a closer one. */
+  figure?: EmptyFigureProps['figure'];
   className?: string;
 }
 
 /**
- * The ARS "No data" empty state: the drawing, a message and a button, centred in the space left.
- * Figma: the "Content Placeholder" of ARS_Empty_Content 3423:30769.
+ * The ARS empty state: the Iris empty state (EmptyFigure) with a Hairline figure, the message and a button,
+ * centred in the space left. It replaces the older "No data" drawing of ARS_Empty_Content 3423:30769, as the
+ * designer asked; see Design update recommendations.
  */
-export function EmptyState({ message, actionLabel, actionIcon = 'Plus', onAction, className }: EmptyStateProps) {
+export function EmptyState({ message, actionLabel, actionIcon = 'Plus', onAction, figure = Drawer, className }: EmptyStateProps) {
   return (
-    <div className={cx(styles.placeholder, className)}>
-      <div className={styles.emptyState}>
-        <NoDataIllustration />
-        <div className={styles.content}>
-          <p className={styles.message}>{message}</p>
-          {actionLabel && (
-            <div className={styles.buttons}>
-              <Button variant="secondary" iconLead={actionIcon} onClick={onAction}>
-                {actionLabel}
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+    <EmptyFigure
+      className={className}
+      figure={figure}
+      title={message}
+      action={
+        actionLabel ? (
+          <Button variant="secondary" iconLead={actionIcon} onClick={onAction}>
+            {actionLabel}
+          </Button>
+        ) : undefined
+      }
+    />
   );
 }

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Hub, Loupe } from '@lucasmarkes/hairline/react';
 import { ARSAddMemberModal, ARSFilterArea, ARSGroupTable, ARSTableToolbar, EmptyState, type ARSGroupTableRow } from '@ars';
 import { Pagination } from '../../components/Pagination/Pagination.js';
 import { SegmentedControl, type SegmentedItem } from '../../components/SegmentedControl/SegmentedControl.js';
@@ -155,6 +156,7 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
     (search ? (
       <EmptyState
         className={styles.empty}
+        figure={Loupe}
         message={`No memberships match “${search}”.`}
         actionLabel="Clear search"
         actionIcon="XCircle"
@@ -163,6 +165,7 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
     ) : (
       <EmptyState
         className={styles.empty}
+        figure={Hub}
         message={EMPTY_MESSAGE[view]}
         actionLabel={view === 'members-of' ? undefined : 'Add members'}
         onAction={openAdd}

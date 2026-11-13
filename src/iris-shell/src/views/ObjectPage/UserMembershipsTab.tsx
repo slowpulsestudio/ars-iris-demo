@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Hub, Loupe } from '@lucasmarkes/hairline/react';
 import { ARSAddMemberModal, ARSFilterArea, ARSGroupTable, ARSTableToolbar, EmptyState, type ARSGroupTableRow } from '@ars';
 import { Pagination } from '../../components/Pagination/Pagination.js';
 import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
@@ -102,6 +103,7 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
     (search ? (
       <EmptyState
         className={styles.empty}
+        figure={Loupe}
         message={`No memberships match “${search}”.`}
         actionLabel="Clear search"
         actionIcon="XCircle"
@@ -110,6 +112,7 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
     ) : (
       <EmptyState
         className={styles.empty}
+        figure={Hub}
         message={`${userName} is not a member of any group.`}
         actionLabel="Add groups"
         onAction={openAdd}
