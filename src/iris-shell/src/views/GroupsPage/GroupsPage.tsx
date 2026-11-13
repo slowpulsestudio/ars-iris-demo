@@ -122,7 +122,7 @@ export function GroupsPage() {
       <ARSTableGroups
         className={screen.screen}
         header={{ title: 'Groups', icon: 'UsersThree' }}
-        empty={directories.size === 0 ? <NoDirectoriesSelected /> : undefined}
+        empty={directories.size === 0 ? <NoDirectoriesSelected /> : gf.emptyWhen(rows.length)}
         toolbar={{
           variant: 'Basic',
           search: query,

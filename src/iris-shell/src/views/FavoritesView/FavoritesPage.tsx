@@ -55,7 +55,7 @@ export function FavoritesPage() {
     entries.length === 0 ? (
       <EmptyFigure figure={Turntable} title="No favourites yet" description="Star an object to see it here." />
     ) : rows.length === 0 ? (
-      <EmptyFigure figure={Turntable} title="No favourites match" description="Nothing matches the search or filter." />
+      (lf.emptyWhen(0) ?? <EmptyFigure figure={Turntable} title="No favourites match" description="Nothing matches the search." />)
     ) : undefined;
 
   return (

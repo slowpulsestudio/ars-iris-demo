@@ -192,7 +192,7 @@ export function UsersPage() {
       <ARSFlatViewUserContent
         className={cx(screen.screen, selected.size > 0 && screen.withBar)}
         header={{ title: 'Users', icon: 'Users', onMore: pageMenu.openAt }}
-        empty={directories.size === 0 ? <NoDirectoriesSelected /> : undefined}
+        empty={directories.size === 0 ? <NoDirectoriesSelected /> : lf.emptyWhen(rows.length)}
         toolbar={{
           variant: 'Basic',
           search: query,

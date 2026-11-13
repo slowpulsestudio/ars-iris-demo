@@ -59,23 +59,27 @@ export function UserRolesTab({ userId }: UserRolesTabProps) {
         filterCount={mf.filterCount}
         filterPressed={mf.filterPressed}
       />
-      <ARSGroupTable
-        ariaLabel="Roles"
-        rows={rows.slice((safePage - 1) * pageSize, safePage * pageSize)}
-        selectedIds={selected}
-        onSelectedIdsChange={(ids) => setSelectedSet(new Set(ids))}
-      />
-      <ARSPagination
-        page={safePage}
-        pageCount={pageCount}
-        onPageChange={setPage}
-        pageSize={pageSize}
-        pageSizeOptions={PAGE_SIZE_OPTIONS}
-        onPageSizeChange={(size) => {
-          setPageSize(size);
-          setPage(1);
-        }}
-      />
+      {mf.emptyWhen(rows.length) ?? (
+        <>
+          <ARSGroupTable
+            ariaLabel="Roles"
+            rows={rows.slice((safePage - 1) * pageSize, safePage * pageSize)}
+            selectedIds={selected}
+            onSelectedIdsChange={(ids) => setSelectedSet(new Set(ids))}
+          />
+          <ARSPagination
+            page={safePage}
+            pageCount={pageCount}
+            onPageChange={setPage}
+            pageSize={pageSize}
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setPage(1);
+            }}
+          />
+        </>
+      )}
     </div>
   );
 }

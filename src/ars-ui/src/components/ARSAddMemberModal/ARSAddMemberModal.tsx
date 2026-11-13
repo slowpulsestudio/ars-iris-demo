@@ -37,6 +37,8 @@ export interface ARSAddMemberModalProps {
   /** The applied filter as pills under the search (the Advanced filter Bar). Not drawn in the Groups file. */
   filters?: ReactNode;
   pagination: ARSPaginationProps;
+  /** Shown in place of the table and paging, e.g. when the filter leaves no objects. Not drawn in Figma. */
+  empty?: ReactNode;
   onClose?: () => void;
   onCancel?: () => void;
   onSave?: () => void;
@@ -61,6 +63,7 @@ export function ARSAddMemberModal({
   filterCount,
   filters,
   pagination,
+  empty,
   onClose,
   onCancel,
   onSave,
@@ -89,36 +92,40 @@ export function ARSAddMemberModal({
     >
       <ARSTableToolbar variant="4" search={search} onSearchChange={onSearchChange} onFilter={onFilter} filterCount={filterCount} />
       {filters}
-      <div role="table" aria-label="Objects" className={styles.table}>
-        <TableHeadRow
-          columns={[{ label: 'Name', width: 150 }, { label: 'Object type', width: 110 }, { label: 'Description' }]}
-          allSelected={allSelected}
-          someSelected={rows.some((r) => selected.has(r.id))}
-          onSelectAll={(on) => {
-            const ids = new Set(selectedIds);
-            rows.forEach((r) => (on ? ids.add(r.id) : ids.delete(r.id)));
-            onSelectedIdsChange?.([...ids]);
-          }}
-          actionsWidth={0}
-        />
-        {rows.map((row) => (
-          <div key={row.id} role="row" className={styles.row}>
-            <TableCell inset="s" className={styles.check}>
-              <Checkbox checked={selected.has(row.id)} onChange={(on) => toggle(row.id, on)} ariaLabel={`Select ${row.name}`} />
-            </TableCell>
-            <TableCell className={styles.name}>
-              <CellText strong>{row.name}</CellText>
-            </TableCell>
-            <TableCell className={styles.type}>
-              <CellText>{row.objectType}</CellText>
-            </TableCell>
-            <TableCell className={styles.fill}>
-              <CellText>{row.description}</CellText>
-            </TableCell>
+      {empty ?? (
+        <>
+          <div role="table" aria-label="Objects" className={styles.table}>
+            <TableHeadRow
+              columns={[{ label: 'Name', width: 150 }, { label: 'Object type', width: 110 }, { label: 'Description' }]}
+              allSelected={allSelected}
+              someSelected={rows.some((r) => selected.has(r.id))}
+              onSelectAll={(on) => {
+                const ids = new Set(selectedIds);
+                rows.forEach((r) => (on ? ids.add(r.id) : ids.delete(r.id)));
+                onSelectedIdsChange?.([...ids]);
+              }}
+              actionsWidth={0}
+            />
+            {rows.map((row) => (
+              <div key={row.id} role="row" className={styles.row}>
+                <TableCell inset="s" className={styles.check}>
+                  <Checkbox checked={selected.has(row.id)} onChange={(on) => toggle(row.id, on)} ariaLabel={`Select ${row.name}`} />
+                </TableCell>
+                <TableCell className={styles.name}>
+                  <CellText strong>{row.name}</CellText>
+                </TableCell>
+                <TableCell className={styles.type}>
+                  <CellText>{row.objectType}</CellText>
+                </TableCell>
+                <TableCell className={styles.fill}>
+                  <CellText>{row.description}</CellText>
+                </TableCell>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <ARSPagination {...pagination} />
+          <ARSPagination {...pagination} />
+        </>
+      )}
       {selectedItems.length > 0 && (
         <ARSSelectedObjectsBlock
           items={selectedItems}

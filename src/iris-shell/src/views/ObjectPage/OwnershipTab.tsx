@@ -236,6 +236,7 @@ export function OwnershipTab({
           onFilter={af.onFilter}
           filterCount={af.filterCount}
           filters={af.bar}
+          empty={af.emptyWhen(candidates.length)}
           pagination={{ page: safePage, pageCount, onPageChange: setPage, pageSize: PICKER_PAGE_SIZE, pageSizeOptions: [PICKER_PAGE_SIZE] }}
           onClose={closePicker}
           onCancel={closePicker}

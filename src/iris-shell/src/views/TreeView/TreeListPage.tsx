@@ -351,6 +351,7 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
             ) : undefined
           }
           filtersOpen={inFavorites ? Boolean(lf.bar) : undefined}
+          empty={lf.emptyWhen(rows.length)}
           rows={pageRows.map((o) => ({
             id: o.id,
             name: o.name,

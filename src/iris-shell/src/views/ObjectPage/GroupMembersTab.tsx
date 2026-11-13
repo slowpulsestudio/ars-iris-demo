@@ -152,18 +152,22 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
         filterCount={mf.filterCount}
         filterPressed={mf.filterPressed}
       />
-      <ARSGroupTable rows={pageRows} selectedIds={selected} onSelectedIdsChange={setSelected} />
-      <ARSPagination
-        page={safePage}
-        pageCount={pageCount}
-        onPageChange={setPage}
-        pageSize={pageSize}
-        pageSizeOptions={PAGE_SIZE_OPTIONS}
-        onPageSizeChange={(size) => {
-          setPageSize(size);
-          setPage(1);
-        }}
-      />
+      {mf.emptyWhen(rows.length) ?? (
+        <>
+          <ARSGroupTable rows={pageRows} selectedIds={selected} onSelectedIdsChange={setSelected} />
+          <ARSPagination
+            page={safePage}
+            pageCount={pageCount}
+            onPageChange={setPage}
+            pageSize={pageSize}
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setPage(1);
+            }}
+          />
+        </>
+      )}
       <ModalOverlay open={addOpen} onClose={closeAdd} label="Add Member">
         <ARSAddMemberModal
           found={candidates.length}
@@ -184,6 +188,7 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
           onFilter={af.onFilter}
           filterCount={af.filterCount}
           filters={af.bar}
+          empty={af.emptyWhen(candidates.length)}
           pagination={{
             page: addSafePage,
             pageCount: addPageCount,

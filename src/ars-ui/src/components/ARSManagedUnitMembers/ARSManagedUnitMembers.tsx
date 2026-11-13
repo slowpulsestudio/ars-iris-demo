@@ -1,4 +1,4 @@
-import type { MouseEventHandler } from 'react';
+import type { MouseEventHandler, ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
@@ -38,6 +38,8 @@ export interface ARSManagedUnitMembersProps {
   selected?: Set<string>;
   onSelectionChange?: (next: Set<string>) => void;
   pagination: ARSPaginationProps;
+  /** Shown in place of the table and paging, e.g. when the filter leaves no members. Not drawn in Figma. */
+  empty?: ReactNode;
   onBack?: () => void;
   onNextItem?: () => void;
   onPreviousItem?: () => void;
@@ -65,6 +67,7 @@ export function ARSManagedUnitMembers({
   selected = new Set(),
   onSelectionChange,
   pagination,
+  empty,
   onBack,
   onNextItem,
   onPreviousItem,
@@ -101,36 +104,40 @@ export function ARSManagedUnitMembers({
         filterPressed={filterPressed}
         searchPlaceholder={`Search all members of ${unitName}`}
       />
-      <div role="table" aria-label="Members" className={styles.table}>
-        <TableHeadRow
-          columns={[{ label: 'Name', width: 180 }, { label: 'Description' }, { label: 'Type' }]}
-          allSelected={allSelected}
-          someSelected={selected.size > 0}
-          onSelectAll={(on) => onSelectionChange?.(on ? new Set(rows.map((r) => r.id)) : new Set())}
-          actions={<IconButton icon="SlidersHorizontal" ariaLabel="Columns" onClick={onColumns} />}
-          actionsWidth={44}
-        />
-        {rows.map((row) => (
-          <div key={row.id} role="row" className={styles.row}>
-            <TableCell inset="s" className={styles.check}>
-              <Checkbox checked={selected.has(row.id)} onChange={(on) => toggle(row.id, on)} ariaLabel={`Select ${row.name}`} />
-            </TableCell>
-            <TableCell gap="s" className={styles.name}>
-              <Icon name={row.type === 'Group' ? 'UsersThree' : 'User'} size="20px" className={styles.icon} />
-              <Link href={row.href ?? '#'} className={styles.nameLink}>
-                {row.name}
-              </Link>
-            </TableCell>
-            <TableCell className={styles.fill}>
-              <CellText>{row.description}</CellText>
-            </TableCell>
-            <TableCell className={styles.type}>
-              <CellText>{row.type}</CellText>
-            </TableCell>
+      {empty ?? (
+        <>
+          <div role="table" aria-label="Members" className={styles.table}>
+            <TableHeadRow
+              columns={[{ label: 'Name', width: 180 }, { label: 'Description' }, { label: 'Type' }]}
+              allSelected={allSelected}
+              someSelected={selected.size > 0}
+              onSelectAll={(on) => onSelectionChange?.(on ? new Set(rows.map((r) => r.id)) : new Set())}
+              actions={<IconButton icon="SlidersHorizontal" ariaLabel="Columns" onClick={onColumns} />}
+              actionsWidth={44}
+            />
+            {rows.map((row) => (
+              <div key={row.id} role="row" className={styles.row}>
+                <TableCell inset="s" className={styles.check}>
+                  <Checkbox checked={selected.has(row.id)} onChange={(on) => toggle(row.id, on)} ariaLabel={`Select ${row.name}`} />
+                </TableCell>
+                <TableCell gap="s" className={styles.name}>
+                  <Icon name={row.type === 'Group' ? 'UsersThree' : 'User'} size="20px" className={styles.icon} />
+                  <Link href={row.href ?? '#'} className={styles.nameLink}>
+                    {row.name}
+                  </Link>
+                </TableCell>
+                <TableCell className={styles.fill}>
+                  <CellText>{row.description}</CellText>
+                </TableCell>
+                <TableCell className={styles.type}>
+                  <CellText>{row.type}</CellText>
+                </TableCell>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <ARSPagination sticky {...pagination} />
+          <ARSPagination sticky {...pagination} />
+        </>
+      )}
     </div>
   );
 }

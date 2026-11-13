@@ -56,7 +56,7 @@ export function ManagedUnitsPage() {
       <ARSManagedUsersContent
         className={screen.screen}
         header={{ title: 'Managed Units', icon: 'FolderStar' }}
-        empty={directories.size === 0 ? <NoDirectoriesSelected /> : undefined}
+        empty={directories.size === 0 ? <NoDirectoriesSelected /> : lf.emptyWhen(rows.length)}
         toolbar={{
           variant: '4',
           search: query,
@@ -159,6 +159,7 @@ export function ManagedUnitMembersPage({ unitId }: ManagedUnitMembersPageProps) 
         onBack={() => navigate('#/management-units')}
         onPreviousItem={previous ? () => navigate(`#/management-units/${previous.id}`) : undefined}
         onNextItem={next ? () => navigate(`#/management-units/${next.id}`) : undefined}
+        empty={mf.emptyWhen(rows.length)}
         pagination={{
           page: safePage,
           pageCount,

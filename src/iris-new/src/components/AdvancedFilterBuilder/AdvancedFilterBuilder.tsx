@@ -1,5 +1,5 @@
 import type { Ref } from 'react';
-import { Sieve } from '@lucasmarkes/hairline/react';
+import { Format } from '@lucasmarkes/hairline/react';
 import { Button } from '@iris/components/Button/Button.js';
 import { EmptyFigure } from '@iris/components/EmptyFigure/EmptyFigure.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
@@ -61,7 +61,7 @@ export function AdvancedFilterBuilder({ root, parameters, categories, actions, a
     return (
       <div className={cx(styles.root, styles.empty, className)}>
         <EmptyFigure
-          figure={Sieve}
+          figure={Format}
           label="No filter yet"
           action={
             <Menu
