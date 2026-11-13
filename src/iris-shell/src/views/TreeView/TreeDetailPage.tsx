@@ -107,12 +107,11 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
   }, [nodeId, prev, next]);
 
   const breadcrumb = useMemo<Crumb[]>(() => {
-    const crumbs: Crumb[] = [{ label: 'Directory Management' }];
-    crumbs.push({ label: '…' });
-    crumbs.push({ label: getNodeName(nodeId) ?? 'Directory', onClick: () => navigate(`#/tree/${nodeId}`) });
-    crumbs.push({ label: object?.name ?? 'Object' });
-    return crumbs;
-  }, [getNodeName, nodeId, object]);
+    // The full path to the object, each folder opening its list (no "…").
+    const folders: Crumb[] = getPath(nodeId).map((n) => ({ label: n.name, onClick: () => navigate(`#/tree/${n.id}`) }));
+    if (folders.length === 0) folders.push({ label: getNodeName(nodeId) ?? 'Directory', onClick: () => navigate(`#/tree/${nodeId}`) });
+    return [{ label: 'Directory Management' }, ...folders, { label: object?.name ?? 'Object' }];
+  }, [getPath, getNodeName, nodeId, object]);
 
   if (!object) {
     return (

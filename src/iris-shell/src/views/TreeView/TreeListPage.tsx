@@ -279,7 +279,8 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
     const path = getPath(nodeId);
     const crumbs: Crumb[] = [{ label: 'Directory Management' }];
     if (inFavorites) crumbs.push({ label: 'Favourites', onClick: () => navigate('#/favorites') });
-    else if (path.length > 1) crumbs.push({ label: '…' });
+    // The full path to the folder, each one opening its list (no "…").
+    else for (const n of path.slice(0, -1)) crumbs.push({ label: n.name, onClick: () => navigate(`#/tree/${n.id}`) });
     const current = path[path.length - 1];
     crumbs.push({ label: current?.name ?? nodeName ?? 'Unknown' });
     return crumbs;

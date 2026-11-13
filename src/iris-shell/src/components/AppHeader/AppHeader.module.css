@@ -97,28 +97,40 @@
   white-space: nowrap;
 }
 
+/* A full trail shrinks instead of wrapping: folders cut off with "…" and the
+   current page keeps its whole name. Below 720px the trail folds into the "…" menu. */
 .crumbs {
   display: flex;
   align-items: center;
   gap: var(--oi-spacing-s);
+  min-width: 0;
 }
 
 .crumb {
   display: inline-flex;
   align-items: center;
   gap: var(--oi-spacing-s);
+  min-width: 0;
+}
+
+.crumb:last-child {
+  flex-shrink: 0;
 }
 
 .crumbLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);
   color: var(--oi-content-color-secondary);
 }
 
 .crumbLink {
-  display: inline-flex;
-  align-items: center;
-  height: 24px;
+  display: block;
+  height: var(--oi-size-s);
+  line-height: var(--oi-size-s);
   padding: 0;
   background: none;
   border: 0;
@@ -142,6 +154,7 @@
 }
 
 .separator {
+  flex-shrink: 0;
   color: var(--oi-content-color-tertiary);
 }
 
