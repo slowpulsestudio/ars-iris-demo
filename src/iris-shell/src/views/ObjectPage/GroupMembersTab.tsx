@@ -164,7 +164,7 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
       <EmptyState
         className={styles.empty}
         message={EMPTY_MESSAGE[view]}
-        actionLabel={view === 'members-of' ? undefined : 'Add member'}
+        actionLabel={view === 'members-of' ? undefined : 'Add members'}
         onAction={openAdd}
       />
     ));
@@ -178,7 +178,7 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
           <SegmentedControl layout="inline" ariaLabel="Memberships view" items={VIEWS} value={view} onChange={switchView} />
         }
         searchPlaceholder={MEMBERSHIPS_SEARCH}
-        actionLabel="Add member"
+        actionLabel="Add members"
         onAction={openAdd}
         search={query}
         onSearchChange={(value) => {
@@ -202,8 +202,9 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
           </div>
         </>
       )}
-      <ModalOverlay open={addOpen} onClose={closeAdd} label="Add Member">
+      <ModalOverlay open={addOpen} onClose={closeAdd} label="Add members">
         <ARSAddMemberModal
+          title="Add members"
           found={candidates.length}
           rows={candidates.slice((addSafePage - 1) * MODAL_PAGE_SIZE, addSafePage * MODAL_PAGE_SIZE).map((o) => ({
             id: o.id,

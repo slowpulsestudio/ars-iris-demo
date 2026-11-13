@@ -28,10 +28,10 @@ export const Four: Story = { name: '4', args: { variant: '4' } };
 
 /**
  * The Groups file's Memberships toolbar (ARS_WebUI2_Groups 167:7970): the view switch and a divider before the
- * search, which fills the row, no filter button, and a primary "Add member".
+ * search, which fills the row, no filter button, and a primary "Add members" (Figma writes "Add member").
  */
 export const Memberships: Story = {
-  args: { variant: 'Basic', hideFilter: true, actionLabel: 'Add member', searchPlaceholder: 'Search all members of ...' },
+  args: { variant: 'Basic', hideFilter: true, actionLabel: 'Add members', searchPlaceholder: 'Search all members of ...' },
   render: function Render(args) {
     const [view, setView] = useState('members');
     return (

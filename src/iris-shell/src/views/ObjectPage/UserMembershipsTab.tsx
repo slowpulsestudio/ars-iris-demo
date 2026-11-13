@@ -111,7 +111,7 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
       <EmptyState
         className={styles.empty}
         message={`${userName} is not a member of any group.`}
-        actionLabel="Add member"
+        actionLabel="Add groups"
         onAction={openAdd}
       />
     ));
@@ -122,7 +122,7 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
         variant="Basic"
         hideFilter
         searchPlaceholder={MEMBERSHIPS_SEARCH}
-        actionLabel="Add member"
+        actionLabel="Add groups"
         onAction={openAdd}
         search={query}
         onSearchChange={(value) => {
@@ -146,8 +146,9 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
           </div>
         </>
       )}
-      <ModalOverlay open={addOpen} onClose={closeAdd} label="Add Member">
+      <ModalOverlay open={addOpen} onClose={closeAdd} label="Add groups">
         <ARSAddMemberModal
+          title="Add groups"
           found={candidates.length}
           rows={candidates.slice((addSafePage - 1) * MODAL_PAGE_SIZE, addSafePage * MODAL_PAGE_SIZE).map((g) => ({
             id: g.id,
