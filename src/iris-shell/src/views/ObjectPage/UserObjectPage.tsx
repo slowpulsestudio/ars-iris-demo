@@ -25,6 +25,7 @@ import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { UnsavedChangesModal } from '../ObjectModals/UnsavedChangesModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
+import { withoutMove } from '../../lib/entraRules.js';
 import { UserDetailsTab } from './UserDetailsTab.js';
 import { UserMembershipsTab } from './UserMembershipsTab.js';
 import { UserRolesTab } from './UserRolesTab.js';
@@ -202,6 +203,8 @@ export function UserObjectPage({
 
   const dirty = detailsDirty || (editing && JSON.stringify(draft) !== JSON.stringify(toDraft(data)));
   const directoryName = data.directory.replace(/^@/, '');
+  // Entra has no location, so an Entra user has no Move.
+  const entraUser = /^@Entra/.test(data.directory);
 
   // Leaving a form with changes asks first.
   const guard = useLeaveGuard(dirty, () => {
@@ -395,7 +398,7 @@ export function UserObjectPage({
         tabs={tabs}
         tabsLabel="User sections"
         onTabChange={(next) => leave(() => setTab(next))}
-        actionGroups={USER_OBJECT_ACTIONS('Revoke sessions')}
+        actionGroups={withoutMove(USER_OBJECT_ACTIONS('Revoke sessions'), entraUser)}
         hideActions={tab.startsWith('Memberships')}
         onBack={onBack}
         onNextItem={onNext}
@@ -419,7 +422,7 @@ export function UserObjectPage({
         onClose={closeDialog}
         user={{ name: data.displayName }}
         location={directoryName}
-        entra={data.directory === '@Entra1'}
+        entra={entraUser}
       />
       <DeleteObjectModal
         open={deleteOpen}

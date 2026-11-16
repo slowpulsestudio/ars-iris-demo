@@ -24,6 +24,7 @@ import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { GroupDialogs } from '../ObjectModals/GroupDialogs.js';
 import { UnsavedChangesModal } from '../ObjectModals/UnsavedChangesModal.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
+import { withoutMove } from '../../lib/entraRules.js';
 import { GroupMembersTab } from './GroupMembersTab.js';
 import { OwnershipTab } from './OwnershipTab.js';
 import styles from './UserObjectPage.module.css';
@@ -349,7 +350,7 @@ export function GroupObjectPage({
         tabs={GROUP_TABS}
         tabsLabel="Group sections"
         onTabChange={(next) => leave(() => setTab(next))}
-        actionGroups={GROUP_ACTIONS}
+        actionGroups={withoutMove(GROUP_ACTIONS, directory === 'Cloud')}
         hideActions={tab === 'Memberships'}
         onBack={onBack}
         onNextItem={onNext}

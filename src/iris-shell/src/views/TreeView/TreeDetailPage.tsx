@@ -76,6 +76,8 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
   const [resetOpen, setResetOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [moveOpen, setMoveOpen] = useState(false);
+  // Entra has no location, so nothing in an Entra tenant is moved.
+  const inEntra = getPath(nodeId).some((n) => n.id === 'entra-directories');
 
   // Reset to the primary tab whenever the object changes.
   useEffect(() => {
@@ -310,7 +312,7 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
                 ...(canReset
                   ? ([{ kind: 'item', label: 'Reset password', icon: 'Password', onSelect: () => setResetOpen(true) }] as const)
                   : []),
-                { kind: 'item', label: 'Move', icon: 'Folder', onSelect: () => setMoveOpen(true) },
+                ...(inEntra ? [] : ([{ kind: 'item', label: 'Move', icon: 'Folder', onSelect: () => setMoveOpen(true) }] as const)),
                 {
                   kind: 'item',
                   label: isFavorite(object.id) ? 'Remove from favourites' : 'Add to favourites',
@@ -347,6 +349,7 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
           <GeneralTab
             object={object}
             canReset={canReset}
+            inEntra={inEntra}
             onReset={() => setResetOpen(true)}
             onDelete={() => setDeleteOpen(true)}
           />
@@ -399,11 +402,13 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
 interface GeneralTabProps {
   object: DirectoryObject;
   canReset: boolean;
+  /** The object is in Entra, which has no location: no Move. */
+  inEntra: boolean;
   onReset: () => void;
   onDelete: () => void;
 }
 
-function GeneralTab({ object, canReset, onReset, onDelete }: GeneralTabProps) {
+function GeneralTab({ object, canReset, inEntra, onReset, onDelete }: GeneralTabProps) {
   const d = object.details;
   const isUser = object.type === 'user' || object.type === 'contact';
 
@@ -453,7 +458,7 @@ function GeneralTab({ object, canReset, onReset, onDelete }: GeneralTabProps) {
           />
           <LinkList
             links={[
-              { label: 'Move', disabled: true },
+              ...(inEntra ? [] : [{ label: 'Move', disabled: true }]),
               { label: 'Copy', disabled: true },
             ]}
           />

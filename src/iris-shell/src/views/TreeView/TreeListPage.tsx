@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type DragEvent, type MouseEv
 import {
   ARSADRightClickTreeMenu,
   ARSADUserActions,
+  ARSEntraUserActions,
   ARSActionBar,
   ARSEmptyContent,
   ARSFilterArea,
@@ -153,10 +154,12 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
   }, [pool, targetParam]);
   const resetTarget = dialog === 'reset-password' ? (targets[0] ?? null) : null;
   const deleteTarget = dialog === 'delete' ? (targets[0] ?? null) : null;
-  const moveTargets = dialog === 'move' ? targets : null;
+  // Entra has no location, so nothing in an Entra tenant is moved.
+  const inEntra = getPath(nodeId).some((n) => n.id === 'entra-directories');
+  const moveTargets = dialog === 'move' && !inEntra ? targets : null;
   const createTarget = dialog === 'create' && typeParam ? { type: typeParam, icon: newObjectIconFor(typeParam) } : null;
   const groupCreate: CreateGroupKind | null =
-    dialog === 'new-group' ? (getPath(nodeId).some((n) => n.id === 'entra-directories') ? 'Entra' : 'AD') : null;
+    dialog === 'new-group' ? (inEntra ? 'Entra' : 'AD') : null;
   const ouCreate = dialog === 'new-ou';
 
   const rows = useMemo<DirectoryObject[]>(() => {
@@ -301,9 +304,7 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
     );
   }
 
-  const RowActions = rowObject && (rowObject.type === 'user' || rowObject.type === 'contact')
-    ? ARSADUserActions
-    : ARSADRightClickTreeMenu;
+  const isUserRow = rowObject !== null && (rowObject.type === 'user' || rowObject.type === 'contact');
   const header = inFavorites
     ? {
         title: nodeName ?? 'Directory',
@@ -367,7 +368,7 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
             setRowObject(pool.find((o) => o.id === id) ?? null);
             rowMenu.openAt(e);
           }}
-          onRowDragStart={onRowDragStart}
+          onRowDragStart={inEntra ? undefined : onRowDragStart}
           onRowDragEnd={endObjectDrag}
           pagination={{
             page: safePage,
@@ -380,7 +381,20 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
         />
       )}
 
-      <RowActions {...rowMenu.menuProps} ariaLabel={`Actions for ${rowObject?.name ?? 'object'}`} onAction={onRowAction} />
+      {isUserRow ? (
+        inEntra ? (
+          <ARSEntraUserActions {...rowMenu.menuProps} ariaLabel={`Actions for ${rowObject?.name ?? 'object'}`} onAction={onRowAction} />
+        ) : (
+          <ARSADUserActions {...rowMenu.menuProps} ariaLabel={`Actions for ${rowObject?.name ?? 'object'}`} onAction={onRowAction} />
+        )
+      ) : (
+        <ARSADRightClickTreeMenu
+          {...rowMenu.menuProps}
+          entra={inEntra}
+          ariaLabel={`Actions for ${rowObject?.name ?? 'object'}`}
+          onAction={onRowAction}
+        />
+      )}
       {lf.elements}
       <ARSPageMenu {...pageMenu.menuProps} onAction={onPageAction} />
       <ARSNewObjectMenu {...createMenu.menuProps} onAction={openCreate} />
@@ -388,6 +402,7 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
       <ARSActionBar
         variant={selectedObjects.length === 1 ? '2' : 'Default'}
         showDelete={selectedObjects.length !== 1}
+        hiddenActions={inEntra ? ['Move'] : undefined}
         open={selected.size > 0}
         selectedCount={selected.size}
         totalCount={allRows.length}
@@ -446,7 +461,7 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
           objectType={createTarget.type}
           icon={createTarget.icon}
           locationId={nodeId}
-          entra={getPath(nodeId).some((n) => n.id === 'entra-directories')}
+          entra={inEntra}
           onCreate={onCreated}
         />
       )}

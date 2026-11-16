@@ -24,7 +24,7 @@ Each rule has an ID, what it says, where it comes from and where it is built. Wh
 - The Copy sheet still shows Entra ID, so Entra groups can be copied.
 - The Users list's action bar leaves Move out when any selected user is in Entra. Entra groups have no Move (requirements board 531:1408).
 - Source: designer ("You asked for this" in `docs/review-notes.md`, Flow 6; Move on the bar, Flow 2).
-- Not yet applied: Move on Tree view lists and menus for objects inside an Entra tenant, and Move on an Entra user's own page. Both still offer it.
+- Not moved anywhere an Entra object appears: Tree view lists (row menus, the action bar, dragging), an Entra user's page, an Entra group's page and the generic object page. AD objects keep Move.
 
 **ENT-4. Entra rows show their directory where AD rows show a folder.** A user's Location column reads `Entra`, `Entra2`, `Entra3` or `Entra4`; an Entra group's Directory column reads its tenant (for example `3bf67d.onmicrosoft.com`). AD rows read a folder path (`AD3\Staff`, `O1D.local\Builtin`). This text is not a place you can move to.
 - Built: `views/UsersPage/mockUsers.ts`, `lib/directoryFilter.ts`.
