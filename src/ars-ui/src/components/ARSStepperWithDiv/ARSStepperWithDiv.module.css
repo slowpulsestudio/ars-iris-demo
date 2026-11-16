@@ -32,8 +32,13 @@
   width: auto;
 }
 
-/* The current step's top line is the brand blue, as 3663:22536 draws it; every other step keeps the Iris UI Kit
-   .stepper-step variants (8708:2639). */
+/* The current step's top line is the brand blue, as 3663:22536 draws it, and a step with an error (the Iris Error and
+   Error current variants, 8708:2655 and 8708:2658) gets a red one, at the designer's request; an error wins over
+   current. Every other step keeps the Iris UI Kit .stepper-step variants (8708:2639). */
 .root .stepper > li[aria-current='step'] > * {
   border-top-color: var(--oi-base-color-brand);
+}
+
+.root .stepper > li[data-status='error'] > * {
+  border-top-color: var(--oi-base-color-error);
 }

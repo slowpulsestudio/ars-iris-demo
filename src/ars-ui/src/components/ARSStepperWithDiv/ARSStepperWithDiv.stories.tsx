@@ -19,3 +19,16 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+/** A step with an error has a red line, the current one included (Iris Error and Error current, 8708:2655 and 8708:2658). */
+export const WithErrors: Story = {
+  name: 'With errors',
+  args: {
+    activeIndex: 1,
+    steps: [
+      { id: 'general', label: 'General', status: 'error' },
+      { id: 'account', label: 'Account', status: 'error' },
+      { id: 'folder', label: 'Select folder' },
+    ],
+  },
+};

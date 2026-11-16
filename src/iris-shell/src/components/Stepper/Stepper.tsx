@@ -96,6 +96,8 @@ export function Stepper({
             key={item.id}
             className={cx(styles.step, STATUS_CLASS[status], isCurrent && styles.isCurrent)}
             aria-current={isCurrent ? 'step' : undefined}
+            // Lets a wrapper style a step by its status, e.g. the ARS stepper's coloured lines.
+            data-status={status}
           >
             {interactive ? (
               <button
