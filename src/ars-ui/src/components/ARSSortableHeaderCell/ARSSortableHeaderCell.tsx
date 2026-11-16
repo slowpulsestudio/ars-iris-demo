@@ -1,5 +1,6 @@
 import type { CSSProperties, Ref } from 'react';
 import { cx } from '@iris/lib/cx.js';
+import { Button } from '@iris/components/Button/Button.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
 import { Menu, type MenuEntry } from '@iris/components/Menu/Menu.js';
 import { TableHeadItem } from '@iris/components/TableHeadItem/TableHeadItem.js';
@@ -36,7 +37,7 @@ export interface ARSSortableHeaderCellProps {
   /** A filter applies to this column (Figma "Filtered"). */
   filtered?: boolean;
   onSort?: (direction: ARSSortDirection) => void;
-  /** Lists the column's values under the sort items, each with a checkbox. */
+  /** Lists the column's values under the sort items, each with a checkbox, and a Clear button under them. */
   filter?: ARSColumnFilter;
   className?: string;
   style?: CSSProperties;
@@ -46,7 +47,7 @@ const SORT_ICON: Record<ARSSortDirection, string> = { ascending: 'SortAscending'
 
 /**
  * IM / Sortable header cell — a column head that opens the Iris Menu: Sort ascending, Sort descending and, with
- * `filter`, the column's values as a multi-select that stays open. The icon after the label shows the state.
+ * `filter`, the column's values as a multi-select that stays open, with the Iris MultiSelect's Clear under them. The icon after the label shows the state.
  * Built on the Iris ".Table head item" with a right icon (Iris UI Kit 7814:4203).
  * Figma: IM / Sortable header cell 1262:1547 in Attestation | ReCertification.
  */
@@ -74,6 +75,13 @@ export function ARSSortableHeaderCell({ label, icon, sort, filtered = false, onS
         align="start"
         ariaLabel={`${label} column`}
         items={items}
+        footer={
+          filter?.options.length ? (
+            <Button variant="ghost" role="menuitem" onClick={() => filter.onChange([])}>
+              Clear
+            </Button>
+          ) : undefined
+        }
         trigger={({ ref, onClick, expanded }) => (
           <button
             ref={ref as Ref<HTMLButtonElement>}

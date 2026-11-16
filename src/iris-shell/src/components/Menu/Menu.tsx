@@ -134,6 +134,11 @@ export interface MenuProps {
    * trigger's right edge.
    */
   rightAnchor?: number;
+  /**
+   * Actions under the items, as the Iris MultiSelect's footer (Clear, Select all): ghost Buttons with
+   * role="menuitem". The footer stays in view while a long menu scrolls, and clicking it keeps the menu open.
+   */
+  footer?: ReactNode;
 }
 
 interface MenuPos {
@@ -177,6 +182,7 @@ export function Menu({
   position,
   topAnchor,
   rightAnchor,
+  footer,
 }: MenuProps) {
   const isControlled = openProp !== undefined;
   const [internalOpen, setInternalOpen] = useState(false);
@@ -344,6 +350,7 @@ export function Menu({
             onKeyDown={(e) => handleArrowNav(e, menuRef)}
           >
             {items.map((item, i) => renderItem(item, i, close))}
+            {footer && <div className={styles.footer}>{footer}</div>}
           </div>,
           document.body,
         )}

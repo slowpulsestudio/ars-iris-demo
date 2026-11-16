@@ -61,6 +61,25 @@
     no-repeat;
 }
 
+/* The Iris MultiSelect's footer (Clear, Select all), edge to edge under the items; it sticks to the menu's bottom so a
+   long list scrolls under it. */
+.footer {
+  position: sticky;
+  bottom: calc(-1 * var(--oi-spacing-xs));
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--oi-spacing-12);
+  margin: var(--oi-spacing-xs) calc(-1 * var(--oi-spacing-xs)) calc(-1 * var(--oi-spacing-xs));
+  padding: var(--oi-spacing-s) var(--oi-spacing-m);
+  border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+  background-color: var(--oi-background-color-primary);
+}
+
+.footer > * {
+  flex: 1 1 0;
+}
+
 /* ── Header (identity block) ─────────────────────────────────────── */
 .header {
   display: flex;

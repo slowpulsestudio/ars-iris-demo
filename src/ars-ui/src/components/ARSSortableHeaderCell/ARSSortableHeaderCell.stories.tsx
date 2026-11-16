@@ -9,7 +9,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Missing from Figma: not in ARS - Primary. Figma: IM / Sortable header cell · Attestation | ReCertification · 1262:1547, on the Iris ".Table head item" with a right icon (Iris UI Kit 7814:4203). Clicking opens the Iris Menu: Sort ascending, Sort descending and, for a column with a value list, its values with checkboxes (a multi-select filter that stays open). The icons use the content colours, which pass 3:1 contrast where Figma\'s do not.',
+          'Missing from Figma: not in ARS - Primary. Figma: IM / Sortable header cell · Attestation | ReCertification · 1262:1547, on the Iris ".Table head item" with a right icon (Iris UI Kit 7814:4203). Clicking opens the Iris Menu: Sort ascending, Sort descending and, for a column with a value list, its values with checkboxes (a multi-select filter that stays open) and Clear, as the Iris MultiSelect\'s footer. The icons use the content colours, which pass 3:1 contrast where Figma\'s do not.',
       },
     },
   },
