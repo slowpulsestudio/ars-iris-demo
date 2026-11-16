@@ -7,6 +7,7 @@ import { CellText, TableCell } from '@iris/components/TableCell/TableCell.js';
 import type { ARSHeaderProps } from '../ARSHeader/ARSHeader.js';
 import type { ARSTableToolbarProps } from '../ARSTableToolbar/ARSTableToolbar.js';
 import { ARSPagination, type ARSPaginationProps } from '../ARSPagination/ARSPagination.js';
+import type { ARSColumnSorting } from '../ARSSortableHeaderCell/ARSSortableHeaderCell.js';
 import { ContentScreen } from '../../parts/ContentScreen/ContentScreen.js';
 import { TableHeadRow } from '../../parts/TableHeadRow/TableHeadRow.js';
 import styles from './ARSManagedUsersContent.module.css';
@@ -34,6 +35,8 @@ export interface ARSManagedUsersContentProps {
   onSelectionChange?: (next: Set<string>) => void;
   /** The head's column settings button (Figma ARS_Table_Config). */
   onColumns?: (event: MouseEvent<HTMLElement>) => void;
+  /** Sorting and filtering from the column heads (IM / Sortable header cell). */
+  sorting?: ARSColumnSorting;
   pagination: ARSPaginationProps;
   /** Shown in place of the table, e.g. an empty state. Not drawn in Figma. */
   empty?: ReactNode;
@@ -54,6 +57,7 @@ export function ARSManagedUsersContent({
   selected = new Set(),
   onSelectionChange,
   onColumns,
+  sorting,
   pagination,
   empty,
   className,
@@ -90,6 +94,7 @@ export function ARSManagedUsersContent({
           onSelectAll={(on) => onSelectionChange?.(on ? new Set(rows.map((r) => r.id)) : new Set())}
           actions={<IconButton icon="SlidersHorizontal" ariaLabel="Columns" onClick={onColumns} />}
           actionsWidth={44}
+          sorting={sorting}
         />
         {rows.map((row) => (
           <div key={row.id} role="row" className={styles.row}>

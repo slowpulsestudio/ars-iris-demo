@@ -20,6 +20,7 @@ import { GroupDialogs } from '../ObjectModals/GroupDialogs.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { NoDirectoriesSelected } from '../NoDirectoriesSelected/NoDirectoriesSelected.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { useColumnSort } from '../ListFilters/useColumnSort.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 
 const PAGE_SIZE_OPTIONS = [15, 30, 50, 100];
@@ -131,10 +132,13 @@ export function GroupsPage() {
     const matching = gf.filtered.filter((g) => !q || [g.name, g.description].some((v) => v.toLowerCase().includes(q)));
     return showSelected ? matching.filter((g) => selected.has(g.id)) : matching;
   }, [gf.filtered, query, showSelected, selected]);
+  // Each column is a filter field, and sorts by it.
+  const sortColumns = useMemo(() => groupFields.map((f) => ({ label: f.label, value: f.get, field: f.id })), [groupFields]);
+  const sort = useColumnSort(rows, sortColumns, gf, () => setPage(1));
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
-  const pageRows = rows.slice((safePage - 1) * pageSize, safePage * pageSize);
+  const pageRows = sort.sorted.slice((safePage - 1) * pageSize, safePage * pageSize);
 
   const hrefFor = (g: DirectoryObject) => `#/tree/${g.parentId}/${g.id}`;
   const moveItemFor = (g: DirectoryObject): MoveItem => ({ id: g.id, nodeId: g.parentId, isContainer: false });
@@ -206,6 +210,7 @@ export function GroupsPage() {
         }
         selected={selected}
         onSelectionChange={setSelected}
+        sorting={sort.sorting}
         onMore={(id, e) => {
           setRowGroup(groups.find((g) => g.id === id) ?? null);
           rowMenu.openAt(e);

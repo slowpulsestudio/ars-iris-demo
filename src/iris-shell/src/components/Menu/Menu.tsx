@@ -9,11 +9,13 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../lib/cx.js';
+import { Checkbox } from '../Checkbox/Checkbox.js';
 import { Icon } from '../Icon/Icon.js';
 import styles from './Menu.module.css';
 
 const SECTION_KIND = 'section';
 const ITEM_KIND = 'item';
+const CHECKBOX_KIND = 'checkbox';
 const HEADER_KIND = 'header';
 const SUBMENU_KIND = 'submenu';
 
@@ -41,6 +43,17 @@ export interface MenuItemEntry {
   inactive?: boolean;
   /** Render the label + icon in the danger colour (e.g. "Delete"). */
   danger?: boolean;
+}
+
+/**
+ * One value of a multi-select list (e.g. a column's filter values): a checkbox row that toggles and keeps
+ * the menu open, so several values can be ticked in one go.
+ */
+export interface MenuCheckboxEntry {
+  kind: 'checkbox';
+  label: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
 }
 
 export interface MenuSectionEntry {
@@ -77,6 +90,7 @@ export interface MenuSubmenuEntry {
 
 export type MenuEntry =
   | MenuItemEntry
+  | MenuCheckboxEntry
   | MenuSubmenuEntry
   | MenuSectionEntry
   | MenuDividerEntry
@@ -149,6 +163,7 @@ function resolveTriggerTop(rect: DOMRect, menuHeight: number): number {
  *
  * Items support:
  *   - { kind: 'item', label, icon?, selected?, onSelect, disabled? }
+ *   - { kind: 'checkbox', label, checked, onChange } (stays open)
  *   - { kind: 'section', label }
  *   - { kind: 'divider' }
  */
@@ -300,7 +315,7 @@ export function Menu({
     }
     if (hasAutoFocused.current || !menuRef.current) return;
     const first = menuRef.current.querySelector<HTMLElement>(
-      '[role="menuitemradio"]:not([disabled]):not([aria-disabled="true"]), [role="menuitem"]:not([disabled]):not([aria-disabled="true"])',
+      '[role="menuitemradio"]:not([disabled]):not([aria-disabled="true"]), [role="menuitem"]:not([disabled]):not([aria-disabled="true"]), [role="menuitemcheckbox"]',
     );
     if (first) {
       first.focus();
@@ -477,6 +492,30 @@ function renderItem(item: MenuEntry, i: number, close: () => void): ReactNode {
       </div>
     );
   }
+  if (item.kind === CHECKBOX_KIND) {
+    // A div, as the Iris MultiSelect option: the checkbox input can't sit inside a button.
+    const toggle = () => item.onChange(!item.checked);
+    return (
+      <div
+        key={`c-${i}-${item.label}`}
+        role="menuitemcheckbox"
+        aria-checked={item.checked}
+        tabIndex={-1}
+        className={styles.item}
+        onClick={toggle}
+        onKeyDown={(e) => {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          e.preventDefault();
+          toggle();
+        }}
+      >
+        <span className={styles.itemIcon}>
+          <Checkbox checked={item.checked} tabIndex={-1} aria-hidden="true" />
+        </span>
+        <span className={styles.itemLabel}>{item.label}</span>
+      </div>
+    );
+  }
   if (item.kind === ITEM_KIND) {
     const isRadio = typeof item.selected === 'boolean';
     const inactive = !!item.inactive && !item.disabled;
@@ -529,7 +568,7 @@ function handleArrowNav(
   if (!menuRef.current) return;
   const items = Array.from(
     menuRef.current.querySelectorAll<HTMLElement>(
-      '[role="menuitem"]:not([disabled]):not([aria-disabled="true"]), [role="menuitemradio"]:not([disabled]):not([aria-disabled="true"])',
+      '[role="menuitem"]:not([disabled]):not([aria-disabled="true"]), [role="menuitemradio"]:not([disabled]):not([aria-disabled="true"]), [role="menuitemcheckbox"]',
     ),
   );
   if (!items.length) return;

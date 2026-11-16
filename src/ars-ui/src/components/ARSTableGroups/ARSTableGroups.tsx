@@ -9,6 +9,7 @@ import { Tag } from '@iris/components/Tag/Tag.js';
 import type { ARSHeaderProps } from '../ARSHeader/ARSHeader.js';
 import type { ARSTableToolbarProps } from '../ARSTableToolbar/ARSTableToolbar.js';
 import { ARSPagination, type ARSPaginationProps } from '../ARSPagination/ARSPagination.js';
+import type { ARSColumnSorting } from '../ARSSortableHeaderCell/ARSSortableHeaderCell.js';
 import { TableHeadRow } from '../../parts/TableHeadRow/TableHeadRow.js';
 import { ContentScreen } from '../../parts/ContentScreen/ContentScreen.js';
 import styles from './ARSTableGroups.module.css';
@@ -35,6 +36,8 @@ export interface ARSTableGroupsProps {
   onRemoveTag?: (id: string, tag: string) => void;
   onColumns?: () => void;
   onMore?: (id: string, event: MouseEvent<HTMLElement>) => void;
+  /** Sorting and filtering from the column heads (IM / Sortable header cell). */
+  sorting?: ARSColumnSorting;
   pagination: ARSPaginationProps;
   /** Shown in place of the table, e.g. an empty state. Not drawn in Figma. */
   empty?: ReactNode;
@@ -54,6 +57,7 @@ export function ARSTableGroups({
   onRemoveTag,
   onColumns,
   onMore,
+  sorting,
   pagination,
   empty,
   className,
@@ -90,6 +94,7 @@ export function ARSTableGroups({
           onSelectAll={(on) => onSelectionChange?.(on ? new Set(rows.map((r) => r.id)) : new Set())}
           actionsWidth={44}
           actions={<IconButton icon="SlidersHorizontal" ariaLabel="Columns" onClick={onColumns} />}
+          sorting={sorting}
         />
         {rows.map((row) => (
           <div key={row.id} role="row" className={styles.row}>

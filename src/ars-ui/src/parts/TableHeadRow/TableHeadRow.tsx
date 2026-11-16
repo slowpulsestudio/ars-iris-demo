@@ -2,6 +2,7 @@ import { Fragment, type ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { TableHeadItem } from '@iris/components/TableHeadItem/TableHeadItem.js';
+import { ARSSortableHeaderCell, type ARSColumnSorting } from '../../components/ARSSortableHeaderCell/ARSSortableHeaderCell.js';
 import styles from './TableHeadRow.module.css';
 
 export interface TableHeadColumn {
@@ -23,6 +24,8 @@ export interface TableHeadRowProps {
   actions?: ReactNode;
   /** Width of the last head cell in px (default 44); 0 leaves the cell out, for tables without an action column. */
   actionsWidth?: number;
+  /** Makes the listed columns' heads sort and filter (IM / Sortable header cell). */
+  sorting?: ARSColumnSorting;
   className?: string;
 }
 
@@ -34,6 +37,7 @@ export function TableHeadRow({
   onSelectAll,
   actions,
   actionsWidth,
+  sorting,
   className,
 }: TableHeadRowProps) {
   return (
@@ -46,17 +50,30 @@ export function TableHeadRow({
           ariaLabel="Select all"
         />
       </TableHeadItem>
-      {columns.map((col) => (
-        <Fragment key={col.label}>
-          <TableHeadItem
-            icon={col.icon}
-            label={col.label}
-            style={col.width != null ? { width: col.width } : undefined}
-            className={col.width == null ? styles.fill : undefined}
-          />
-          {col.trailing}
-        </Fragment>
-      ))}
+      {columns.map((col) => {
+        const size = {
+          style: col.width != null ? { width: col.width } : undefined,
+          className: col.width == null ? styles.fill : undefined,
+        };
+        return (
+          <Fragment key={col.label}>
+            {sorting?.sortable.includes(col.label) ? (
+              <ARSSortableHeaderCell
+                icon={col.icon}
+                label={col.label}
+                sort={sorting.sortedBy?.column === col.label ? sorting.sortedBy.direction : undefined}
+                filtered={sorting.filtered?.includes(col.label)}
+                onSort={(direction) => sorting.onSort(col.label, direction)}
+                filter={sorting.filters?.[col.label]}
+                {...size}
+              />
+            ) : (
+              <TableHeadItem icon={col.icon} label={col.label} {...size} />
+            )}
+            {col.trailing}
+          </Fragment>
+        );
+      })}
       {actionsWidth !== 0 && (
         <TableHeadItem
           className={styles.actions}

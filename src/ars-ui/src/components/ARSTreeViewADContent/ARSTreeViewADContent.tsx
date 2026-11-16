@@ -7,6 +7,7 @@ import { TableCell, CellText } from '@iris/components/TableCell/TableCell.js';
 import type { ARSHeaderProps } from '../ARSHeader/ARSHeader.js';
 import type { ARSTableToolbarProps } from '../ARSTableToolbar/ARSTableToolbar.js';
 import { ARSPagination, type ARSPaginationProps } from '../ARSPagination/ARSPagination.js';
+import type { ARSColumnSorting } from '../ARSSortableHeaderCell/ARSSortableHeaderCell.js';
 import { TableHeadRow } from '../../parts/TableHeadRow/TableHeadRow.js';
 import { ContentScreen } from '../../parts/ContentScreen/ContentScreen.js';
 import styles from './ARSTreeViewADContent.module.css';
@@ -39,6 +40,8 @@ export interface ARSTreeViewADContentProps {
   /** Makes rows draggable, e.g. onto a folder in the directory tree. */
   onRowDragStart?: (id: string, event: DragEvent<HTMLElement>) => void;
   onRowDragEnd?: () => void;
+  /** Sorting and filtering from the column heads (IM / Sortable header cell). */
+  sorting?: ARSColumnSorting;
   pagination: ARSPaginationProps;
   /** Shown in place of the table, e.g. an empty state. Not drawn in Figma. */
   empty?: ReactNode;
@@ -63,6 +66,7 @@ export function ARSTreeViewADContent({
   onMore,
   onRowDragStart,
   onRowDragEnd,
+  sorting,
   pagination,
   empty,
   className,
@@ -97,6 +101,7 @@ export function ARSTreeViewADContent({
           onSelectAll={(on) => onSelectionChange?.(on ? new Set(rows.map((r) => r.id)) : new Set())}
           actionsWidth={70}
           actions={<IconButton icon="SlidersHorizontal" ariaLabel="Columns" onClick={onColumns} />}
+          sorting={sorting}
         />
         {rows.map((row) => (
           <div

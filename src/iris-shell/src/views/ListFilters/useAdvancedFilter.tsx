@@ -1,4 +1,5 @@
 import { useMemo, useState, type MouseEventHandler, type ReactNode } from 'react';
+import type { ARSColumnFilter } from '@ars';
 import {
   AdvancedFilterBar,
   AdvancedFilterPanel,
@@ -20,11 +21,13 @@ import {
   FILTERS_GUIDE_URL,
   LDAP_ATTRIBUTES,
   categoriesFor,
+  columnCondition,
   completeConditions,
   matchesTree,
   parseApplied,
   parametersFor,
   serializeApplied,
+  withColumnValues,
   type FilterFieldDef,
 } from '../../lib/advancedFilter.js';
 
@@ -45,6 +48,13 @@ export interface AdvancedFilter<T> {
   bar: ReactNode;
   /** Bar only: the menu the filter button opens. Render it once anywhere in the screen. */
   elements: ReactNode;
+  /**
+   * A column head's multi-select for a field with a value list; undefined for other fields. The ticked values are
+   * the field's "is one of" condition, applied at once, so they count on the filter button's badge.
+   */
+  columnFilter: (fieldId: string) => ARSColumnFilter | undefined;
+  /** The fields the applied filter has a finished condition on. */
+  filteredFields: ReadonlySet<string>;
 }
 
 export interface AdvancedFilterOptions {
@@ -85,10 +95,37 @@ export function useAdvancedFilter<T>(
     () => (conditions.length ? items.filter((item) => matchesTree(tree, item, fields)) : items),
     [items, tree, fields, conditions.length],
   );
+  const filteredFields = useMemo(
+    () => new Set(completeConditions(tree).flatMap((c) => (c.parameterId ? [c.parameterId] : []))),
+    [tree],
+  );
+
+  // A column head asks for a field this list has no filter field for: a wiring mistake, so say so.
+  const knownField = (fieldId: string): boolean => {
+    if (fields.some((f) => f.id === fieldId)) return true;
+    console.error(`useAdvancedFilter: no filter field "${fieldId}" on this list.`);
+    return false;
+  };
 
   const togglePanel = () => {
     if (!open) actions.replace(applied);
     setOpen(!open);
+  };
+
+  const columnFilter = (fieldId: string): ARSColumnFilter | undefined => {
+    if (!knownField(fieldId)) return undefined;
+    const options = parameters.find((p) => p.id === fieldId)?.options;
+    if (!options?.length) return undefined;
+    return {
+      options: options.map((o) => o.value),
+      selected: columnCondition(tree, fieldId)?.values ?? [],
+      onChange: (values) => {
+        const next = withColumnValues(tree, fieldId, values);
+        if (mode === 'panel') setParam(serializeApplied(next));
+        // An open Panel's draft follows, so it shows what the column applied.
+        if (mode === 'bar' || open) actions.replace(next);
+      },
+    };
   };
 
   // Empties the draft and, in the Panel, the applied filter in the address too.
@@ -163,6 +200,8 @@ export function useAdvancedFilter<T>(
       emptyWhen,
       bar: null,
       elements: null,
+      columnFilter,
+      filteredFields,
     };
   }
 
@@ -199,5 +238,7 @@ export function useAdvancedFilter<T>(
         />
       ),
     elements: <Menu {...menu.menuProps} items={entries} ariaLabel="Add filter" />,
+    columnFilter,
+    filteredFields,
   };
 }

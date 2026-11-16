@@ -51,6 +51,13 @@ export {
 export { ARSFilterRemove, type ARSFilterRemoveProps } from './components/ARSFilterRemove/ARSFilterRemove.js';
 export { ARSFilterTag, type ARSFilterTagProps } from './components/ARSFilterTag/ARSFilterTag.js';
 export { ARSFilterArea, type ARSFilterAreaProps } from './components/ARSFilterArea/ARSFilterArea.js';
+export {
+  ARSSortableHeaderCell,
+  type ARSSortableHeaderCellProps,
+  type ARSColumnFilter,
+  type ARSColumnSorting,
+  type ARSSortDirection,
+} from './components/ARSSortableHeaderCell/ARSSortableHeaderCell.js';
 export { ARSObjectSelected, type ARSObjectSelectedProps } from './components/ARSObjectSelected/ARSObjectSelected.js';
 export {
   ARSObjectRule,

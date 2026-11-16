@@ -12,6 +12,7 @@ import { replaceHash, subscribeHash } from './router.js';
  *   target   the row a dialog is about (an object or request id)
  *   select   the ticked rows, comma-separated ids
  *   view     a sub-view of a tab (`members-of`)
+ *   sort     the column a list is sorted by: `display-name.asc`, `name.desc`
  *   request, modal, sheet   the self-service screens
  */
 
@@ -55,7 +56,7 @@ function tabSlug(label: string): string {
 /**
  * The active tab, from `?tab=`. An unknown or missing value is the first tab, which is also
  * written as no value, so the plain address of a page stays clean. Changing tab also closes
- * anything open on the old one (`edit`, `dialog`, `target`, `view`).
+ * anything open on the old one (`edit`, `dialog`, `target`, `view`) and drops its list order (`sort`).
  */
 export function useHashTab(tabs: string[]): [string, (label: string) => void] {
   const [value] = useHashParam('tab');
@@ -68,6 +69,7 @@ export function useHashTab(tabs: string[]): [string, (label: string) => void] {
         dialog: null,
         target: null,
         view: null,
+        sort: null,
       }),
     [tabs],
   );

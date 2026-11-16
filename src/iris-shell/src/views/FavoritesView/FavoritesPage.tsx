@@ -12,6 +12,7 @@ import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { useFavorites, type FavoriteEntry } from '../../lib/useFavorites.js';
 import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { useColumnSort, type SortColumn } from '../ListFilters/useColumnSort.js';
 import { ListBulkBar } from '../ListBulkBar/ListBulkBar.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 
@@ -25,6 +26,9 @@ const FIELDS: FilterFieldDef<FavoriteEntry>[] = [
   // Sample dates, as on the other lists: a favourite has none of its own.
   { id: 'Date active', label: 'Date active', icon: 'CalendarDots', get: (f) => isoDaysAgo(sampleDates(f.id).activeDaysAgo), date: true },
 ];
+
+/** The table's three columns are the first three fields, and sort by them. */
+const SORT_COLUMNS: SortColumn<FavoriteEntry>[] = FIELDS.slice(0, 3).map((f) => ({ label: f.label, value: f.get, field: f.id }));
 
 const iconFor = (type: string): string =>
   Object.values(OBJECT_TYPE_META).find((m) => m.label === type)?.icon ?? 'Cube';
@@ -51,6 +55,7 @@ export function FavoritesPage() {
     const q = query.trim().toLowerCase();
     return lf.filtered.filter((f) => !q || [f.name, f.description ?? ''].some((v) => v.toLowerCase().includes(q)));
   }, [lf.filtered, query]);
+  const sort = useColumnSort(rows, SORT_COLUMNS, lf, () => setPage(1));
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
@@ -83,7 +88,7 @@ export function FavoritesPage() {
           </ARSFilterArea>
         }
         filtersOpen={Boolean(lf.bar)}
-        rows={rows.slice((safePage - 1) * pageSize, safePage * pageSize).map((f) => ({
+        rows={sort.sorted.slice((safePage - 1) * pageSize, safePage * pageSize).map((f) => ({
           id: f.id,
           name: f.name,
           icon: iconFor(f.type),
@@ -93,6 +98,7 @@ export function FavoritesPage() {
         }))}
         selected={selected}
         onSelectionChange={setSelected}
+        sorting={sort.sorting}
         onMore={(id, event) => {
           setRowId(id);
           rowMenu.openAt(event);

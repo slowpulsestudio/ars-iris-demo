@@ -11,7 +11,8 @@ import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
 import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { ListBulkBar } from '../ListBulkBar/ListBulkBar.js';
 import { NAMED_OBJECT_FIELDS } from './namedObjectFields.js';
-import { MEMBERSHIPS_PAGE_SIZE, MEMBERSHIPS_SEARCH, TABLE_SETTINGS_TOAST } from './membershipsTab.js';
+import { MEMBERSHIPS_PAGE_SIZE, MEMBERSHIPS_SEARCH, MEMBERSHIPS_SORT_COLUMNS, TABLE_SETTINGS_TOAST } from './membershipsTab.js';
+import { useColumnSort } from '../ListFilters/useColumnSort.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 import styles from './GroupMembersTab.module.css';
 
@@ -61,6 +62,7 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
 
   const pageCount = Math.max(1, Math.ceil(rows.length / MEMBERSHIPS_PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
+  const sort = useColumnSort(rows, MEMBERSHIPS_SORT_COLUMNS, undefined, () => setPage(1));
 
   const available = useMemo(() => {
     const have = new Set(groups.map((g) => g.id));
@@ -141,11 +143,12 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
           <ARSGroupTable
             variant="Memberships"
             ariaLabel="Memberships"
-            rows={rows.slice((safePage - 1) * MEMBERSHIPS_PAGE_SIZE, safePage * MEMBERSHIPS_PAGE_SIZE)}
+            rows={sort.sorted.slice((safePage - 1) * MEMBERSHIPS_PAGE_SIZE, safePage * MEMBERSHIPS_PAGE_SIZE)}
             selectedIds={selected}
             onSelectedIdsChange={(ids) => setSelectedSet(new Set(ids))}
             onRemove={remove}
             onSettings={() => showToast(TABLE_SETTINGS_TOAST)}
+            sorting={sort.sorting}
           />
           <div className={styles.pagination}>
             <Pagination page={safePage} pageCount={pageCount} onPageChange={setPage} ariaLabel="Memberships pages" />

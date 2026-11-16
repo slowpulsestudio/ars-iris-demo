@@ -8,6 +8,7 @@ import { CellText, TableCell } from '@iris/components/TableCell/TableCell.js';
 import { ARSPagination, type ARSPaginationProps } from '../ARSPagination/ARSPagination.js';
 import { ARSTableToolbar } from '../ARSTableToolbar/ARSTableToolbar.js';
 import { ARSUserPageHeader } from '../ARSUserPageHeader/ARSUserPageHeader.js';
+import type { ARSColumnSorting } from '../ARSSortableHeaderCell/ARSSortableHeaderCell.js';
 import { TableHeadRow } from '../../parts/TableHeadRow/TableHeadRow.js';
 import styles from './ARSManagedUnitMembers.module.css';
 
@@ -46,6 +47,8 @@ export interface ARSManagedUnitMembersProps {
   onMore?: MouseEventHandler<HTMLElement>;
   /** The head's column settings button (Figma ARS_Table_Config). */
   onColumns?: MouseEventHandler<HTMLElement>;
+  /** Sorting and filtering from the column heads (IM / Sortable header cell). */
+  sorting?: ARSColumnSorting;
   className?: string;
 }
 
@@ -73,6 +76,7 @@ export function ARSManagedUnitMembers({
   onPreviousItem,
   onMore,
   onColumns,
+  sorting,
   className,
 }: ARSManagedUnitMembersProps) {
   const allSelected = rows.length > 0 && rows.every((r) => selected.has(r.id));
@@ -114,6 +118,7 @@ export function ARSManagedUnitMembers({
               onSelectAll={(on) => onSelectionChange?.(on ? new Set(rows.map((r) => r.id)) : new Set())}
               actions={<IconButton icon="SlidersHorizontal" ariaLabel="Columns" onClick={onColumns} />}
               actionsWidth={44}
+              sorting={sorting}
             />
             {rows.map((row) => (
               <div key={row.id} role="row" className={styles.row}>

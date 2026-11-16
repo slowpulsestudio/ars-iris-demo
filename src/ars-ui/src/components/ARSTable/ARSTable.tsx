@@ -3,6 +3,7 @@ import { Icon } from '@iris/components/Icon/Icon.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
 import type { PaginationEllipsis } from '@iris/components/Pagination/Pagination.js';
 import { TableHeadRow, type TableHeadColumn } from '../../parts/TableHeadRow/TableHeadRow.js';
+import type { ARSColumnSorting } from '../ARSSortableHeaderCell/ARSSortableHeaderCell.js';
 import { MIXED_OBJECT_COLUMNS } from '../ARSTableHeadMixedObj/ARSTableHeadMixedObj.js';
 import { ARSPagination } from '../ARSPagination/ARSPagination.js';
 import { ARSRow, type ARSRowProps } from '../ARSRow/ARSRow.js';
@@ -55,6 +56,8 @@ export interface ARSTableProps {
   emptyDescription?: string;
   /** Empty variant: the columns button in the header. */
   onColumns?: () => void;
+  /** Sorting and filtering from the column heads (IM / Sortable header cell). */
+  sorting?: ARSColumnSorting;
   className?: string;
 }
 
@@ -88,6 +91,7 @@ export function ARSTable({
   emptyTitle = 'No directory or folder selected.',
   emptyDescription = 'Choose a directory or folder to display its contents here.',
   onColumns,
+  sorting,
   className,
 }: ARSTableProps) {
   if (variant === 'Empty') {
@@ -120,6 +124,7 @@ export function ARSTable({
         allSelected={allSelected}
         someSelected={selected.size > 0}
         onSelectAll={(on) => onSelectionChange?.(on ? new Set(rows.map((r) => r.id)) : new Set())}
+        sorting={sorting}
       />
       {rows.map(({ id, ...row }) => (
         <ARSRow

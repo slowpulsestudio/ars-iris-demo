@@ -7,6 +7,7 @@ export const FIGMA_FILES = {
   ou: { name: 'ARS_WebUI2_OU_Management', key: 'DwKW5hhTprayGwhbMtOKMr' },
   managedUnits: { name: 'ARS_WebUI2_Managed-Units', key: 'WsXrW6CBUME9thy8z8hPRR' },
   advancedSearch: { name: 'ARS_WebUI2_Advanced-Search', key: 'ImuRli8uCOkIfbDX4gN2w1' },
+  attestation: { name: 'Attestation | ReCertification', key: 'liyZQWqw7QdF9VPpQCwI4w' },
 } as const;
 
 export type FigmaFileId = keyof typeof FIGMA_FILES;
@@ -152,5 +153,12 @@ export const MISSING_FROM_FIGMA: MissingFromFigmaEntry[] = [
     figmaNodeId: '7074:6939',
     file: 'managedUnits',
     note: 'A managed unit\'s members: group-style header, search and a Name, Description and Type table (ARS_Managed_Unit_Members_Table 7064:12185).',
+  },
+  {
+    component: 'ARSSortableHeaderCell',
+    figmaName: 'IM / Sortable header cell',
+    figmaNodeId: '1262:1547',
+    file: 'attestation',
+    note: 'The sortable column head on every list: Sort ascending, Sort descending and the column\'s values as a multi-select in the Iris Menu, and the sorted or filtered icon after the label. From the Identity Manager Attestation file, on the Iris head item with a right icon (Iris UI Kit 7814:4203). The icons use the content colours, which pass 3:1 contrast where Figma\'s do not.',
   },
 ];

@@ -23,6 +23,7 @@ import { canMoveItem, moveEntries, type MoveEntry, type MoveItem } from '../../l
 import { endObjectDrag, startObjectDrag } from '../../lib/objectDrag.js';
 import { sampleDates, sampleTags, type FilterRow } from '../../lib/listFilters.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { useColumnSort, type SortColumn } from '../ListFilters/useColumnSort.js';
 import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { rowFields } from '../../lib/advancedFilter.js';
 import { Button } from '../../components/Button/Button.js';
@@ -60,6 +61,13 @@ function newObjectIconFor(type: string): string {
 function hrefFor(obj: DirectoryObject): string {
   return obj.isContainer ? `#/tree/${obj.id}` : `#/tree/${obj.parentId}/${obj.id}`;
 }
+
+/** The table's columns, sorting by what they show. Name and Object type are filter fields (Display name, Object type). */
+const TREE_SORT_COLUMNS: SortColumn<DirectoryObject>[] = [
+  { label: 'Name', value: (o) => o.name, field: 'Display name' },
+  { label: 'Object type', value: (o) => OBJECT_TYPE_META[o.type].label, field: 'Object type' },
+  { label: 'Description', value: (o) => o.description },
+];
 
 export interface TreeListPageProps {
   nodeId: string;
@@ -171,12 +179,13 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
       : lf.filtered;
     return showSelected ? matching.filter((o) => selected.has(o.id)) : matching;
   }, [lf.filtered, query, showSelected, selected]);
+  const sort = useColumnSort(rows, TREE_SORT_COLUMNS, lf, () => setPage(1));
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
   const pageRows = useMemo<DirectoryObject[]>(
-    () => rows.slice((safePage - 1) * pageSize, safePage * pageSize),
-    [rows, safePage, pageSize],
+    () => sort.sorted.slice((safePage - 1) * pageSize, safePage * pageSize),
+    [sort.sorted, safePage, pageSize],
   );
 
   // Changing the page size keeps the first visible row in view.
@@ -364,6 +373,7 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
           }))}
           selected={selected}
           onSelectionChange={setSelected}
+          sorting={sort.sorting}
           onMore={(id, e) => {
             setRowObject(pool.find((o) => o.id === id) ?? null);
             rowMenu.openAt(e);

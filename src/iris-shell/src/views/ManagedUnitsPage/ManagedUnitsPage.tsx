@@ -9,6 +9,7 @@ import { MANAGED_UNITS, getManagedUnit, membersOf, type ManagedUnit } from '../.
 import { bucketAt, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { sampleDates, sampleTags, type FilterRow } from '../../lib/listFilters.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { useColumnSort, type SortColumn } from '../ListFilters/useColumnSort.js';
 import { rowFields, type FilterFieldDef } from '../../lib/advancedFilter.js';
 import { NoDirectoriesSelected } from '../NoDirectoriesSelected/NoDirectoriesSelected.js';
 import { Button } from '../../components/Button/Button.js';
@@ -33,6 +34,21 @@ const memberFields: FilterFieldDef<{ id: string; name: string; description: stri
   { id: 'Description', label: 'Description', icon: 'ArticleNyTimes', get: (m) => m.description },
   { id: 'Type', label: 'Type', icon: 'Lego', get: (m) => m.type, list: true },
 ];
+const memberSortColumns = memberFields.map((f) => ({ label: f.label, value: f.get, field: f.id }));
+
+/** The units table's columns. Modified ("10/24/23") sorts as a date; Name and Type are filter fields. */
+const unitSortColumns: SortColumn<ManagedUnit>[] = [
+  { label: 'Name', value: (u) => u.name, field: 'Display name' },
+  {
+    label: 'Modified',
+    value: (u) => {
+      const [month, day, year] = u.modified.split('/');
+      return `20${year}-${month}-${day}`;
+    },
+  },
+  { label: 'Description', value: (u) => u.description },
+  { label: 'Type', value: () => 'Managed Unit', field: 'Object type' },
+];
 
 /** ManagedUnitsPage — the Managed Units list (ARS_Managed_Users_Content); a row opens the unit's members. */
 export function ManagedUnitsPage() {
@@ -50,6 +66,7 @@ export function ManagedUnitsPage() {
     const q = query.trim().toLowerCase();
     return lf.filtered.filter((u) => !q || [u.name, u.description].some((v) => v.toLowerCase().includes(q)));
   }, [query, lf.filtered]);
+  const sort = useColumnSort(rows, unitSortColumns, lf, () => setPage(1));
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
 
@@ -70,13 +87,14 @@ export function ManagedUnitsPage() {
           filterCount: lf.filterCount,
           filterPressed: lf.filterPressed,
         }}
-        rows={rows.slice((safePage - 1) * pageSize, safePage * pageSize).map((u) => ({
+        rows={sort.sorted.slice((safePage - 1) * pageSize, safePage * pageSize).map((u) => ({
           ...u,
           type: 'Managed Unit',
           href: `#/management-units/${u.id}`,
         }))}
         selected={selected}
         onSelectionChange={setSelected}
+        sorting={sort.sorting}
         pagination={{
           page: safePage,
           pageCount,
@@ -126,6 +144,7 @@ export function ManagedUnitMembersPage({ unitId }: ManagedUnitMembersPageProps) 
     const q = query.trim().toLowerCase();
     return mf.filtered.filter((m) => !q || [m.name, m.description].some((v) => v.toLowerCase().includes(q)));
   }, [mf.filtered, query]);
+  const sort = useColumnSort(rows, memberSortColumns, mf, () => setPage(1));
 
   if (!unit) {
     return (
@@ -170,9 +189,10 @@ export function ManagedUnitMembersPage({ unitId }: ManagedUnitMembersPageProps) 
         onFilter={mf.onFilter}
         filterCount={mf.filterCount}
         filterPressed={mf.filterPressed}
-        rows={rows.slice((safePage - 1) * pageSize, safePage * pageSize)}
+        rows={sort.sorted.slice((safePage - 1) * pageSize, safePage * pageSize)}
         selected={selected}
         onSelectionChange={setSelected}
+        sorting={sort.sorting}
         onBack={() => navigate('#/management-units')}
         onPreviousItem={previous ? () => navigate(`#/management-units/${previous.id}`) : undefined}
         onNextItem={next ? () => navigate(`#/management-units/${next.id}`) : undefined}

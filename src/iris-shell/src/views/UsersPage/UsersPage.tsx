@@ -1,4 +1,4 @@
-import { useMemo, useState, type MouseEvent } from 'react';
+import { useCallback, useMemo, useState, type MouseEvent } from 'react';
 import {
   ARSADUserActions,
   ARSActionBar,
@@ -23,6 +23,7 @@ import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
 import { inDirectories, isEntraLocation, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { sampleDates, type FilterRow } from '../../lib/listFilters.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { useColumnSort, type SortColumn } from '../ListFilters/useColumnSort.js';
 import { rowFields, type FilterFieldDef } from '../../lib/advancedFilter.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { CreateObjectModal, type CreateObjectResult } from './CreateObjectModal/CreateObjectModal.js';
@@ -131,11 +132,25 @@ export function UsersPage() {
     return showSelected ? matching.filter((u) => selected.has(u.id)) : matching;
   }, [lf.filtered, query, showSelected, selected]);
 
+  const tagsOf = useCallback((u: User) => u.tags.filter((t) => !removedTags.get(u.id)?.has(t)), [removedTags]);
+  // The columns sort by what they show; all but Description have a filter field.
+  const sortColumns = useMemo<SortColumn<User>[]>(
+    () => [
+      { label: 'Display name', value: (u) => u.name, field: 'Display name' },
+      { label: 'Status', value: (u) => u.status, field: 'Status' },
+      { label: 'Description', value: (u) => u.description },
+      { label: 'Tags', value: tagsOf, field: 'Tags' },
+      { label: 'Location', value: (u) => u.location, field: 'Location' },
+    ],
+    [tagsOf],
+  );
+  const sort = useColumnSort(rows, sortColumns, lf, () => setPage(1));
+
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
   const pageRows = useMemo(
-    () => rows.slice((safePage - 1) * pageSize, safePage * pageSize),
-    [rows, safePage, pageSize],
+    () => sort.sorted.slice((safePage - 1) * pageSize, safePage * pageSize),
+    [sort.sorted, safePage, pageSize],
   );
 
   // Changing the page size keeps the first visible row in view.
@@ -221,7 +236,7 @@ export function UsersPage() {
             status: u.status,
             statusTone: statusTone(u.status),
             description: u.description,
-            tags: u.tags.filter((t) => !removedTags.get(u.id)?.has(t)),
+            tags: tagsOf(u),
             onRemoveTag: (tag) =>
               setRemovedTags((prev) => new Map(prev).set(u.id, new Set([...(prev.get(u.id) ?? []), tag]))),
             location: u.location,
@@ -238,6 +253,7 @@ export function UsersPage() {
           pageSize,
           pageSizeOptions: PAGE_SIZE_OPTIONS,
           onPageSizeChange: handlePageSizeChange,
+          sorting: sort.sorting,
         }}
       />
 

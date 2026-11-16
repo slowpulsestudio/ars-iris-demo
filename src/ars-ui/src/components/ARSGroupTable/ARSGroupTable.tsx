@@ -1,6 +1,7 @@
 import { cx } from '@iris/lib/cx.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
 import { TableHeadRow, type TableHeadColumn } from '../../parts/TableHeadRow/TableHeadRow.js';
+import type { ARSColumnSorting } from '../ARSSortableHeaderCell/ARSSortableHeaderCell.js';
 import { ARSTableGroupRow } from '../ARSTableGroupRow/ARSTableGroupRow.js';
 import styles from './ARSGroupTable.module.css';
 
@@ -40,6 +41,8 @@ export interface ARSGroupTableProps {
   onRemove?: (row: ARSGroupTableRow) => void;
   /** Memberships: the table settings button in the head (Media/SlidersHorizontal, 167:8096). */
   onSettings?: () => void;
+  /** Sorting and filtering from the column heads (IM / Sortable header cell). */
+  sorting?: ARSColumnSorting;
   /** The table's accessible name; Figma's table lists groups. */
   ariaLabel?: string;
   className?: string;
@@ -54,6 +57,7 @@ export function ARSGroupTable({
   variant = 'Groups',
   onRemove,
   onSettings,
+  sorting,
   ariaLabel = 'Groups',
   className,
 }: ARSGroupTableProps) {
@@ -74,6 +78,7 @@ export function ARSGroupTable({
             <IconButton icon="SlidersHorizontal" ariaLabel="Table settings" onClick={onSettings} />
           ) : undefined
         }
+        sorting={sorting}
       />
       {rows.map((row) => (
         <ARSTableGroupRow

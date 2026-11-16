@@ -182,6 +182,36 @@ export function serializeApplied(root: Group): string | null {
   return completeConditions(root).length === 0 ? null : JSON.stringify(root);
 }
 
+/** The condition a column head's ticked values belong to: the first "is one of" condition on the field. */
+export function columnCondition(node: FilterNode, fieldId: string): Condition | undefined {
+  if (node.kind === 'condition') return node.parameterId === fieldId && node.operatorId === 'in' ? node : undefined;
+  for (const child of node.children) {
+    const found = columnCondition(child, fieldId);
+    if (found) return found;
+  }
+  return undefined;
+}
+
+/**
+ * The tree with a column head's ticked values for a field: they replace the values of the field's "is one of"
+ * condition, or join as a card of their own, as the Panel's "Add filter" makes. Ticking none removes the
+ * condition, and the card it leaves empty.
+ */
+export function withColumnValues(root: Group, fieldId: string, values: string[]): Group {
+  const target = columnCondition(root, fieldId);
+  if (!target) {
+    if (!values.length) return root;
+    const card = newGroup('and', [newCondition({ parameterId: fieldId, operatorId: 'in', values })]);
+    return { ...root, children: [...root.children, card] };
+  }
+  const update = (node: FilterNode): FilterNode | null => {
+    if (node.kind === 'condition') return node.id !== target.id ? node : values.length ? { ...node, values } : null;
+    const children = node.children.map(update).filter((child): child is FilterNode => child !== null);
+    return children.length === 0 && node.children.length > 0 && node !== root ? null : { ...node, children };
+  };
+  return update(root) as Group;
+}
+
 const DAYS = { '7': 7, '30': 30, '90': 90 } as const;
 
 /** Old links (`?filter=Tags~Security|Helpdesk;Location~Entra`) as one card of conditions. */
