@@ -26,6 +26,7 @@ An address has three parts:
 | `view` | A sub-view of a tab. | `members-of` (Memberships; Members is the default) | Group Memberships |
 | `pick` | The objects chosen in Add Member. | Ids, comma-separated | Add Member |
 | `filter` | The applied Advanced filter: the filter tree as JSON. The older `Field~value1\|value2` form joined by `;` is still read. | `Tags~Security\|Helpdesk;Location~Entra` (older form), or `{"kind":"group",…}` | Users, Groups, Tree view folder lists, Managed units and their members, group Members, user Memberships and Roles |
+| `sort` | The column the list is sorted by, and which way, from a column head's menu. None keeps the list's own order. | A slug of the column's name, then `asc` or `desc`: `display-name.asc`, `status.desc` | Users, Groups, Tree view folder lists, Managed units and their members, Favourites, group Members, user Memberships |
 | `request` | The open approval request (its side sheet). | `REQ-001`… | Approvals |
 | `modal` | The open approval modal. | `approve`, `deny`, `escalate` | Approvals |
 | `sheet` | The open side sheet. | `request-access` | My Access |
