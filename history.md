@@ -373,6 +373,10 @@ The designer asked for the New object modals' spacing, lines and stepper to foll
 
 The designer asked for the stepper's error steps to be red as well: a step in the Iris Error or Error current state (8708:2655, 8708:2658) now has a red top line (`--oi-base-color-brand`'s counterpart, `--oi-base-color-error`), which wins over the current step's blue; the Iris variants' red "!" icons are unchanged. The Iris `Stepper` gained a `data-status` attribute on each step so `ARSStepperWithDiv` can colour the line by status (no visual change in the Iris component). No form sets an error yet, so it shows in the ARS Storybook's new "With errors" story.
 
+### 16 Nov: Move opens at the current folder, ticked; Users list Locations map to folders
+
+The designer asked for the Move sheet to show where the objects are now. It opens with the branch down to their folder open and the rest closed, and the folder ticked; Move stays off until another folder is ticked (every caller's `canMoveTo` already refuses the current folder). The Copy sheet still opens with nothing ticked, as copying into the same folder is allowed. From the Users list and a user's page the folder comes from the Location: `folderForUserLocation` in `lib/moveObjects.ts` (the reverse of `userLocationFor`) reads "AD1\Users" as Users in O1D.local, as the directory filter reads AD1 as O1D.local, and also reads the paths a move writes ("O1D.local\Test OU\Test1"). The Users list's sample folders were added to the tree for this (Users and DataAdmin in O1D.local, OU1 and Contractors in O2D.local, Staff and OU1 in O3D.local, OU2 in O4D.local, Users in O5D.local); sample objects are generated per folder, so no other folder's objects changed. `useMoveUsers` now compares folders rather than Location text, so a user can't be "moved" into the folder they are already in, and it gives the Move sheet the users' common folder (none when they are in several).
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
