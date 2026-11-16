@@ -14,7 +14,7 @@ Each rule has an ID, what it says, where it comes from and where it is built. Wh
 
 **ENT-2. Creating an Entra user or group never asks for a location.**
 - The New Entra User form has no "Select destination folder" button and no location under the title.
-- The New Entra Distribution Group form is one step (General), with no stepper and no Destination folder step.
+- The New Entra Distribution Group form is one step (General), with no stepper and no Select folder step.
 - The object is made straight in a tenant: the tenant you are viewing in the Tree view, otherwise the first one (3bf67d). The "created" toast does not say "in [location]".
 - New AD users and AD groups still choose a folder.
 - Built: `views/UsersPage/CreateObjectModal/` (`entra` option), `views/GroupsPage/CreateGroupModal.tsx`, kit `ARSNewObjectTemplate` (the location line is left out when empty).
@@ -62,8 +62,11 @@ Each rule has an ID, what it says, where it comes from and where it is built. Wh
 **CRT-2. The Groups list's Create is a split button** with AD group and Entra group.
 - Source: designer.
 
-**CRT-3. A new AD group has three steps:** General, Exchange options, Destination folder. The folder defaults to O1D.local from the Groups list, or to the current folder in the Tree view.
-- Source: designer.
+**CRT-3. A new AD group has three steps:** General, Exchange options, Select folder. The folder defaults to O1D.local from the Groups list, or to the current folder in the Tree view.
+- Source: designer. The folder step is drawn as New User's Select folder step (Figma 3651:20393), 16 Nov 2026.
+
+**CRT-4. A new AD user has three steps:** General, Account, Select folder. The folder is picked in the step (Figma 3651:20393), not with a "Select destination folder" button and its side sheet.
+- Source: designer, 16 Nov 2026. Built: `views/SelectFolderStep/`, `views/UsersPage/CreateObjectModal/`.
 
 ## Anything not built
 

@@ -91,12 +91,20 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     prototype: '#/groups?dialog=new-entra-group',
   },
   {
-    title: 'Destination folder step in the group forms',
+    title: 'Select folder step in New AD Group',
     file: 'groups',
     figmaNodeId: '2109:10097',
-    note: 'Figma puts a "Select destination folder" button on New AD Group\'s General step, which opens the Select folder side sheet. At the designer\'s request both group forms pick the folder in a last step instead, Destination folder: the tree of AD folders (or Entra directories) opens at the destination, and the location under the title follows the ticked folder. New AD Group is General, Exchange options, Destination folder; New Entra Distribution Group is General, Destination folder.',
-    recommendation: 'Draw the Destination folder step for both group forms and take the folder button off General.',
+    note: 'Figma puts a "Select destination folder" button on New AD Group\'s General step, which opens the Select folder side sheet. At the designer\'s request the folder is picked in a last step instead, Select folder, drawn as the CRUD file\'s New User step (3651:20393): General, Exchange options, Select folder. The tree of Managed directories and Active Directory opens at the destination, and Select makes the ticked folder the destination. Entra groups have no location, so they have no folder step.',
+    recommendation: 'Draw the Select folder step in the Groups file and take the folder button off General.',
     prototype: '#/groups?dialog=new-group',
+  },
+  {
+    title: 'Step tabs fill the modal\'s width',
+    file: 'primary',
+    figmaNodeId: '3367:11939',
+    note: 'ARS_Stepper_with_div draws each step 192px wide from the left, as do the New object frames (3651:20393). At the designer\'s request the steps share the row equally: half each for two steps, a third each for three, on every New object and New group form.',
+    recommendation: 'Make the steps in ARS_Stepper_with_div fill the row.',
+    prototype: '#/users?dialog=create&type=AD+User',
   },
   {
     title: 'Advanced filter Panel on the lists, Bar in the Add Member modal',
