@@ -328,6 +328,7 @@ export function UsersPage() {
           onClose={closeDialog}
           objectType={createTarget.type}
           icon={createTarget.icon}
+          entra={createTarget.type === 'Entra User'}
           onCreate={onCreated}
         />
       )}

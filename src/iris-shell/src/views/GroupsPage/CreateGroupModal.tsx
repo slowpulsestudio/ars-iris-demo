@@ -4,7 +4,7 @@ import { Icon } from '../../components/Icon/Icon.js';
 import { Toggle } from '../../components/Toggle/Toggle.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import type { StepperStepItem } from '../../components/Stepper/Stepper.js';
-import { addObject, OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
+import { addObject, ENTRA_TENANTS, OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { GROUP_SCOPES, GROUP_TYPES, saveGroupProps } from '../../lib/groupDetailsStore.js';
 import { showToast } from '../../lib/toastStore.js';
@@ -19,7 +19,8 @@ const GENERAL: StepperStepItem = { id: 'general', label: 'General' };
 const FOLDER: StepperStepItem = { id: 'folder', label: 'Destination folder' };
 const STEPS: Record<CreateGroupKind, StepperStepItem[]> = {
   AD: [GENERAL, { id: 'exchange', label: 'Exchange options' }, FOLDER],
-  Entra: [GENERAL, FOLDER],
+  // Entra has no location: no folder step, and no stepper (one step).
+  Entra: [GENERAL],
 };
 const EMAIL_DOMAINS = ['@contoso.com', '@contoso.onmicrosoft.com'];
 /** Figma's info icons carry no text, as on the New User form. */
@@ -28,6 +29,11 @@ const INFO = 'More information';
 const DESCRIPTION_LIMIT = 100;
 /** The part of the tree each kind of group can be created in. */
 const ROOT: Record<CreateGroupKind, string> = { AD: 'active-directories', Entra: 'entra-directories' };
+
+/** An Entra group goes straight into a tenant: there is no folder to pick. */
+function entraHome(locationId: string): string {
+  return ENTRA_TENANTS.some((t) => t.id === locationId) ? locationId : ENTRA_TENANTS[0].id;
+}
 
 const JOIN_TIP = { on: 'Anyone can join this group without owner approval', off: 'Only group owners can add members. All requests to join will be automatically declined' };
 const LEAVE_TIP = { on: 'Anyone can leave this group without owner approval', off: 'Only group owners can add members. All requests to leave will be automatically declined' };
@@ -67,38 +73,41 @@ const EMPTY: Form = {
 export interface CreateGroupModalProps {
   open: boolean;
   onClose: () => void;
-  /** New AD Group (General, Exchange options, Destination folder) or New Entra Distribution Group (General, Destination folder). */
+  /** New AD Group (General, Exchange options, Destination folder) or New Entra Distribution Group (General only: Entra has no location). */
   kind: CreateGroupKind;
-  /** The folder the group goes in unless another is chosen. */
+  /** The folder an AD group goes in unless another is chosen; for an Entra group, the tenant it is made in. */
   locationId: string;
 }
 
 /**
  * CreateGroupModal — New AD Group as ARS_WebUI2_Groups draws it (General 2109:10097, Exchange options
  * 2112:12077), and New Entra Distribution Group from its written requirement (2113:12494) in the draft's
- * layout (2109:10890), since the Entra template (2109:11016) still holds the generic user form. Both end
- * with a Destination folder step in place of Figma's "Select destination folder" button.
+ * layout (2109:10890), since the Entra template (2109:11016) still holds the generic user form. A new AD group
+ * ends with a Destination folder step in place of Figma's "Select destination folder" button; an Entra group
+ * has no location, so it has one step and no folder.
  */
 export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGroupModalProps) {
   const { getPath } = useDirectory();
+  const ad = kind === 'AD';
+  const home = ad ? locationId : entraHome(locationId);
   const [form, setForm] = useState<Form>(EMPTY);
   const [step, setStep] = useState(0);
   const [furthest, setFurthest] = useState(0);
-  const [destinationId, setDestinationId] = useState(locationId);
+  const [destinationId, setDestinationId] = useState(home);
 
   useEffect(() => {
     if (open) {
       setForm(EMPTY);
       setStep(0);
       setFurthest(0);
-      setDestinationId(locationId);
+      setDestinationId(home);
     }
-  }, [open, locationId]);
+  }, [open, home]);
 
   const set = <K extends keyof Form>(key: K) => (value: Form[K]) => setForm((f) => ({ ...f, [key]: value }));
-  const ad = kind === 'AD';
   const title = ad ? 'New AD Group' : 'New Entra Distribution Group';
-  const locationLabel = getPath(destinationId).map((n) => n.name).join(' / ');
+  // Entra objects have no location, so there is nothing to show under the title.
+  const locationLabel = ad ? getPath(destinationId).map((n) => n.name).join(' / ') : '';
   const name = form.name.trim();
   const generalComplete = ad ? !!name && !!form.groupName.trim() : !!name;
   const stepItems = STEPS[kind];
@@ -121,7 +130,7 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
       description: form.description,
       parentId: destinationId,
       isContainer: false,
-      details: { description: form.description, displayName: display, location: locationLabel, memberCount: 0, created: new Date().toISOString().slice(0, 10) },
+      details: { description: form.description, displayName: display, ...(ad && { location: locationLabel }), memberCount: 0, created: new Date().toISOString().slice(0, 10) },
     };
     addObject(destinationId, object);
     const email = ad
@@ -136,7 +145,7 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
       ...(email && { email }),
     });
     showToast(`${display} successfully created`, {
-      supportingText: `${OBJECT_TYPE_META.group.label} created in ${locationLabel}. To open it, click View.`,
+      supportingText: `${OBJECT_TYPE_META.group.label} created${ad ? ` in ${locationLabel}` : ''}. To open it, click View.`,
       viewHref: `#/tree/${destinationId}/${id}`,
     });
     onClose();
@@ -216,7 +225,8 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
         title={title}
         location={locationLabel}
         icon="UsersThree"
-        steps={steps}
+        hasSteps={ad}
+        steps={ad ? steps : undefined}
         activeIndex={step}
         interactiveSteps
         onStepSelect={goTo}

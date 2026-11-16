@@ -345,6 +345,10 @@ The Groups list's Create button and the Tree view's New AD Group and New Entra D
 
 `docs/learnings/demo-portal-learnings.md` gained a "Sample data and placeholders" section (repeated content, keeping linked sample objects stable, one source for counts, filters that read the column, photos saved locally, one "Coming soon" placeholder), two points on the Design review tasks list (three kinds of Confirm item; note and link in the same commit) and a line in the reuse list.
 
+### 16 Nov: Entra objects have no location
+
+The designer decided that Entra has no location, as AD objects do, so creating an Entra user or group no longer asks for one: the New Entra User form drops the "Select destination folder" button and the location under the title, and New Entra Distribution Group becomes a single General step with no Destination folder step and no stepper. The object is made in the tenant being viewed (or 3bf67d from the Groups list), and the toast leaves out "in [location]". The kit's `ARSNewObjectTemplate` leaves out the location line when it is empty. The rule, and the other decided rules (Entra and Move, the directory filter, counts, the action bar and paging, Coming soon), are in the new `docs/decided-business-rules.md`. Move for Entra objects on Tree view lists and an Entra user's page is not yet removed.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).

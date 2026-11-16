@@ -446,6 +446,7 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
           objectType={createTarget.type}
           icon={createTarget.icon}
           locationId={nodeId}
+          entra={getPath(nodeId).some((n) => n.id === 'entra-directories')}
           onCreate={onCreated}
         />
       )}

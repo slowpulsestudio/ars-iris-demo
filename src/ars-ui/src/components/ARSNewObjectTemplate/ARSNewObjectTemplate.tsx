@@ -13,7 +13,7 @@ import styles from './ARSNewObjectTemplate.module.css';
 
 export interface ARSNewObjectTemplateProps {
   title?: string;
-  /** Supporting text under the title: where the object is created. */
+  /** Supporting text under the title: where the object is created. Empty for Entra objects, which have no location. */
   location?: string;
   /** Header icon for the object type. */
   icon?: string;
@@ -67,7 +67,7 @@ export function ARSNewObjectTemplate({
         </span>
         <div className={styles.heading}>
           <h2 className={styles.title}>{title}</h2>
-          <p className={styles.location}>{location}</p>
+          {location && <p className={styles.location}>{location}</p>}
         </div>
         <IconButton icon="X" ariaLabel="Close" variant="ghost" size="s" className={styles.close} onClick={onClose} />
       </header>

@@ -162,4 +162,12 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     recommendation: 'Draw the bar on these screens and decide which actions each needs (for example Remove on Memberships).',
     prototype: '#/tree/o1d-builtin/o1d-builtin-o1?tab=memberships&select=o1d-test-ou-o2261,o1d-test-ou-o2266',
   },
+  {
+    title: 'Entra objects have no location',
+    file: 'primary',
+    figmaNodeId: '3367:12947',
+    note: 'Figma\'s New Object template shows "[Object Location]" under the title and a "Select destination folder" button, for every object. At the designer\'s request Entra has no location, so New Entra User drops both, and New Entra Distribution Group is a single General step with no stepper and no Destination folder step. The "created" toast leaves out "in [location]". AD objects keep the folder choice.',
+    recommendation: 'Draw an Entra variant of the New Object template with no location line and no folder button, and the one-step Entra group form.',
+    prototype: '#/users?dialog=create&type=Entra+User',
+  },
 ];

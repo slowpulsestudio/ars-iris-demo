@@ -24,6 +24,8 @@ export interface CreateObjectModalProps {
   location?: string;
   /** Directory node the object goes in by default. */
   locationId?: string | null;
+  /** An Entra object: Entra has no location, so no folder is chosen and none is shown. */
+  entra?: boolean;
   /** Called with the entered values when the user creates the object. */
   onCreate?: (result: CreateObjectResult) => void;
 }
@@ -45,6 +47,7 @@ export function CreateObjectModal({
   icon,
   location = 'Directory Management / Users',
   locationId = null,
+  entra = false,
   onCreate,
 }: CreateObjectModalProps) {
   const { getPath } = useDirectory();
@@ -70,7 +73,7 @@ export function CreateObjectModal({
   const sheetOpenRef = useRef(false);
   sheetOpenRef.current = sheetOpen;
 
-  const locationLabel = destinationId ? getPath(destinationId).map((n) => n.name).join(' / ') : location;
+  const locationLabel = entra ? '' : destinationId ? getPath(destinationId).map((n) => n.name).join(' / ') : location;
 
   const setV = (patch: Partial<ARSNewObjectValues>) => setValues((p) => ({ ...p, ...patch }));
 
@@ -93,7 +96,7 @@ export function CreateObjectModal({
   }));
 
   const create = () => {
-    onCreate?.({ objectType, values, locationId: destinationId, locationLabel });
+    onCreate?.({ objectType, values, locationId: destinationId, locationLabel, entra });
     onClose();
   };
 
@@ -128,7 +131,7 @@ export function CreateObjectModal({
         >
           <ARSNewObjectContent
             variant={isLast ? 'Variant2' : 'Default'}
-            showFolderButton
+            showFolderButton={!entra}
             values={values}
             onValuesChange={setV}
             accountOptions={accountOptions}
@@ -138,13 +141,15 @@ export function CreateObjectModal({
         </ARSNewObjectTemplate>
       </ModalOverlay>
 
-      <SelectFolderSheet
-        open={sheetOpen}
-        onClose={() => setSheetOpen(false)}
-        objectName={sheetFor}
-        initialId={destinationId}
-        onSelect={setDestinationId}
-      />
+      {!entra && (
+        <SelectFolderSheet
+          open={sheetOpen}
+          onClose={() => setSheetOpen(false)}
+          objectName={sheetFor}
+          initialId={destinationId}
+          onSelect={setDestinationId}
+        />
+      )}
     </>
   );
 }

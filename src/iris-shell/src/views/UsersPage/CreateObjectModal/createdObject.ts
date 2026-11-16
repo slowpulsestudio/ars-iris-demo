@@ -9,8 +9,10 @@ export interface CreateObjectResult {
   values: ARSNewObjectValues;
   /** Directory node the object goes in; `null` for the flat Users list. */
   locationId: string | null;
-  /** Readable path of the destination, e.g. "Active Directory / O1D.local / Test OU". */
+  /** Readable path of the destination, e.g. "Active Directory / O1D.local / Test OU". Empty for an Entra object. */
   locationLabel: string;
+  /** An Entra object: Entra has no location, so none is shown or stored. */
+  entra?: boolean;
 }
 
 const TYPE_BY_NAME: Record<string, DirectoryObjectType> = {
@@ -53,7 +55,7 @@ const nextId = (prefix: string) => `${prefix}-new-${(sequence += 1)}`;
 /** The ARS_New_Object_Toast text; View opens the new object when it has a page. */
 export function announceCreated(result: CreateObjectResult, viewHref?: string): void {
   showToast(`${newObjectName(result.values, result.objectType)} successfully created`, {
-    supportingText: `${result.objectType} created in ${result.locationLabel}${viewHref ? '. To open it, click View.' : ''}`,
+    supportingText: `${result.objectType} created${result.entra ? '' : ` in ${result.locationLabel}`}${viewHref ? '. To open it, click View.' : ''}`,
     viewHref,
   });
 }
@@ -95,7 +97,7 @@ export function directoryObjectFromValues(result: CreateObjectResult, nodeId: st
     isContainer: false,
     details: {
       description: '',
-      location: result.locationLabel,
+      ...(!result.entra && { location: result.locationLabel }),
       created: new Date().toISOString().slice(0, 10),
       ...(type === 'user' && {
         firstName: values.firstName.trim(),
