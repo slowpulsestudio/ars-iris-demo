@@ -6,9 +6,11 @@ import {
   type ARSNewObjectValues,
 } from '@ars';
 import { useDirectory } from '../../../lib/directoryStore.js';
+import { useStepFlow } from '../../../lib/useStepFlow.js';
 import type { StepperStepItem } from '../../../components/Stepper/Stepper.js';
 import { ModalOverlay } from '../../ModalOverlay/ModalOverlay.js';
 import { SelectFolderSheet } from '../../SelectFolderSheet/SelectFolderSheet.js';
+import { SELECT_FOLDER_STEP, SelectFolderStep } from '../../SelectFolderStep/SelectFolderStep.js';
 import type { CreateObjectResult } from './createdObject.js';
 
 export type { CreateObjectResult } from './createdObject.js';
@@ -36,9 +38,9 @@ const STEPS: StepperStepItem[] = [
 ];
 
 /**
- * CreateObjectModal — two-step "New object" flow (ARS_New_Object_Template):
- * General collects identity fields, Account collects the password and account
- * options. "Select destination folder" opens the Select folder side sheet.
+ * CreateObjectModal — the "New object" flow (ARS_New_Object_Template): General collects identity fields,
+ * Account the password and account options. A new AD user then picks its folder in a Select folder step
+ * (Figma 3651:20393); other objects open the Select folder side sheet from "Select destination folder".
  */
 export function CreateObjectModal({
   open,
@@ -51,7 +53,9 @@ export function CreateObjectModal({
   onCreate,
 }: CreateObjectModalProps) {
   const { getPath } = useDirectory();
-  const [step, setStep] = useState(0);
+  // You asked for the folder as a step for new AD users; Entra objects have no location.
+  const folderStep = !entra && objectType === 'AD User';
+  const stepItems = folderStep ? [...STEPS, SELECT_FOLDER_STEP] : STEPS;
   const [values, setValues] = useState<ARSNewObjectValues>(ARS_EMPTY_NEW_OBJECT_VALUES);
   const [accountOptions, setAccountOptions] = useState<ReadonlySet<string>>(
     () => new Set(['User must change password at next login']),
@@ -59,25 +63,6 @@ export function CreateObjectModal({
   const [destinationId, setDestinationId] = useState<string | null>(locationId);
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  // Reset the flow whenever the modal (re)opens.
-  useEffect(() => {
-    if (open) {
-      setStep(0);
-      setValues(ARS_EMPTY_NEW_OBJECT_VALUES);
-      setDestinationId(locationId);
-      setSheetOpen(false);
-    }
-  }, [open, locationId]);
-
-  // The side sheet handles its own Escape; the modal must not close underneath it.
-  const sheetOpenRef = useRef(false);
-  sheetOpenRef.current = sheetOpen;
-
-  const locationLabel = entra ? '' : destinationId ? getPath(destinationId).map((n) => n.name).join(' / ') : location;
-
-  const setV = (patch: Partial<ARSNewObjectValues>) => setValues((p) => ({ ...p, ...patch }));
-
-  const isLast = step === STEPS.length - 1;
   // The fields Figma marks Required; step 1 is complete once all have a value.
   const generalComplete = [
     values.firstName,
@@ -87,22 +72,33 @@ export function CreateObjectModal({
     values.userLogonName,
     values.preWindows2000,
   ].every((v) => v.trim() !== '');
-  const footerVariant = isLast ? '2' : generalComplete ? '1_complete' : '1';
+  const { step, steps, goTo, reset, last } = useStepFlow(stepItems, generalComplete);
+  const stepId = stepItems[step]?.id;
 
-  // Reached steps are clickable; the next one opens once this step is complete.
-  const steps = STEPS.map((s, i) => ({
-    ...s,
-    disabled: i > step && !(i === step + 1 && generalComplete),
-  }));
+  // Reset the flow whenever the modal (re)opens.
+  useEffect(() => {
+    if (open) {
+      reset();
+      setValues(ARS_EMPTY_NEW_OBJECT_VALUES);
+      setDestinationId(locationId);
+      setSheetOpen(false);
+    }
+  }, [open, locationId, reset]);
+
+  // The side sheet handles its own Escape; the modal must not close underneath it.
+  const sheetOpenRef = useRef(false);
+  sheetOpenRef.current = sheetOpen;
+
+  const locationLabel = entra ? '' : destinationId ? getPath(destinationId).map((n) => n.name).join(' / ') : location;
+
+  const setV = (patch: Partial<ARSNewObjectValues>) => setValues((p) => ({ ...p, ...patch }));
 
   const create = () => {
     onCreate?.({ objectType, values, locationId: destinationId, locationLabel, entra });
     onClose();
   };
 
-  const openSheet = () => setSheetOpen(true);
-
-  const sheetFor =
+  const objectName =
     values.displayName.trim() || `${values.firstName} ${values.lastName}`.trim() || `this ${objectType.toLowerCase()}`;
 
   return (
@@ -121,31 +117,39 @@ export function CreateObjectModal({
           steps={steps}
           activeIndex={step}
           interactiveSteps
-          onStepSelect={setStep}
-          // You asked for the body to fit each step; Figma keeps it 729px tall (on the Figma tidy-up list).
-          fitContent
-          footerVariant={footerVariant}
+          onStepSelect={goTo}
+          // You asked for the body to fit each step; Figma keeps it 729px tall (on the Figma tidy-up list). Select
+          // folder keeps Figma's height, as its tree fills the body (3651:20393).
+          fitContent={stepId !== SELECT_FOLDER_STEP.id}
+          footerVariant={step > 0 ? '2' : generalComplete ? '1_complete' : '1'}
+          ctaLabel={!last && step > 0 ? 'Save and continue →' : undefined}
           onClose={onClose}
-          onBack={() => setStep(0)}
-          onContinue={isLast ? create : () => setStep(1)}
+          onBack={() => goTo(step - 1)}
+          onContinue={last ? create : () => goTo(step + 1)}
         >
-          <ARSNewObjectContent
-            variant={isLast ? 'Variant2' : 'Default'}
-            showFolderButton={!entra}
-            values={values}
-            onValuesChange={setV}
-            accountOptions={accountOptions}
-            onAccountOptionsChange={setAccountOptions}
-            onSelectFolder={openSheet}
-          />
+          {stepId === SELECT_FOLDER_STEP.id ? (
+            <ARSNewObjectContent fillHeight>
+              <SelectFolderStep objectName={objectName} destinationId={destinationId} onSelect={setDestinationId} />
+            </ARSNewObjectContent>
+          ) : (
+            <ARSNewObjectContent
+              variant={stepId === 'account' ? 'Variant2' : 'Default'}
+              showFolderButton={!entra && !folderStep}
+              values={values}
+              onValuesChange={setV}
+              accountOptions={accountOptions}
+              onAccountOptionsChange={setAccountOptions}
+              onSelectFolder={() => setSheetOpen(true)}
+            />
+          )}
         </ARSNewObjectTemplate>
       </ModalOverlay>
 
-      {!entra && (
+      {!entra && !folderStep && (
         <SelectFolderSheet
           open={sheetOpen}
           onClose={() => setSheetOpen(false)}
-          objectName={sheetFor}
+          objectName={objectName}
           initialId={destinationId}
           onSelect={setDestinationId}
         />

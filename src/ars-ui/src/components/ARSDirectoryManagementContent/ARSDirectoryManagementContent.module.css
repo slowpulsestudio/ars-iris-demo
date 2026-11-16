@@ -27,6 +27,11 @@
   padding: var(--oi-spacing-s) var(--oi-spacing-m) var(--oi-spacing-s) var(--oi-spacing-s);
 }
 
+/* The Select folder step's box (ARS_WebUI2_CRUD 3651:20427) has no padding. */
+.treeRoot.flush .tree {
+  padding: 0;
+}
+
 /* The ARS file draws a 20px active indicator (no 20px token). */
 .treeRoot .tree [aria-selected='true']::after {
   height: 20px;

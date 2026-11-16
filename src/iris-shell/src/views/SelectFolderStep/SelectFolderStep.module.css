@@ -1,0 +1,68 @@
+/* Figma "Content" (3651:20413): 16px padding, 12px between the header, the tree and the buttons; fills the form column. */
+.root {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--oi-spacing-m);
+  min-height: 0;
+  padding: var(--oi-spacing-l);
+}
+
+/* Figma: a 68px block (no token), the icon 12px from the title and supporting text. */
+.header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: flex-start;
+  gap: var(--oi-spacing-m);
+  min-height: 68px;
+}
+
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: var(--oi-size-s);
+  height: var(--oi-size-s);
+  color: var(--oi-content-color-primary);
+}
+
+.heading {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-secondary);
+}
+
+/* Figma ARS_Directory_Management_Content (3651:20427): strong 1px border, 4px corners, fills the space left. */
+.folders {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  background-color: var(--oi-background-color-primary);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-strong);
+  border-radius: var(--oi-border-radius-default);
+}
+
+/* Figma "Actions" (3651:20467): right-aligned, the Iris button gap apart. */
+.actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--oi-button-gap-default);
+}

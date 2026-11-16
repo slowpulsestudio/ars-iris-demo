@@ -44,6 +44,8 @@ export interface ARSDirectoryTreeContentProps extends CommonProps {
   externalDropType?: TreeProps['externalDropType'];
   canExternalDrop?: TreeProps['canExternalDrop'];
   onExternalDrop?: TreeProps['onExternalDrop'];
+  /** No padding round the tree, as in the Select folder step's box (ARS_WebUI2_CRUD 3651:20427). */
+  flush?: boolean;
 }
 
 /** Favorites: search plus titled sections of Iris NavItems. */
@@ -71,7 +73,7 @@ export function ARSDirectoryManagementContent(props: ARSDirectoryManagementConte
 
   if (props.variant === 'tree') {
     return (
-      <div className={cx(styles.treeRoot, className)}>
+      <div className={cx(styles.treeRoot, props.flush && styles.flush, className)}>
         <Tree
           className={styles.tree}
           ariaLabel="Directories"

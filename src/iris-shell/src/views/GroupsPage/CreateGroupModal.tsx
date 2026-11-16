@@ -8,17 +8,17 @@ import { addObject, ENTRA_TENANTS, OBJECT_TYPE_META, type DirectoryObject } from
 import { useDirectory } from '../../lib/directoryStore.js';
 import { GROUP_SCOPES, GROUP_TYPES, saveGroupProps } from '../../lib/groupDetailsStore.js';
 import { showToast } from '../../lib/toastStore.js';
-import { FolderTree } from '../FolderTree/FolderTree.js';
+import { useStepFlow } from '../../lib/useStepFlow.js';
 import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
+import { SELECT_FOLDER_STEP, SelectFolderStep } from '../SelectFolderStep/SelectFolderStep.js';
 import styles from './CreateGroupModal.module.css';
 
 export type CreateGroupKind = 'AD' | 'Entra';
 
 const GENERAL: StepperStepItem = { id: 'general', label: 'General' };
-/** Not in Figma: the designer asked for the folder as the last step instead of the Select folder sheet. */
-const FOLDER: StepperStepItem = { id: 'folder', label: 'Destination folder' };
 const STEPS: Record<CreateGroupKind, StepperStepItem[]> = {
-  AD: [GENERAL, { id: 'exchange', label: 'Exchange options' }, FOLDER],
+  // You asked for the folder as the last step instead of the Select folder sheet; it is drawn as New User's (3651:20393).
+  AD: [GENERAL, { id: 'exchange', label: 'Exchange options' }, SELECT_FOLDER_STEP],
   // Entra has no location: no folder step, and no stepper (one step).
   Entra: [GENERAL],
 };
@@ -27,8 +27,6 @@ const EMAIL_DOMAINS = ['@contoso.com', '@contoso.onmicrosoft.com'];
 const INFO = 'More information';
 /** Figma's "0/100" on Group description. */
 const DESCRIPTION_LIMIT = 100;
-/** The part of the tree each kind of group can be created in. */
-const ROOT: Record<CreateGroupKind, string> = { AD: 'active-directories', Entra: 'entra-directories' };
 
 /** An Entra group goes straight into a tenant: there is no folder to pick. */
 function entraHome(locationId: string): string {
@@ -73,7 +71,7 @@ const EMPTY: Form = {
 export interface CreateGroupModalProps {
   open: boolean;
   onClose: () => void;
-  /** New AD Group (General, Exchange options, Destination folder) or New Entra Distribution Group (General only: Entra has no location). */
+  /** New AD Group (General, Exchange options, Select folder) or New Entra Distribution Group (General only: Entra has no location). */
   kind: CreateGroupKind;
   /** The folder an AD group goes in unless another is chosen; for an Entra group, the tenant it is made in. */
   locationId: string;
@@ -83,42 +81,34 @@ export interface CreateGroupModalProps {
  * CreateGroupModal — New AD Group as ARS_WebUI2_Groups draws it (General 2109:10097, Exchange options
  * 2112:12077), and New Entra Distribution Group from its written requirement (2113:12494) in the draft's
  * layout (2109:10890), since the Entra template (2109:11016) still holds the generic user form. A new AD group
- * ends with a Destination folder step in place of Figma's "Select destination folder" button; an Entra group
- * has no location, so it has one step and no folder.
+ * ends with the Select folder step (ARS_WebUI2_CRUD 3651:20393) in place of Figma's "Select destination folder"
+ * button; an Entra group has no location, so it has one step and no folder.
  */
 export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGroupModalProps) {
   const { getPath } = useDirectory();
   const ad = kind === 'AD';
   const home = ad ? locationId : entraHome(locationId);
   const [form, setForm] = useState<Form>(EMPTY);
-  const [step, setStep] = useState(0);
-  const [furthest, setFurthest] = useState(0);
   const [destinationId, setDestinationId] = useState(home);
+  const name = form.name.trim();
+  const generalComplete = ad ? !!name && !!form.groupName.trim() : !!name;
+  const stepItems = STEPS[kind];
+  const { step, steps, goTo, reset, last } = useStepFlow(stepItems, generalComplete);
+  const stepId = stepItems[step]?.id;
+  const folderStep = stepId === SELECT_FOLDER_STEP.id;
 
   useEffect(() => {
     if (open) {
       setForm(EMPTY);
-      setStep(0);
-      setFurthest(0);
+      reset();
       setDestinationId(home);
     }
-  }, [open, home]);
+  }, [open, home, reset]);
 
   const set = <K extends keyof Form>(key: K) => (value: Form[K]) => setForm((f) => ({ ...f, [key]: value }));
   const title = ad ? 'New AD Group' : 'New Entra Distribution Group';
   // Entra objects have no location, so there is nothing to show under the title.
   const locationLabel = ad ? getPath(destinationId).map((n) => n.name).join(' / ') : '';
-  const name = form.name.trim();
-  const generalComplete = ad ? !!name && !!form.groupName.trim() : !!name;
-  const stepItems = STEPS[kind];
-  const stepId = stepItems[step]?.id;
-  const last = step === stepItems.length - 1;
-  const goTo = (index: number) => {
-    setStep(index);
-    setFurthest((f) => Math.max(f, index));
-  };
-  // Reached steps are clickable, and the one after them; none past General until it is complete.
-  const steps = stepItems.map((s, i) => ({ ...s, disabled: i > 0 && (!generalComplete || i > furthest + 1) }));
 
   const create = () => {
     const display = ad ? name : form.displayName.trim() || name;
@@ -163,61 +153,59 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
   );
 
   // Each step gets its own key so its fields mount fresh: the read-only ones are uncontrolled.
-  const fields =
-    stepId === 'folder' ? (
-      <Fragment key="folder">
-        {/* The Select folder sheet's subtitle; ticking a folder updates the location under the title. */}
-        <p className={styles.hint}>Browse and select a destination folder for {name || 'this group'}</p>
-        <div className={styles.folders}>
-          <FolderTree selectedId={destinationId} onSelect={setDestinationId} rootId={ROOT[kind]} />
-        </div>
-      </Fragment>
-    ) : stepId === 'exchange' ? (
-      <Fragment key="exchange">
-        <FormInput
-          label="Create an Exchange e-mail address"
-          checkbox
-          value={String(form.exchange)}
-          onChange={(v) => set('exchange')(v === 'true')}
-        />
-        {/* Both are read-only in the written requirement (2111:11198); Figma's sample is "Security members". */}
-        <FormInput label="Alias" value={name} disabled />
-        <FormInput label="Associated administrative group" value={name ? `${name} members` : ''} disabled />
-      </Fragment>
-    ) : ad ? (
-      <Fragment key="ad-general">
-        <FormInput label="Group name" required value={form.name} onChange={set('name')} />
-        <FormInput label="Group name (Pre-Windows 2000)" required info={INFO} value={form.groupName} onChange={set('groupName')} />
-        <FormInput
-          label="Group description"
-          info={INFO}
-          multiline
-          maxLength={DESCRIPTION_LIMIT}
-          value={form.description}
-          onChange={set('description')}
-        />
-        <FormInput label="Group scope" required info={INFO} select options={GROUP_SCOPES} value={form.scope} onChange={set('scope')} />
-        <FormInput label="Group type" required info={INFO} select options={GROUP_TYPES} value={form.type} onChange={set('type')} />
-      </Fragment>
-    ) : (
-      <Fragment key="entra-general">
-        <FormInput label="Name" required value={form.name} onChange={set('name')} />
-        <FormInput label="Display name" value={form.displayName} onChange={set('displayName')} />
-        <FormInput label="Description" value={form.description} onChange={set('description')} />
-        <div className={styles.row}>
-          <FormInput label="Primary SMTP address" info="Leave blank for the default value" value={form.smtp} onChange={set('smtp')} />
-          <FormInput label="Domain" select options={EMAIL_DOMAINS} value={form.smtpDomain} onChange={set('smtpDomain')} />
-        </div>
-        <FormInput
-          label="Hide this group from the global address list"
-          checkbox
-          value={String(form.hideFromList)}
-          onChange={(v) => set('hideFromList')(v === 'true')}
-        />
-        {toggle('Joining group', form.join, set('join'), JOIN_TIP)}
-        {toggle('Leaving group', form.leave, set('leave'), LEAVE_TIP)}
-      </Fragment>
-    );
+  const fields = folderStep ? (
+    <SelectFolderStep
+      key="folder"
+      objectName={name || 'this group'}
+      destinationId={destinationId}
+      onSelect={setDestinationId}
+    />
+  ) : stepId === 'exchange' ? (
+    <Fragment key="exchange">
+      <FormInput
+        label="Create an Exchange e-mail address"
+        checkbox
+        value={String(form.exchange)}
+        onChange={(v) => set('exchange')(v === 'true')}
+      />
+      {/* Both are read-only in the written requirement (2111:11198); Figma's sample is "Security members". */}
+      <FormInput label="Alias" value={name} disabled />
+      <FormInput label="Associated administrative group" value={name ? `${name} members` : ''} disabled />
+    </Fragment>
+  ) : ad ? (
+    <Fragment key="ad-general">
+      <FormInput label="Group name" required value={form.name} onChange={set('name')} />
+      <FormInput label="Group name (Pre-Windows 2000)" required info={INFO} value={form.groupName} onChange={set('groupName')} />
+      <FormInput
+        label="Group description"
+        info={INFO}
+        multiline
+        maxLength={DESCRIPTION_LIMIT}
+        value={form.description}
+        onChange={set('description')}
+      />
+      <FormInput label="Group scope" required info={INFO} select options={GROUP_SCOPES} value={form.scope} onChange={set('scope')} />
+      <FormInput label="Group type" required info={INFO} select options={GROUP_TYPES} value={form.type} onChange={set('type')} />
+    </Fragment>
+  ) : (
+    <Fragment key="entra-general">
+      <FormInput label="Name" required value={form.name} onChange={set('name')} />
+      <FormInput label="Display name" value={form.displayName} onChange={set('displayName')} />
+      <FormInput label="Description" value={form.description} onChange={set('description')} />
+      <div className={styles.row}>
+        <FormInput label="Primary SMTP address" info="Leave blank for the default value" value={form.smtp} onChange={set('smtp')} />
+        <FormInput label="Domain" select options={EMAIL_DOMAINS} value={form.smtpDomain} onChange={set('smtpDomain')} />
+      </div>
+      <FormInput
+        label="Hide this group from the global address list"
+        checkbox
+        value={String(form.hideFromList)}
+        onChange={(v) => set('hideFromList')(v === 'true')}
+      />
+      {toggle('Joining group', form.join, set('join'), JOIN_TIP)}
+      {toggle('Leaving group', form.leave, set('leave'), LEAVE_TIP)}
+    </Fragment>
+  );
 
   return (
     <ModalOverlay open={open} label={title} onClose={onClose}>
@@ -230,15 +218,17 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
         activeIndex={step}
         interactiveSteps
         onStepSelect={goTo}
-        // As the New User form: the body fits each step.
-        fitContent
+        // As the New User form: the body fits each step, but Select folder keeps Figma's height, as its tree fills it.
+        fitContent={!folderStep}
         footerVariant={step > 0 ? '2' : generalComplete ? '1_complete' : '1'}
         ctaLabel={last ? 'Create group →' : step > 0 ? 'Save and continue →' : undefined}
         onClose={onClose}
-        onBack={() => setStep(step - 1)}
+        onBack={() => goTo(step - 1)}
         onContinue={() => (last ? create() : goTo(step + 1))}
       >
-        <ARSNewObjectContent heading={ad ? 'Create new AD group' : 'Create new Entra distribution group'}>{fields}</ARSNewObjectContent>
+        <ARSNewObjectContent heading={ad ? 'Create new AD group' : 'Create new Entra distribution group'} fillHeight={folderStep}>
+          {fields}
+        </ARSNewObjectContent>
       </ARSNewObjectTemplate>
     </ModalOverlay>
   );

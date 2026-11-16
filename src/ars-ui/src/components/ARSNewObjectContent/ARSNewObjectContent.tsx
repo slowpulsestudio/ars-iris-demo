@@ -70,6 +70,8 @@ export interface ARSNewObjectContentProps {
   heading?: string;
   /** Another object's fields in place of the user fields (the group create forms), beside the same heading. */
   children?: ReactNode;
+  /** Stretches the form column to the body's height so a step can fill it, as the Select folder step does (ARS_WebUI2_CRUD 3651:20406). */
+  fillHeight?: boolean;
   className?: string;
 }
 
@@ -88,6 +90,7 @@ export function ARSNewObjectContent({
   onSelectFolder,
   heading = 'Add new object',
   children,
+  fillHeight = false,
   className,
 }: ARSNewObjectContentProps) {
   const [localOptions, setLocalOptions] = useState<ReadonlySet<string>>(() => new Set([ARS_ACCOUNT_OPTIONS[0]]));
@@ -101,7 +104,9 @@ export function ARSNewObjectContent({
       : { value: sample };
 
   return (
-    <div className={cx(styles.root, layout === 'container' && styles.container, className)}>
+    <div
+      className={cx(styles.root, layout === 'container' && styles.container, fillHeight && styles.fillHeight, className)}
+    >
       {children ? (
         <div className={styles.form}>{children}</div>
       ) : variant === 'Default' ? (
