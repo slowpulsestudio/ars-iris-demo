@@ -186,4 +186,12 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     recommendation: 'Draw the head menu with the value checkboxes, update the component note, and give the state icons colours that pass 3:1.',
     prototype: '#/users',
   },
+  {
+    title: 'List heads have no icons',
+    file: 'primary',
+    figmaNodeId: '99:30760',
+    note: 'ARS_Table, and ARS_Table_Groups (ARS_WebUI2_Groups 158:33464), draw an icon before each column name. At the designer\'s request the Users and Groups lists drop them; the heads keep the sort icon after the name.',
+    recommendation: 'Remove the icons before the column names in ARS_Table and ARS_Table_Groups.',
+    prototype: '#/users',
+  },
 ];
