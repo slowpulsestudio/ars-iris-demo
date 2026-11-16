@@ -19,7 +19,8 @@ export interface ARSStepperWithDivProps {
 /**
  * ARS_Stepper_with_div — the Iris Stepper under a top border, with the
  * fading vertical divider that runs down the new-object form. Figma: 3367:11939.
- * The steps share the row equally (the designer's change; Figma draws 192px steps).
+ * Spacing and lines as ARS_WebUI2_CRUD 3663:22067: the stepper fills the form
+ * column, the divider is at its right edge and the current step's line is blue.
  */
 export function ARSStepperWithDiv({
   steps = STEPS,

@@ -1,31 +1,39 @@
-/* Figma: a 1px top border over a 37px row (no token). */
+/* ARS_WebUI2_CRUD 3663:22067: a 1px top line across the content, then a 40px block (--oi-size-l) with the stepper
+   centred in it. */
 .root {
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--oi-spacing-s);
-  height: 37px;
+  box-sizing: content-box;
+  height: var(--oi-size-l);
   border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
 }
 
-/* Figma's vertical divider: 380px tall, fading out, 169.5px right of centre (no tokens). */
+/* 3663:22578 "Seperator": a 380px line fading out at the form column's right edge (702px), from the top line down (no
+   tokens). */
 .divider {
   position: absolute;
-  top: calc(-1 * var(--oi-border-width-default));
-  left: calc(50% + 169.5px);
+  top: 0;
+  left: 702px;
   width: var(--oi-border-width-default);
   height: 380px;
   background: linear-gradient(to bottom, var(--oi-border-color-default), var(--oi-background-color-primary));
-  transform: translateX(-50%);
 }
 
+/* The stepper sits in the 702px form column (no token); its steps share it equally, 234px each for three. */
 .stepper {
-  flex: 1 1 0;
+  flex: none;
+  width: 702px;
   min-width: 0;
 }
 
-/* Not in Figma, which draws 192px steps: the designer asked for the steps to share the row equally. */
 .stepper > li {
   flex: 1 1 0;
   width: auto;
+}
+
+/* The current step's top line is the brand blue, as 3663:22536 draws it; every other step keeps the Iris UI Kit
+   .stepper-step variants (8708:2639). */
+.root .stepper > li[aria-current='step'] > * {
+  border-top-color: var(--oi-base-color-brand);
 }

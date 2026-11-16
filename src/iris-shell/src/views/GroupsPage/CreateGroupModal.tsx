@@ -211,7 +211,7 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
   };
   const heading = ad ? 'Create new AD group' : 'Create new Entra distribution group';
   const stepContents = stepItems.map((s) => (
-    <ARSNewObjectContent key={s.id} heading={heading}>
+    <ARSNewObjectContent key={s.id} heading={heading} panel={s.id === SELECT_FOLDER_STEP.id}>
       {fields[s.id]}
     </ARSNewObjectContent>
   ));

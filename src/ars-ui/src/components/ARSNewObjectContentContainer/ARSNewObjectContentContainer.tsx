@@ -31,7 +31,7 @@ export interface ARSNewObjectContentContainerProps {
 
 /**
  * ARS_New_Object_Content_Container — the new-object modal body: the stepper
- * pinned above the form. Figma: 3367:12347.
+ * pinned above the form. Figma: 3367:12347; spacing and lines as ARS_WebUI2_CRUD 3663:22067.
  */
 export function ARSNewObjectContentContainer({
   steps = STEPS,
@@ -55,7 +55,7 @@ export function ARSNewObjectContentContainer({
           className={styles.stepper}
         />
       )}
-      <div className={styles.content}>
+      <div className={cx(styles.content, showStepper && styles.withStepper)}>
         {stepContents ? (
           <div className={styles.steps}>
             {stepContents.map((content, i) => (

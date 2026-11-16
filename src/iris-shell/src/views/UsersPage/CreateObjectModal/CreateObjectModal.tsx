@@ -111,7 +111,7 @@ export function CreateObjectModal({
     <ARSNewObjectContent key="account" variant="Variant2" {...formProps} />,
     ...(folderStep
       ? [
-          <ARSNewObjectContent key={SELECT_FOLDER_STEP.id}>
+          <ARSNewObjectContent key={SELECT_FOLDER_STEP.id} panel>
             <SelectFolderStep objectName={objectName} destinationId={destinationId} onSelect={setDestinationId} />
           </ARSNewObjectContent>,
         ]

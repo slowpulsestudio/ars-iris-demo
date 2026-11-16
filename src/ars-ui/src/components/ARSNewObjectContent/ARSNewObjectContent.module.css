@@ -4,7 +4,14 @@
   justify-content: space-between;
 }
 
-/* Figma: a 702px form column (no token); as tall as the row, so a step can fill it (the Select folder step). */
+/* ARS_WebUI2_CRUD 3663:22067: the heading column starts after the 1px divider and 24px ("Seperator" 3663:22578). */
+.root:not(.container) {
+  justify-content: flex-start;
+  column-gap: calc(var(--oi-border-width-default) + var(--oi-spacing-xl));
+}
+
+/* Figma: a 702px form column (no token); as tall as the row, so a step can fill it (the Select folder step). Under a
+   stepper it starts --ars-new-object-step-top down (ARSNewObjectContentContainer). */
 .form {
   display: flex;
   flex-direction: column;
@@ -12,6 +19,12 @@
   align-self: stretch;
   gap: var(--oi-spacing-l);
   width: 702px;
+  padding-top: var(--ars-new-object-step-top, 0px);
+}
+
+/* A panel brings its own padding: 3663:22082 starts right under the stepper. */
+.panel .form {
+  padding-top: 0;
 }
 
 .form > * {
@@ -32,11 +45,13 @@
   flex: 1 1 0;
 }
 
-/* Figma: a 371px heading column beside the form (no token). */
+/* Figma: a 371px heading column beside the form (no token); under a stepper it starts 12px down, as 3663:22139's 40px
+   spacer and 12px gap place it. */
 .header {
   display: flex;
   align-self: stretch;
   width: 371px;
+  padding-top: var(--ars-new-object-step-top, 0px);
 }
 
 .heading {

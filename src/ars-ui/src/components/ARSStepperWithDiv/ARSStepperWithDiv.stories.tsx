@@ -8,7 +8,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Figma: ARS_Stepper_with_div · ARS - Primary · 3367:11939. The Iris Stepper, plus a 380px vertical divider that fades out below the row (it sits beside the new-object form). Not in Figma: the steps share the row equally (half each for two, a third each for three), at the designer\'s request; Figma draws them 192px wide.',
+          'Figma: ARS_Stepper_with_div · ARS - Primary · 3367:11939, laid out as ARS_WebUI2_CRUD 3663:22067: a top line across the content, then a 40px block with the Iris Stepper in the 702px form column (the steps share it equally), and a 380px fading divider at the column\'s right edge. The current step\'s line is the brand blue (3663:22536); the other steps use the Iris UI Kit .stepper-step variants (8708:2639).',
       },
     },
   },

@@ -1,23 +1,28 @@
-/* Figma: 729px tall (no token), 16px sides and bottom, 12px between stepper and form. */
+/* Figma: 729px tall (no token), 16px sides and bottom. ARS_WebUI2_CRUD 3663:22067 puts the step right under the
+   stepper, so there is no gap between them. */
 .root {
   display: flex;
   flex-direction: column;
-  gap: var(--oi-spacing-m);
   height: 729px;
   padding: 0 var(--oi-spacing-l) var(--oi-spacing-l);
   overflow: hidden;
 }
 
-/* Figma: the stepper spans the full width (past the side padding) and stays pinned. */
+/* 3663:22067: the stepper and its top line span the content, inside the side padding, and stay pinned. */
 .stepper {
   position: sticky;
   top: 0;
-  margin-inline: calc(-1 * var(--oi-spacing-l));
 }
 
 .content {
   flex: 1 1 0;
   min-height: 0;
+}
+
+/* Under a stepper, the fields and the heading beside them start 12px down: 3663:22067's guide column has a 40px spacer
+   (the stepper's height) and a 12px gap; the designer chose the same for the fields. */
+.withStepper {
+  --ars-new-object-step-top: var(--oi-spacing-m);
 }
 
 /* Fits the step's content (not in Figma, which keeps 729px for every step). */
