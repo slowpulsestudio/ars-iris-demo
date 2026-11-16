@@ -56,10 +56,10 @@ Each rule has an ID, what it says, where it comes from and where it is built. Wh
 
 ## Creating things
 
-**CRT-1. Users > Create is the New User menu** (New Entra User, New AD User, Add User), not the long New object menu, which stays on the Tree view. Add User opens a Coming soon dialog.
+**CRT-1. Users > Create is the New User menu** (New Entra User, New AD User, Add User), not the long New object menu, which stays on the Tree view. Add User opens a Coming soon dialog. Create is a split button (UI rule BTN-1).
 - Source: designer.
 
-**CRT-2. The Groups list's Create is a split button** with AD group and Entra group.
+**CRT-2. The Groups list's Create is a split button** with AD group and Entra group (UI rule BTN-1).
 - Source: designer.
 
 **CRT-3. A new AD group has three steps:** General, Exchange options, Select folder. The folder defaults to O1D.local from the Groups list, or to the current folder in the Tree view.

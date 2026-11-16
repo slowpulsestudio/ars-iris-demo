@@ -20,6 +20,15 @@ export const Split: Story = { args: { variant: 'Split' } };
 /** Figma "Vartiant=Basic" (2613:23295). */
 export const Basic: Story = { args: { variant: 'Basic' } };
 
+/**
+ * Not in Figma: Basic whose Create opens a menu, so it is a split button (decided UI rule BTN-1), as on the Users
+ * list (ARS_Flat View_User_Content 3423:30755).
+ */
+export const BasicWithMenu: Story = {
+  name: 'Basic, with a menu',
+  args: { variant: 'Basic', actionLabel: 'Create', onAction: () => {}, onActionMenu: () => {} },
+};
+
 /** Figma "Vartiant=No create" (3306:19725). */
 export const NoCreate: Story = { name: 'No create', args: { variant: 'No create' } };
 

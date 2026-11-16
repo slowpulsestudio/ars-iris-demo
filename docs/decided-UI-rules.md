@@ -10,3 +10,11 @@ Each rule has an ID, what it says, where it comes from and where it is built. Wh
 - Applies to every New object and New group form with a stepper: New AD User, New Entra User, the Tree view's other New object types and New AD Group. Figma keeps their body at a fixed 729px (ARS_New_Object_Template 3367:12947).
 - The Select folder step (Figma 3651:20393) is never the tallest: its tree fills the height the other steps give it and scrolls.
 - Source: designer, 16 Nov 2026. Built: kit `ARSNewObjectContentContainer` (`stepContents`: every step shares one grid cell, and the steps not on screen are hidden and inert), `views/UsersPage/CreateObjectModal/`, `views/GroupsPage/CreateGroupModal.tsx`.
+
+## Buttons
+
+**BTN-1. A Create button that opens a menu of options is a split button.** Both the main part and the arrow open the menu. A Create that goes straight to one form stays a plain button.
+- Users list: Create opens the New User menu (New Entra User, New AD User, Add User). Figma draws a plain "+ Create" there (ARS_Table_Toolbar, Basic, 3422:16062 in ARS_Flat View_User_Content 3423:30755).
+- Groups list: Create opens AD group and Entra group (CRT-2). Figma draws a plain "+ Create" (ARS_WebUI2_Groups 160:9037).
+- Tree view folder lists: Create opens the New object menu; it was already split.
+- Source: designer, 16 Nov 2026. Built: kit `ARSTableToolbar` (a main action with `onActionMenu` is a split button on every variant), `views/UsersPage/UsersPage.tsx`, `views/GroupsPage/GroupsPage.tsx`, `views/TreeView/TreeListPage.tsx`.

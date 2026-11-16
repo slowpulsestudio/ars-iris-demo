@@ -30,7 +30,10 @@ export interface ARSTableToolbarProps {
   /** Main action label; defaults to the Figma text for the variant. */
   actionLabel?: string;
   onAction?: MouseEventHandler<HTMLElement>;
-  /** Split variants: the caret beside the main action. */
+  /**
+   * The caret beside the main action: on the split variants, and on Basic when the action opens a menu, which makes
+   * it a split button (decided UI rule BTN-1).
+   */
   onActionMenu?: MouseEventHandler<HTMLElement>;
   /** Adds a "…" icon button before the filter (Groups file Memberships toolbar). */
   showMore?: boolean;
@@ -127,11 +130,17 @@ export function ARSTableToolbar({
     <div className={cx(styles.root, styles.tight, className)}>
       {searchArea}
       {filter}
-      {variant === 'Basic' && (
-        <Button iconLead="Plus" onClick={onAction}>
-          {label}
-        </Button>
-      )}
+      {variant === 'Basic' &&
+        (onActionMenu ? (
+          // Not in Figma's Basic variant: an action that opens a menu is a split button (decided UI rule BTN-1).
+          <SplitButton iconLead="Plus" onClick={onAction} onMenuClick={onActionMenu} ariaMenuLabel={`More ${label} options`}>
+            {label}
+          </SplitButton>
+        ) : (
+          <Button iconLead="Plus" onClick={onAction}>
+            {label}
+          </Button>
+        ))}
     </div>
   );
 }

@@ -209,7 +209,9 @@ export function UsersPage() {
           filterCount: lf.filterCount,
           filterPressed: lf.filterPressed,
           actionLabel: 'Create',
+          // Create opens the New User menu, so it is a split button and both halves open the menu (UI rule BTN-1).
           onAction: createMenu.openAt,
+          onActionMenu: createMenu.openAt,
         }}
         table={{
           rows: pageRows.map((u) => ({
