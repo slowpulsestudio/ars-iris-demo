@@ -182,8 +182,8 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     title: 'Column heads filter by their values',
     file: 'attestation',
     figmaNodeId: '1262:1547',
-    note: 'IM / Sortable header cell notes that a click opens the Iris Menu with Sort ascending, Sort descending and "Filter by <column>". At the designer\'s request the menu lists the column\'s values with checkboxes instead, as on the reference Users list (product-test-pi-indol.vercel.app/#/users): it stays open while values are ticked, the ticks apply at once as one "is one of" filter, and the filter button beside the search shows the badge. Columns without a value list (names, descriptions) only sort. The state icons use the Iris content colours (tertiary at rest, brand when sorted or filtered), as Figma\'s grey-400 and #00A6F4 fall below 3:1 contrast.',
-    recommendation: 'Draw the head menu with the value checkboxes, update the component note, and give the state icons colours that pass 3:1.',
+    note: 'IM / Sortable header cell notes that a click opens the Iris Menu with Sort ascending, Sort descending and "Filter by <column>". At the designer\'s request the menu lists the column\'s values with checkboxes instead, as on the reference Users list (product-test-pi-indol.vercel.app/#/users): it stays open while values are ticked, a Clear button under them (as the Iris MultiSelect\'s footer) empties the column\'s filter, the ticks apply at once as one "is one of" filter, and the filter button beside the search shows the badge. Columns without a value list (names, descriptions) only sort. The state icons use the Iris content colours (tertiary at rest, brand when sorted or filtered), as Figma\'s grey-400 and #00A6F4 fall below 3:1 contrast.',
+    recommendation: 'Draw the head menu with the value checkboxes and Clear, update the component note, and give the state icons colours that pass 3:1.',
     prototype: '#/users',
   },
   {
