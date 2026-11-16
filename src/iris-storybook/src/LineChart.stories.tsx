@@ -38,4 +38,7 @@ export const Default: Story = {};
 
 export const NoUnit: Story = { name: 'No unit', args: { unit: '' } };
 
+/** The Response Time card's axis: 12h, 24h, 36h and 48h (home-dashboard 10199:6772). */
+export const FixedTicks: Story = { name: 'Fixed ticks', args: { yTicks: [12, 24, 36, 48], height: 150 } };
+
 export const SingleValue: Story = { name: 'Single value', args: { data: [{ label: 'Jan', value: 21 }] } };

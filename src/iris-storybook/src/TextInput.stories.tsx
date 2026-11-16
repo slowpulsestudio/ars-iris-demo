@@ -15,7 +15,10 @@ const meta = {
     ),
   ],
   args: { 'aria-label': 'Display name', placeholder: 'Markus Kim' },
-  argTypes: { size: { control: 'inline-radio', options: ['default', 'l'] } },
+  argTypes: {
+    size: { control: 'inline-radio', options: ['default', 'l'] },
+    variant: { control: 'inline-radio', options: ['default', 'filled'] },
+  },
 } satisfies Meta<typeof TextInput>;
 
 export default meta;
@@ -31,6 +34,19 @@ export const Sizes: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--oi-spacing-s)' }}>
       <TextInput {...args} size="default" placeholder="Default" />
       <TextInput {...args} size="l" placeholder="Large" />
+    </div>
+  ),
+};
+
+/** Self-service profile fields (ARS_WebUI2_User-View-Approvals 10199:7231): grey until focused; read-only ones lose their border. */
+export const FilledVariant: Story = {
+  name: 'Filled variant',
+  args: { variant: 'filled' },
+  render: (args) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--oi-spacing-s)' }}>
+      <TextInput {...args} defaultValue="John" aria-label="First name" />
+      <TextInput {...args} placeholder="Job title" aria-label="Job title" />
+      <TextInput {...args} readOnly defaultValue="CORP\john.doe" aria-label="Login name" />
     </div>
   ),
 };

@@ -139,6 +139,11 @@
   padding-inline: var(--oi-spacing-s);
 }
 
+/* Wraps a cell's control so its clicks don't reach a clickable row; adds no box of its own. */
+.stopRowClick {
+  display: contents;
+}
+
 /* ── Pinned (sticky) columns ────────────────────────────────
    The selection column, the first data column, and the row-action column
    stay in place while the middle columns scroll horizontally. Pinned cells

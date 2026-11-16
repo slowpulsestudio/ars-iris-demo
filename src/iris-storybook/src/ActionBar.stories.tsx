@@ -116,6 +116,25 @@ export const IconOnly: Story = {
   },
 };
 
+export const TextOnly: Story = {
+  name: 'Text only',
+  parameters: {
+    docs: { description: { story: 'Actions with no icon show only their label, as the self-service Approvals bulk bar does (ARS_WebUI2_User-View-Approvals 10320:4472).' } },
+  },
+  args: {
+    selectedCount: 2,
+    totalCount: 5,
+    groups: [
+      [{ icon: 'SelectionAll', label: 'Select all', iconOnly: false }],
+      [
+        { label: 'Deny', iconOnly: false },
+        { label: 'Escalate', iconOnly: false },
+        { label: 'Approve', iconOnly: false },
+      ],
+    ],
+  },
+};
+
 export const NarrowContainer: Story = {
   name: 'Narrow container',
   parameters: {

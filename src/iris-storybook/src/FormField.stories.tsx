@@ -53,6 +53,17 @@ export const Default: Story = {};
 
 export const Required: Story = { args: { required: true } };
 
+/** A red "(Required)", as the self-service Deny modal draws it (Modal 2: Deny, ARS_WebUI2_User-View-Approvals 10199:7638). */
+export const RequiredError: Story = {
+  name: 'Required, red',
+  args: {
+    label: 'Reason for denial',
+    required: true,
+    requiredTone: 'error',
+    children: <Textarea placeholder="Explain why this request is denied" />,
+  },
+};
+
 export const WithHelperText: Story = {
   name: 'With helper text',
   args: { helperText: 'Shown in the address book and in Active Roles lists.' },

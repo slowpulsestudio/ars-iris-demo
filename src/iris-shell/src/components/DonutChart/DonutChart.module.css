@@ -122,3 +122,35 @@
   font-variant-numeric: tabular-nums;
   font-family: var(--oi-font-family-code);
 }
+
+/* Small (Figma home DonutChartCard 10199:6860): 100px donut, legend beside it with 8px dots, 16px apart,
+   and the centre value as a semibold caption. */
+.small {
+  flex-wrap: nowrap;
+  column-gap: var(--oi-spacing-l);
+}
+
+.small .svg {
+  /* 100px has no token. */
+  width: calc(var(--oi-spacing-96) + var(--oi-spacing-4));
+  height: calc(var(--oi-spacing-96) + var(--oi-spacing-4));
+}
+
+.small .centerNum {
+  font-family: var(--oi-font-family-default);
+  /* The 160 viewBox is drawn at 100px, so 1.6× gives a 12px caption on screen. */
+  font-size: calc(var(--oi-text-caption-font-size) * 1.6);
+}
+
+.small .legend {
+  gap: var(--oi-spacing-s);
+}
+
+.small .dot {
+  width: var(--oi-spacing-8);
+  height: var(--oi-spacing-8);
+}
+
+.legendInline {
+  grid-template-columns: auto 1fr;
+}

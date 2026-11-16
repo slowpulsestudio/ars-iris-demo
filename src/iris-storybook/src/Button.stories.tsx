@@ -10,7 +10,7 @@ const meta = {
   },
   args: { children: 'Button' },
   argTypes: {
-    variant: { control: 'inline-radio', options: ['primary', 'secondary', 'ghost', 'danger'] },
+    variant: { control: 'inline-radio', options: ['primary', 'secondary', 'ghost', 'danger', 'danger-outline'] },
     size: { control: 'inline-radio', options: ['s', 'default', 'l'] },
   },
 } satisfies Meta<typeof Button>;
@@ -54,6 +54,9 @@ export const GhostTypes: Story = {
 };
 
 export const Danger: Story = { args: { variant: 'danger', children: 'Delete' } };
+
+/** White with a red border and red text: the self-service profile's certificate Remove (ARS_Userview_Profile 10320:4703). */
+export const DangerOutline: Story = { name: 'Danger outline', args: { variant: 'danger-outline', size: 's', children: 'Remove' } };
 
 export const Sizes: Story = {
   render: (args) => (

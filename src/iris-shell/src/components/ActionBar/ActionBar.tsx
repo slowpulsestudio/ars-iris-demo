@@ -12,8 +12,8 @@ import styles from './ActionBar.module.css';
 export type ActionTone = 'default' | 'brand' | 'danger';
 
 export interface ActionItem {
-  /** Icon name, or an icon element for icons outside the Iris set. */
-  icon: string | ReactNode;
+  /** Icon name, or an icon element for icons outside the Iris set. Omit for a text-only action. */
+  icon?: string | ReactNode;
   label: string;
   tone?: ActionTone;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
@@ -286,7 +286,7 @@ function ActionButton({
       aria-label={iconOnly ? label : undefined}
       {...beamHandlers}
     >
-      {typeof icon === 'string' ? (
+      {icon == null ? null : typeof icon === 'string' ? (
         <Icon name={icon} size="16px" />
       ) : (
         <span className={styles.customIcon} aria-hidden="true">

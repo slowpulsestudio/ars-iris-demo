@@ -38,6 +38,45 @@
   font-size: var(--oi-font-size-xl);
 }
 
+/* The self-service profile header (Figma 10199:7207): 80px, Inter semibold initials. 80px has no size token. */
+.size_xl {
+  width: var(--oi-spacing-80);
+  height: var(--oi-spacing-80);
+  font-family: var(--oi-font-family-default);
+  font-size: var(--oi-text-heading-03-font-size);
+  font-weight: var(--oi-text-heading-03-font-weight);
+  letter-spacing: normal;
+}
+
+/* Coloured initials (Figma ARS_Person card 10301:2300 and the profile avatar). */
+.tone_blue,
+.tone_purple,
+.tone_pink,
+.tone_green,
+.tone_orange {
+  color: var(--oi-content-color-constant);
+}
+
+.tone_blue {
+  background-color: var(--oi-color-blue-500);
+}
+
+.tone_purple {
+  background-color: var(--oi-color-purple-500);
+}
+
+.tone_pink {
+  background-color: var(--oi-color-pink-500);
+}
+
+.tone_green {
+  background-color: var(--oi-color-green-500);
+}
+
+.tone_orange {
+  background-color: var(--oi-color-orange-500);
+}
+
 .img {
   width: 100%;
   height: 100%;

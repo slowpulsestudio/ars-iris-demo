@@ -13,6 +13,8 @@ export interface LineChartProps {
   data: LineDatum[];
   /** Number of Y-axis ticks. */
   tickCount?: number;
+  /** Fixed Y-axis ticks, e.g. [12, 24, 36, 48]; the axis spans the first to the last. */
+  yTicks?: number[];
   /** Appended to Y-axis tick labels and tooltips, e.g. "h". */
   unit?: string;
   height?: number;
@@ -25,7 +27,7 @@ const PAD = { top: 8, right: 8, bottom: 28, left: 44 };
 /**
  * LineChart — minimal SVG line chart, drawn like BarChart (same viewBox, gridlines and labels).
  */
-export function LineChart({ data, tickCount = 4, unit = '', height = 200, className }: LineChartProps) {
+export function LineChart({ data, tickCount = 4, yTicks, unit = '', height = 200, className }: LineChartProps) {
   const { ticks, points, y } = useMemo(() => {
     const x = scalePoint<string>()
       .domain(data.map((d) => d.label))
@@ -34,16 +36,20 @@ export function LineChart({ data, tickCount = 4, unit = '', height = 200, classN
     const values = data.map((d) => d.value);
     const lo = values.length ? Math.min(...values) : 0;
     const hi = values.length ? Math.max(...values) : 1;
-    const yScale = scaleLinear()
-      .domain(lo === hi ? [lo - 1, hi + 1] : [lo, hi])
-      .nice(tickCount)
-      .range([height - PAD.bottom, PAD.top]);
+    const yScale = yTicks?.length
+      ? scaleLinear()
+          .domain([yTicks[0], yTicks[yTicks.length - 1]])
+          .range([height - PAD.bottom, PAD.top])
+      : scaleLinear()
+          .domain(lo === hi ? [lo - 1, hi + 1] : [lo, hi])
+          .nice(tickCount)
+          .range([height - PAD.bottom, PAD.top]);
     return {
       y: yScale,
-      ticks: yScale.ticks(tickCount),
+      ticks: yTicks?.length ? yTicks : yScale.ticks(tickCount),
       points: data.map((d) => ({ x: x(d.label) ?? 0, y: yScale(d.value), label: d.label, value: d.value })),
     };
-  }, [data, tickCount, height]);
+  }, [data, tickCount, yTicks, height]);
 
   const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ');
 

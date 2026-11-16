@@ -41,6 +41,19 @@
   border-color: transparent;
 }
 
+/* Filled: grey with the 0.5px strong border, white while editing; read-only drops the border. */
+.filled {
+  background-color: var(--oi-background-color-secondary);
+}
+
+.filled:focus-within {
+  background-color: var(--oi-background-color-primary);
+}
+
+.filled:has(.input:read-only) {
+  border-color: transparent;
+}
+
 /* UI Kit "State=Readonly, Size=Large" draws the 1.5px focus border. */
 .size_l:has(.input:read-only:not(:disabled)) {
   border-color: transparent;

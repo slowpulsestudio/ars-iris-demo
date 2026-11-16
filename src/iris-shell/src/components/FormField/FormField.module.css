@@ -33,6 +33,10 @@
   font-weight: var(--oi-text-body-s-font-weight);
 }
 
+.requiredError {
+  color: var(--oi-content-color-error);
+}
+
 .count {
   margin-inline-start: auto;
 }

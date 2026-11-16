@@ -16,6 +16,8 @@ import styles from './FormField.module.css';
 export interface FormFieldProps {
   label: string;
   required?: boolean;
+  /** `error` draws "(Required)" in red, as the self-service Deny modal does (Figma 10199:7638). */
+  requiredTone?: 'default' | 'error';
   /** Tooltip text on the info icon. */
   helperText?: string;
   /** Help message below the control (UI Kit feedback "Help"). */
@@ -48,6 +50,7 @@ export interface FormFieldProps {
 export function FormField({
   label,
   required,
+  requiredTone = 'default',
   helperText,
   help,
   warning,
@@ -93,7 +96,7 @@ export function FormField({
       <label htmlFor={id} className={styles.label}>
         <span>{label}</span>
         {required && (
-          <span aria-hidden="true" className={styles.required}>
+          <span aria-hidden="true" className={cx(styles.required, requiredTone === 'error' && styles.requiredError)}>
             (Required)
           </span>
         )}

@@ -158,6 +158,17 @@ export const RowActions: Story = {
   },
 };
 
+export const HeaderAction: Story = {
+  name: 'Header action',
+  parameters: {
+    docs: { description: { story: 'headerAction puts a control in the header of the trailing action column: the self-service Approvals table settings button (Table settings, ARS_WebUI2_User-View-Approvals 10319:2557).' } },
+  },
+  args: {
+    ...RowActions.args,
+    headerAction: <IconButton icon="SlidersHorizontal" size="s" ariaLabel="Table settings" />,
+  },
+};
+
 export const Empty: Story = {
   args: {
     rows: [],

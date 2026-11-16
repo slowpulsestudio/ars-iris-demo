@@ -37,6 +37,24 @@ export const SingleSegment: Story = {
   args: { segments: [{ label: 'Active', value: 71840 }] },
 };
 
+/** The self-service home Approval Distribution card (DonutChartCard, ARS_WebUI2_User-View-Approvals 10199:6860). */
+export const Small: Story = {
+  parameters: {
+    docs: { description: { story: 'size "s" is the 100px ring. Each segment sets its own colour, the centre shows centerValue with no label, and formatLegend writes the legend as one line.' } },
+  },
+  args: {
+    size: 's',
+    segments: [
+      { label: 'Approved', value: 75, color: 'var(--oi-base-color-success)' },
+      { label: 'Rejected', value: 15, color: 'var(--oi-base-color-error)' },
+      { label: 'Pending', value: 10, color: 'var(--oi-base-color-warning)' },
+    ],
+    centerValue: '100%',
+    centerLabel: '',
+    formatLegend: (s, total) => `${s.label} ${Math.round((s.value / total) * 100)}%`,
+  },
+};
+
 export const AllZero: Story = {
   name: 'All zero',
   parameters: {

@@ -275,7 +275,11 @@ export function AppHeader({
         <Tooltip label="Search" shortcut={['⌘', 'K']}>
           <IconButton icon="MagnifyingGlass" ariaLabel="Search" onClick={onSearch} />
         </Tooltip>
-        <IconButton icon="Bell" ariaLabel="Notifications" className={styles.bell} />
+        {/* Every Figma header draws an unread dot on the bell (e.g. ARS_WebUI2_Advanced-Search 4145:13648). */}
+        <span className={cx(styles.bell, styles.bellWrap)}>
+          <IconButton icon="Bell" ariaLabel="Notifications, unread" />
+          <span className={styles.bellDot} aria-hidden="true" />
+        </span>
         <Tooltip label="Ask AI" shortcut={['⌘', '/']}>
           <BorderBeam size="sm" theme="auto" active={!aiActive}>
             <button

@@ -51,6 +51,24 @@ export const Default: Story = {};
 
 export const WithIcons: Story = { name: 'With icons', args: { items: TABS_WITH_ICONS } };
 
+/** Self-service Approvals "Request status tabs" (ARS_WebUI2_User-View-Approvals 10302:2374). */
+export const Outlined: Story = {
+  parameters: {
+    docs: { description: { story: 'The selected tab is a white box with a 1px border instead of the underline. Used by the self-service Approvals, My Access and request side sheet tabs.' } },
+  },
+  args: {
+    variant: 'outlined',
+    ariaLabel: 'Approval requests',
+    value: 'Pending',
+    items: [
+      { value: 'Pending', label: 'Pending (3)' },
+      { value: 'Approved', label: 'Approved (1)' },
+      { value: 'Denied', label: 'Denied (1)' },
+      { value: 'All', label: 'All (5)' },
+    ],
+  },
+};
+
 export const Overflow: Story = {
   args: { items: MANY_TABS, value: 'General' },
   decorators: [

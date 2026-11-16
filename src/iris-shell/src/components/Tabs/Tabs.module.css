@@ -109,6 +109,22 @@
   background-color: var(--oi-background-color-tertiary);
 }
 
+/* Outlined (self-service screens, Figma "Request status tabs" 10302:2374): the selected tab is white
+   with a border and an 8px radius. */
+.outlined .tabContent {
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) transparent;
+}
+
+.outlined .tabContentSelected {
+  background-color: var(--oi-background-color-primary);
+  border-color: var(--oi-border-color-default);
+  border-radius: var(--oi-border-radius-l);
+}
+
+.outlined .tab:hover .tabContentSelected {
+  background-color: var(--oi-background-color-primary);
+}
+
 .label {
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);

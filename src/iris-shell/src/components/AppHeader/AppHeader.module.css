@@ -25,6 +25,23 @@
   flex-shrink: 0;
 }
 
+/* Figma's unread dot: 6px, red, at the bell's top right (header "Button group" Frame 12). */
+.bellWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.bellDot {
+  position: absolute;
+  top: var(--oi-spacing-6);
+  right: var(--oi-spacing-6);
+  width: var(--oi-spacing-6);
+  height: var(--oi-spacing-6);
+  border-radius: var(--oi-border-radius-max);
+  background-color: var(--oi-base-color-error);
+  pointer-events: none;
+}
+
 .toggleSlot {
   display: inline-flex;
   align-items: center;

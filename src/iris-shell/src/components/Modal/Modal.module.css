@@ -77,6 +77,12 @@
   flex-direction: column;
 }
 
+/* A divider under the header, then the UI Kit's 16px before the body. */
+.headerDivided {
+  margin-bottom: var(--oi-spacing-l);
+  border-bottom: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+}
+
 .headerStacked .headerText {
   padding-right: 0;
 }

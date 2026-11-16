@@ -22,6 +22,8 @@ export interface TabsProps {
   value: string;
   onChange: (value: string) => void;
   ariaLabel?: string;
+  /** `outlined`: the selected tab is white with a border, as the self-service screens draw it (Figma 10302:2374). */
+  variant?: 'default' | 'outlined';
   className?: string;
 }
 
@@ -30,7 +32,7 @@ export interface TabsProps {
  * underline. When the tabs can't all fit, the trailing ones collapse into a
  * "…" overflow menu. Stateless: parent owns the current value.
  */
-export function Tabs({ items, value, onChange, ariaLabel, className }: TabsProps) {
+export function Tabs({ items, value, onChange, ariaLabel, variant = 'default', className }: TabsProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const indicatorRef = useRef<HTMLSpanElement | null>(null);
@@ -173,7 +175,7 @@ export function Tabs({ items, value, onChange, ariaLabel, className }: TabsProps
   }));
 
   return (
-    <div ref={rootRef} className={cx(styles.root, className)}>
+    <div ref={rootRef} className={cx(styles.root, variant === 'outlined' && styles.outlined, className)}>
       <div ref={listRef} role="tablist" aria-label={ariaLabel} className={styles.tablist}>
         <span ref={indicatorRef} aria-hidden="true" className={styles.indicator} />
         {visibleItems.map((item, i) => {

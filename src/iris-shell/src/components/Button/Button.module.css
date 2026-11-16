@@ -82,6 +82,20 @@
   background-color: transparent;
   color: var(--oi-content-color-secondary);
 }
+
+/* Secondary with red text and border, as the self-service profile's certificate Remove (Figma 10320:4703). */
+.variant_danger-outline {
+  background-color: var(--oi-button-background-secondary);
+  color: var(--oi-content-color-error);
+  border-color: var(--oi-base-color-error);
+  box-shadow: var(--oi-shadow-low);
+}
+.variant_danger-outline:hover:not(:disabled) {
+  background-color: var(--oi-button-background-secondary-hover);
+}
+.variant_danger-outline:active:not(:disabled) {
+  background-color: var(--oi-button-background-secondary-active);
+}
 .variant_ghost:hover:not(:disabled) {
   background-color: var(--oi-button-background-secondary-hover);
   color: var(--oi-content-color-primary);

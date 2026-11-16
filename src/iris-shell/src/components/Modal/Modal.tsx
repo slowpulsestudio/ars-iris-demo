@@ -27,6 +27,8 @@ export interface ModalProps {
   initialFocusRef?: RefObject<HTMLElement | null>;
   /** Override aria-labelledby with a literal label. */
   ariaLabel?: string;
+  /** Draws a divider under the header, as the self-service approval modals do (Figma 10199:7617). */
+  headerDivider?: boolean;
   className?: string;
 }
 
@@ -46,6 +48,7 @@ export function Modal({
   footer,
   initialFocusRef,
   ariaLabel,
+  headerDivider = false,
   className,
 }: ModalProps) {
   const [mounted, setMounted] = useState(open);
@@ -133,7 +136,9 @@ export function Modal({
         className={cx(styles.dialog, styles[`size_${size}`], open && styles.dialogOpen, className)}
         onClick={(e) => e.stopPropagation()}
       >
-        <header className={cx(styles.header, iconPlacement === 'top' && styles.headerStacked)}>
+        <header
+          className={cx(styles.header, iconPlacement === 'top' && styles.headerStacked, headerDivider && styles.headerDivided)}
+        >
           {leadingIcon && (
             <span className={styles.headerIcon} aria-hidden="true">
               {typeof leadingIcon === 'string' ? (

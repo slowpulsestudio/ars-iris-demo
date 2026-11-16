@@ -56,6 +56,8 @@ export interface DataTableProps<TRow extends DataTableRow> {
   rowActions?: (row: TRow, i: number) => ReactNode;
   /** Leaves out the trailing action column (tables whose rows have no actions). */
   hideRowActions?: boolean;
+  /** Shown in the trailing header cell above the row actions, e.g. a table settings button. */
+  headerAction?: ReactNode;
   /** Makes each row clickable and keyboard-focusable (Enter or Space opens it). */
   onRowClick?: (row: TRow) => void;
   /** Rendered inside the table body when `rows` is empty. */
@@ -84,6 +86,7 @@ export function DataTable<TRow extends DataTableRow>({
   onRowAction,
   rowActions,
   hideRowActions,
+  headerAction,
   onRowClick,
   emptyState,
   className,
@@ -177,7 +180,9 @@ export function DataTable<TRow extends DataTableRow>({
           </HeadCell>
         ))}
         {!hideRowActions && (
-          <HeadCell width="44px" className={styles.actionCell} pin="end" aria-label="Row actions" />
+          <HeadCell width="44px" className={styles.actionCell} pin="end" aria-label={headerAction ? undefined : 'Row actions'}>
+            {headerAction}
+          </HeadCell>
         )}
       </div>
 
@@ -223,11 +228,14 @@ export function DataTable<TRow extends DataTableRow>({
             >
               {selectable && (
                 <BodyCell width="40px" className={styles.checkboxCell} pin="startInner">
-                  <Checkbox
-                    ariaLabel={`Select ${label}`}
-                    checked={isSelected}
-                    onChange={(c) => toggleRow(key, c)}
-                  />
+                  {/* Ticking a row must not also open it. */}
+                  <span className={styles.stopRowClick} onClick={onRowClick ? (e) => e.stopPropagation() : undefined}>
+                    <Checkbox
+                      ariaLabel={`Select ${label}`}
+                      checked={isSelected}
+                      onChange={(c) => toggleRow(key, c)}
+                    />
+                  </span>
                 </BodyCell>
               )}
               {columns.map((col, ci) => (
@@ -242,16 +250,19 @@ export function DataTable<TRow extends DataTableRow>({
               ))}
               {!hideRowActions && (
                 <BodyCell width="44px" className={styles.actionCell} pin="end">
-                  {rowActions ? (
-                    rowActions(row, i)
-                  ) : (
-                    <IconButton
-                      icon="DotsThree"
-                      ariaLabel={`Actions for ${label}`}
-                      size="s"
-                      onClick={() => onRowAction?.(row)}
-                    />
-                  )}
+                  {/* The row's actions must not also open the row. */}
+                  <span className={styles.stopRowClick} onClick={onRowClick ? (e) => e.stopPropagation() : undefined}>
+                    {rowActions ? (
+                      rowActions(row, i)
+                    ) : (
+                      <IconButton
+                        icon="DotsThree"
+                        ariaLabel={`Actions for ${label}`}
+                        size="s"
+                        onClick={() => onRowAction?.(row)}
+                      />
+                    )}
+                  </span>
                 </BodyCell>
               )}
             </div>

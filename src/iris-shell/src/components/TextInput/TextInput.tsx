@@ -13,6 +13,8 @@ export interface TextInputProps
   size?: 'default' | 'l';
   /** Render the error state (red border + `aria-invalid`). */
   invalid?: boolean;
+  /** `filled`: the grey field the self-service profile draws (Figma .Input 10199:7231); read-only fields lose their border. */
+  variant?: 'default' | 'filled';
 }
 
 /**
@@ -20,7 +22,7 @@ export interface TextInputProps
  * (Component / Text input): empty, filled, focus, error, disabled, read-only.
  */
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function TextInput(
-  { iconLead, iconTrail, size = 'default', invalid = false, type = 'text', className, id, ...rest },
+  { iconLead, iconTrail, size = 'default', invalid = false, variant = 'default', type = 'text', className, id, ...rest },
   ref,
 ) {
   return (
@@ -28,6 +30,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function T
       className={cx(
         styles.wrap,
         styles[`size_${size}`],
+        variant === 'filled' && styles.filled,
         invalid && styles.invalid,
         className,
       )}

@@ -114,6 +114,19 @@ export const Medium: Story = { args: { size: 'm' } };
 
 export const Large: Story = { args: { size: 'l' } };
 
+/** A divider under the header, as the self-service approval modals draw it (Modal 1: Approve, ARS_WebUI2_User-View-Approvals 10199:7617). */
+export const HeaderDivider: Story = {
+  name: 'Header divider',
+  args: {
+    headerDivider: true,
+    size: 's',
+    title: 'Approve request',
+    subtitle: undefined,
+    children: <p style={{ margin: 0 }}>Approve REQ-001 from John Smith for Finance-Admin Group?</p>,
+  },
+  render: (args) => <ModalDemo key={String(args.open)} {...args} actionLabel="Approve" />,
+};
+
 export const IconInline: Story = {
   name: 'Icon inline',
   args: { leadingIcon: 'Password', iconPlacement: 'inline' },
