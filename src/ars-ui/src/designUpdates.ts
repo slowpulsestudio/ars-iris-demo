@@ -107,14 +107,6 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     prototype: '#/groups?dialog=new-group',
   },
   {
-    title: 'Step tabs fill the modal\'s width',
-    file: 'primary',
-    figmaNodeId: '3367:11939',
-    note: 'ARS_Stepper_with_div draws each step 192px wide from the left, as do the New object frames (3651:20393). At the designer\'s request the steps share the row equally: half each for two steps, a third each for three, on every New object and New group form.',
-    recommendation: 'Make the steps in ARS_Stepper_with_div fill the row.',
-    prototype: '#/users?dialog=create&type=AD+User',
-  },
-  {
     title: 'Advanced filter Panel on the lists, Bar in the Add Member modal',
     file: 'primary',
     figmaNodeId: '2613:23294',
