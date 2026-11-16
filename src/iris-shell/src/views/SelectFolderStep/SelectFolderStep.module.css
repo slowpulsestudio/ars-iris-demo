@@ -1,4 +1,5 @@
-/* Figma "Content" (3651:20413): 16px padding, 12px between the header, the tree and the buttons; fills the form column. */
+/* Figma "Content" (3651:20413): 16px padding, 12px between the header, the tree and the buttons. It fills the form
+   column, which is as tall as the form's tallest step (decided UI rule MOD-1). */
 .root {
   display: flex;
   flex: 1 1 0;
@@ -48,10 +49,12 @@
   color: var(--oi-content-color-secondary);
 }
 
-/* Figma ARS_Directory_Management_Content (3651:20427): strong 1px border, 4px corners, fills the space left. */
+/* Figma ARS_Directory_Management_Content (3651:20427): strong 1px border, 4px corners, filling the space left. Size
+   containment keeps the tree's rows out of the step's height, so opening folders scrolls the box instead of growing it. */
 .folders {
   flex: 1 1 0;
   min-height: 0;
+  contain: size;
   overflow: hidden;
   background-color: var(--oi-background-color-primary);
   border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-strong);

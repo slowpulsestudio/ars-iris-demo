@@ -28,3 +28,20 @@
 .fit .content {
   flex: none;
 }
+
+/* Decided UI rule MOD-1 (not in Figma): every step shares one grid cell, so the body is as tall as the tallest step on
+   every step and doesn't jump. */
+.steps {
+  display: grid;
+}
+
+.step {
+  display: grid;
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+/* A step not on screen keeps its room but can't be seen, read or reached (with `inert`). */
+.hiddenStep {
+  visibility: hidden;
+}

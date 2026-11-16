@@ -1,6 +1,6 @@
 # Decided business rules
 
-The product rules the designer has decided for this prototype, in one place. They are separate from two other things:
+The product rules the designer has decided for this prototype, in one place. UI rules (how screens behave, such as modal heights) are in [decided-UI-rules.md](decided-UI-rules.md). They are separate from two other things:
 
 - `business-rules.md` (repo root) is the draft taken from the requirements board. Its first line says "DRAFT DO NOT USE", and its rules are unconfirmed. `docs/business-rules-audit.md` checks that draft against the app.
 - Figma. Figma stays the source of truth for how things look. A rule here that differs from Figma is also an item in `docs/review-notes.md` and, where it is a design change, on the Design update recommendations page.

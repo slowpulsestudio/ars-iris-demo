@@ -17,10 +17,15 @@ export interface ARSNewObjectContentContainerProps {
   activeIndex?: number;
   interactive?: boolean;
   onStepSelect?: (index: number) => void;
-  /** Sizes the body to the step's content instead of Figma's fixed 729px, so the modal height follows the step. */
+  /** Sizes the body to its content instead of Figma's fixed 729px. */
   fitContent?: boolean;
   /** Replaces the content, as ARS_New_Object_Template does. */
   children?: ReactNode;
+  /**
+   * Every step's content in step order, in place of `children`. They share one cell, so the body is as tall as
+   * the tallest step on every step (decided UI rule MOD-1); only the active step shows.
+   */
+  stepContents?: ReactNode[];
   className?: string;
 }
 
@@ -36,6 +41,7 @@ export function ARSNewObjectContentContainer({
   onStepSelect,
   fitContent = false,
   children,
+  stepContents,
   className,
 }: ARSNewObjectContentContainerProps) {
   return (
@@ -49,7 +55,19 @@ export function ARSNewObjectContentContainer({
           className={styles.stepper}
         />
       )}
-      <div className={styles.content}>{children ?? <ARSNewObjectContent layout="container" />}</div>
+      <div className={styles.content}>
+        {stepContents ? (
+          <div className={styles.steps}>
+            {stepContents.map((content, i) => (
+              <div key={i} className={cx(styles.step, i !== activeIndex && styles.hiddenStep)} inert={i !== activeIndex}>
+                {content}
+              </div>
+            ))}
+          </div>
+        ) : (
+          (children ?? <ARSNewObjectContent layout="container" />)
+        )}
+      </div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ARSNewObjectContent, ARSNewObjectTemplate, FormInput } from '@ars';
 import { Icon } from '../../components/Icon/Icon.js';
 import { Toggle } from '../../components/Toggle/Toggle.js';
@@ -94,8 +94,6 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
   const generalComplete = ad ? !!name && !!form.groupName.trim() : !!name;
   const stepItems = STEPS[kind];
   const { step, steps, goTo, reset, last } = useStepFlow(stepItems, generalComplete);
-  const stepId = stepItems[step]?.id;
-  const folderStep = stepId === SELECT_FOLDER_STEP.id;
 
   useEffect(() => {
     if (open) {
@@ -152,60 +150,71 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
     </div>
   );
 
-  // Each step gets its own key so its fields mount fresh: the read-only ones are uncontrolled.
-  const fields = folderStep ? (
-    <SelectFolderStep
-      key="folder"
-      objectName={name || 'this group'}
-      destinationId={destinationId}
-      onSelect={setDestinationId}
-    />
-  ) : stepId === 'exchange' ? (
-    <Fragment key="exchange">
-      <FormInput
-        label="Create an Exchange e-mail address"
-        checkbox
-        value={String(form.exchange)}
-        onChange={(v) => set('exchange')(v === 'true')}
-      />
-      {/* Both are read-only in the written requirement (2111:11198); Figma's sample is "Security members". */}
-      <FormInput label="Alias" value={name} disabled />
-      <FormInput label="Associated administrative group" value={name ? `${name} members` : ''} disabled />
-    </Fragment>
-  ) : ad ? (
-    <Fragment key="ad-general">
-      <FormInput label="Group name" required value={form.name} onChange={set('name')} />
-      <FormInput label="Group name (Pre-Windows 2000)" required info={INFO} value={form.groupName} onChange={set('groupName')} />
-      <FormInput
-        label="Group description"
-        info={INFO}
-        multiline
-        maxLength={DESCRIPTION_LIMIT}
-        value={form.description}
-        onChange={set('description')}
-      />
-      <FormInput label="Group scope" required info={INFO} select options={GROUP_SCOPES} value={form.scope} onChange={set('scope')} />
-      <FormInput label="Group type" required info={INFO} select options={GROUP_TYPES} value={form.type} onChange={set('type')} />
-    </Fragment>
-  ) : (
-    <Fragment key="entra-general">
-      <FormInput label="Name" required value={form.name} onChange={set('name')} />
-      <FormInput label="Display name" value={form.displayName} onChange={set('displayName')} />
-      <FormInput label="Description" value={form.description} onChange={set('description')} />
-      <div className={styles.row}>
-        <FormInput label="Primary SMTP address" info="Leave blank for the default value" value={form.smtp} onChange={set('smtp')} />
-        <FormInput label="Domain" select options={EMAIL_DOMAINS} value={form.smtpDomain} onChange={set('smtpDomain')} />
-      </div>
-      <FormInput
-        label="Hide this group from the global address list"
-        checkbox
-        value={String(form.hideFromList)}
-        onChange={(v) => set('hideFromList')(v === 'true')}
-      />
-      {toggle('Joining group', form.join, set('join'), JOIN_TIP)}
-      {toggle('Leaving group', form.leave, set('leave'), LEAVE_TIP)}
-    </Fragment>
-  );
+  // Each step's fields by step id. Every step stays mounted (decided UI rule MOD-1), so the read-only Exchange
+  // fields, which are uncontrolled, are keyed by the name to show it as it changes.
+  const fields: Record<string, ReactNode> = {
+    general: ad ? (
+      <>
+        <FormInput label="Group name" required value={form.name} onChange={set('name')} />
+        <FormInput label="Group name (Pre-Windows 2000)" required info={INFO} value={form.groupName} onChange={set('groupName')} />
+        <FormInput
+          label="Group description"
+          info={INFO}
+          multiline
+          maxLength={DESCRIPTION_LIMIT}
+          value={form.description}
+          onChange={set('description')}
+        />
+        <FormInput label="Group scope" required info={INFO} select options={GROUP_SCOPES} value={form.scope} onChange={set('scope')} />
+        <FormInput label="Group type" required info={INFO} select options={GROUP_TYPES} value={form.type} onChange={set('type')} />
+      </>
+    ) : (
+      <>
+        <FormInput label="Name" required value={form.name} onChange={set('name')} />
+        <FormInput label="Display name" value={form.displayName} onChange={set('displayName')} />
+        <FormInput label="Description" value={form.description} onChange={set('description')} />
+        <div className={styles.row}>
+          <FormInput label="Primary SMTP address" info="Leave blank for the default value" value={form.smtp} onChange={set('smtp')} />
+          <FormInput label="Domain" select options={EMAIL_DOMAINS} value={form.smtpDomain} onChange={set('smtpDomain')} />
+        </div>
+        <FormInput
+          label="Hide this group from the global address list"
+          checkbox
+          value={String(form.hideFromList)}
+          onChange={(v) => set('hideFromList')(v === 'true')}
+        />
+        {toggle('Joining group', form.join, set('join'), JOIN_TIP)}
+        {toggle('Leaving group', form.leave, set('leave'), LEAVE_TIP)}
+      </>
+    ),
+    exchange: (
+      <>
+        <FormInput
+          label="Create an Exchange e-mail address"
+          checkbox
+          value={String(form.exchange)}
+          onChange={(v) => set('exchange')(v === 'true')}
+        />
+        {/* Both are read-only in the written requirement (2111:11198); Figma's sample is "Security members". */}
+        <FormInput key={`alias-${name}`} label="Alias" value={name} disabled />
+        <FormInput
+          key={`admin-group-${name}`}
+          label="Associated administrative group"
+          value={name ? `${name} members` : ''}
+          disabled
+        />
+      </>
+    ),
+    [SELECT_FOLDER_STEP.id]: (
+      <SelectFolderStep objectName={name || 'this group'} destinationId={destinationId} onSelect={setDestinationId} />
+    ),
+  };
+  const heading = ad ? 'Create new AD group' : 'Create new Entra distribution group';
+  const stepContents = stepItems.map((s) => (
+    <ARSNewObjectContent key={s.id} heading={heading}>
+      {fields[s.id]}
+    </ARSNewObjectContent>
+  ));
 
   return (
     <ModalOverlay open={open} label={title} onClose={onClose}>
@@ -218,18 +227,15 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
         activeIndex={step}
         interactiveSteps
         onStepSelect={goTo}
-        // As the New User form: the body fits each step, but Select folder keeps Figma's height, as its tree fills it.
-        fitContent={!folderStep}
+        // As the New User form: as tall as the tallest step on every step (decided UI rule MOD-1).
+        fitContent
+        stepContents={stepContents}
         footerVariant={step > 0 ? '2' : generalComplete ? '1_complete' : '1'}
         ctaLabel={last ? 'Create group →' : step > 0 ? 'Save and continue →' : undefined}
         onClose={onClose}
         onBack={() => goTo(step - 1)}
         onContinue={() => (last ? create() : goTo(step + 1))}
-      >
-        <ARSNewObjectContent heading={ad ? 'Create new AD group' : 'Create new Entra distribution group'} fillHeight={folderStep}>
-          {fields}
-        </ARSNewObjectContent>
-      </ARSNewObjectTemplate>
+      />
     </ModalOverlay>
   );
 }

@@ -4,17 +4,12 @@
   justify-content: space-between;
 }
 
-/* The Select folder step (ARS_WebUI2_CRUD 3651:20406): the form column fills the body's height. */
-.fillHeight {
-  height: 100%;
-  align-items: stretch;
-}
-
-/* Figma: a 702px form column (no token). */
+/* Figma: a 702px form column (no token); as tall as the row, so a step can fill it (the Select folder step). */
 .form {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  align-self: stretch;
   gap: var(--oi-spacing-l);
   width: 702px;
 }

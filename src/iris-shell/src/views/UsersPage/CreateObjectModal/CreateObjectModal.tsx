@@ -73,7 +73,6 @@ export function CreateObjectModal({
     values.preWindows2000,
   ].every((v) => v.trim() !== '');
   const { step, steps, goTo, reset, last } = useStepFlow(stepItems, generalComplete);
-  const stepId = stepItems[step]?.id;
 
   // Reset the flow whenever the modal (re)opens.
   useEffect(() => {
@@ -101,6 +100,24 @@ export function CreateObjectModal({
   const objectName =
     values.displayName.trim() || `${values.firstName} ${values.lastName}`.trim() || `this ${objectType.toLowerCase()}`;
 
+  const formProps = { values, onValuesChange: setV, accountOptions, onAccountOptionsChange: setAccountOptions };
+  const stepContents = [
+    <ARSNewObjectContent
+      key="general"
+      {...formProps}
+      showFolderButton={!entra && !folderStep}
+      onSelectFolder={() => setSheetOpen(true)}
+    />,
+    <ARSNewObjectContent key="account" variant="Variant2" {...formProps} />,
+    ...(folderStep
+      ? [
+          <ARSNewObjectContent key={SELECT_FOLDER_STEP.id}>
+            <SelectFolderStep objectName={objectName} destinationId={destinationId} onSelect={setDestinationId} />
+          </ARSNewObjectContent>,
+        ]
+      : []),
+  ];
+
   return (
     <>
       <ModalOverlay
@@ -118,31 +135,15 @@ export function CreateObjectModal({
           activeIndex={step}
           interactiveSteps
           onStepSelect={goTo}
-          // You asked for the body to fit each step; Figma keeps it 729px tall (on the Figma tidy-up list). Select
-          // folder keeps Figma's height, as its tree fills the body (3651:20393).
-          fitContent={stepId !== SELECT_FOLDER_STEP.id}
+          // Figma keeps the body 729px tall; it is as tall as the tallest step instead (decided UI rule MOD-1).
+          fitContent
+          stepContents={stepContents}
           footerVariant={step > 0 ? '2' : generalComplete ? '1_complete' : '1'}
           ctaLabel={!last && step > 0 ? 'Save and continue →' : undefined}
           onClose={onClose}
           onBack={() => goTo(step - 1)}
           onContinue={last ? create : () => goTo(step + 1)}
-        >
-          {stepId === SELECT_FOLDER_STEP.id ? (
-            <ARSNewObjectContent fillHeight>
-              <SelectFolderStep objectName={objectName} destinationId={destinationId} onSelect={setDestinationId} />
-            </ARSNewObjectContent>
-          ) : (
-            <ARSNewObjectContent
-              variant={stepId === 'account' ? 'Variant2' : 'Default'}
-              showFolderButton={!entra && !folderStep}
-              values={values}
-              onValuesChange={setV}
-              accountOptions={accountOptions}
-              onAccountOptionsChange={setAccountOptions}
-              onSelectFolder={() => setSheetOpen(true)}
-            />
-          )}
-        </ARSNewObjectTemplate>
+        />
       </ModalOverlay>
 
       {!entra && !folderStep && (

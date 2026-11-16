@@ -31,6 +31,8 @@ export interface ARSNewObjectTemplateProps {
   fitContent?: boolean;
   /** Replaces the form, as Figma's content slot does. */
   children?: ReactNode;
+  /** Every step's content in step order, in place of `children`: the body keeps the tallest step's height (decided UI rule MOD-1). */
+  stepContents?: ReactNode[];
   onClose?: () => void;
   onBack?: () => void;
   onContinue?: () => void;
@@ -54,6 +56,7 @@ export function ARSNewObjectTemplate({
   ctaLabel,
   fitContent = false,
   children,
+  stepContents,
   onClose,
   onBack,
   onContinue,
@@ -79,6 +82,7 @@ export function ARSNewObjectTemplate({
           interactive={interactiveSteps}
           onStepSelect={onStepSelect}
           fitContent={fitContent}
+          stepContents={stepContents}
         >
           {children ?? <ARSNewObjectContent showFolderButton />}
         </ARSNewObjectContentContainer>
