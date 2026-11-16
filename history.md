@@ -361,6 +361,10 @@ The designer decided a UI rule, the first in the new `docs/decided-UI-rules.md`:
 
 Work made on 13 Nov had been left uncommitted; the designer asked for everything to be committed, so it went in as it was after the full Vercel build passed and the four self-service pages loaded without errors. The Iris components gained the variants the ARS_WebUI2_User-View-Approvals frames draw, each with an Iris Storybook story: ActionBar text-only actions, Avatar sizes m and xl and coloured initials, Button danger-outline, DataTable `headerAction`, DonutChart size s, FormField's red "(Required)", LineChart fixed ticks, Modal's header divider, Tabs outlined and TextInput filled; AppHeader draws Figma's unread dot on the bell and the SideSheet subtitle is body small, secondary. The self-service Home, Profile, Approvals and My Access pages follow the file, with a new `WorkflowTimeline` view for a request's steps. Also committed: the requirements board draft (`business-rules.md`, marked "DRAFT DO NOT USE") and its audits (`docs/business-rules-audit.md`, `docs/groups-create-and-membership-audit.md`).
 
+### 16 Nov: Create is split wherever it opens a menu (BTN-1)
+
+The designer decided a second UI rule: a Create button that opens a menu of options is a split button. The Groups list and the Tree view already had one; the Users list's Create, which opens the New User menu, was the plain button of Figma's Basic toolbar. The kit's `ARSTableToolbar` now draws the main action as a split button on any variant when it has `onActionMenu` (story "Basic, with a menu"), so the Users list keeps the Basic toolbar's 16px spacing; both halves open the menu. The Iris package's `ListToolbarActions`, which no screen uses (only its Iris Storybook story), still draws Create with a caret.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).

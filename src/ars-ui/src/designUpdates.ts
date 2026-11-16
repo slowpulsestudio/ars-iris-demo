@@ -83,6 +83,14 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     prototype: '#/groups',
   },
   {
+    title: 'Split Create on the Users list',
+    file: 'primary',
+    figmaNodeId: '3422:16062',
+    note: 'Figma\'s Users list toolbar (ARS_Table_Toolbar, Basic, in ARS_Flat View_User_Content 3423:30755) draws a plain "+ Create", which opens the New User menu (New Entra User, New AD User, Add User). By the designer\'s rule BTN-1 a Create that opens a menu is a split button, as on the Groups list and the Tree view; either half opens the menu. The toolbar keeps the Basic spacing.',
+    recommendation: 'Draw the Users list\'s Create as a split button, and note on the toolbar that a Create opening a menu is split.',
+    prototype: '#/users',
+  },
+  {
     title: 'New Entra Distribution Group form',
     file: 'groups',
     figmaNodeId: '2109:11016',
