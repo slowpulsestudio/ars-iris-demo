@@ -83,11 +83,11 @@ export function ARSTableGroups({
       <div role="table" aria-label="Groups" className={styles.table}>
         <TableHeadRow
           columns={[
-            { icon: 'IdentificationCard', label: 'Name', width: 180 },
-            { icon: 'UserCircleCheck', label: 'Group type', width: 170 },
-            { icon: 'ArticleNyTimes', label: 'Description' },
-            { icon: 'Tag', label: 'Tags', width: 220 },
-            { icon: 'BuildingOffice', label: 'Directory', width: 150 },
+            { label: 'Name', width: 180 },
+            { label: 'Group type', width: 170 },
+            { label: 'Description' },
+            { label: 'Tags', width: 220 },
+            { label: 'Directory', width: 150 },
           ]}
           allSelected={allSelected}
           someSelected={selected.size > 0}

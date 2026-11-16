@@ -17,11 +17,11 @@ export type ARSTableRow = Omit<ARSRowProps, 'variant' | 'selected' | 'onSelected
 
 /** Column heads drawn in the Default and filter variants (not the head_single_obj component). */
 const USER_COLUMNS: TableHeadColumn[] = [
-  { icon: 'IdentificationCard', label: 'Display name', width: 180 },
-  { icon: 'UserCircleCheck', label: 'Status', width: 86 },
-  { icon: 'ArticleNyTimes', label: 'Description' },
-  { icon: 'Tag', label: 'Tags', width: 231 },
-  { icon: 'BuildingOffice', label: 'Location', width: 180 },
+  { label: 'Display name', width: 180 },
+  { label: 'Status', width: 86 },
+  { label: 'Description' },
+  { label: 'Tags', width: 231 },
+  { label: 'Location', width: 180 },
 ];
 
 /** The filter variant adds an icon after "Display name", pushing later heads right. */
