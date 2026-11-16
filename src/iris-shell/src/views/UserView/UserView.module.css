@@ -1,8 +1,31 @@
 .page {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: var(--oi-spacing-l);
+  min-height: 0;
   padding: var(--oi-spacing-xl);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Home, Approvals and User Profile (Figma ContentPanel 10199:6778, Card-Container 10199:7357): the page is grey
+   and the content sits in a white card 24px in, with a 12px radius (no token). My Access stays flush. */
+main:has(> .carded) {
+  background-color: var(--oi-background-color-secondary);
+}
+
+.carded {
+  gap: var(--oi-spacing-xl);
+  margin: var(--oi-spacing-xl);
+  background-color: var(--oi-background-color-primary);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: calc(var(--oi-border-radius-l) * 1.5);
+}
+
+/* Pagination at the bottom of the page or card (Figma ARS_Pagination 10315:3940, My Access Pagination 10199:6771). */
+.pageBottom {
+  margin-top: auto;
 }
 
 .header {
@@ -131,15 +154,32 @@
   gap: var(--oi-spacing-s);
 }
 
-/* Count cards with a status dot */
+/* Count cards with a status dot (Figma My Access stats 10199:6669): 1px muted border, 16px in, 8px between. */
 .stat {
   display: flex;
   flex-direction: column;
+  gap: var(--oi-spacing-s);
+  padding: var(--oi-spacing-l);
+  background-color: var(--oi-background-color-primary);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+}
+
+/* Approvals KPI cards (10199:7366) have a 2px radius. */
+.kpi {
+  border-radius: var(--oi-border-radius-s);
+}
+
+/* Home Access Summary tiles (StatBoxActive 10199:6951): 12px in, 4px between, a 24px number. */
+.statCompact {
   gap: var(--oi-spacing-xs);
   padding: var(--oi-spacing-m);
-  background-color: var(--oi-background-color-primary);
-  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
-  border-radius: var(--oi-border-radius-l);
+}
+
+.statCompact .statValue {
+  font-size: var(--oi-font-size-xl);
+  line-height: var(--oi-line-height-xl);
+  letter-spacing: var(--oi-letter-spacing-m);
 }
 
 .statTop {
@@ -152,6 +192,14 @@
 .statLabel {
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-secondary);
+}
+
+/* Home Access Summary tiles: a small semibold label. */
+.statLabelCompact {
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+  font-weight: var(--oi-text-caption-strong-font-weight);
   color: var(--oi-content-color-secondary);
 }
 
@@ -200,6 +248,11 @@
 .pagination {
   display: flex;
   justify-content: center;
+}
+
+/* My Access: Figma draws the pages at the left. */
+.paginationStart {
+  justify-content: flex-start;
 }
 
 /* Side sheet and modal content */
@@ -283,13 +336,27 @@
   color: var(--oi-content-color-error);
 }
 
+/* Figma ARS_Person card (10301:2300): 12px in and between, grey, the role as the Tag's text half. */
 .person {
   display: flex;
   align-items: center;
-  gap: var(--oi-spacing-s);
-  padding: var(--oi-spacing-s) var(--oi-spacing-m);
+  gap: var(--oi-spacing-m);
+  padding: var(--oi-spacing-m);
   background-color: var(--oi-background-color-secondary);
   border-radius: var(--oi-border-radius-default);
+}
+
+.roleTag {
+  flex-shrink: 0;
+  max-width: 240px;
+  padding: var(--oi-border-width-l) var(--oi-spacing-s) var(--oi-border-width-l) var(--oi-spacing-xs);
+  background-color: var(--oi-background-color-primary);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+  border-left: 0;
+  border-radius: 0 var(--oi-border-radius-max) var(--oi-border-radius-max) 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-primary);
 }
 
 .personText {
@@ -312,47 +379,52 @@
   color: var(--oi-content-color-secondary);
 }
 
-/* Profile */
+/* Profile (Figma 10199:7207): the 80px avatar with its pencil, the name as heading-02, then the title and email. */
 .profile {
   display: flex;
   align-items: center;
-  gap: var(--oi-spacing-m);
+  gap: var(--oi-spacing-xl);
 }
 
 .avatarWrap {
   position: relative;
   display: inline-flex;
   flex: none;
-  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
-  border-radius: var(--oi-border-radius-max);
 }
 
 .avatarEdit {
   position: absolute;
-  right: -8px;
-  bottom: -8px;
+  right: calc(-1 * var(--oi-spacing-xs));
+  bottom: 0;
+  border-radius: var(--oi-border-radius-max);
+}
+
+.avatarEdit button {
+  border-radius: var(--oi-border-radius-max);
 }
 
 .profileName {
   margin: 0;
-  font-size: var(--oi-text-heading-03-font-size);
-  line-height: var(--oi-text-heading-03-line-height);
-  font-weight: var(--oi-text-heading-03-font-weight);
+  /* Figma Heading 02 (28/36, -0.6). This repo's heading-03 tokens are 28px; spelled out to match. */
+  font-size: var(--oi-font-size-xxl);
+  line-height: var(--oi-line-height-xxl);
+  font-weight: var(--oi-font-weight-600);
+  letter-spacing: var(--oi-letter-spacing-s);
   color: var(--oi-content-color-primary);
 }
 
 .profileRole {
-  margin: 0;
-  font-size: var(--oi-text-body-s-strong-font-size);
-  line-height: var(--oi-text-body-s-strong-line-height);
-  font-weight: var(--oi-text-body-s-strong-font-weight);
+  margin: var(--oi-spacing-xs) 0 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
   color: var(--oi-content-color-secondary);
 }
 
 .profileMeta {
-  margin: 0;
-  font-size: var(--oi-text-caption-font-size);
-  line-height: var(--oi-text-caption-line-height);
+  margin: var(--oi-spacing-xs) 0 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
   color: var(--oi-content-color-tertiary);
 }
 
@@ -364,10 +436,65 @@
 
 .sectionHeading {
   margin: 0;
-  font-size: var(--oi-text-heading-04-font-size);
-  line-height: var(--oi-text-heading-04-line-height);
-  font-weight: var(--oi-text-heading-04-font-weight);
+  /* Figma Heading 03 (24/32, -0.3); no text token in this repo is 24px. */
+  font-size: var(--oi-font-size-xl);
+  line-height: var(--oi-line-height-xl);
+  font-weight: var(--oi-font-weight-600);
+  letter-spacing: var(--oi-letter-spacing-m);
   color: var(--oi-content-color-primary);
+}
+
+/* Figma's Phone Number field is 380px (no token); its row is 100px tall, so Description starts 64px lower. */
+.phoneField {
+  max-width: 380px;
+}
+
+.descriptionGap {
+  margin-top: calc(var(--oi-spacing-40) + var(--oi-spacing-4));
+}
+
+/* User Profile (Figma 10199:7207): 32px in the card and between the blocks; Cancel and Save stay at the bottom of the
+   card while the rest scrolls (FormActions 10199:7270). */
+.profilePage {
+  gap: var(--oi-spacing-xxl);
+  padding: var(--oi-spacing-xxl);
+  overflow: hidden;
+}
+
+.profileScroll {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--oi-spacing-xxl);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Sections: heading, then rows 20px apart; columns 24px apart. */
+.profileSection {
+  gap: var(--oi-spacing-20);
+}
+
+.profileGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--oi-spacing-20) var(--oi-spacing-xl);
+}
+
+/* Account Information (InfoGrid 10199:7252): 280px items (no token), 24px apart; the read-only values are 32px tall
+   with 14px text (ReadOnlyValue 10199:7255). */
+.accountGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 280px));
+  gap: var(--oi-spacing-xl);
+}
+
+div.readOnlyValue {
+  height: var(--oi-size-default);
+}
+
+.profileFooter {
+  gap: var(--oi-spacing-m);
 }
 
 .visuallyHidden {
@@ -389,20 +516,160 @@
   gap: var(--oi-spacing-m);
 }
 
-.grid2 {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--oi-spacing-m) var(--oi-spacing-l);
-}
-
-.grid3 {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--oi-spacing-m) var(--oi-spacing-l);
-}
-
 .footer {
   display: flex;
   justify-content: flex-end;
   gap: var(--oi-spacing-s);
+}
+
+/* ---------- Home (Figma home-dashboard 10199:6772) ---------- */
+
+/* Quick-nav cards (UserProfileCard 10199:6783): grey, 1px muted border, 16px in, 12px between. */
+.quickCard {
+  gap: var(--oi-spacing-m);
+  padding: var(--oi-spacing-l);
+  border-color: var(--oi-border-color-muted);
+}
+
+/* The 34px icon tile (IconBox 10199:6785). Figma fills it with raw hex tints; these are the nearest tokens. */
+.tile {
+  display: inline-flex;
+  padding: var(--oi-spacing-s);
+  border-radius: var(--oi-border-radius-l);
+}
+
+.tileBlue {
+  background-color: var(--oi-background-color-info);
+  color: var(--oi-color-blue-700);
+}
+
+.tileGreen {
+  background-color: var(--oi-background-color-success);
+  color: var(--oi-color-green-700);
+}
+
+.tilePurple {
+  background-color: var(--oi-color-purple-50);
+  color: var(--oi-color-purple-700);
+}
+
+.tileOrange {
+  background-color: var(--oi-color-orange-50);
+  color: var(--oi-color-orange-700);
+}
+
+/* Chart cards (BarChartCard 10199:6820): white, 1px muted border, 20px in, 16px between; the row is 250px (no token). */
+.chartsRow {
+  grid-auto-rows: 250px;
+}
+
+.chartCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-l);
+  min-width: 0;
+  padding: var(--oi-spacing-20);
+  background-color: var(--oi-background-color-primary);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+  overflow: hidden;
+}
+
+.chartCard > svg,
+.chartCard > div {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.chartHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-2);
+}
+
+.chartTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+  margin: 0;
+  font-size: var(--oi-text-heading-05-font-size);
+  line-height: var(--oi-text-heading-05-line-height);
+  font-weight: var(--oi-text-heading-05-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.chartHelper {
+  margin: 0;
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+  color: var(--oi-content-color-tertiary);
+}
+
+/* Pending Approvals and Access Summary cards (10199:6920, 10199:6947): 1px muted border, 20px in, 16px between. */
+section.homeCard {
+  gap: var(--oi-spacing-l);
+  padding: var(--oi-spacing-20);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+}
+
+/* Pending Approvals and Access Summary: a heading-04 title row. */
+.homeHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--oi-spacing-m);
+}
+
+.homeTitle {
+  margin: 0;
+  font-size: var(--oi-text-heading-04-font-size);
+  line-height: var(--oi-text-heading-04-line-height);
+  font-weight: var(--oi-text-heading-04-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+/* Figma's Pending Approvals table has column lines only. */
+.columnsOnly [role='cell'] {
+  border-bottom-color: transparent;
+}
+
+/* ---------- Approvals (Figma 10199:7351) ---------- */
+
+/* ARS_Table_Toolbar's search (10315:3823): 600px (no token) with the submit arrow inside the field. */
+.search {
+  position: relative;
+  width: min(600px, 100%);
+}
+
+.searchSubmit {
+  position: absolute;
+  top: 50%;
+  right: var(--oi-spacing-2);
+  transform: translateY(-50%);
+}
+
+/* The approval modals are 420px (no token), Figma 10199:7617. */
+div.approvalModal {
+  max-width: 420px;
+}
+
+/* Figma's Denied banner (10300:8588) writes its title and text in red. */
+.deniedBanner p,
+.deniedBanner p + div {
+  color: var(--oi-content-color-error);
+}
+
+/* "Me" in a request step: avatar, name and role (Figma Attestor rows, 10315:3374). */
+.me {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+  color: var(--oi-content-color-tertiary);
+}
+
+.meName {
+  font-size: var(--oi-text-body-s-strong-font-size);
+  line-height: var(--oi-text-body-s-strong-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
 }

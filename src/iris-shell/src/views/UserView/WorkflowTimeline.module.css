@@ -1,0 +1,110 @@
+/* Figma ARS_Workflow timeline_Content (10315:3374): step heads 12px in, 8px tall padding; cards 40px in,
+   past the keyline; 16px between steps. */
+.root {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-spacing-s);
+  padding: var(--oi-spacing-s) var(--oi-spacing-m);
+}
+
+.check {
+  flex-shrink: 0;
+  color: var(--oi-content-color-primary);
+}
+
+/* 18px numbered circle (no token): filled brand while current, outlined after. */
+.number {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: calc(var(--oi-spacing-16) + var(--oi-spacing-2));
+  height: calc(var(--oi-spacing-16) + var(--oi-spacing-2));
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-content-color-secondary);
+  border-radius: var(--oi-border-radius-max);
+  color: var(--oi-content-color-secondary);
+  font-family: var(--oi-font-family-code);
+  font-size: var(--oi-font-size-xs);
+  font-weight: var(--oi-font-weight-600);
+  line-height: 1;
+}
+
+.step[data-state='current'] .number {
+  background-color: var(--oi-base-color-brand);
+  border-color: var(--oi-base-color-brand);
+  color: var(--oi-content-color-constant);
+}
+
+.title {
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  color: var(--oi-content-color-secondary);
+}
+
+.step[data-state='current'] .title {
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+/* The keyline runs down from each head to the next, in the 40px column before the card. */
+.body {
+  position: relative;
+  padding: 0 var(--oi-spacing-m) var(--oi-spacing-l) var(--oi-spacing-40);
+}
+
+.body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: var(--oi-spacing-xs);
+  left: calc(var(--oi-spacing-m) + var(--oi-spacing-8));
+  border-left: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+}
+
+.step:last-child .body::before {
+  display: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+  padding: var(--oi-spacing-s);
+  background-color: var(--oi-background-color-primary);
+  border: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-muted);
+  border-radius: var(--oi-border-radius-l);
+  font-size: var(--oi-text-caption-font-size);
+  line-height: var(--oi-text-caption-line-height);
+  color: var(--oi-content-color-tertiary);
+}
+
+.step[data-state='current'] .card {
+  border-color: var(--oi-content-color-brand);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: var(--oi-spacing-m);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.rowLabel {
+  color: var(--oi-content-color-secondary);
+}
+
+.rowValue {
+  color: var(--oi-content-color-primary);
+}

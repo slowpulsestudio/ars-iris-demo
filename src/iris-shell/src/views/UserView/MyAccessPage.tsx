@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
+import { cx } from '../../lib/cx.js';
 import { showToast } from '../../lib/toastStore.js';
 import { setHashParams, slug, useHashParam } from '../../lib/hashState.js';
 import { Button } from '../../components/Button/Button.js';
@@ -157,6 +158,7 @@ export function MyAccessPage() {
           </h2>
           <Tabs
             ariaLabel="Access records"
+            variant="outlined"
             value={tab}
             onChange={(next) => {
               setTab(next);
@@ -172,7 +174,7 @@ export function MyAccessPage() {
             emptyState={{ title: 'No access records', description: 'Nothing matches this filter.' }}
           />
         </section>
-        <div className={styles.pagination}>
+        <div className={cx(styles.pagination, styles.paginationStart, styles.pageBottom)}>
           <Pagination page={safePage} pageCount={pageCount} onPageChange={setPage} />
         </div>
       </div>

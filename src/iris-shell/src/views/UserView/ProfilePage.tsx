@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
+import { cx } from '../../lib/cx.js';
 import { showToast } from '../../lib/toastStore.js';
 import { Avatar } from '../../components/Avatar/Avatar.js';
 import { Button } from '../../components/Button/Button.js';
@@ -66,9 +67,9 @@ export function ProfilePage() {
   const errorFor = (k: Field) => (showErrors && missing.includes(k) ? 'This field is required.' : undefined);
   const set = (k: Field) => (e: { target: { value: string } }) => setValues((v) => ({ ...v, [k]: e.target.value }));
 
-  const text = (k: Field, label: string, required = false) => (
-    <FormField label={label} required={required} error={errorFor(k)} shakeTrigger={shake}>
-      <TextInput value={values[k]} onChange={set(k)} invalid={Boolean(errorFor(k))} />
+  const text = (k: Field, label: string, required = false, className?: string) => (
+    <FormField label={label} required={required} error={errorFor(k)} shakeTrigger={shake} className={className}>
+      <TextInput variant="filled" value={values[k]} onChange={set(k)} invalid={Boolean(errorFor(k))} />
     </FormField>
   );
 
@@ -90,139 +91,143 @@ export function ProfilePage() {
 
   return (
     <AppShell breadcrumb={[{ label: 'Active Roles' }, { label: 'User Profile' }]} activeGlobalItem="#/user-view/profile">
-      <div className={styles.page}>
-        <h1 className={styles.visuallyHidden}>User Profile</h1>
-        <div className={styles.profile}>
-          <span className={styles.avatarWrap}>
-            <Avatar name={saved.display} size="l" />
-            <span className={styles.avatarEdit}>
-              <Tooltip label="Change photo">
-                <IconButton
-                  icon="PencilSimple"
-                  size="s"
-                  variant="secondary"
-                  ariaLabel="Change photo"
-                  onClick={() => showToast('Changing the photo is not available in this prototype')}
-                />
-              </Tooltip>
+      <div className={cx(styles.page, styles.carded, styles.profilePage)}>
+        <div className={styles.profileScroll}>
+          <h1 className={styles.visuallyHidden}>User Profile</h1>
+          <div className={styles.profile}>
+            <span className={styles.avatarWrap}>
+              <Avatar name={saved.display} size="xl" tone="blue" />
+              <span className={styles.avatarEdit}>
+                <Tooltip label="Change photo">
+                  <IconButton
+                    icon="PencilSimple"
+                    size="s"
+                    variant="secondary"
+                    ariaLabel="Change photo"
+                    onClick={() => showToast('Changing the photo is not available in this prototype')}
+                  />
+                </Tooltip>
+              </span>
             </span>
-          </span>
-          <div>
-            <p className={styles.profileName}>{saved.display}</p>
-            <p className={styles.profileRole}>IT Administrator</p>
-            <p className={styles.profileMeta}>{saved.email}</p>
+            <div>
+              <p className={styles.profileName}>{saved.display}</p>
+              <p className={styles.profileRole}>IT Administrator</p>
+              <p className={styles.profileMeta}>{saved.email}</p>
+            </div>
           </div>
+
+          <hr className={styles.divider} />
+
+          <section className={cx(styles.section, styles.profileSection)} aria-labelledby="profile-personal">
+            <h2 id="profile-personal" className={styles.sectionHeading}>
+              Personal Information
+            </h2>
+            <div className={styles.profileGrid}>
+              {text('first', 'First Name', true)}
+              {text('last', 'Last Name', true)}
+              {text('display', 'Display Name')}
+              {text('email', 'Email Address', true)}
+              {text('phone', 'Phone Number', false, styles.phoneField)}
+            </div>
+            <FormField label="Description" help="Brief summary of your responsibilities or bio." className={styles.descriptionGap}>
+              <Textarea value={values.description} onChange={set('description')} />
+            </FormField>
+          </section>
+
+          <hr className={styles.divider} />
+
+          <section className={cx(styles.section, styles.profileSection)} aria-labelledby="profile-work">
+            <h2 id="profile-work" className={styles.sectionHeading}>
+              Work Information
+            </h2>
+            <div className={styles.profileGrid}>
+              {text('office', 'Office Location')}
+              <SelectField
+                label="Department"
+                value={values.department}
+                options={DEPARTMENTS}
+                onChange={(department) => setValues((v) => ({ ...v, department }))}
+              />
+              {text('job', 'Job Title')}
+              {text('web', 'Web Page')}
+            </div>
+          </section>
+
+          <hr className={styles.divider} />
+
+          <section className={cx(styles.section, styles.profileSection)} aria-labelledby="profile-account">
+            <h2 id="profile-account" className={styles.sectionHeading}>
+              Account Information
+            </h2>
+            {/* Figma's read-only values are 32px tall, grey, with no border (ReadOnlyValue 10199:7255). */}
+            <div className={styles.accountGrid}>
+              <FormField label="Login Name">
+                <TextInput variant="filled" className={styles.readOnlyValue} value="CORP\john.doe" readOnly />
+              </FormField>
+              <FormField label="Domain">
+                <TextInput variant="filled" className={styles.readOnlyValue} value="corp.company.com" readOnly />
+              </FormField>
+              <div className={styles.field}>
+                <span className={styles.fieldLabel}>Account Status</span>
+                <span>
+                  <StatusBadge status="Active" />
+                </span>
+              </div>
+              <FormField label="Last Login">
+                <TextInput variant="filled" className={styles.readOnlyValue} value="2026-07-16 09:42 AM" readOnly />
+              </FormField>
+            </div>
+          </section>
+
+          <hr className={styles.divider} />
+
+          <section className={styles.section} aria-labelledby="profile-certs">
+            <div className={styles.sectionHead}>
+              <h2 id="profile-certs" className={styles.sectionHeading}>
+                Published Certificates
+              </h2>
+              <div className={styles.headerActions}>
+                <Button variant="secondary" size="s" onClick={() => showToast('Add from File is not available in this prototype')}>
+                  Add from File
+                </Button>
+                <Button
+                  variant="danger-outline"
+                  size="s"
+                  onClick={() => {
+                    if (certSelection.size === 0) {
+                      showToast('Select the certificates to remove');
+                      return;
+                    }
+                    setCerts((prev) => prev.filter((c) => !certSelection.has(c.id)));
+                    setCertSelection(new Set());
+                  }}
+                >
+                  Remove
+                </Button>
+                <Button variant="secondary" size="s" onClick={() => showToast('Copy to File is not available in this prototype')}>
+                  Copy to File
+                </Button>
+              </div>
+            </div>
+            <p className={styles.caption}>List of X.509 certificates published for this user account.</p>
+            <DataTable
+              ariaLabel="Published certificates"
+              columns={CERT_COLUMNS}
+              rows={certs}
+              rowLabel={(c) => c.issuedTo}
+              selected={certSelection}
+              onSelectionChange={setCertSelection}
+              hideRowActions
+              emptyState={{ title: 'No certificates', description: 'No certificates are published for this account.' }}
+            />
+          </section>
         </div>
 
-        <hr className={styles.divider} />
-
-        <section className={styles.section} aria-labelledby="profile-personal">
-          <h2 id="profile-personal" className={styles.sectionHeading}>
-            Personal Information
-          </h2>
-          <div className={styles.grid2}>
-            {text('first', 'First Name', true)}
-            {text('last', 'Last Name', true)}
-            {text('display', 'Display Name')}
-            {text('email', 'Email Address', true)}
-            {text('phone', 'Phone Number')}
-          </div>
-          <FormField label="Description" help="Brief summary of your responsibilities or bio.">
-            <Textarea value={values.description} onChange={set('description')} />
-          </FormField>
-        </section>
-
-        <hr className={styles.divider} />
-
-        <section className={styles.section} aria-labelledby="profile-work">
-          <h2 id="profile-work" className={styles.sectionHeading}>
-            Work Information
-          </h2>
-          <div className={styles.grid2}>
-            {text('office', 'Office Location')}
-            <SelectField
-              label="Department"
-              value={values.department}
-              options={DEPARTMENTS}
-              onChange={(department) => setValues((v) => ({ ...v, department }))}
-            />
-            {text('job', 'Job Title')}
-            {text('web', 'Web Page')}
-          </div>
-        </section>
-
-        <hr className={styles.divider} />
-
-        <section className={styles.section} aria-labelledby="profile-account">
-          <h2 id="profile-account" className={styles.sectionHeading}>
-            Account Information
-          </h2>
-          <div className={styles.grid3}>
-            <FormField label="Login Name">
-              <TextInput value="CORP\john.doe" readOnly />
-            </FormField>
-            <FormField label="Domain">
-              <TextInput value="corp.company.com" readOnly />
-            </FormField>
-            <div className={styles.field}>
-              <span className={styles.fieldLabel}>Account Status</span>
-              <span>
-                <StatusBadge status="Active" />
-              </span>
-            </div>
-            <FormField label="Last Login">
-              <TextInput value="2026-07-16 09:42 AM" readOnly />
-            </FormField>
-          </div>
-        </section>
-
-        <hr className={styles.divider} />
-
-        <section className={styles.section} aria-labelledby="profile-certs">
-          <div className={styles.sectionHead}>
-            <h2 id="profile-certs" className={styles.sectionHeading}>
-              Published Certificates
-            </h2>
-            <div className={styles.headerActions}>
-              <Button variant="secondary" size="s" onClick={() => showToast('Add from File is not available in this prototype')}>
-                Add from File
-              </Button>
-              <Button
-                variant="danger"
-                size="s"
-                disabled={certSelection.size === 0}
-                onClick={() => {
-                  setCerts((prev) => prev.filter((c) => !certSelection.has(c.id)));
-                  setCertSelection(new Set());
-                }}
-              >
-                Remove
-              </Button>
-              <Button variant="secondary" size="s" onClick={() => showToast('Copy to File is not available in this prototype')}>
-                Copy to File
-              </Button>
-            </div>
-          </div>
-          <p className={styles.caption}>List of X.509 certificates published for this user account.</p>
-          <DataTable
-            ariaLabel="Published certificates"
-            columns={CERT_COLUMNS}
-            rows={certs}
-            rowLabel={(c) => c.issuedTo}
-            selected={certSelection}
-            onSelectionChange={setCertSelection}
-            hideRowActions
-            emptyState={{ title: 'No certificates', description: 'No certificates are published for this account.' }}
-          />
-        </section>
-
-        <div className={styles.footer}>
-          <Button variant="ghost" disabled={!dirty} onClick={cancel}>
+        <div className={cx(styles.footer, styles.profileFooter)}>
+          <Button variant="ghost" onClick={cancel}>
             Cancel
           </Button>
-          <Button disabled={!dirty} onClick={save}>
-            Save Changes
-          </Button>
+          <Button onClick={dirty ? save : () => showToast('No changes to save')}>Save Changes</Button>
         </div>
       </div>
     </AppShell>
