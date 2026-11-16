@@ -1,4 +1,4 @@
-import { ENTRA_TENANTS, canMoveNode, getParentId, isMoveDestination, moveNode, moveObject } from './directoryData.js';
+import { ENTRA_TENANTS, canMoveNode, getParentId, isMoveDestination, moveNode, moveObject, type DirectoryNodeView } from './directoryData.js';
 import { showToast } from './toastStore.js';
 
 /**
@@ -12,6 +12,42 @@ export function userLocationFor(path: Array<{ id: string; name: string }>): stri
   }
   const tier = path.findIndex((n) => n.id === 'active-directories');
   return path.slice(tier + 1).map((n) => n.name).join('\\');
+}
+
+/** The tree's top tiers, which a Location may start with ("Managed directories / Active Directory / O1D.local / …"). */
+const TOP_TIERS = new Set(['managed directories', 'active directory']);
+
+function findNode(nodes: DirectoryNodeView[], id: string): DirectoryNodeView | undefined {
+  for (const node of nodes) {
+    if (node.id === id) return node;
+    const found = findNode(node.children, id);
+    if (found) return found;
+  }
+  return undefined;
+}
+
+/**
+ * The folder a Flat view user's AD Location is in, read back from the tree: "O1D.local\Test OU\Test1", or the Users
+ * list's samples such as "AD1\Users", where AD1 is O1D.local (as the directory filter reads it). Null for an Entra
+ * Location or a path that isn't in the tree.
+ */
+export function folderForUserLocation(location: string, tree: DirectoryNodeView[]): string | null {
+  const parts = location
+    .split(/\\| \/ /)
+    .map((p) => p.trim())
+    .filter((p) => p && !TOP_TIERS.has(p.toLowerCase()));
+  const activeDirectory = findNode(tree, 'active-directories');
+  if (!activeDirectory || parts.length === 0) return null;
+  const adNumber = /^AD-?(\d)$/i.exec(parts[0])?.[1];
+  if (adNumber) parts[0] = `O${adNumber}D.local`;
+  let level = activeDirectory.children;
+  let found: DirectoryNodeView | undefined;
+  for (const part of parts) {
+    found = level.find((n) => n.name.toLowerCase() === part.toLowerCase());
+    if (!found) return null;
+    level = found.children;
+  }
+  return found?.id ?? null;
 }
 
 /** Shows the "moved" toast; Undo reverses it, and View opens the object (one) or the folder (several). */

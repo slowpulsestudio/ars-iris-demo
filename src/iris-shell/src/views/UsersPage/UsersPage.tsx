@@ -315,6 +315,8 @@ export function UsersPage() {
         onClose={closeDialog}
         objects={(moveTargets ?? []).map((u) => ({ id: u.id, name: u.name }))}
         objectType="User"
+        // Opens at, and ticks, the folder the users' Location points to (AD1\Users is Users in O1D.local).
+        currentNodeId={moveUsers.currentFolder(moveTargets ?? [])}
         canMoveTo={(destId) => moveUsers.canMoveTo(moveTargets ?? [], destId)}
         onMove={(destId, objs) => {
           moveUsers.move(

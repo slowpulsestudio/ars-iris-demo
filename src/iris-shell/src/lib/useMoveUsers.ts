@@ -2,22 +2,30 @@ import { useCallback } from 'react';
 import type { User } from '../views/UsersPage/mockUsers.js';
 import { isMoveDestination } from './directoryData.js';
 import { useDirectory } from './directoryStore.js';
-import { announceMoved, userLocationFor } from './moveObjects.js';
+import { announceMoved, folderForUserLocation, userLocationFor } from './moveObjects.js';
 import { useUsers } from './usersStore.js';
 
 /** Moving Flat view users: their Location becomes the destination folder's path. */
 export function useMoveUsers() {
   const { updateUser } = useUsers();
-  const { getPath } = useDirectory();
+  const { getPath, nodeTree } = useDirectory();
+
+  /** The folder a user's Location points to, or null outside the tree. */
+  const folderOf = useCallback((user: User) => folderForUserLocation(user.location, nodeTree), [nodeTree]);
+
+  /** The folder all of `targets` are in, which the Move sheet opens at and ticks; null when they are in several. */
+  const currentFolder = useCallback(
+    (targets: User[]): string | null => {
+      const folders = new Set(targets.map(folderOf));
+      return folders.size === 1 ? [...folders][0] : null;
+    },
+    [folderOf],
+  );
 
   /** Whether at least one of `targets` isn't already in the folder `destId`. */
   const canMoveTo = useCallback(
-    (targets: User[], destId: string) => {
-      if (!isMoveDestination(destId)) return false;
-      const location = userLocationFor(getPath(destId));
-      return targets.some((u) => u.location !== location);
-    },
-    [getPath],
+    (targets: User[], destId: string) => isMoveDestination(destId) && targets.some((u) => folderOf(u) !== destId),
+    [folderOf],
   );
 
   /** Moves the users that aren't there yet and shows the toast. Returns who moved. */
@@ -25,7 +33,7 @@ export function useMoveUsers() {
     (targets: User[], destId: string): User[] => {
       const path = getPath(destId);
       const location = userLocationFor(path);
-      const moving = targets.filter((u) => u.location !== location);
+      const moving = targets.filter((u) => folderOf(u) !== destId);
       if (moving.length === 0) return [];
       const before = moving.map((u) => ({ id: u.id, location: u.location }));
       moving.forEach((u) => updateUser(u.id, { location }));
@@ -38,8 +46,8 @@ export function useMoveUsers() {
       });
       return moving;
     },
-    [getPath, updateUser],
+    [getPath, updateUser, folderOf],
   );
 
-  return { canMoveTo, move };
+  return { currentFolder, canMoveTo, move };
 }

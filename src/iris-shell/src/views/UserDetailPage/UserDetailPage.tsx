@@ -128,6 +128,7 @@ export function UserDetailPage({ userId }: UserDetailPageProps) {
       onPrevious={prevUser ? () => navigate(`#/users/${prevUser.id}`) : undefined}
       onNext={nextUser ? () => navigate(`#/users/${nextUser.id}`) : undefined}
       isFavorite={isFavorite(user.id)}
+      currentNodeId={moveUsers.currentFolder([user])}
       canMoveTo={(destId) => moveUsers.canMoveTo([user], destId)}
       onMove={(destId) => moveUsers.move([user], destId)}
       onToggleFavorite={() =>

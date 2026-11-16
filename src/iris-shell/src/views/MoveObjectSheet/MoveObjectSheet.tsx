@@ -22,7 +22,7 @@ export interface MoveObjectSheetProps {
   objects: MoveObjectSheetObject[];
   /** Object class of a single object, e.g. "User". Drives the title. */
   objectType?: string;
-  /** Folder to open the tree at (the objects' current folder). */
+  /** The objects' current folder: the tree opens at it, the rest closed, and a Move ticks it. */
   currentNodeId?: string | null;
   /** Whether `destId` can take every object; Move stays disabled otherwise. */
   canMoveTo: (destId: string) => boolean;
@@ -57,13 +57,14 @@ export function MoveObjectSheet({
   if (givenType) lastType.current = givenType;
   const objectType = givenType ?? lastType.current ?? 'Object';
 
-  // Start fresh each time the sheet opens.
+  // Each time a Move opens, the objects' current folder is ticked to show where they are now, and Move stays off until
+  // another folder is ticked. A Copy opens with nothing ticked, as copying into the same folder is allowed.
   useEffect(() => {
     if (open) {
-      setChoice(null);
+      setChoice(mode === 'move' ? currentNodeId : null);
       setRemoved(new Set());
     }
-  }, [open]);
+  }, [open, mode, currentNodeId]);
 
   // Figma's sheet hides Access templates, Managed units and the divider under them (2290:68343): the tree
   // starts at Managed directories, as nothing is moved or copied into those two. A Move also leaves out
@@ -108,7 +109,8 @@ export function MoveObjectSheet({
           selectedId={choice}
           onSelect={setChoice}
           defaultExpandedIds={
-            // Opens at the objects' folder; with none (a Flat view user), at Managed directories.
+            // Opens at the objects' folder, the rest closed; with none (several users in different folders), at
+            // Managed directories.
             currentNodeId ? getPath(currentNodeId).map((n) => n.id) : nodes.slice(0, 1).map((n) => n.id)
           }
         />
