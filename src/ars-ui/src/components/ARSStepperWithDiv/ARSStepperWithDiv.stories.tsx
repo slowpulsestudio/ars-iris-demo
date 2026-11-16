@@ -8,7 +8,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Figma: ARS_Stepper_with_div · ARS - Primary · 3367:11939. The Iris Stepper, plus a 380px vertical divider that fades out below the row (it sits beside the new-object form).',
+          'Figma: ARS_Stepper_with_div · ARS - Primary · 3367:11939. The Iris Stepper, plus a 380px vertical divider that fades out below the row (it sits beside the new-object form). Not in Figma: the steps share the row equally (half each for two, a third each for three), at the designer\'s request; Figma draws them 192px wide.',
       },
     },
   },

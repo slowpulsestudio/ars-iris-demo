@@ -23,3 +23,9 @@
   flex: 1 1 0;
   min-width: 0;
 }
+
+/* Not in Figma, which draws 192px steps: the designer asked for the steps to share the row equally. */
+.stepper > li {
+  flex: 1 1 0;
+  width: auto;
+}
