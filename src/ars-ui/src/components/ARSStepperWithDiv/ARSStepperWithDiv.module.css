@@ -1,9 +1,9 @@
-/* ARS_WebUI2_CRUD 3663:22067: a 1px top line across the content, then a 40px block (--oi-size-l) with the stepper
-   centred in it. */
+/* ARS_WebUI2_CRUD 3663:22067: a 1px top line across the content, then a 40px block (--oi-size-l) that the steps fill.
+   Their own top lines sit on that line, so a step's colour replaces it rather than drawing a second line under it. */
 .root {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   box-sizing: content-box;
   height: var(--oi-size-l);
   border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
@@ -25,6 +25,7 @@
   flex: none;
   width: 702px;
   min-width: 0;
+  margin-top: calc(-1 * var(--oi-border-width-default));
 }
 
 .stepper > li {
