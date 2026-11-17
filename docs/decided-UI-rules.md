@@ -25,3 +25,10 @@ Each rule has an ID, what it says, where it comes from and where it is built. Wh
 - Groups list: Create opens AD group and Entra group (CRT-2). Figma draws a plain "+ Create" (ARS_WebUI2_Groups 160:9037).
 - Tree view folder lists: Create opens the New object menu; it was already split.
 - Source: designer, 16 Nov 2026. Built: kit `ARSTableToolbar` (a main action with `onActionMenu` is a split button on every variant), `views/UsersPage/UsersPage.tsx`, `views/GroupsPage/GroupsPage.tsx`, `views/TreeView/TreeListPage.tsx`.
+
+## Tables
+
+**TBL-1. The table settings menu lists the columns to show and their order; columns are always resizable.** The settings button in a list's right-most column head (ARS_Table_Config 3663:19416) opens a menu listing every column in the order they show, each with a checkbox to show or hide it and a drag handle to move it (Alt+Up and Alt+Down from the keyboard). It stays open while columns are ticked or moved, and the table follows at once. The first column always shows and stays first. Every column resizes by dragging its head's right edge (or the arrow keys on it), with no Adjust columns step.
+- Figma's ARS_Table Menu (3663:20381) has Adjust columns and Add columns entries instead; the menu here has neither.
+- Applies to the Users, Groups, Managed Units and Tree view lists, Favourites, the Memberships tabs and a group's members. The choices last while the page is open.
+- Source: designer, 17 Nov 2026. Built: Iris `Menu` (`movable` checkbox entries and `onMove`, in `useMenuReorder`), kit `TableHeadRow` (`columnSettings`: `order` and the resize grips) and `ColumnSettingsMenu`, `views/ListFilters/useColumnSettings.ts`.

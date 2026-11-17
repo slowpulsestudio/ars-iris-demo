@@ -15,7 +15,7 @@ import type { ARSColumnSettings } from '../../parts/TableHeadRow/columnSettings.
 import { ExtraCells } from '../../parts/TableHeadRow/ExtraCells.js';
 
 export interface ARSTreeViewADRow {
-  /** Text for the columns added with Add columns, by column. */
+  /** Text for the columns added from the table settings menu, by column. */
   extra?: Record<string, ReactNode>;
   id: string;
   name: string;
@@ -46,7 +46,7 @@ export interface ARSTreeViewADContentProps {
   onRowDragEnd?: () => void;
   /** Sorting and filtering from the column heads (IM / Sortable header cell). */
   sorting?: ARSColumnSorting;
-  /** The right-most column head's table settings menu: Adjust columns and Add columns. */
+  /** The right-most column head's table settings menu: the columns to show, in their order. */
   columnSettings?: ARSColumnSettings;
   pagination: ARSPaginationProps;
   /** Shown in place of the table, e.g. an empty state. Not drawn in Figma. */

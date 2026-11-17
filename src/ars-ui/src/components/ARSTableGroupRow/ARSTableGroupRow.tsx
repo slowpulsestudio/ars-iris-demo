@@ -25,7 +25,7 @@ export interface ARSTableGroupRowProps {
   icon?: string;
   /** Memberships: the remove button at the end of the row (Finance/XCircle, 167:8103). */
   onRemove?: () => void;
-  /** Cells for the columns added with Add columns, before the action cell. */
+  /** Cells for the columns added from the table settings menu, before the action cell. */
   extraCells?: ReactNode;
   className?: string;
 }

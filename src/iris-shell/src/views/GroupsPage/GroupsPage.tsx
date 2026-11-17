@@ -51,7 +51,7 @@ function nodeIds(nodes: DirectoryNodeView[]): string[] {
   return nodes.flatMap((n) => [n.id, ...nodeIds(n.children)]);
 }
 
-/** What Add columns offers on the Groups list: every column is already a filter field, so these are the group's other properties. */
+/** What the table settings menu adds on the Groups list: every column is already a filter field, so these are the group's other properties. */
 const GROUP_EXTRA_COLUMNS: ExtraColumn<DirectoryObject>[] = [
   { label: 'Email', value: (g) => getGroupProps(g).email },
   { label: 'Scope', value: (g) => getGroupProps(g).scope },

@@ -31,7 +31,7 @@ const FIELDS: FilterFieldDef<FavoriteEntry>[] = [
 /** The table's three columns are the first three fields, and sort by them. */
 const SORT_COLUMNS: SortColumn<FavoriteEntry>[] = FIELDS.slice(0, 3).map((f) => ({ label: f.label, value: f.get, field: f.id }));
 
-/** Add columns offers the other fields (Date active). */
+/** The table settings menu also offers the other fields (Date active). */
 const EXTRA_COLUMNS = fieldColumns(FIELDS, SORT_COLUMNS);
 
 const iconFor = (type: string): string =>

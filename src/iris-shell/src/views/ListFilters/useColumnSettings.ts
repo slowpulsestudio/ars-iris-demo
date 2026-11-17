@@ -3,7 +3,7 @@ import type { ARSColumnSettings } from '@ars';
 import type { FilterFieldDef } from '../../lib/advancedFilter.js';
 import type { SortColumn } from './useColumnSort.js';
 
-/** A column "Add columns" offers: one of the list's properties, shown as text. */
+/** A column the table settings menu offers: one of the list's properties, shown as text. */
 export interface ExtraColumn<T> {
   label: string;
   /** What the item holds; several values (tags) show comma-separated. */
@@ -36,13 +36,13 @@ export function fieldColumns<T>(fields: FilterFieldDef<T>[], columns: SortColumn
 }
 
 /**
- * The right-most column head's table settings menu for a list, as on the reference Users list: Adjust columns turns
- * resizing on, and Add columns shows or hides the list's columns and `extras`. Kept while the page is open.
+ * The right-most column head's table settings menu for a list, as the designer asked: the columns resize by dragging
+ * a head's edge, and the menu shows, hides and reorders the list's columns and `extras`. Kept while the page is open.
  */
 export function useColumnSettings<T>(extras: ExtraColumn<T>[]): ColumnSettings<T> {
   const [hidden, setHidden] = useState<string[]>([]);
   const [added, setAdded] = useState<string[]>([]);
-  const [adjusting, setAdjusting] = useState(false);
+  const [order, setOrder] = useState<string[]>([]);
   const [widths, setWidths] = useState<Record<string, number>>({});
 
   const labels = extras.map((c) => c.label);
@@ -55,8 +55,8 @@ export function useColumnSettings<T>(extras: ExtraColumn<T>[]): ColumnSettings<T
       if (labels.includes(column)) setAdded((list) => toggle(list, column, shown));
       else setHidden((list) => toggle(list, column, !shown));
     },
-    adjusting,
-    onAdjustingChange: setAdjusting,
+    order,
+    onReorder: setOrder,
     widths,
     onWidthChange: (column, width) => setWidths((current) => ({ ...current, [column]: width })),
   };

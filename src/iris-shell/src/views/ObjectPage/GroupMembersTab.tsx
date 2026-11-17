@@ -95,7 +95,7 @@ export function GroupMembersTab({ group, nodeId }: GroupMembersTabProps) {
   const pageCount = Math.max(1, Math.ceil(rows.length / MEMBERSHIPS_PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
   const sort = useColumnSort(rows, MEMBERSHIPS_SORT_COLUMNS, undefined, () => setPage(1));
-  // Every property is a column, so Add columns only shows and hides them.
+  // Every property is a column, so the table settings menu only shows, hides and moves them.
   const columns = useColumnSettings<ARSGroupTableRow>([]);
   const pageRows = sort.sorted.slice((safePage - 1) * MEMBERSHIPS_PAGE_SIZE, safePage * MEMBERSHIPS_PAGE_SIZE);
 

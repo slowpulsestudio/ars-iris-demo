@@ -30,14 +30,14 @@
   flex: 1 1 0;
 }
 
-/* A column added with "Add columns", until it is dragged to another width (the rules TableHeadRow writes set it). */
+/* A column added from the table settings menu, until it is dragged to another width (the rules TableHeadRow writes set it). */
 .extraCell {
   flex: none;
   width: 180px;
 }
 
-/* Adjust columns: each column head's right edge is a 6px grip, as on the reference list, drawn as a 2px line so the
-   mode shows; it turns the focus blue while hovered, focused or dragged. */
+/* Each column head's right edge is a 6px grip, as on the reference list. The columns are always resizable, so the grip
+   only shows (the focus blue) while hovered, focused or dragged; the col-resize cursor marks it. */
 .resizable {
   position: relative;
 }
@@ -51,7 +51,6 @@
   width: 6px;
   cursor: col-resize;
   touch-action: none;
-  background: linear-gradient(var(--oi-border-color-strong), var(--oi-border-color-strong)) right / 2px 100% no-repeat;
 }
 
 .resizeHandle:hover,

@@ -19,7 +19,7 @@ const columnsFor = (variant: ARSGroupTableVariant): TableHeadColumn[] => [
 ];
 
 export interface ARSGroupTableRow {
-  /** Text for the columns added with Add columns, by column. */
+  /** Text for the columns added from the table settings menu, by column. */
   extra?: Record<string, ReactNode>;
   id: string;
   name: string;
@@ -48,7 +48,7 @@ export interface ARSGroupTableProps {
   onSettings?: () => void;
   /** Sorting and filtering from the column heads (IM / Sortable header cell). */
   sorting?: ARSColumnSorting;
-  /** The right-most column head's table settings menu: Adjust columns and Add columns. */
+  /** The right-most column head's table settings menu: the columns to show, in their order. */
   columnSettings?: ARSColumnSettings;
   /** The table's accessible name; Figma's table lists groups. */
   ariaLabel?: string;

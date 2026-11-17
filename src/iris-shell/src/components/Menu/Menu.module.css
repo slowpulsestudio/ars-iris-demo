@@ -199,6 +199,54 @@
   color: var(--oi-content-color-error);
 }
 
+/* A movable checkbox entry (`onMove`): a drag handle before the checkbox, and it slides to a new place. */
+.movable {
+  transition:
+    background-color var(--oi-motion-duration-short) var(--oi-motion-ease-default),
+    transform var(--oi-motion-duration-short) var(--oi-motion-ease-default);
+}
+
+.dragHandle {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--oi-size-xs);
+  color: var(--oi-content-color-tertiary);
+  cursor: grab;
+  touch-action: none;
+}
+
+.itemDragging {
+  position: relative;
+  z-index: 1;
+  background-color: var(--oi-background-color-tertiary);
+  color: var(--oi-content-color-primary);
+  box-shadow: var(--oi-shadow-low);
+}
+
+.itemDragging .dragHandle {
+  cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .movable {
+    transition: none;
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .itemDanger .itemIcon {
   color: var(--oi-content-color-error);
 }

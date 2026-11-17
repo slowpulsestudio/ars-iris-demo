@@ -9,7 +9,7 @@ export interface ExtraCellsProps {
   values?: Readonly<Record<string, ReactNode>>;
 }
 
-/** A row's cells for the columns added with "Add columns", placed before its action cell to line up with the head. */
+/** A row's cells for the columns added from the table settings menu, placed before its action cell to line up with the head. */
 export function ExtraCells({ settings, values }: ExtraCellsProps) {
   if (!settings) return null;
   return (

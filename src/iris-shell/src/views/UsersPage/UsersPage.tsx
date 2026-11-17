@@ -146,7 +146,7 @@ export function UsersPage() {
     [tagsOf],
   );
   const sort = useColumnSort(rows, sortColumns, lf, () => setPage(1));
-  // Add columns offers the filter fields the columns don't show (not Object type: every row is a user), and Object ID.
+  // The table settings menu offers the filter fields the columns don't show (not Object type: every row is a user), and Object ID.
   const extraColumns = useMemo(
     () => [
       ...fieldColumns(

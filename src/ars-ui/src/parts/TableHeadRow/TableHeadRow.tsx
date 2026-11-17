@@ -4,7 +4,7 @@ import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { TableHeadItem } from '@iris/components/TableHeadItem/TableHeadItem.js';
 import { ARSSortableHeaderCell, type ARSColumnSorting } from '../../components/ARSSortableHeaderCell/ARSSortableHeaderCell.js';
 import { ColumnSettingsMenu } from './ColumnSettingsMenu.js';
-import { EXTRA_COLUMN_WIDTH, MIN_COLUMN_WIDTH, shownExtras, type ARSColumnSettings } from './columnSettings.js';
+import { EXTRA_COLUMN_WIDTH, MIN_COLUMN_WIDTH, columnOrder, shownExtras, type ARSColumnSettings } from './columnSettings.js';
 import styles from './TableHeadRow.module.css';
 
 export interface TableHeadColumn {
@@ -28,28 +28,43 @@ export interface TableHeadRowProps {
   actionsWidth?: number;
   /** Makes the listed columns' heads sort and filter (IM / Sortable header cell). */
   sorting?: ARSColumnSorting;
-  /** The right-most head's table settings menu (Adjust columns, Add columns) and what it changes; replaces `actions`. */
+  /**
+   * The right-most head's table settings menu (the columns to show, in the order they show) and what it changes;
+   * replaces `actions`. The columns are resizable.
+   */
   columnSettings?: ARSColumnSettings;
   className?: string;
 }
 
 /**
  * The user's column choices as rules for the head and every row of the table, by position: rows are flex rows whose
- * cells follow the head's order (select, the columns, the added columns, actions), so no row has to know them.
- * `!important`, as they must beat the Figma widths the heads set inline.
+ * cells follow the head's order (select, the columns, the added columns, actions), so no row has to know them. The
+ * columns show in the user's order through `order`; `!important` where a rule must beat the Figma widths the heads set
+ * inline.
  */
-function columnRules(scope: string, own: string[], extras: string[], hidden: readonly string[], widthOf: (column: string) => number | undefined): string {
+function columnRules(
+  scope: string,
+  own: string[],
+  extras: string[],
+  settings: ARSColumnSettings,
+  widthOf: (column: string) => number | undefined,
+): string {
   const row = `[role='table']:has([data-ars-columns='${scope}']) [role='row'] >`;
-  const sized = (n: number, width: number) => `${row} :nth-child(${n}) { flex: none !important; width: ${width}px !important; }`;
-  const rules = own.flatMap((label, i) => {
-    if (i > 0 && hidden.includes(label)) return [`${row} :nth-child(${i + 2}) { display: none !important; }`];
+  const rule = (n: number, declarations: string) => `${row} :nth-child(${n}) { ${declarations} }`;
+  const order = columnOrder(own, settings);
+  const place = (label: string) => `order: ${order.indexOf(label) + 1};`;
+  const sized = (width: number) => ` flex: none !important; width: ${width}px !important;`;
+  const rules = own.map((label, i) => {
+    if (i > 0 && settings.hidden.includes(label)) return rule(i + 2, 'display: none !important;');
     const width = widthOf(label);
-    return width == null ? [] : [sized(i + 2, width)];
+    return rule(i + 2, place(label) + (width == null ? '' : sized(width)));
   });
-  extras.forEach((label, i) => rules.push(sized(own.length + i + 2, widthOf(label) ?? EXTRA_COLUMN_WIDTH)));
-  // Once no column fills the row, the space left goes before the action column, which stays at the right edge; rows
-  // without an action cell just end early.
-  rules.push(`${row} :nth-child(${own.length + extras.length + 2}) { margin-left: auto; }`);
+  extras.forEach((label, i) => {
+    rules.push(rule(own.length + i + 2, place(label) + sized(widthOf(label) ?? EXTRA_COLUMN_WIDTH)));
+  });
+  // The action column comes last. Once no column fills the row, the space left goes before it, so it stays at the right
+  // edge; rows without an action cell just end early.
+  rules.push(rule(own.length + extras.length + 2, `order: ${order.length + 1}; margin-left: auto;`));
   return rules.join('\n');
 }
 
@@ -110,8 +125,8 @@ export function TableHeadRow({
   };
 
   const head = (col: { label: string; icon?: string }, size: { style?: CSSProperties; className?: string }) => {
-    const className = cx(size.className, columnSettings?.adjusting && styles.resizable);
-    const handle: ReactNode = columnSettings?.adjusting && (
+    const className = cx(size.className, columnSettings && styles.resizable);
+    const handle: ReactNode = columnSettings && (
       <span
         role="separator"
         aria-orientation="vertical"
@@ -144,7 +159,7 @@ export function TableHeadRow({
 
   return (
     <>
-      {columnSettings && <style>{columnRules(scope, own, extras, columnSettings.hidden, widthOf)}</style>}
+      {columnSettings && <style>{columnRules(scope, own, extras, columnSettings, widthOf)}</style>}
       <div role="row" data-ars-columns={columnSettings ? scope : undefined} className={cx(styles.head, className)}>
         <TableHeadItem inset="s" className={styles.check}>
           <Checkbox

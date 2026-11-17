@@ -51,7 +51,7 @@ const unitSortColumns: SortColumn<ManagedUnit>[] = [
   { label: 'Type', value: () => 'Managed Unit', field: 'Object type' },
 ];
 
-/** Add columns on the units list: the filter fields its columns don't show. */
+/** The table settings menu's extra columns on the units list: the filter fields its columns don't show. */
 const UNIT_EXTRA_COLUMNS = fieldColumns(unitFields, unitSortColumns);
 
 /** ManagedUnitsPage — the Managed Units list (ARS_Managed_Users_Content); a row opens the unit's members. */
@@ -152,7 +152,7 @@ export function ManagedUnitMembersPage({ unitId }: ManagedUnitMembersPageProps) 
     return mf.filtered.filter((m) => !q || [m.name, m.description].some((v) => v.toLowerCase().includes(q)));
   }, [mf.filtered, query]);
   const sort = useColumnSort(rows, memberSortColumns, mf, () => setPage(1));
-  // Every field is a column, so Add columns only shows and hides them.
+  // Every field is a column, so the table settings menu only shows, hides and moves them.
   const columns = useColumnSettings<(typeof members)[number]>([]);
 
   if (!unit) {

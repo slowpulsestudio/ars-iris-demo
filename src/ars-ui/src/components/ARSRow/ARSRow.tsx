@@ -30,7 +30,7 @@ export interface ARSRowProps {
   onOpen?: () => void;
   onMore?: MouseEventHandler<HTMLElement>;
   onRemoveTag?: (tag: string) => void;
-  /** Cells for the columns added with Add columns, before the action cell. */
+  /** Cells for the columns added from the table settings menu, before the action cell. */
   extraCells?: ReactNode;
   className?: string;
 }

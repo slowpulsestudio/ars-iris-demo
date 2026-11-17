@@ -41,7 +41,7 @@ export interface ARSSortableHeaderCellProps {
   filter?: ARSColumnFilter;
   className?: string;
   style?: CSSProperties;
-  /** Placed in the cell after the label button, e.g. the Adjust columns resize grip. */
+  /** Placed in the cell after the label button, e.g. the column's resize grip. */
   children?: ReactNode;
 }
 

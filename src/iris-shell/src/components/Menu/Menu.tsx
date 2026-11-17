@@ -11,6 +11,7 @@ import { createPortal } from 'react-dom';
 import { cx } from '../../lib/cx.js';
 import { Checkbox } from '../Checkbox/Checkbox.js';
 import { Icon } from '../Icon/Icon.js';
+import { useMenuReorder, type MenuReorder } from './useMenuReorder.js';
 import styles from './Menu.module.css';
 
 const SECTION_KIND = 'section';
@@ -56,6 +57,11 @@ export interface MenuCheckboxEntry {
   onChange: (checked: boolean) => void;
   /** Can't be changed, e.g. a column that always shows; greyed with a not-allowed cursor. */
   disabled?: boolean;
+  /**
+   * Has a drag handle: it can be dragged, or moved with Alt+Up and Alt+Down, among the movable entries next to it.
+   * Needs the menu's `onMove`.
+   */
+  movable?: boolean;
 }
 
 export interface MenuSectionEntry {
@@ -141,6 +147,8 @@ export interface MenuProps {
    * role="menuitem". The footer stays in view while a long menu scrolls, and clicking it keeps the menu open.
    */
   footer?: ReactNode;
+  /** Moves the movable entry at index `from` in `items` to `to`, as it is dragged or moved with the keyboard. */
+  onMove?: (from: number, to: number) => void;
 }
 
 interface MenuPos {
@@ -185,6 +193,7 @@ export function Menu({
   topAnchor,
   rightAnchor,
   footer,
+  onMove,
 }: MenuProps) {
   const isControlled = openProp !== undefined;
   const [internalOpen, setInternalOpen] = useState(false);
@@ -192,6 +201,7 @@ export function Menu({
   const [pos, setPos] = useState<MenuPos | null>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const reorder = useMenuReorder(items, menuRef, onMove);
 
   const setOpen = useCallback(
     (v: boolean) => {
@@ -351,7 +361,12 @@ export function Menu({
             }}
             onKeyDown={(e) => handleArrowNav(e, menuRef)}
           >
-            {items.map((item, i) => renderItem(item, i, close))}
+            {items.map((item, i) => renderItem(item, i, close, reorder))}
+            {reorder.active && (
+              <div aria-live="polite" className={styles.srOnly}>
+                {reorder.announcement}
+              </div>
+            )}
             {footer && <div className={styles.footer}>{footer}</div>}
           </div>,
           document.body,
@@ -476,7 +491,7 @@ function SubmenuItem({ item, close }: { item: MenuSubmenuEntry; close: () => voi
   );
 }
 
-function renderItem(item: MenuEntry, i: number, close: () => void): ReactNode {
+function renderItem(item: MenuEntry, i: number, close: () => void, reorder?: MenuReorder): ReactNode {
   if (item.kind === 'divider') {
     return <div key={`d-${i}`} className={styles.divider} role="separator" />;
   }
@@ -508,21 +523,43 @@ function renderItem(item: MenuEntry, i: number, close: () => void): ReactNode {
     const toggle = () => {
       if (!item.disabled) item.onChange(!item.checked);
     };
+    const movable = !!reorder?.active && !!item.movable;
     return (
       <div
-        key={`c-${i}-${item.label}`}
+        // Keyed by label once movable, so a moved entry keeps its element.
+        key={movable ? `c-${item.label}` : `c-${i}-${item.label}`}
         role="menuitemcheckbox"
         aria-checked={item.checked}
         aria-disabled={item.disabled || undefined}
+        aria-keyshortcuts={movable ? 'Alt+ArrowUp Alt+ArrowDown' : undefined}
         tabIndex={-1}
-        className={cx(styles.item, item.disabled && styles.itemInactive)}
+        data-menu-index={i}
+        data-menu-label={movable ? item.label : undefined}
+        data-menu-movable={movable ? '' : undefined}
+        className={cx(
+          styles.item,
+          item.disabled && styles.itemInactive,
+          movable && styles.movable,
+          movable && reorder?.dragging === item.label && styles.itemDragging,
+        )}
         onClick={toggle}
         onKeyDown={(e) => {
+          if (reorder?.onKey(i, e)) return;
           if (e.key !== 'Enter' && e.key !== ' ') return;
           e.preventDefault();
           toggle();
         }}
       >
+        {reorder?.active && (
+          <span
+            className={styles.dragHandle}
+            aria-hidden="true"
+            onPointerDown={movable ? (e) => reorder.startDrag(i, e) : undefined}
+            onClick={movable ? (e) => e.stopPropagation() : undefined}
+          >
+            {movable && <Icon name="DotsSixVertical" size="16px" />}
+          </span>
+        )}
         <span className={styles.itemIcon}>
           <Checkbox checked={item.checked} disabled={item.disabled} tabIndex={-1} aria-hidden="true" />
         </span>

@@ -102,6 +102,34 @@ function PageSizeMenu(args: MenuProps) {
   );
 }
 
+// A table's columns: the first always shows and stays first.
+const COLUMNS = ['Display name', 'Status', 'Description', 'Tags', 'Location'];
+
+function MovableMenu(args: MenuProps) {
+  const [order, setOrder] = useState(COLUMNS);
+  const [shown, setShown] = useState<string[]>(COLUMNS);
+  const move = (from: number, to: number) => {
+    const next = [...order];
+    const [label] = next.splice(from, 1);
+    next.splice(to, 0, label);
+    setOrder(next);
+  };
+  return (
+    <MenuDemo
+      {...args}
+      onMove={move}
+      items={order.map<MenuEntry>((label, i) => ({
+        kind: 'checkbox',
+        label,
+        checked: shown.includes(label),
+        disabled: i === 0,
+        movable: i > 0,
+        onChange: (on) => setShown((list) => (on ? [...list, label] : list.filter((l) => l !== label))),
+      }))}
+    />
+  );
+}
+
 function ContextMenuDemo(args: MenuProps) {
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
 
@@ -193,4 +221,18 @@ export const HeaderBlock: Story = {
 export const ContextMenu: Story = {
   name: 'Context menu',
   render: (args) => <ContextMenuDemo {...args} />,
+};
+
+export const MovableEntries: Story = {
+  name: 'Movable checkbox entries',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Checkbox entries with `movable` and the menu\'s `onMove`, as the lists\' table settings menu: drag a handle, or press Alt+Up or Alt+Down on an entry, to move it; it slides to its new place. The first column can\'t be hidden or moved.',
+      },
+    },
+  },
+  args: { ariaLabel: 'Table settings', trigger: buttonTrigger('Columns') },
+  render: (args) => <MovableMenu key={String(args.open)} {...args} />,
 };
