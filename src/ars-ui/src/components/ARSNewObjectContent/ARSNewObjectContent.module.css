@@ -11,7 +11,8 @@
 }
 
 /* Figma: a 702px form column (no token); as tall as the row, so a step can fill it (the Select folder step). Under a
-   stepper it starts --ars-new-object-step-top down (ARSNewObjectContentContainer). */
+   stepper it starts --ars-new-object-step-top down (ARSNewObjectContentContainer). The fields stop 16px short of the
+   divider at its right edge (ARS_WebUI2_CRUD 3680:22606). */
 .form {
   display: flex;
   flex-direction: column;
@@ -20,6 +21,7 @@
   gap: var(--oi-spacing-l);
   width: 702px;
   padding-top: var(--ars-new-object-step-top, 0px);
+  padding-right: var(--oi-spacing-l);
 }
 
 /* A panel brings its own padding: 3663:22082 starts right under the stepper. */
