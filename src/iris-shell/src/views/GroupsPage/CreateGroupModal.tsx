@@ -9,7 +9,7 @@ import { useDirectory } from '../../lib/directoryStore.js';
 import { GROUP_SCOPES, GROUP_TYPES, saveGroupProps } from '../../lib/groupDetailsStore.js';
 import { showToast } from '../../lib/toastStore.js';
 import { useStepFlow } from '../../lib/useStepFlow.js';
-import { ModalOverlay } from '../ModalOverlay/ModalOverlay.js';
+import { NewObjectOverlay } from '../NewObjectOverlay/NewObjectOverlay.js';
 import { SELECT_FOLDER_STEP, SelectFolderStep } from '../SelectFolderStep/SelectFolderStep.js';
 import styles from './CreateGroupModal.module.css';
 
@@ -104,6 +104,8 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
   }, [open, home, reset]);
 
   const set = <K extends keyof Form>(key: K) => (value: Form[K]) => setForm((f) => ({ ...f, [key]: value }));
+  // Closing asks first once a text field has been filled in, as on the New User form (decided UI rule MOD-2).
+  const filledIn = [form.name, form.groupName, form.displayName, form.description, form.smtp].some((v) => v.trim() !== '');
   const title = ad ? 'New AD Group' : 'New Entra Distribution Group';
   // Entra objects have no location, so there is nothing to show under the title.
   const locationLabel = ad ? getPath(destinationId).map((n) => n.name).join(' / ') : '';
@@ -217,25 +219,28 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
   ));
 
   return (
-    <ModalOverlay open={open} label={title} onClose={onClose}>
-      <ARSNewObjectTemplate
-        title={title}
-        location={locationLabel}
-        icon="UsersThree"
-        hasSteps={ad}
-        steps={ad ? steps : undefined}
-        activeIndex={step}
-        interactiveSteps
-        onStepSelect={goTo}
-        // As the New User form: as tall as the tallest step on every step (decided UI rule MOD-1).
-        fitContent
-        stepContents={stepContents}
-        footerVariant={step > 0 ? '2' : generalComplete ? '1_complete' : '1'}
-        ctaLabel={last ? 'Create group →' : step > 0 ? 'Save and continue →' : undefined}
-        onClose={onClose}
-        onBack={() => goTo(step - 1)}
-        onContinue={() => (last ? create() : goTo(step + 1))}
-      />
-    </ModalOverlay>
+    <NewObjectOverlay open={open} label={title} filledIn={filledIn} onClose={onClose}>
+      {(requestClose) => (
+        <ARSNewObjectTemplate
+          title={title}
+          location={locationLabel}
+          icon="UsersThree"
+          hasSteps={ad}
+          steps={ad ? steps : undefined}
+          activeIndex={step}
+          interactiveSteps
+          onStepSelect={goTo}
+          // As the New User form: as tall as the tallest step on every step (decided UI rule MOD-1).
+          fitContent
+          stepContents={stepContents}
+          footerVariant={step > 0 ? '2' : generalComplete ? '1_complete' : '1'}
+          ctaLabel={last ? 'Create group →' : step > 0 ? 'Save and continue →' : undefined}
+          onClose={requestClose}
+          onBack={() => goTo(step - 1)}
+          onContinue={() => (last ? create() : goTo(step + 1))}
+          onDiscard={requestClose}
+        />
+      )}
+    </NewObjectOverlay>
   );
 }

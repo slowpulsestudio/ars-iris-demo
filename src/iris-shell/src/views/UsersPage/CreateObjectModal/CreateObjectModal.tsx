@@ -1,6 +1,5 @@
-import { Activity, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  ARSModalFormUnsaved,
   ARSNewObjectContent,
   ARSNewObjectTemplate,
   ARS_EMPTY_NEW_OBJECT_VALUES,
@@ -9,7 +8,7 @@ import {
 import { useDirectory } from '../../../lib/directoryStore.js';
 import { useStepFlow } from '../../../lib/useStepFlow.js';
 import type { StepperStepItem } from '../../../components/Stepper/Stepper.js';
-import { ModalOverlay } from '../../ModalOverlay/ModalOverlay.js';
+import { NewObjectOverlay } from '../../NewObjectOverlay/NewObjectOverlay.js';
 import { SelectFolderSheet } from '../../SelectFolderSheet/SelectFolderSheet.js';
 import { SELECT_FOLDER_STEP, SelectFolderStep } from '../../SelectFolderStep/SelectFolderStep.js';
 import type { CreateObjectResult } from './createdObject.js';
@@ -63,7 +62,6 @@ export function CreateObjectModal({
   );
   const [destinationId, setDestinationId] = useState<string | null>(locationId);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [confirming, setConfirming] = useState(false);
 
   // The fields Figma marks Required; step 1 is complete once all have a value.
   const generalComplete = [
@@ -83,22 +81,13 @@ export function CreateObjectModal({
       setValues(ARS_EMPTY_NEW_OBJECT_VALUES);
       setDestinationId(locationId);
       setSheetOpen(false);
-      setConfirming(false);
     }
   }, [open, locationId, reset]);
-
-  // The side sheet handles its own Escape; the modal must not close underneath it.
-  const sheetOpenRef = useRef(false);
-  sheetOpenRef.current = sheetOpen;
 
   const locationLabel = entra ? '' : destinationId ? getPath(destinationId).map((n) => n.name).join(' / ') : location;
 
   // Closing asks first once a field has been filled in (decided UI rule MOD-2).
-  const hasEntries = Object.values(values).some((v) => v.trim() !== '');
-  const requestClose = () => {
-    if (hasEntries) setConfirming(true);
-    else onClose();
-  };
+  const filledIn = Object.values(values).some((v) => v.trim() !== '');
 
   const setV = (patch: Partial<ARSNewObjectValues>) => setValues((p) => ({ ...p, ...patch }));
 
@@ -130,19 +119,15 @@ export function CreateObjectModal({
 
   return (
     <>
-      <ModalOverlay
+      <NewObjectOverlay
         open={open}
-        label={confirming ? 'Unsaved changes' : `New ${objectType}`}
-        // The question takes the form's place in the same modal, one floating layer at a time, and the card
-        // resizes to it. The form stays mounted underneath, so Cancel brings it back as it was (decided UI rule MOD-2).
-        panelKey={confirming ? 'unsaved' : 'form'}
-        onClose={() => {
-          if (sheetOpenRef.current) return;
-          if (confirming) setConfirming(false);
-          else requestClose();
-        }}
+        label={`New ${objectType}`}
+        filledIn={filledIn}
+        onClose={onClose}
+        // The side sheet handles its own Escape; the modal must not close underneath it.
+        covered={sheetOpen}
       >
-        <Activity mode={confirming ? 'hidden' : 'visible'}>
+        {(requestClose) => (
           <ARSNewObjectTemplate
             title={`New ${objectType}`}
             location={locationLabel}
@@ -161,16 +146,8 @@ export function CreateObjectModal({
             onContinue={last ? create : () => goTo(step + 1)}
             onDiscard={requestClose}
           />
-        </Activity>
-        {confirming && (
-          <ARSModalFormUnsaved
-            destructive
-            onClose={() => setConfirming(false)}
-            onCancel={() => setConfirming(false)}
-            onConfirm={() => onClose()}
-          />
         )}
-      </ModalOverlay>
+      </NewObjectOverlay>
 
       {!entra && !folderStep && (
         <SelectFolderSheet
