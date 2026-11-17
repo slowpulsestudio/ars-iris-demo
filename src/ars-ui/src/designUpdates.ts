@@ -210,4 +210,12 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     recommendation: 'Draw the close of a filled-in New Object form: the Unsaved changes question in the form\'s place on the same backdrop with a ghost "Keep my progress" and a danger "Discard changes", the resize between the two, a ghost Discard in the form\'s footer, Cancel back to the form and Confirm closing it.',
     prototype: '#/users?dialog=create&type=AD+User',
   },
+  {
+    title: 'Unsaved changes text is regular weight',
+    file: 'primary',
+    figmaNodeId: '3534:19369',
+    note: 'Figma draws the whole Unsaved changes message in Body small (semi bold). At the designer\'s request the message is Body small (regular) and only the two button names it mentions stay semi bold.',
+    recommendation: 'Draw the Unsaved changes message in Body small (regular), with the button names in Body small (semi bold).',
+    prototype: '#/users?dialog=create&type=AD+User',
+  },
 ];
