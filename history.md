@@ -401,6 +401,10 @@ At the designer's request the column heads' icons (sort, filter and leading) are
 
 At the designer's request the New object form's footer has a ghost Discard before the main action (the kit's `ARSModalNewObjectFooter` gained `onDiscard`, passed through `ARSNewObjectTemplate`), which does what the close button does: an empty form closes, a filled-in one asks first. In that question Cancel is now a ghost "Keep my progress", and the text names it. MOD-2 updated.
 
+### 17 Nov: the New Group forms ask first too
+
+The designer pointed out that "New object" means New User and New Group alike, so New AD Group and New Entra Distribution Group now ask before closing when filled in and have the footer's Discard. The modal, the swap to the question and the hidden form moved from `CreateObjectModal` into `views/NewObjectOverlay/`, which both forms use; a group form is filled in when its name, group name, display name, description or SMTP address has text.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
