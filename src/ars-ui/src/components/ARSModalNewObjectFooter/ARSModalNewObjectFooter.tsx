@@ -25,6 +25,8 @@ export interface ARSModalNewObjectFooterProps {
   ctaLabel?: string;
   onBack?: () => void;
   onCta?: () => void;
+  /** A ghost "Discard" before the main action, at the designer's request (not in Figma); shown when set. */
+  onDiscard?: () => void;
   className?: string;
 }
 
@@ -38,6 +40,7 @@ export function ARSModalNewObjectFooter({
   ctaLabel,
   onBack,
   onCta,
+  onDiscard,
   className,
 }: ARSModalNewObjectFooterProps) {
   const step = stepLabel === undefined ? STEP_LABEL[variant] : stepLabel;
@@ -49,9 +52,16 @@ export function ARSModalNewObjectFooter({
           <IconButton icon="ArrowLeft" ariaLabel="Back" variant="ghost" disabled={variant !== '2'} onClick={onBack} />
           {step && <span className={styles.step}>{step}</span>}
         </div>
-        <Button disabled={variant === '1'} onClick={onCta}>
-          {ctaLabel ?? CTA_LABEL[variant]}
-        </Button>
+        <div className={styles.end}>
+          {onDiscard && (
+            <Button variant="ghost" onClick={onDiscard}>
+              Discard
+            </Button>
+          )}
+          <Button disabled={variant === '1'} onClick={onCta}>
+            {ctaLabel ?? CTA_LABEL[variant]}
+          </Button>
+        </div>
       </div>
     </footer>
   );

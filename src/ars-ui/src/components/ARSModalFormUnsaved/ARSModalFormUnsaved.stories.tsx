@@ -22,7 +22,8 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 /**
- * Not in Figma: the destructive version on the New object form (decided UI rule MOD-2), a ghost Cancel and a danger
- * "Discard changes". Figma draws, and the object pages' edit mode keep, a secondary Cancel and a primary Confirm.
+ * Not in Figma: the destructive version on the New object form (decided UI rule MOD-2), a ghost "Keep my progress" and
+ * a danger "Discard changes". Figma draws, and the object pages' edit mode keep, a secondary Cancel and a primary
+ * Confirm.
  */
 export const Destructive: Story = { args: { destructive: true } };

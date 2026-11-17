@@ -159,6 +159,7 @@ export function CreateObjectModal({
             onClose={requestClose}
             onBack={() => goTo(step - 1)}
             onContinue={last ? create : () => goTo(step + 1)}
+            onDiscard={requestClose}
           />
         </Activity>
         {confirming && (

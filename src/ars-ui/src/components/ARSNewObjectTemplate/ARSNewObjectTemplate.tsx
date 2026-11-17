@@ -36,6 +36,8 @@ export interface ARSNewObjectTemplateProps {
   onClose?: () => void;
   onBack?: () => void;
   onContinue?: () => void;
+  /** Shows a ghost Discard before the footer's main action (not in Figma). */
+  onDiscard?: () => void;
   className?: string;
 }
 
@@ -60,6 +62,7 @@ export function ARSNewObjectTemplate({
   onClose,
   onBack,
   onContinue,
+  onDiscard,
   className,
 }: ARSNewObjectTemplateProps) {
   return (
@@ -94,6 +97,7 @@ export function ARSNewObjectTemplate({
         ctaLabel={ctaLabel}
         onBack={onBack}
         onCta={onContinue}
+        onDiscard={onDiscard}
       />
     </section>
   );

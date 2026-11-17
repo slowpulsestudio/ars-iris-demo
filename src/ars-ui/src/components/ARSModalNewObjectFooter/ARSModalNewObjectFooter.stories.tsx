@@ -29,3 +29,6 @@ export const Step1Complete: Story = { name: '1_complete', args: { variant: '1_co
 
 /** Figma "Property 1=2" (3321:20623). */
 export const Step2: Story = { name: '2', args: { variant: '2' } };
+
+/** Not in Figma: a ghost Discard before the main action, as on the New object form (decided UI rule MOD-2). */
+export const WithDiscard: Story = { name: '1, with Discard', args: { variant: '1', onDiscard: () => {} } };

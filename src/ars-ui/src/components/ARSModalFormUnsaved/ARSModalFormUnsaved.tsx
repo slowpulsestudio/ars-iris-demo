@@ -9,8 +9,8 @@ export interface ARSModalFormUnsavedProps {
   /** Replaces the warning text. */
   message?: ReactNode;
   /**
-   * The designer's destructive version, for the New object form: a ghost Cancel and a danger "Discard changes", which
-   * the text names. Figma draws a secondary Cancel and a primary Confirm.
+   * The designer's destructive version, for the New object form: a ghost "Keep my progress" and a danger "Discard
+   * changes", which the text names. Figma draws a secondary Cancel and a primary Confirm.
    */
   destructive?: boolean;
   onClose?: () => void;
@@ -34,6 +34,7 @@ export function ARSModalFormUnsaved({
 }: ARSModalFormUnsavedProps) {
   const titleId = useId();
   const confirmLabel = destructive ? 'Discard changes' : 'Confirm';
+  const cancelLabel = destructive ? 'Keep my progress' : 'Cancel';
   return (
     <section className={cx(styles.root, className)} aria-labelledby={titleId}>
       <header className={styles.header}>
@@ -50,14 +51,14 @@ export function ARSModalFormUnsaved({
           {message ?? (
             <>
               Your unsaved changes will be discarded. To continue, click <strong>{confirmLabel}</strong>. To review your
-              changes and save them later, click <strong>Cancel</strong>.
+              changes and save them later, click <strong>{cancelLabel}</strong>.
             </>
           )}
         </p>
       </div>
       <footer className={styles.footer}>
         <Button variant={destructive ? 'ghost' : 'secondary'} onClick={onCancel}>
-          Cancel
+          {cancelLabel}
         </Button>
         <Button variant={destructive ? 'danger' : 'primary'} onClick={onConfirm}>
           {confirmLabel}
