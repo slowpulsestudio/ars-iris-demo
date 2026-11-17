@@ -45,8 +45,8 @@
   width: 180px;
 }
 
-/* Each column head's right edge is a 6px grip, as on the reference list. The columns are always resizable, so the grip
-   only shows (the focus blue) while hovered, focused or dragged; the col-resize cursor marks it. */
+/* Edit width: each column head's right edge is a 6px grip, as on the reference list, drawn as a 2px line so the mode
+   shows; it turns the focus blue while hovered, focused or dragged. */
 .resizable {
   position: relative;
 }
@@ -60,6 +60,7 @@
   width: 6px;
   cursor: col-resize;
   touch-action: none;
+  background: linear-gradient(var(--oi-border-color-strong), var(--oi-border-color-strong)) right / 2px 100% no-repeat;
 }
 
 .resizeHandle:hover,

@@ -11,6 +11,9 @@ export interface ARSColumnSettings {
   added: readonly string[];
   /** Shows or hides a column, own or extra. */
   onToggleColumn: (column: string, shown: boolean) => void;
+  /** Edit width is on: the column edges can be dragged. Off by default. */
+  editWidth: boolean;
+  onEditWidthChange: (on: boolean) => void;
   /** The order the columns were dragged into; columns not in it follow in their own order. */
   order: readonly string[];
   onReorder: (order: string[]) => void;

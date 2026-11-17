@@ -168,9 +168,10 @@ export function TableHeadRow({
   };
 
   const head = (col: { label: string; icon?: string }, size: { style?: CSSProperties; className?: string }) => {
-    const className = cx(size.className, columnSettings && styles.resizable);
-    // Every edge between two columns moves; the last column's right edge stays at the action column.
-    const handle: ReactNode = columnSettings && shown.indexOf(col.label) < shown.length - 1 && (
+    const resizable = !!columnSettings?.editWidth;
+    const className = cx(size.className, resizable && styles.resizable);
+    // With Edit width on, every edge between two columns moves; the last column's right edge stays at the action column.
+    const handle: ReactNode = resizable && shown.indexOf(col.label) < shown.length - 1 && (
       <span
         role="separator"
         aria-orientation="vertical"

@@ -11,14 +11,20 @@ export interface ColumnSettingsMenuProps {
 
 /**
  * The table settings button in the right-most column head (ARS_Table_Config 3663:19416) and its menu. At the
- * designer's request the menu lists every column, in the order they show, with a checkbox and a drag handle to move it
- * (Alt+Up and Alt+Down from the keyboard); it stays open while columns are ticked or moved. The first column always
- * shows and stays first, and Actions, the column this menu sits in, always shows and stays last. ARS_Table Menu
- * (3663:20381) has Adjust columns and Add columns entries instead; the columns are always resizable.
+ * designer's request the menu starts with Edit width, a toggle (off by default) that lets the column edges be dragged,
+ * then lists every column, in the order they show, with a checkbox and a drag handle to move it (Alt+Up and Alt+Down
+ * from the keyboard); it stays open while columns are ticked or moved. The first column always shows and stays first,
+ * and Actions, the column this menu sits in, always shows and stays last. ARS_Table Menu (3663:20381) has Adjust
+ * columns and Add columns entries instead.
  */
 export function ColumnSettingsMenu({ own, settings }: ColumnSettingsMenuProps) {
   const columns = columnOrder(own, settings);
+  const lead: MenuEntry[] = [
+    { kind: 'toggle', label: 'Edit width', checked: settings.editWidth, onChange: settings.onEditWidthChange },
+    { kind: 'divider' },
+  ];
   const items: MenuEntry[] = [
+    ...lead,
     ...columns.map<MenuEntry>((label, i) => ({
       kind: 'checkbox',
       label,
@@ -30,10 +36,11 @@ export function ColumnSettingsMenu({ own, settings }: ColumnSettingsMenuProps) {
     { kind: 'checkbox', label: 'Actions', checked: true, disabled: true, onChange: () => {} },
   ];
 
+  // The menu counts its entries; the columns start after the lead ones.
   const move = (from: number, to: number) => {
     const next = [...columns];
-    const [label] = next.splice(from, 1);
-    next.splice(to, 0, label);
+    const [label] = next.splice(from - lead.length, 1);
+    next.splice(to - lead.length, 0, label);
     settings.onReorder(next);
   };
 

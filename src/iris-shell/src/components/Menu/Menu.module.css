@@ -199,6 +199,11 @@
   color: var(--oi-content-color-error);
 }
 
+/* A toggle entry: the row takes the click, so the Iris Toggle inside is only drawn. */
+.toggle {
+  pointer-events: none;
+}
+
 /* A movable checkbox entry (`onMove`): a drag handle before the checkbox, and it slides to a new place. */
 .movable {
   transition:

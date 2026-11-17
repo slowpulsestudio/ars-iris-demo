@@ -11,6 +11,7 @@ import { createPortal } from 'react-dom';
 import { cx } from '../../lib/cx.js';
 import { Checkbox } from '../Checkbox/Checkbox.js';
 import { Icon } from '../Icon/Icon.js';
+import { Toggle } from '../Toggle/Toggle.js';
 import { useMenuReorder, type MenuReorder } from './useMenuReorder.js';
 import styles from './Menu.module.css';
 
@@ -69,6 +70,14 @@ export interface MenuSectionEntry {
   label: string;
 }
 
+/** An on/off setting, drawn with the Iris Toggle: it switches and keeps the menu open. */
+export interface MenuToggleEntry {
+  kind: 'toggle';
+  label: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}
+
 export interface MenuDividerEntry {
   kind: 'divider';
 }
@@ -99,6 +108,7 @@ export interface MenuSubmenuEntry {
 export type MenuEntry =
   | MenuItemEntry
   | MenuCheckboxEntry
+  | MenuToggleEntry
   | MenuSubmenuEntry
   | MenuSectionEntry
   | MenuDividerEntry
@@ -515,6 +525,27 @@ function renderItem(item: MenuEntry, i: number, close: () => void, reorder?: Men
     return (
       <div key={`s-${i}`} className={styles.section} role="presentation">
         {item.label}
+      </div>
+    );
+  }
+  if (item.kind === 'toggle') {
+    const toggle = () => item.onChange(!item.checked);
+    return (
+      <div
+        key={`t-${i}-${item.label}`}
+        role="menuitemcheckbox"
+        aria-checked={item.checked}
+        tabIndex={-1}
+        className={styles.item}
+        onClick={toggle}
+        onKeyDown={(e) => {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          e.preventDefault();
+          toggle();
+        }}
+      >
+        {/* Only drawn: the row is the control, so a click switches it once. */}
+        <Toggle checked={item.checked} label={item.label} tabIndex={-1} aria-hidden="true" className={styles.toggle} />
       </div>
     );
   }

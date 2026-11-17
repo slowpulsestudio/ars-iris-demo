@@ -108,24 +108,30 @@ const COLUMNS = ['Display name', 'Status', 'Description', 'Tags', 'Location'];
 function MovableMenu(args: MenuProps) {
   const [order, setOrder] = useState(COLUMNS);
   const [shown, setShown] = useState<string[]>(COLUMNS);
+  const [editWidth, setEditWidth] = useState(false);
+  // The columns come after the toggle and the divider.
   const move = (from: number, to: number) => {
     const next = [...order];
-    const [label] = next.splice(from, 1);
-    next.splice(to, 0, label);
+    const [label] = next.splice(from - 2, 1);
+    next.splice(to - 2, 0, label);
     setOrder(next);
   };
   return (
     <MenuDemo
       {...args}
       onMove={move}
-      items={order.map<MenuEntry>((label, i) => ({
+      items={[
+        { kind: 'toggle', label: 'Edit width', checked: editWidth, onChange: setEditWidth },
+        { kind: 'divider' },
+        ...order.map<MenuEntry>((label, i) => ({
         kind: 'checkbox',
         label,
         checked: shown.includes(label),
         disabled: i === 0,
         movable: i > 0,
         onChange: (on) => setShown((list) => (on ? [...list, label] : list.filter((l) => l !== label))),
-      }))}
+        })),
+      ]}
     />
   );
 }
@@ -224,12 +230,12 @@ export const ContextMenu: Story = {
 };
 
 export const MovableEntries: Story = {
-  name: 'Movable checkbox entries',
+  name: 'Toggle and movable checkbox entries',
   parameters: {
     docs: {
       description: {
         story:
-          'Checkbox entries with `movable` and the menu\'s `onMove`, as the lists\' table settings menu: drag a handle, or press Alt+Up or Alt+Down on an entry, to move it; it slides to its new place. The first column can\'t be hidden or moved.',
+          'A toggle entry (Edit width) and checkbox entries with `movable` and the menu\'s `onMove`, as the lists\' table settings menu: drag a handle, or press Alt+Up or Alt+Down on an entry, to move it; it slides to its new place. The first column can\'t be hidden or moved.',
       },
     },
   },
