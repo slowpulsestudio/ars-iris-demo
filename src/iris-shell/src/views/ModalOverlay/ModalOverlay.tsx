@@ -9,6 +9,8 @@ export interface ModalOverlayProps {
   onClose: () => void;
   /** Accessible name of the dialog. */
   label: string;
+  /** Names the panel shown. Swapping in another panel while open (a new key) moves focus into it, as on opening. */
+  panelKey?: string;
   children: ReactNode;
 }
 
@@ -16,7 +18,7 @@ export interface ModalOverlayProps {
  * ModalOverlay — scrim, centring, focus trap, scroll lock and Escape for the
  * ARS modal panels, which draw their own card.
  */
-export function ModalOverlay({ open, onClose, label, children }: ModalOverlayProps) {
+export function ModalOverlay({ open, onClose, label, panelKey, children }: ModalOverlayProps) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const [mounted, setMounted] = useState(open);
 
@@ -31,6 +33,13 @@ export function ModalOverlay({ open, onClose, label, children }: ModalOverlayPro
   }, [open]);
 
   useFocusTrap(open, dialogRef, onClose);
+
+  const shownPanel = useRef(panelKey);
+  useEffect(() => {
+    if (panelKey === shownPanel.current) return;
+    shownPanel.current = panelKey;
+    if (open) focusFirst(dialogRef.current);
+  }, [open, panelKey]);
 
   if (!mounted) return null;
 
@@ -60,6 +69,14 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(',');
 
+/** The first field, not the header's close button. Content made `inert` (a step not on screen) is skipped. */
+function focusFirst(dialog: HTMLElement | null) {
+  if (!dialog) return;
+  const first = (selector: string) =>
+    Array.from(dialog.querySelectorAll<HTMLElement>(selector)).find((el) => !el.closest('[inert]'));
+  (first('input:not([disabled])') ?? first(FOCUSABLE_SELECTOR))?.focus();
+}
+
 function useFocusTrap(open: boolean, dialogRef: RefObject<HTMLElement | null>, onClose: () => void) {
   const onCloseRef = useRef(onClose);
   useEffect(() => {
@@ -73,13 +90,7 @@ function useFocusTrap(open: boolean, dialogRef: RefObject<HTMLElement | null>, o
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    // The first field, not the header's close button.
-    const focusTimer = requestAnimationFrame(() => {
-      const target =
-        dialogRef.current?.querySelector<HTMLElement>('input:not([disabled])') ??
-        dialogRef.current?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
-      target?.focus();
-    });
+    const focusTimer = requestAnimationFrame(() => focusFirst(dialogRef.current));
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {

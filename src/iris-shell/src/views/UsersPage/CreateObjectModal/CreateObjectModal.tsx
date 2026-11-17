@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
+  ARSModalFormUnsaved,
   ARSNewObjectContent,
   ARSNewObjectTemplate,
   ARS_EMPTY_NEW_OBJECT_VALUES,
@@ -62,6 +63,7 @@ export function CreateObjectModal({
   );
   const [destinationId, setDestinationId] = useState<string | null>(locationId);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [confirming, setConfirming] = useState(false);
 
   // The fields Figma marks Required; step 1 is complete once all have a value.
   const generalComplete = [
@@ -81,6 +83,7 @@ export function CreateObjectModal({
       setValues(ARS_EMPTY_NEW_OBJECT_VALUES);
       setDestinationId(locationId);
       setSheetOpen(false);
+      setConfirming(false);
     }
   }, [open, locationId, reset]);
 
@@ -89,6 +92,13 @@ export function CreateObjectModal({
   sheetOpenRef.current = sheetOpen;
 
   const locationLabel = entra ? '' : destinationId ? getPath(destinationId).map((n) => n.name).join(' / ') : location;
+
+  // Closing asks first once a field has been filled in (decided UI rule MOD-2).
+  const hasEntries = Object.values(values).some((v) => v.trim() !== '');
+  const requestClose = () => {
+    if (hasEntries) setConfirming(true);
+    else onClose();
+  };
 
   const setV = (patch: Partial<ARSNewObjectValues>) => setValues((p) => ({ ...p, ...patch }));
 
@@ -122,28 +132,40 @@ export function CreateObjectModal({
     <>
       <ModalOverlay
         open={open}
-        label={`New ${objectType}`}
+        label={confirming ? 'Unsaved changes' : `New ${objectType}`}
+        // The question takes the form's place in the same modal; one floating layer at a time (MOD-2).
+        panelKey={confirming ? 'unsaved' : 'form'}
         onClose={() => {
-          if (!sheetOpenRef.current) onClose();
+          if (sheetOpenRef.current) return;
+          if (confirming) setConfirming(false);
+          else requestClose();
         }}
       >
-        <ARSNewObjectTemplate
-          title={`New ${objectType}`}
-          location={locationLabel}
-          icon={icon}
-          steps={steps}
-          activeIndex={step}
-          interactiveSteps
-          onStepSelect={goTo}
-          // Figma keeps the body 729px tall; it is as tall as the tallest step instead (decided UI rule MOD-1).
-          fitContent
-          stepContents={stepContents}
-          footerVariant={step > 0 ? '2' : generalComplete ? '1_complete' : '1'}
-          ctaLabel={!last && step > 0 ? 'Save and continue →' : undefined}
-          onClose={onClose}
-          onBack={() => goTo(step - 1)}
-          onContinue={last ? create : () => goTo(step + 1)}
-        />
+        {confirming ? (
+          <ARSModalFormUnsaved
+            onClose={() => setConfirming(false)}
+            onCancel={() => setConfirming(false)}
+            onConfirm={() => onClose()}
+          />
+        ) : (
+          <ARSNewObjectTemplate
+            title={`New ${objectType}`}
+            location={locationLabel}
+            icon={icon}
+            steps={steps}
+            activeIndex={step}
+            interactiveSteps
+            onStepSelect={goTo}
+            // Figma keeps the body 729px tall; it is as tall as the tallest step instead (decided UI rule MOD-1).
+            fitContent
+            stepContents={stepContents}
+            footerVariant={step > 0 ? '2' : generalComplete ? '1_complete' : '1'}
+            ctaLabel={!last && step > 0 ? 'Save and continue →' : undefined}
+            onClose={requestClose}
+            onBack={() => goTo(step - 1)}
+            onContinue={last ? create : () => goTo(step + 1)}
+          />
+        )}
       </ModalOverlay>
 
       {!entra && !folderStep && (
