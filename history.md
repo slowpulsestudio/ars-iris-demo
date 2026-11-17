@@ -413,6 +413,10 @@ The designer saw a gap open before the action column after resizing, and asked f
 
 At the designer's request, resizing is turned on with Edit width, a toggle at the top of the column settings menu, off by default (a new `toggle` entry in the Iris Menu, drawn with the Iris Toggle; Iris Storybook story updated). While it is on, each edge between two columns shows its 2px grip and can be dragged.
 
+### 17 Nov: four more UI rules
+
+The designer asked for the day's visual decisions to be UI rules too: MOD-3 (a New object form's fields stop 16px short of the divider), BTN-2 (an icon-only button is square), TBL-2 (columns resize only while Edit width is on, and resizing never opens a gap; split out of TBL-1) and TBL-3 (column head icons are 16px). BTN-2 and TBL-3 are on the Figma tidy-up list.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).

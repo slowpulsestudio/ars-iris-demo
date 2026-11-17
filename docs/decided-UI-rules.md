@@ -18,6 +18,10 @@ Each rule has an ID, what it says, where it comes from and where it is built. Wh
 - Applies to every New object form, New User and New Group: New AD User, New Entra User, the Tree view's other New object types, New AD Group and New Entra Distribution Group. Figma's New Object template (ARS_New_Object_Template 3367:12947) doesn't say what closing does.
 - Source: designer, 17 Nov 2026. Built: kit `ARSModalFormUnsaved` (`destructive`) and `ARSModalNewObjectFooter` (`onDiscard`, through `ARSNewObjectTemplate`), `views/NewObjectOverlay/` (the swap; the form stays mounted, hidden, under the question), used by `views/UsersPage/CreateObjectModal/` and `views/GroupsPage/CreateGroupModal.tsx`, `views/ModalOverlay/` (`panelKey`: a panel swapped in while open gets focus and the card resizes to it).
 
+**MOD-3. A New object form's fields stop 16px short of the divider.** The form column keeps its 702px and the divider stays at its right edge; the fields end 16px (the spacing token `--oi-spacing-l`) before it, on every step, as ARS_WebUI2_CRUD 3680:22606 lays it out.
+- Applies to every New object form, New User and New Group.
+- Source: designer, 17 Nov 2026. Built: kit `ARSNewObjectContent` (the form column's right padding).
+
 ## Buttons
 
 **BTN-1. A Create button that opens a menu of options is a split button.** Both the main part and the arrow open the menu. A Create that goes straight to one form stays a plain button.
@@ -26,9 +30,22 @@ Each rule has an ID, what it says, where it comes from and where it is built. Wh
 - Tree view folder lists: Create opens the New object menu; it was already split.
 - Source: designer, 16 Nov 2026. Built: kit `ARSTableToolbar` (a main action with `onActionMenu` is a split button on every variant), `views/UsersPage/UsersPage.tsx`, `views/GroupsPage/GroupsPage.tsx`, `views/TreeView/TreeListPage.tsx`.
 
+**BTN-2. An icon-only button is square.** It is as wide as it is tall, never stretched or squeezed.
+- The Advanced filter Panel's two view buttons are 28px squares (`--oi-size-m`); the draft had them 36px wide.
+- The table settings button in the right-most column head is a 32px square, like the rows' "…" buttons; the head cell's padding no longer squeezes it.
+- Source: designer, 17 Nov 2026. Built: `iris-new` `AdvancedFilterPanel` (`.switchItem`), kit `TableHeadRow` (the action head cell takes the rows' 6px button inset).
+
 ## Tables
 
-**TBL-1. The table settings menu lists the columns to show and their order; Edit width turns on resizing.** The settings button in a list's right-most column head (ARS_Table_Config 3663:19416) opens a menu that starts with Edit width, a toggle that is off by default, then lists every column in the order they show, each with a checkbox to show or hide it and a drag handle to move it (Alt+Up and Alt+Down from the keyboard). It stays open while columns are ticked or moved, and the table follows at once. The first column always shows and stays first, and Actions, the right-most column, ends the list the same way: always shown, never moved. While Edit width is on, every column resizes by dragging its head's right edge (or the arrow keys on it), where a grip shows. Resizing never opens a gap: dragging the edge between two columns grows one by what the other loses (neither under 80px), the table's fill column (Description; the last column while it is hidden) stretches to fill the row, and the last column's right edge, at Actions, doesn't move.
+**TBL-1. The table settings menu lists the columns to show and their order.** The settings button in a list's right-most column head (ARS_Table_Config 3663:19416) opens a menu that starts with Edit width, a toggle that is off by default (TBL-2), then lists every column in the order they show, each with a checkbox to show or hide it and a drag handle to move it (Alt+Up and Alt+Down from the keyboard). It stays open while columns are ticked or moved, and the table follows at once. The first column always shows and stays first, and Actions, the right-most column, ends the list the same way: always shown, never moved.
 - Figma's ARS_Table Menu (3663:20381) has Adjust columns and Add columns entries instead.
 - Applies to the Users, Groups, Managed Units and Tree view lists, Favourites, the Memberships tabs and a group's members. The choices last while the page is open.
-- Source: designer, 17 Nov 2026. Built: Iris `Menu` (`movable` checkbox entries and `onMove`, in `useMenuReorder`), kit `TableHeadRow` (`columnSettings`: `order` and the resize grips) and `ColumnSettingsMenu`, `views/ListFilters/useColumnSettings.ts`.
+- Source: designer, 17 Nov 2026. Built: Iris `Menu` (`toggle` entries, `movable` checkbox entries and `onMove`, in `useMenuReorder`), kit `ColumnSettingsMenu` and `TableHeadRow` (`columnSettings`: `order`), `views/ListFilters/useColumnSettings.ts`.
+
+**TBL-2. Columns resize only while Edit width is on, and resizing never opens a gap.** With Edit width on, each edge between two columns shows a 2px grip and can be dragged, or moved with the arrow keys (8px a press, 40px with Shift). The column on one side grows by what the other loses, neither under 80px, so the row keeps its width. The table's fill column (Description; the last column while it is hidden) always stretches to fill the row, so dragging its edge resizes the column beside it. The last column's right edge, at Actions, doesn't move.
+- Figma's ARS_Table Menu (3663:20381) has an Adjust columns entry instead of the toggle.
+- Applies to every list with the table settings menu (TBL-1).
+- Source: designer, 17 Nov 2026. Built: kit `TableHeadRow` (the grips, the two widths an edge changes, and the rules that size the head and every row).
+
+**TBL-3. Column head icons are 16px.** The sort, filter and leading icons in a column head are 16px, a size down from the 20px they were.
+- Source: designer, 17 Nov 2026. Built: kit `ARSSortableHeaderCell`.
