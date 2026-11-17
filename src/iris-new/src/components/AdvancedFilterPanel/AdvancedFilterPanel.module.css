@@ -32,11 +32,12 @@
   gap: var(--oi-spacing-xs);
 }
 
+/* Square, at the designer's request (the draft had them 36px wide). */
 .switchItem {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
+  width: var(--oi-size-m);
   height: var(--oi-size-m);
   padding: 0;
   background: transparent;

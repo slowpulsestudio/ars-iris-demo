@@ -94,11 +94,11 @@ export function ARSSortableHeaderCell({ label, icon, sort, filtered = false, onS
             aria-label={filtered ? `${label}, filtered` : label}
             onClick={onClick}
           >
-            {icon && <Icon name={icon} size="20px" className={styles.icon} />}
+            {icon && <Icon name={icon} size="16px" className={styles.icon} />}
             <span className={styles.label}>{label}</span>
-            {filtered && <Icon name="FunnelSimple" size="20px" className={cx(styles.state, styles.active)} />}
+            {filtered && <Icon name="FunnelSimple" size="16px" className={cx(styles.state, styles.active)} />}
             {(sort || !filtered) && (
-              <Icon name={sort ? SORT_ICON[sort] : 'CaretUpDown'} size="20px" className={cx(styles.state, sort && styles.active)} />
+              <Icon name={sort ? SORT_ICON[sort] : 'CaretUpDown'} size="16px" className={cx(styles.state, sort && styles.active)} />
             )}
           </button>
         )}

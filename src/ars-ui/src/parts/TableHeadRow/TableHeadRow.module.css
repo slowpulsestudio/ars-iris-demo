@@ -26,6 +26,15 @@
   justify-content: center;
 }
 
+/* 6px each side, as the rows' button cells; the 32px settings button keeps its size beside the cell's border. */
+.head .actions {
+  padding-inline: var(--oi-spacing-6);
+}
+
+.head .actions > * {
+  flex-shrink: 0;
+}
+
 .fill {
   flex: 1 1 0;
 }
