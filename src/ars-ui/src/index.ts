@@ -58,6 +58,7 @@ export {
   type ARSColumnSorting,
   type ARSSortDirection,
 } from './components/ARSSortableHeaderCell/ARSSortableHeaderCell.js';
+export type { ARSColumnSettings } from './parts/TableHeadRow/columnSettings.js';
 export { ARSObjectSelected, type ARSObjectSelectedProps } from './components/ARSObjectSelected/ARSObjectSelected.js';
 export {
   ARSObjectRule,

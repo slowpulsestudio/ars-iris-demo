@@ -11,7 +11,8 @@ import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
 import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { ListBulkBar } from '../ListBulkBar/ListBulkBar.js';
 import { NAMED_OBJECT_FIELDS } from './namedObjectFields.js';
-import { MEMBERSHIPS_PAGE_SIZE, MEMBERSHIPS_SEARCH, MEMBERSHIPS_SORT_COLUMNS, TABLE_SETTINGS_TOAST } from './membershipsTab.js';
+import { MEMBERSHIPS_PAGE_SIZE, MEMBERSHIPS_SEARCH, MEMBERSHIPS_SORT_COLUMNS } from './membershipsTab.js';
+import { useColumnSettings } from '../ListFilters/useColumnSettings.js';
 import { useColumnSort } from '../ListFilters/useColumnSort.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 import styles from './GroupMembersTab.module.css';
@@ -63,6 +64,8 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
   const pageCount = Math.max(1, Math.ceil(rows.length / MEMBERSHIPS_PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
   const sort = useColumnSort(rows, MEMBERSHIPS_SORT_COLUMNS, undefined, () => setPage(1));
+  // Every property is a column, so Add columns only shows and hides them.
+  const columns = useColumnSettings<ARSGroupTableRow>([]);
 
   const available = useMemo(() => {
     const have = new Set(groups.map((g) => g.id));
@@ -147,7 +150,7 @@ export function UserMembershipsTab({ userId, userName }: UserMembershipsTabProps
             selectedIds={selected}
             onSelectedIdsChange={(ids) => setSelectedSet(new Set(ids))}
             onRemove={remove}
-            onSettings={() => showToast(TABLE_SETTINGS_TOAST)}
+            columnSettings={columns.settings}
             sorting={sort.sorting}
           />
           <div className={styles.pagination}>

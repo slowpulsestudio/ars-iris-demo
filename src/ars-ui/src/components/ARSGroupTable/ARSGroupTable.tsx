@@ -1,9 +1,12 @@
+import type { ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
 import { TableHeadRow, type TableHeadColumn } from '../../parts/TableHeadRow/TableHeadRow.js';
 import type { ARSColumnSorting } from '../ARSSortableHeaderCell/ARSSortableHeaderCell.js';
 import { ARSTableGroupRow } from '../ARSTableGroupRow/ARSTableGroupRow.js';
 import styles from './ARSGroupTable.module.css';
+import type { ARSColumnSettings } from '../../parts/TableHeadRow/columnSettings.js';
+import { ExtraCells } from '../../parts/TableHeadRow/ExtraCells.js';
 
 export type ARSGroupTableVariant = 'Groups' | 'Memberships';
 
@@ -16,6 +19,8 @@ const columnsFor = (variant: ARSGroupTableVariant): TableHeadColumn[] => [
 ];
 
 export interface ARSGroupTableRow {
+  /** Text for the columns added with Add columns, by column. */
+  extra?: Record<string, ReactNode>;
   id: string;
   name: string;
   objectType?: string;
@@ -43,6 +48,8 @@ export interface ARSGroupTableProps {
   onSettings?: () => void;
   /** Sorting and filtering from the column heads (IM / Sortable header cell). */
   sorting?: ARSColumnSorting;
+  /** The right-most column head's table settings menu: Adjust columns and Add columns. */
+  columnSettings?: ARSColumnSettings;
   /** The table's accessible name; Figma's table lists groups. */
   ariaLabel?: string;
   className?: string;
@@ -58,6 +65,7 @@ export function ARSGroupTable({
   onRemove,
   onSettings,
   sorting,
+  columnSettings,
   ariaLabel = 'Groups',
   className,
 }: ARSGroupTableProps) {
@@ -79,11 +87,13 @@ export function ARSGroupTable({
           ) : undefined
         }
         sorting={sorting}
+        columnSettings={columnSettings}
       />
-      {rows.map((row) => (
+      {rows.map(({ extra, ...row }) => (
         <ARSTableGroupRow
           key={row.id}
           {...row}
+          extraCells={<ExtraCells settings={columnSettings} values={extra} />}
           variant={variant}
           selected={selected.has(row.id)}
           onSelectedChange={(on) => toggle(row.id, on)}

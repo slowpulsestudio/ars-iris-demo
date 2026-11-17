@@ -23,6 +23,7 @@ import { canMoveItem, moveEntries, type MoveEntry, type MoveItem } from '../../l
 import { endObjectDrag, startObjectDrag } from '../../lib/objectDrag.js';
 import { sampleDates, sampleTags, type FilterRow } from '../../lib/listFilters.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { fieldColumns, useColumnSettings } from '../ListFilters/useColumnSettings.js';
 import { useColumnSort, type SortColumn } from '../ListFilters/useColumnSort.js';
 import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { rowFields } from '../../lib/advancedFilter.js';
@@ -180,6 +181,8 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
     return showSelected ? matching.filter((o) => selected.has(o.id)) : matching;
   }, [lf.filtered, query, showSelected, selected]);
   const sort = useColumnSort(rows, TREE_SORT_COLUMNS, lf, () => setPage(1));
+  const extraColumns = useMemo(() => fieldColumns(filterFields, TREE_SORT_COLUMNS), [filterFields]);
+  const columns = useColumnSettings(extraColumns);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
@@ -370,10 +373,12 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
             href: hrefFor(o),
             objectType: OBJECT_TYPE_META[o.type].label,
             description: o.description,
+            extra: columns.extraFor(o),
           }))}
           selected={selected}
           onSelectionChange={setSelected}
           sorting={sort.sorting}
+          columnSettings={columns.settings}
           onMore={(id, e) => {
             setRowObject(pool.find((o) => o.id === id) ?? null);
             rowMenu.openAt(e);

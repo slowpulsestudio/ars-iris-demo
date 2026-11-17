@@ -11,8 +11,12 @@ import { ARSUserPageHeader } from '../ARSUserPageHeader/ARSUserPageHeader.js';
 import type { ARSColumnSorting } from '../ARSSortableHeaderCell/ARSSortableHeaderCell.js';
 import { TableHeadRow } from '../../parts/TableHeadRow/TableHeadRow.js';
 import styles from './ARSManagedUnitMembers.module.css';
+import type { ARSColumnSettings } from '../../parts/TableHeadRow/columnSettings.js';
+import { ExtraCells } from '../../parts/TableHeadRow/ExtraCells.js';
 
 export interface ARSManagedUnitMember {
+  /** Text for the columns added with Add columns, by column. */
+  extra?: Record<string, ReactNode>;
   id: string;
   name: string;
   description: string;
@@ -49,6 +53,8 @@ export interface ARSManagedUnitMembersProps {
   onColumns?: MouseEventHandler<HTMLElement>;
   /** Sorting and filtering from the column heads (IM / Sortable header cell). */
   sorting?: ARSColumnSorting;
+  /** The right-most column head's table settings menu: Adjust columns and Add columns. */
+  columnSettings?: ARSColumnSettings;
   className?: string;
 }
 
@@ -77,6 +83,7 @@ export function ARSManagedUnitMembers({
   onMore,
   onColumns,
   sorting,
+  columnSettings,
   className,
 }: ARSManagedUnitMembersProps) {
   const allSelected = rows.length > 0 && rows.every((r) => selected.has(r.id));
@@ -119,6 +126,7 @@ export function ARSManagedUnitMembers({
               actions={<IconButton icon="SlidersHorizontal" ariaLabel="Columns" onClick={onColumns} />}
               actionsWidth={44}
               sorting={sorting}
+              columnSettings={columnSettings}
             />
             {rows.map((row) => (
               <div key={row.id} role="row" className={styles.row}>
@@ -137,6 +145,7 @@ export function ARSManagedUnitMembers({
                 <TableCell className={styles.type}>
                   <CellText>{row.type}</CellText>
                 </TableCell>
+                <ExtraCells settings={columnSettings} values={row.extra} />
               </div>
             ))}
           </div>

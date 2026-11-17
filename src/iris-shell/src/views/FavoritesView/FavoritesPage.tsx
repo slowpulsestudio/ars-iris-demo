@@ -12,6 +12,7 @@ import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { useFavorites, type FavoriteEntry } from '../../lib/useFavorites.js';
 import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { fieldColumns, useColumnSettings } from '../ListFilters/useColumnSettings.js';
 import { useColumnSort, type SortColumn } from '../ListFilters/useColumnSort.js';
 import { ListBulkBar } from '../ListBulkBar/ListBulkBar.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
@@ -29,6 +30,9 @@ const FIELDS: FilterFieldDef<FavoriteEntry>[] = [
 
 /** The table's three columns are the first three fields, and sort by them. */
 const SORT_COLUMNS: SortColumn<FavoriteEntry>[] = FIELDS.slice(0, 3).map((f) => ({ label: f.label, value: f.get, field: f.id }));
+
+/** Add columns offers the other fields (Date active). */
+const EXTRA_COLUMNS = fieldColumns(FIELDS, SORT_COLUMNS);
 
 const iconFor = (type: string): string =>
   Object.values(OBJECT_TYPE_META).find((m) => m.label === type)?.icon ?? 'Cube';
@@ -56,6 +60,7 @@ export function FavoritesPage() {
     return lf.filtered.filter((f) => !q || [f.name, f.description ?? ''].some((v) => v.toLowerCase().includes(q)));
   }, [lf.filtered, query]);
   const sort = useColumnSort(rows, SORT_COLUMNS, lf, () => setPage(1));
+  const columns = useColumnSettings(EXTRA_COLUMNS);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
@@ -95,10 +100,12 @@ export function FavoritesPage() {
           href: hrefFor(f),
           objectType: f.type,
           description: f.description ?? '',
+          extra: columns.extraFor(f),
         }))}
         selected={selected}
         onSelectionChange={setSelected}
         sorting={sort.sorting}
+        columnSettings={columns.settings}
         onMore={(id, event) => {
           setRowId(id);
           rowMenu.openAt(event);

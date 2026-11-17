@@ -54,6 +54,8 @@ export interface MenuCheckboxEntry {
   label: string;
   checked: boolean;
   onChange: (checked: boolean) => void;
+  /** Can't be changed, e.g. a column that always shows; greyed with a not-allowed cursor. */
+  disabled?: boolean;
 }
 
 export interface MenuSectionEntry {
@@ -321,7 +323,7 @@ export function Menu({
     }
     if (hasAutoFocused.current || !menuRef.current) return;
     const first = menuRef.current.querySelector<HTMLElement>(
-      '[role="menuitemradio"]:not([disabled]):not([aria-disabled="true"]), [role="menuitem"]:not([disabled]):not([aria-disabled="true"]), [role="menuitemcheckbox"]',
+      '[role="menuitemradio"]:not([disabled]):not([aria-disabled="true"]), [role="menuitem"]:not([disabled]):not([aria-disabled="true"]), [role="menuitemcheckbox"]:not([aria-disabled="true"])',
     );
     if (first) {
       first.focus();
@@ -424,7 +426,9 @@ function SubmenuItem({ item, close }: { item: MenuSubmenuEntry; close: () => voi
             openSub();
             requestAnimationFrame(() => {
               subRef.current
-                ?.querySelector<HTMLElement>('[role="menuitem"], [role="menuitemradio"]')
+                ?.querySelector<HTMLElement>(
+                  '[role="menuitem"]:not([disabled]), [role="menuitemradio"]:not([disabled]), [role="menuitemcheckbox"]:not([aria-disabled="true"])',
+                )
                 ?.focus();
             });
           } else if (e.key === 'ArrowLeft') {
@@ -501,14 +505,17 @@ function renderItem(item: MenuEntry, i: number, close: () => void): ReactNode {
   }
   if (item.kind === CHECKBOX_KIND) {
     // A div, as the Iris MultiSelect option: the checkbox input can't sit inside a button.
-    const toggle = () => item.onChange(!item.checked);
+    const toggle = () => {
+      if (!item.disabled) item.onChange(!item.checked);
+    };
     return (
       <div
         key={`c-${i}-${item.label}`}
         role="menuitemcheckbox"
         aria-checked={item.checked}
+        aria-disabled={item.disabled || undefined}
         tabIndex={-1}
-        className={styles.item}
+        className={cx(styles.item, item.disabled && styles.itemInactive)}
         onClick={toggle}
         onKeyDown={(e) => {
           if (e.key !== 'Enter' && e.key !== ' ') return;
@@ -517,7 +524,7 @@ function renderItem(item: MenuEntry, i: number, close: () => void): ReactNode {
         }}
       >
         <span className={styles.itemIcon}>
-          <Checkbox checked={item.checked} tabIndex={-1} aria-hidden="true" />
+          <Checkbox checked={item.checked} disabled={item.disabled} tabIndex={-1} aria-hidden="true" />
         </span>
         <span className={styles.itemLabel}>{item.label}</span>
       </div>
@@ -575,7 +582,7 @@ function handleArrowNav(
   if (!menuRef.current) return;
   const items = Array.from(
     menuRef.current.querySelectorAll<HTMLElement>(
-      '[role="menuitem"]:not([disabled]):not([aria-disabled="true"]), [role="menuitemradio"]:not([disabled]):not([aria-disabled="true"]), [role="menuitemcheckbox"]',
+      '[role="menuitem"]:not([disabled]):not([aria-disabled="true"]), [role="menuitemradio"]:not([disabled]):not([aria-disabled="true"]), [role="menuitemcheckbox"]:not([aria-disabled="true"])',
     ),
   );
   if (!items.length) return;

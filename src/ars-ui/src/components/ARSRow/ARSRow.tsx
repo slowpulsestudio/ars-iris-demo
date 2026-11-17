@@ -1,4 +1,4 @@
-import type { MouseEventHandler } from 'react';
+import type { MouseEventHandler, ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Badge, type BadgeTone } from '@iris/components/Badge/Badge.js';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
@@ -30,6 +30,8 @@ export interface ARSRowProps {
   onOpen?: () => void;
   onMore?: MouseEventHandler<HTMLElement>;
   onRemoveTag?: (tag: string) => void;
+  /** Cells for the columns added with Add columns, before the action cell. */
+  extraCells?: ReactNode;
   className?: string;
 }
 
@@ -50,6 +52,7 @@ export function ARSRow({
   onOpen,
   onMore,
   onRemoveTag,
+  extraCells,
   className,
 }: ARSRowProps) {
   const isUser = variant === 'User';
@@ -96,6 +99,7 @@ export function ARSRow({
           </TableCell>
         </>
       )}
+      {extraCells}
       <TableCell inset="button" divider={false}>
         <IconButton icon="DotsThree" ariaLabel={`More actions for ${name}`} onClick={onMore} />
       </TableCell>

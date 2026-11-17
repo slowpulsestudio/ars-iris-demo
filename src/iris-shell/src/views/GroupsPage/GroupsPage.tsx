@@ -20,6 +20,7 @@ import { GroupDialogs } from '../ObjectModals/GroupDialogs.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
 import { NoDirectoriesSelected } from '../NoDirectoriesSelected/NoDirectoriesSelected.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { useColumnSettings, type ExtraColumn } from '../ListFilters/useColumnSettings.js';
 import { useColumnSort } from '../ListFilters/useColumnSort.js';
 import screen from '../ARSScreen/ARSScreen.module.css';
 
@@ -49,6 +50,14 @@ const TAG_PAIRS = [
 function nodeIds(nodes: DirectoryNodeView[]): string[] {
   return nodes.flatMap((n) => [n.id, ...nodeIds(n.children)]);
 }
+
+/** What Add columns offers on the Groups list: every column is already a filter field, so these are the group's other properties. */
+const GROUP_EXTRA_COLUMNS: ExtraColumn<DirectoryObject>[] = [
+  { label: 'Email', value: (g) => getGroupProps(g).email },
+  { label: 'Scope', value: (g) => getGroupProps(g).scope },
+  { label: 'Members', value: (g) => String(g.details.memberCount ?? '') },
+  { label: 'Date created', value: (g) => g.details.created ?? '', date: true },
+];
 
 /**
  * GroupsPage — the Groups list (ARS_Table_Groups 158:33464): every group in
@@ -135,6 +144,7 @@ export function GroupsPage() {
   // Each column is a filter field, and sorts by it.
   const sortColumns = useMemo(() => groupFields.map((f) => ({ label: f.label, value: f.get, field: f.id })), [groupFields]);
   const sort = useColumnSort(rows, sortColumns, gf, () => setPage(1));
+  const columns = useColumnSettings(GROUP_EXTRA_COLUMNS);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
@@ -204,6 +214,7 @@ export function GroupsPage() {
           description: g.description,
           tags: tagsFor(g.id),
           ...describe(g),
+          extra: columns.extraFor(g),
         }))}
         onRemoveTag={(id, tag) =>
           setRemovedTags((prev) => new Map(prev).set(id, new Set([...(prev.get(id) ?? []), tag])))
@@ -211,6 +222,7 @@ export function GroupsPage() {
         selected={selected}
         onSelectionChange={setSelected}
         sorting={sort.sorting}
+        columnSettings={columns.settings}
         onMore={(id, e) => {
           setRowGroup(groups.find((g) => g.id === id) ?? null);
           rowMenu.openAt(e);

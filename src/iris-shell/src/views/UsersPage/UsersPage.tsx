@@ -23,6 +23,7 @@ import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
 import { inDirectories, isEntraLocation, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { sampleDates, type FilterRow } from '../../lib/listFilters.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { fieldColumns, useColumnSettings } from '../ListFilters/useColumnSettings.js';
 import { useColumnSort, type SortColumn } from '../ListFilters/useColumnSort.js';
 import { rowFields, type FilterFieldDef } from '../../lib/advancedFilter.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
@@ -145,6 +146,18 @@ export function UsersPage() {
     [tagsOf],
   );
   const sort = useColumnSort(rows, sortColumns, lf, () => setPage(1));
+  // Add columns offers the filter fields the columns don't show (not Object type: every row is a user), and Object ID.
+  const extraColumns = useMemo(
+    () => [
+      ...fieldColumns(
+        userFields.filter((f) => f.id !== 'Object type'),
+        sortColumns,
+      ),
+      { label: 'Object ID', value: (u: User) => u.objectId },
+    ],
+    [sortColumns],
+  );
+  const columns = useColumnSettings(extraColumns);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
@@ -240,11 +253,13 @@ export function UsersPage() {
             onRemoveTag: (tag) =>
               setRemovedTags((prev) => new Map(prev).set(u.id, new Set([...(prev.get(u.id) ?? []), tag]))),
             location: u.location,
+            extra: columns.extraFor(u),
             onMore: (e) => {
               setRowUser(u);
               rowMenu.openAt(e);
             },
           })),
+          columnSettings: columns.settings,
           selected,
           onSelectionChange: setSelected,
           page: safePage,

@@ -1,4 +1,4 @@
-import type { CSSProperties, Ref } from 'react';
+import type { CSSProperties, ReactNode, Ref } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Button } from '@iris/components/Button/Button.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
@@ -41,6 +41,8 @@ export interface ARSSortableHeaderCellProps {
   filter?: ARSColumnFilter;
   className?: string;
   style?: CSSProperties;
+  /** Placed in the cell after the label button, e.g. the Adjust columns resize grip. */
+  children?: ReactNode;
 }
 
 const SORT_ICON: Record<ARSSortDirection, string> = { ascending: 'SortAscending', descending: 'SortDescending' };
@@ -51,7 +53,7 @@ const SORT_ICON: Record<ARSSortDirection, string> = { ascending: 'SortAscending'
  * Built on the Iris ".Table head item" with a right icon (Iris UI Kit 7814:4203).
  * Figma: IM / Sortable header cell 1262:1547 in Attestation | ReCertification.
  */
-export function ARSSortableHeaderCell({ label, icon, sort, filtered = false, onSort, filter, className, style }: ARSSortableHeaderCellProps) {
+export function ARSSortableHeaderCell({ label, icon, sort, filtered = false, onSort, filter, className, style, children }: ARSSortableHeaderCellProps) {
   const ticked = filter?.selected ?? [];
   const items: MenuEntry[] = [
     { kind: 'item', label: 'Sort ascending', icon: SORT_ICON.ascending, selected: sort === 'ascending', onSelect: () => onSort?.('ascending') },
@@ -101,6 +103,7 @@ export function ARSSortableHeaderCell({ label, icon, sort, filtered = false, onS
           </button>
         )}
       />
+      {children}
     </TableHeadItem>
   );
 }

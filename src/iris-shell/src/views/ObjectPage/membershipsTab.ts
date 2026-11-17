@@ -16,5 +16,3 @@ export const MEMBERSHIPS_SORT_COLUMNS: SortColumn<ARSGroupTableRow>[] = [
 /** Figma's search placeholder (167:7972). */
 export const MEMBERSHIPS_SEARCH = 'Search all members of ...';
 
-/** The table settings button (ARS_Table_Config 167:8096) has no column chooser in Figma. */
-export const TABLE_SETTINGS_TOAST = 'Table settings are not available in this prototype';

@@ -11,8 +11,12 @@ import type { ARSColumnSorting } from '../ARSSortableHeaderCell/ARSSortableHeade
 import { TableHeadRow } from '../../parts/TableHeadRow/TableHeadRow.js';
 import { ContentScreen } from '../../parts/ContentScreen/ContentScreen.js';
 import styles from './ARSTreeViewADContent.module.css';
+import type { ARSColumnSettings } from '../../parts/TableHeadRow/columnSettings.js';
+import { ExtraCells } from '../../parts/TableHeadRow/ExtraCells.js';
 
 export interface ARSTreeViewADRow {
+  /** Text for the columns added with Add columns, by column. */
+  extra?: Record<string, ReactNode>;
   id: string;
   name: string;
   icon: string;
@@ -42,6 +46,8 @@ export interface ARSTreeViewADContentProps {
   onRowDragEnd?: () => void;
   /** Sorting and filtering from the column heads (IM / Sortable header cell). */
   sorting?: ARSColumnSorting;
+  /** The right-most column head's table settings menu: Adjust columns and Add columns. */
+  columnSettings?: ARSColumnSettings;
   pagination: ARSPaginationProps;
   /** Shown in place of the table, e.g. an empty state. Not drawn in Figma. */
   empty?: ReactNode;
@@ -67,6 +73,7 @@ export function ARSTreeViewADContent({
   onRowDragStart,
   onRowDragEnd,
   sorting,
+  columnSettings,
   pagination,
   empty,
   className,
@@ -102,6 +109,7 @@ export function ARSTreeViewADContent({
           actionsWidth={70}
           actions={<IconButton icon="SlidersHorizontal" ariaLabel="Columns" onClick={onColumns} />}
           sorting={sorting}
+          columnSettings={columnSettings}
         />
         {rows.map((row) => (
           <div
@@ -131,6 +139,7 @@ export function ARSTreeViewADContent({
             <TableCell className={styles.fill}>
               <CellText>{row.description}</CellText>
             </TableCell>
+            <ExtraCells settings={columnSettings} values={row.extra} />
             <TableCell inset="button" className={styles.actions}>
               <IconButton icon="DotsThree" ariaLabel={`More actions for ${row.name}`} onClick={(e) => onMore?.(row.id, e)} />
             </TableCell>

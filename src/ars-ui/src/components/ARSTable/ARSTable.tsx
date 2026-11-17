@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
 import { IconButton } from '@iris/components/IconButton/IconButton.js';
@@ -8,11 +9,15 @@ import { MIXED_OBJECT_COLUMNS } from '../ARSTableHeadMixedObj/ARSTableHeadMixedO
 import { ARSPagination } from '../ARSPagination/ARSPagination.js';
 import { ARSRow, type ARSRowProps } from '../ARSRow/ARSRow.js';
 import styles from './ARSTable.module.css';
+import type { ARSColumnSettings } from '../../parts/TableHeadRow/columnSettings.js';
+import { ExtraCells } from '../../parts/TableHeadRow/ExtraCells.js';
 
 export type ARSTableVariant = 'Default' | 'filter' | 'Empty' | 'Mixed';
 
-export type ARSTableRow = Omit<ARSRowProps, 'variant' | 'selected' | 'onSelectedChange' | 'className'> & {
+export type ARSTableRow = Omit<ARSRowProps, 'variant' | 'selected' | 'onSelectedChange' | 'extraCells' | 'className'> & {
   id: string;
+  /** Text for the columns added with Add columns, by column. */
+  extra?: Record<string, ReactNode>;
 };
 
 /** Column heads drawn in the Default and filter variants (not the head_single_obj component). */
@@ -58,6 +63,8 @@ export interface ARSTableProps {
   onColumns?: () => void;
   /** Sorting and filtering from the column heads (IM / Sortable header cell). */
   sorting?: ARSColumnSorting;
+  /** The right-most column head's table settings menu: Adjust columns and Add columns. */
+  columnSettings?: ARSColumnSettings;
   className?: string;
 }
 
@@ -92,6 +99,7 @@ export function ARSTable({
   emptyDescription = 'Choose a directory or folder to display its contents here.',
   onColumns,
   sorting,
+  columnSettings,
   className,
 }: ARSTableProps) {
   if (variant === 'Empty') {
@@ -125,10 +133,12 @@ export function ARSTable({
         someSelected={selected.size > 0}
         onSelectAll={(on) => onSelectionChange?.(on ? new Set(rows.map((r) => r.id)) : new Set())}
         sorting={sorting}
+        columnSettings={columnSettings}
       />
-      {rows.map(({ id, ...row }) => (
+      {rows.map(({ id, extra, ...row }) => (
         <ARSRow
           key={id}
+          extraCells={<ExtraCells settings={columnSettings} values={extra} />}
           variant={variant === 'Mixed' ? 'Mixed' : 'User'}
           selected={selected.has(id)}
           onSelectedChange={(on) => toggle(id, on)}

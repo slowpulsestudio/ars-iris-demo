@@ -11,8 +11,12 @@ import type { ARSColumnSorting } from '../ARSSortableHeaderCell/ARSSortableHeade
 import { ContentScreen } from '../../parts/ContentScreen/ContentScreen.js';
 import { TableHeadRow } from '../../parts/TableHeadRow/TableHeadRow.js';
 import styles from './ARSManagedUsersContent.module.css';
+import type { ARSColumnSettings } from '../../parts/TableHeadRow/columnSettings.js';
+import { ExtraCells } from '../../parts/TableHeadRow/ExtraCells.js';
 
 export interface ARSManagedUnitRow {
+  /** Text for the columns added with Add columns, by column. */
+  extra?: Record<string, ReactNode>;
   id: string;
   name: string;
   /** Modified date, as drawn: "10/24/23". */
@@ -37,6 +41,8 @@ export interface ARSManagedUsersContentProps {
   onColumns?: (event: MouseEvent<HTMLElement>) => void;
   /** Sorting and filtering from the column heads (IM / Sortable header cell). */
   sorting?: ARSColumnSorting;
+  /** The right-most column head's table settings menu: Adjust columns and Add columns. */
+  columnSettings?: ARSColumnSettings;
   pagination: ARSPaginationProps;
   /** Shown in place of the table, e.g. an empty state. Not drawn in Figma. */
   empty?: ReactNode;
@@ -58,6 +64,7 @@ export function ARSManagedUsersContent({
   onSelectionChange,
   onColumns,
   sorting,
+  columnSettings,
   pagination,
   empty,
   className,
@@ -95,6 +102,7 @@ export function ARSManagedUsersContent({
           actions={<IconButton icon="SlidersHorizontal" ariaLabel="Columns" onClick={onColumns} />}
           actionsWidth={44}
           sorting={sorting}
+          columnSettings={columnSettings}
         />
         {rows.map((row) => (
           <div key={row.id} role="row" className={styles.row}>
@@ -116,6 +124,7 @@ export function ARSManagedUsersContent({
             <TableCell className={styles.type}>
               <CellText>{row.type}</CellText>
             </TableCell>
+            <ExtraCells settings={columnSettings} values={row.extra} />
           </div>
         ))}
         <ARSPagination sticky className={styles.pagination} {...pagination} />

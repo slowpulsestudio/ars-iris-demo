@@ -1,8 +1,10 @@
-import { Fragment, type ReactNode } from 'react';
+import { Fragment, useId, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { TableHeadItem } from '@iris/components/TableHeadItem/TableHeadItem.js';
 import { ARSSortableHeaderCell, type ARSColumnSorting } from '../../components/ARSSortableHeaderCell/ARSSortableHeaderCell.js';
+import { ColumnSettingsMenu } from './ColumnSettingsMenu.js';
+import { EXTRA_COLUMN_WIDTH, MIN_COLUMN_WIDTH, shownExtras, type ARSColumnSettings } from './columnSettings.js';
 import styles from './TableHeadRow.module.css';
 
 export interface TableHeadColumn {
@@ -26,7 +28,29 @@ export interface TableHeadRowProps {
   actionsWidth?: number;
   /** Makes the listed columns' heads sort and filter (IM / Sortable header cell). */
   sorting?: ARSColumnSorting;
+  /** The right-most head's table settings menu (Adjust columns, Add columns) and what it changes; replaces `actions`. */
+  columnSettings?: ARSColumnSettings;
   className?: string;
+}
+
+/**
+ * The user's column choices as rules for the head and every row of the table, by position: rows are flex rows whose
+ * cells follow the head's order (select, the columns, the added columns, actions), so no row has to know them.
+ * `!important`, as they must beat the Figma widths the heads set inline.
+ */
+function columnRules(scope: string, own: string[], extras: string[], hidden: readonly string[], widthOf: (column: string) => number | undefined): string {
+  const row = `[role='table']:has([data-ars-columns='${scope}']) [role='row'] >`;
+  const sized = (n: number, width: number) => `${row} :nth-child(${n}) { flex: none !important; width: ${width}px !important; }`;
+  const rules = own.flatMap((label, i) => {
+    if (i > 0 && hidden.includes(label)) return [`${row} :nth-child(${i + 2}) { display: none !important; }`];
+    const width = widthOf(label);
+    return width == null ? [] : [sized(i + 2, width)];
+  });
+  extras.forEach((label, i) => rules.push(sized(own.length + i + 2, widthOf(label) ?? EXTRA_COLUMN_WIDTH)));
+  // Once no column fills the row, the space left goes before the action column, which stays at the right edge; rows
+  // without an action cell just end early.
+  rules.push(`${row} :nth-child(${own.length + extras.length + 2}) { margin-left: auto; }`);
+  return rules.join('\n');
 }
 
 /** Head row shared by the ARS table heads: select-all, labelled columns, action column. */
@@ -38,51 +62,120 @@ export function TableHeadRow({
   actions,
   actionsWidth,
   sorting,
+  columnSettings,
   className,
 }: TableHeadRowProps) {
-  return (
-    <div role="row" className={cx(styles.head, className)}>
-      <TableHeadItem inset="s" className={styles.check}>
-        <Checkbox
-          checked={allSelected}
-          indeterminate={someSelected && !allSelected}
-          onChange={onSelectAll}
-          ariaLabel="Select all"
-        />
+  const scope = useId().replace(/[^\w-]/g, '');
+  // The width being dragged: only the head re-renders while dragging; the rows follow through the rules.
+  const [drag, setDrag] = useState<{ column: string; width: number } | null>(null);
+  const own = columns.map((c) => c.label);
+  const extras = columnSettings ? shownExtras(columnSettings) : [];
+  const widthOf = (column: string) => (drag?.column === column ? drag.width : columnSettings?.widths[column]);
+
+  const startDrag = (column: string, e: PointerEvent<HTMLElement>) => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    const handle = e.currentTarget;
+    const from = Math.round(handle.parentElement?.getBoundingClientRect().width ?? 0);
+    const x0 = e.clientX;
+    let width = from;
+    const page = { cursor: document.body.style.cursor, userSelect: document.body.style.userSelect };
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    handle.setPointerCapture(e.pointerId);
+    const move = (ev: globalThis.PointerEvent) => {
+      width = Math.max(MIN_COLUMN_WIDTH, Math.round(from + ev.clientX - x0));
+      setDrag({ column, width });
+    };
+    const end = () => {
+      handle.removeEventListener('pointermove', move);
+      handle.removeEventListener('pointerup', end);
+      handle.removeEventListener('pointercancel', end);
+      Object.assign(document.body.style, page);
+      setDrag(null);
+      if (width !== from) columnSettings?.onWidthChange(column, width);
+    };
+    handle.addEventListener('pointermove', move);
+    handle.addEventListener('pointerup', end);
+    handle.addEventListener('pointercancel', end);
+  };
+
+  // The keyboard way to resize: Left and Right arrows, 8px a press (40px with Shift).
+  const nudge = (column: string, e: KeyboardEvent<HTMLElement>) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    const from = e.currentTarget.parentElement?.getBoundingClientRect().width ?? 0;
+    const step = (e.shiftKey ? 40 : 8) * (e.key === 'ArrowLeft' ? -1 : 1);
+    columnSettings?.onWidthChange(column, Math.max(MIN_COLUMN_WIDTH, Math.round(from + step)));
+  };
+
+  const head = (col: { label: string; icon?: string }, size: { style?: CSSProperties; className?: string }) => {
+    const className = cx(size.className, columnSettings?.adjusting && styles.resizable);
+    const handle: ReactNode = columnSettings?.adjusting && (
+      <span
+        role="separator"
+        aria-orientation="vertical"
+        aria-label={`Resize ${col.label} column`}
+        tabIndex={0}
+        className={cx(styles.resizeHandle, drag?.column === col.label && styles.resizing)}
+        onPointerDown={(e) => startDrag(col.label, e)}
+        onKeyDown={(e) => nudge(col.label, e)}
+      />
+    );
+    return sorting?.sortable.includes(col.label) ? (
+      <ARSSortableHeaderCell
+        icon={col.icon}
+        label={col.label}
+        sort={sorting.sortedBy?.column === col.label ? sorting.sortedBy.direction : undefined}
+        filtered={sorting.filtered?.includes(col.label)}
+        onSort={(direction) => sorting.onSort(col.label, direction)}
+        filter={sorting.filters?.[col.label]}
+        className={className}
+        style={size.style}
+      >
+        {handle}
+      </ARSSortableHeaderCell>
+    ) : (
+      <TableHeadItem icon={col.icon} label={col.label} className={className} style={size.style}>
+        {handle}
       </TableHeadItem>
-      {columns.map((col) => {
-        const size = {
-          style: col.width != null ? { width: col.width } : undefined,
-          className: col.width == null ? styles.fill : undefined,
-        };
-        return (
+    );
+  };
+
+  return (
+    <>
+      {columnSettings && <style>{columnRules(scope, own, extras, columnSettings.hidden, widthOf)}</style>}
+      <div role="row" data-ars-columns={columnSettings ? scope : undefined} className={cx(styles.head, className)}>
+        <TableHeadItem inset="s" className={styles.check}>
+          <Checkbox
+            checked={allSelected}
+            indeterminate={someSelected && !allSelected}
+            onChange={onSelectAll}
+            ariaLabel="Select all"
+          />
+        </TableHeadItem>
+        {columns.map((col) => (
           <Fragment key={col.label}>
-            {sorting?.sortable.includes(col.label) ? (
-              <ARSSortableHeaderCell
-                icon={col.icon}
-                label={col.label}
-                sort={sorting.sortedBy?.column === col.label ? sorting.sortedBy.direction : undefined}
-                filtered={sorting.filtered?.includes(col.label)}
-                onSort={(direction) => sorting.onSort(col.label, direction)}
-                filter={sorting.filters?.[col.label]}
-                {...size}
-              />
-            ) : (
-              <TableHeadItem icon={col.icon} label={col.label} {...size} />
-            )}
+            {head(col, {
+              style: col.width != null ? { width: col.width } : undefined,
+              className: col.width == null ? styles.fill : undefined,
+            })}
             {col.trailing}
           </Fragment>
-        );
-      })}
-      {actionsWidth !== 0 && (
-        <TableHeadItem
-          className={styles.actions}
-          style={actionsWidth != null ? { width: actionsWidth } : undefined}
-          aria-label="Actions"
-        >
-          {actions}
-        </TableHeadItem>
-      )}
-    </div>
+        ))}
+        {extras.map((label) => (
+          <Fragment key={label}>{head({ label }, { className: styles.extraCell })}</Fragment>
+        ))}
+        {actionsWidth !== 0 && (
+          <TableHeadItem
+            className={styles.actions}
+            style={actionsWidth != null ? { width: actionsWidth } : undefined}
+            aria-label="Actions"
+          >
+            {columnSettings ? <ColumnSettingsMenu own={own} settings={columnSettings} /> : actions}
+          </TableHeadItem>
+        )}
+      </div>
+    </>
   );
 }

@@ -9,6 +9,7 @@ import { MANAGED_UNITS, getManagedUnit, membersOf, type ManagedUnit } from '../.
 import { bucketAt, useDirectoryFilter } from '../../lib/directoryFilter.js';
 import { sampleDates, sampleTags, type FilterRow } from '../../lib/listFilters.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
+import { fieldColumns, useColumnSettings } from '../ListFilters/useColumnSettings.js';
 import { useColumnSort, type SortColumn } from '../ListFilters/useColumnSort.js';
 import { rowFields, type FilterFieldDef } from '../../lib/advancedFilter.js';
 import { NoDirectoriesSelected } from '../NoDirectoriesSelected/NoDirectoriesSelected.js';
@@ -50,6 +51,9 @@ const unitSortColumns: SortColumn<ManagedUnit>[] = [
   { label: 'Type', value: () => 'Managed Unit', field: 'Object type' },
 ];
 
+/** Add columns on the units list: the filter fields its columns don't show. */
+const UNIT_EXTRA_COLUMNS = fieldColumns(unitFields, unitSortColumns);
+
 /** ManagedUnitsPage — the Managed Units list (ARS_Managed_Users_Content); a row opens the unit's members. */
 export function ManagedUnitsPage() {
   const [query, setQuery] = useState('');
@@ -67,6 +71,7 @@ export function ManagedUnitsPage() {
     return lf.filtered.filter((u) => !q || [u.name, u.description].some((v) => v.toLowerCase().includes(q)));
   }, [query, lf.filtered]);
   const sort = useColumnSort(rows, unitSortColumns, lf, () => setPage(1));
+  const columns = useColumnSettings(UNIT_EXTRA_COLUMNS);
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
   const safePage = Math.min(page, pageCount);
 
@@ -91,10 +96,12 @@ export function ManagedUnitsPage() {
           ...u,
           type: 'Managed Unit',
           href: `#/management-units/${u.id}`,
+          extra: columns.extraFor(u),
         }))}
         selected={selected}
         onSelectionChange={setSelected}
         sorting={sort.sorting}
+        columnSettings={columns.settings}
         pagination={{
           page: safePage,
           pageCount,
@@ -145,6 +152,8 @@ export function ManagedUnitMembersPage({ unitId }: ManagedUnitMembersPageProps) 
     return mf.filtered.filter((m) => !q || [m.name, m.description].some((v) => v.toLowerCase().includes(q)));
   }, [mf.filtered, query]);
   const sort = useColumnSort(rows, memberSortColumns, mf, () => setPage(1));
+  // Every field is a column, so Add columns only shows and hides them.
+  const columns = useColumnSettings<(typeof members)[number]>([]);
 
   if (!unit) {
     return (
@@ -190,6 +199,7 @@ export function ManagedUnitMembersPage({ unitId }: ManagedUnitMembersPageProps) 
         filterCount={mf.filterCount}
         filterPressed={mf.filterPressed}
         rows={sort.sorted.slice((safePage - 1) * pageSize, safePage * pageSize)}
+        columnSettings={columns.settings}
         selected={selected}
         onSelectionChange={setSelected}
         sorting={sort.sorting}

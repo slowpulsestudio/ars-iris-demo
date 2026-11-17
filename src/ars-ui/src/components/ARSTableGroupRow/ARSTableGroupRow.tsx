@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { cx } from '@iris/lib/cx.js';
 import { Checkbox } from '@iris/components/Checkbox/Checkbox.js';
 import { Icon } from '@iris/components/Icon/Icon.js';
@@ -24,6 +25,8 @@ export interface ARSTableGroupRowProps {
   icon?: string;
   /** Memberships: the remove button at the end of the row (Finance/XCircle, 167:8103). */
   onRemove?: () => void;
+  /** Cells for the columns added with Add columns, before the action cell. */
+  extraCells?: ReactNode;
   className?: string;
 }
 
@@ -44,6 +47,7 @@ export function ARSTableGroupRow({
   variant = 'Groups',
   icon,
   onRemove,
+  extraCells,
   className,
 }: ARSTableGroupRowProps) {
   const memberships = variant === 'Memberships';
@@ -71,6 +75,7 @@ export function ARSTableGroupRow({
       <TableCell gap="s" className={styles.fill}>
         <CellText>{objectId}</CellText>
       </TableCell>
+      {extraCells}
       <TableCell inset="button" divider={false}>
         {memberships ? (
           <IconButton icon="XCircle" ariaLabel={`Remove ${name}`} onClick={onRemove} />
