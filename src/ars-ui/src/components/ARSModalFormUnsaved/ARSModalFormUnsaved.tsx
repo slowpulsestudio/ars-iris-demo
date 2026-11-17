@@ -8,7 +8,10 @@ import styles from './ARSModalFormUnsaved.module.css';
 export interface ARSModalFormUnsavedProps {
   /** Replaces the warning text. */
   message?: ReactNode;
-  /** Confirm in the Iris danger style, where the designer marks the discard destructive. Figma draws it primary. */
+  /**
+   * The designer's destructive version, for the New object form: a ghost Cancel and a danger "Discard changes", which
+   * the text names. Figma draws a secondary Cancel and a primary Confirm.
+   */
   destructive?: boolean;
   onClose?: () => void;
   onCancel?: () => void;
@@ -22,12 +25,7 @@ export interface ARSModalFormUnsavedProps {
  * ARS_Modal_Form_Unsaved_Content (3534:19266).
  */
 export function ARSModalFormUnsaved({
-  message = (
-    <>
-      Your unsaved changes will be discarded. To continue, click <strong>Confirm</strong>. To review your changes and
-      save them later, click <strong>Cancel</strong>.
-    </>
-  ),
+  message,
   destructive = false,
   onClose,
   onCancel,
@@ -35,6 +33,7 @@ export function ARSModalFormUnsaved({
   className,
 }: ARSModalFormUnsavedProps) {
   const titleId = useId();
+  const confirmLabel = destructive ? 'Discard changes' : 'Confirm';
   return (
     <section className={cx(styles.root, className)} aria-labelledby={titleId}>
       <header className={styles.header}>
@@ -47,14 +46,21 @@ export function ARSModalFormUnsaved({
         <span className={styles.icon} aria-hidden="true">
           <Icon name="Warning" size="24px" />
         </span>
-        <p className={styles.message}>{message}</p>
+        <p className={styles.message}>
+          {message ?? (
+            <>
+              Your unsaved changes will be discarded. To continue, click <strong>{confirmLabel}</strong>. To review your
+              changes and save them later, click <strong>Cancel</strong>.
+            </>
+          )}
+        </p>
       </div>
       <footer className={styles.footer}>
-        <Button variant="secondary" onClick={onCancel}>
+        <Button variant={destructive ? 'ghost' : 'secondary'} onClick={onCancel}>
           Cancel
         </Button>
         <Button variant={destructive ? 'danger' : 'primary'} onClick={onConfirm}>
-          Confirm
+          {confirmLabel}
         </Button>
       </footer>
     </section>
