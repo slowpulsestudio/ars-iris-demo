@@ -397,6 +397,10 @@ Three designer requests. The New object form's fields ran into the divider at th
 
 At the designer's request the column heads' icons (sort, filter and leading) are 16px, a size down from 20px (kit `ARSSortableHeaderCell`); the Advanced filter Panel's two view buttons are 28px squares instead of 36px wide (`iris-new` `AdvancedFilterPanel`); and the table settings button, which the 44px head cell's 12px padding squeezed to about 20px wide, keeps its 32px square (the cell takes the rows' 6px button inset). At very narrow widths the head's Description column still shrinks further than the rows' (1px against 25px), so the cells after it don't line up; that was so before.
 
+### 17 Nov: Discard in the New object footer, Keep my progress
+
+At the designer's request the New object form's footer has a ghost Discard before the main action (the kit's `ARSModalNewObjectFooter` gained `onDiscard`, passed through `ARSNewObjectTemplate`), which does what the close button does: an empty form closes, a filled-in one asks first. In that question Cancel is now a ghost "Keep my progress", and the text names it. MOD-2 updated.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
