@@ -198,7 +198,7 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     title: 'Table settings menu: the columns at its root, always resizable',
     file: 'primary',
     figmaNodeId: '3663:20381',
-    note: 'ARS_Table Menu has Adjust columns and Add columns entries. At the designer\'s request (rule TBL-1) the settings button in the right-most column head (ARS_Table_Config 3663:19416) opens a menu listing every column in the order they show, each with a checkbox and a drag handle (Alt+Up and Alt+Down from the keyboard); the first column always shows and stays first, and Actions ends the list the same way. Every column resizes by dragging its head\'s right edge, with no Adjust columns step.',
+    note: 'ARS_Table Menu has Adjust columns and Add columns entries. At the designer\'s request (rule TBL-1) the settings button in the right-most column head (ARS_Table_Config 3663:19416) opens a menu listing every column in the order they show, each with a checkbox and a drag handle (Alt+Up and Alt+Down from the keyboard); the first column always shows and stays first, and Actions ends the list the same way. Every column resizes by dragging its head\'s right edge, with no Adjust columns step; the column on the other side gives or takes the width (80px at the least) and the fill column stretches, so no gap opens.',
     recommendation: 'Draw the column list with checkboxes and drag handles at the root of the table settings menu, the dragged state, and the resize grip on a column head.',
     prototype: '#/users',
   },

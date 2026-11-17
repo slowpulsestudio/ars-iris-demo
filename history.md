@@ -405,6 +405,10 @@ At the designer's request the New object form's footer has a ghost Discard befor
 
 The designer pointed out that "New object" means New User and New Group alike, so New AD Group and New Entra Distribution Group now ask before closing when filled in and have the footer's Discard. The modal, the swap to the question and the hidden form moved from `CreateObjectModal` into `views/NewObjectOverlay/`, which both forms use; a group form is filled in when its name, group name, display name, description or SMTP address has text.
 
+### 17 Nov: resizing columns never opens a gap
+
+The designer saw a gap open before the action column after resizing, and asked for the columns to respond to each other. The kit's `TableHeadRow` now moves the edge between two columns: the column on one side grows by what the other loses, neither under 80px, so the row keeps its width. The table's fill column (Description; the last column while it is hidden) always stretches to fill the row (`flex: 1 1 0`, 80px at the least, in the head and every row), so a resize never fixes its width; dragging its edge resizes the column beside it instead. The last column's right edge, at Actions, has no grip. With the 80px floor on the fill column, the head and rows also stay lined up at narrow widths. TBL-1 updated.
+
 ## Iris files changed since the Iris packages were installed
 
 These files differ from the package installed in `c9b4253`, so they will show as changed when the Iris packages are updated (see the update-iris-packages skill).
