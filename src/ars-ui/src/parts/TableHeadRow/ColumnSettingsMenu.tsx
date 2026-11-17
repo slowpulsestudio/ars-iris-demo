@@ -13,19 +13,22 @@ export interface ColumnSettingsMenuProps {
  * The table settings button in the right-most column head (ARS_Table_Config 3663:19416) and its menu. At the
  * designer's request the menu lists every column, in the order they show, with a checkbox and a drag handle to move it
  * (Alt+Up and Alt+Down from the keyboard); it stays open while columns are ticked or moved. The first column always
- * shows and stays first. ARS_Table Menu (3663:20381) has Adjust columns and Add columns entries instead; the columns
- * are always resizable.
+ * shows and stays first, and Actions, the column this menu sits in, always shows and stays last. ARS_Table Menu
+ * (3663:20381) has Adjust columns and Add columns entries instead; the columns are always resizable.
  */
 export function ColumnSettingsMenu({ own, settings }: ColumnSettingsMenuProps) {
   const columns = columnOrder(own, settings);
-  const items: MenuEntry[] = columns.map((label, i) => ({
-    kind: 'checkbox',
-    label,
-    checked: own.includes(label) ? !settings.hidden.includes(label) : settings.added.includes(label),
-    disabled: i === 0,
-    movable: i > 0,
-    onChange: (checked: boolean) => settings.onToggleColumn(label, checked),
-  }));
+  const items: MenuEntry[] = [
+    ...columns.map<MenuEntry>((label, i) => ({
+      kind: 'checkbox',
+      label,
+      checked: own.includes(label) ? !settings.hidden.includes(label) : settings.added.includes(label),
+      disabled: i === 0,
+      movable: i > 0,
+      onChange: (checked: boolean) => settings.onToggleColumn(label, checked),
+    })),
+    { kind: 'checkbox', label: 'Actions', checked: true, disabled: true, onChange: () => {} },
+  ];
 
   const move = (from: number, to: number) => {
     const next = [...columns];
