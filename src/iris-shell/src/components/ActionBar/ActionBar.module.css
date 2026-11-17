@@ -191,10 +191,11 @@
   background-color: var(--oi-color-grey-700);
 }
 
-/* Toggle on the dark surface: the dark-theme track and knob. */
+/* Toggle on the dark surface: the dark-theme off state, as Figma 3556:58668 binds it
+   (track --oi-border-color-default, knob --oi-content-color-primary, both dark values). */
 .toggle {
   --toggle-track: var(--oi-color-grey-700);
-  --toggle-knob: var(--oi-color-grey-950);
+  --toggle-knob: var(--oi-color-grey-100);
 }
 
 .toggleLabel {
