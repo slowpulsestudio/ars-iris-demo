@@ -20,3 +20,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+/**
+ * Not in Figma: Confirm in the Iris danger style, as on the New object form (decided UI rule MOD-2). Figma draws it,
+ * and the object pages' edit mode keep it, primary.
+ */
+export const Destructive: Story = { args: { destructive: true } };

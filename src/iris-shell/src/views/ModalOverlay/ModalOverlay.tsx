@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../lib/cx.js';
 import styles from './ModalOverlay.module.css';
@@ -9,7 +9,10 @@ export interface ModalOverlayProps {
   onClose: () => void;
   /** Accessible name of the dialog. */
   label: string;
-  /** Names the panel shown. Swapping in another panel while open (a new key) moves focus into it, as on opening. */
+  /**
+   * Names the panel shown. Swapping in another panel while open (a new key) moves focus into it, as on opening,
+   * and resizes the card from the old panel's size to the new one's.
+   */
   panelKey?: string;
   children: ReactNode;
 }
@@ -33,13 +36,7 @@ export function ModalOverlay({ open, onClose, label, panelKey, children }: Modal
   }, [open]);
 
   useFocusTrap(open, dialogRef, onClose);
-
-  const shownPanel = useRef(panelKey);
-  useEffect(() => {
-    if (panelKey === shownPanel.current) return;
-    shownPanel.current = panelKey;
-    if (open) focusFirst(dialogRef.current);
-  }, [open, panelKey]);
+  usePanelSwap(open && mounted, panelKey, dialogRef);
 
   if (!mounted) return null;
 
@@ -69,12 +66,96 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(',');
 
-/** The first field, not the header's close button. Content made `inert` (a step not on screen) is skipped. */
+/** The dialog's controls that can take focus now: not in a panel hidden under another, or in an `inert` step. */
+function focusables(dialog: HTMLElement, selector = FOCUSABLE_SELECTOR) {
+  return Array.from(dialog.querySelectorAll<HTMLElement>(selector)).filter(
+    (el) => el.getClientRects().length > 0 && !el.closest('[inert]'),
+  );
+}
+
+/** The first field, not the header's close button. */
 function focusFirst(dialog: HTMLElement | null) {
   if (!dialog) return;
-  const first = (selector: string) =>
-    Array.from(dialog.querySelectorAll<HTMLElement>(selector)).find((el) => !el.closest('[inert]'));
-  (first('input:not([disabled])') ?? first(FOCUSABLE_SELECTOR))?.focus();
+  (focusables(dialog, 'input:not([disabled])')[0] ?? focusables(dialog)[0])?.focus();
+}
+
+interface Size {
+  width: number;
+  height: number;
+}
+
+/**
+ * A panel swapped in while the dialog shows (a new `panelKey`) gets focus, and the card resizes from the old
+ * panel's size to the new one's with the Iris motion tokens. With reduced motion the panels just swap.
+ */
+function usePanelSwap(shown: boolean, panelKey: string | undefined, dialogRef: RefObject<HTMLElement | null>) {
+  // The card's current size: where a resize starts.
+  const size = useRef<Size | null>(null);
+  // The panel on screen; null while the dialog isn't, so the first panel after opening is not a swap.
+  const onScreen = useRef<string | undefined | null>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!shown || !dialog || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(() => {
+      size.current = { width: dialog.offsetWidth, height: dialog.offsetHeight };
+    });
+    ro.observe(dialog);
+    return () => {
+      ro.disconnect();
+      size.current = null;
+    };
+  }, [shown, dialogRef]);
+
+  useLayoutEffect(() => {
+    const dialog = dialogRef.current;
+    if (!shown || !dialog) {
+      onScreen.current = null;
+      if (dialog) settle(dialog);
+      return undefined;
+    }
+    const previous = onScreen.current;
+    onScreen.current = panelKey;
+    if (previous === null || previous === panelKey) return undefined;
+    settle(dialog);
+    // Before the card clips the panel, so nothing inside it scrolls.
+    focusFirst(dialog);
+    return resize(dialog, size.current);
+  }, [shown, panelKey, dialogRef]);
+}
+
+/** Plays the card from `from` to the new panel's own size. Returns a cleanup that stops waiting for the end. */
+function resize(dialog: HTMLElement, from: Size | null) {
+  if (!from || typeof dialog.getAnimations !== 'function') return undefined;
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
+  const to: Size = { width: dialog.offsetWidth, height: dialog.offsetHeight };
+  if (to.width === from.width && to.height === from.height) return undefined;
+
+  dialog.style.setProperty('--modal-panel-width', `${to.width}px`);
+  dialog.style.setProperty('--modal-panel-height', `${to.height}px`);
+  dialog.style.width = `${from.width}px`;
+  dialog.style.height = `${from.height}px`;
+  dialog.classList.add(styles.resizing);
+  // Lay out the old size first, so the change to the new one transitions.
+  void dialog.offsetWidth;
+  dialog.style.width = `${to.width}px`;
+  dialog.style.height = `${to.height}px`;
+
+  let current = true;
+  void Promise.allSettled(dialog.getAnimations().map((a) => a.finished)).then(() => {
+    if (current) settle(dialog);
+  });
+  return () => {
+    current = false;
+  };
+}
+
+/** Back to the panel's own size, with no resize under way. */
+function settle(dialog: HTMLElement) {
+  dialog.classList.remove(styles.resizing);
+  for (const property of ['width', 'height', '--modal-panel-width', '--modal-panel-height']) {
+    dialog.style.removeProperty(property);
+  }
 }
 
 function useFocusTrap(open: boolean, dialogRef: RefObject<HTMLElement | null>, onClose: () => void) {
@@ -99,10 +180,10 @@ function useFocusTrap(open: boolean, dialogRef: RefObject<HTMLElement | null>, o
         return;
       }
       if (e.key !== 'Tab' || !dialogRef.current) return;
-      const focusables = Array.from(dialogRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
-      if (focusables.length === 0) return;
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
+      const list = focusables(dialogRef.current);
+      if (list.length === 0) return;
+      const first = list[0];
+      const last = list[list.length - 1];
       if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();
         last.focus();

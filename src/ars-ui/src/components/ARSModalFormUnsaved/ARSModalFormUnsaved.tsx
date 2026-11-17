@@ -8,6 +8,8 @@ import styles from './ARSModalFormUnsaved.module.css';
 export interface ARSModalFormUnsavedProps {
   /** Replaces the warning text. */
   message?: ReactNode;
+  /** Confirm in the Iris danger style, where the designer marks the discard destructive. Figma draws it primary. */
+  destructive?: boolean;
   onClose?: () => void;
   onCancel?: () => void;
   onConfirm?: () => void;
@@ -26,6 +28,7 @@ export function ARSModalFormUnsaved({
       save them later, click <strong>Cancel</strong>.
     </>
   ),
+  destructive = false,
   onClose,
   onCancel,
   onConfirm,
@@ -50,7 +53,9 @@ export function ARSModalFormUnsaved({
         <Button variant="secondary" onClick={onCancel}>
           Cancel
         </Button>
-        <Button onClick={onConfirm}>Confirm</Button>
+        <Button variant={destructive ? 'danger' : 'primary'} onClick={onConfirm}>
+          Confirm
+        </Button>
       </footer>
     </section>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Activity, useEffect, useRef, useState } from 'react';
 import {
   ARSModalFormUnsaved,
   ARSNewObjectContent,
@@ -133,7 +133,8 @@ export function CreateObjectModal({
       <ModalOverlay
         open={open}
         label={confirming ? 'Unsaved changes' : `New ${objectType}`}
-        // The question takes the form's place in the same modal; one floating layer at a time (MOD-2).
+        // The question takes the form's place in the same modal, one floating layer at a time, and the card
+        // resizes to it. The form stays mounted underneath, so Cancel brings it back as it was (decided UI rule MOD-2).
         panelKey={confirming ? 'unsaved' : 'form'}
         onClose={() => {
           if (sheetOpenRef.current) return;
@@ -141,13 +142,7 @@ export function CreateObjectModal({
           else requestClose();
         }}
       >
-        {confirming ? (
-          <ARSModalFormUnsaved
-            onClose={() => setConfirming(false)}
-            onCancel={() => setConfirming(false)}
-            onConfirm={() => onClose()}
-          />
-        ) : (
+        <Activity mode={confirming ? 'hidden' : 'visible'}>
           <ARSNewObjectTemplate
             title={`New ${objectType}`}
             location={locationLabel}
@@ -164,6 +159,14 @@ export function CreateObjectModal({
             onClose={requestClose}
             onBack={() => goTo(step - 1)}
             onContinue={last ? create : () => goTo(step + 1)}
+          />
+        </Activity>
+        {confirming && (
+          <ARSModalFormUnsaved
+            destructive
+            onClose={() => setConfirming(false)}
+            onCancel={() => setConfirming(false)}
+            onConfirm={() => onClose()}
           />
         )}
       </ModalOverlay>

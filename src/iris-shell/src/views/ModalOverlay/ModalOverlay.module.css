@@ -40,3 +40,37 @@
 .dialog > * {
   flex: 1 1 auto;
 }
+
+/*
+ * A panel swapped in while open (panelKey): the card resizes from the old panel's size to the new one's. Meanwhile
+ * the dialog draws the card the ARS modal panels draw (primary background, l corners, high shadow), and the new
+ * panel keeps its own size, centred and clipped, and fades in. With reduced motion the class is never set.
+ */
+.dialog.resizing {
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--oi-background-color-primary);
+  border-radius: var(--oi-border-radius-l);
+  box-shadow: var(--oi-shadow-high);
+  transition:
+    opacity var(--oi-motion-duration-long) var(--oi-motion-ease-default),
+    transform var(--oi-motion-duration-long) var(--oi-motion-ease-default),
+    width var(--oi-motion-duration-long) var(--oi-motion-ease-default),
+    height var(--oi-motion-duration-long) var(--oi-motion-ease-default);
+}
+
+.dialog.resizing > * {
+  flex: none;
+  width: var(--modal-panel-width);
+  max-width: none;
+  height: var(--modal-panel-height);
+  box-shadow: none;
+  animation: panelIn var(--oi-motion-duration-default) var(--oi-motion-ease-default) both;
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+  }
+}
