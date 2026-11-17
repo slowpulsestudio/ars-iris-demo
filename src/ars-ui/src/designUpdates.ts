@@ -194,4 +194,12 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     recommendation: 'Remove the icons before the column names in ARS_Table and ARS_Table_Groups.',
     prototype: '#/users',
   },
+  {
+    title: 'Closing a filled-in New object form asks first',
+    file: 'primary',
+    figmaNodeId: '3367:12947',
+    note: 'Figma\'s New Object template doesn\'t say what closing does. At the designer\'s request (rule MOD-2), when a text field is filled in, the close button, Escape or a click outside swaps the form for the Unsaved changes question (ARS_Modal_Form_Unsaved, ARS_WebUI2_CRUD 3534:19369) in the same modal, as only one floating layer shows at a time. Cancel brings the form back on the same step with everything kept; Confirm closes it. An empty form closes straight away.',
+    recommendation: 'Draw the close of a filled-in New Object form: the Unsaved changes question in the form\'s place on the same backdrop, Cancel back to the form and Confirm closing it.',
+    prototype: '#/users?dialog=create&type=AD+User',
+  },
 ];
