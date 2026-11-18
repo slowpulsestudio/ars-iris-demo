@@ -60,3 +60,34 @@
   padding: var(--oi-spacing-l);
   border-top: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
 }
+
+/* The discard version (Figma 3718:44345): a 620px panel with a divider under the header, none above the footer, a
+   16px gap after the 20px icon slot (its 24px icon overhangs by 2px) and 16px between the buttons. Its text is regular with the two button names semi bold, as drawn. */
+.destructive {
+  width: 620px;
+}
+
+.destructive .header {
+  border-bottom: var(--oi-border-width-default) var(--oi-border-style-solid) var(--oi-border-color-default);
+}
+
+.destructive .content {
+  align-items: flex-start;
+  gap: var(--oi-spacing-l);
+}
+
+.destructive .icon {
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.destructive .message {
+  padding-inline-end: var(--oi-spacing-m);
+}
+
+.destructive .footer {
+  gap: var(--oi-button-gap-l);
+  border-top: 0;
+}

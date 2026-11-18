@@ -9,8 +9,8 @@ export interface ARSModalFormUnsavedProps {
   /** Replaces the warning text. */
   message?: ReactNode;
   /**
-   * The designer's destructive version, for the New object form: a ghost "Keep my progress" and a danger "Discard
-   * changes", which the text names. Figma draws a secondary Cancel and a primary Confirm.
+   * The discard version, for the New object form (Figma 3718:44345): a secondary "Keep my progress" and a danger
+   * "Discard changes", which the text names. The default is Figma's 3534:19369, a secondary Cancel and a primary Confirm.
    */
   destructive?: boolean;
   onClose?: () => void;
@@ -36,7 +36,7 @@ export function ARSModalFormUnsaved({
   const confirmLabel = destructive ? 'Discard changes' : 'Confirm';
   const cancelLabel = destructive ? 'Keep my progress' : 'Cancel';
   return (
-    <section className={cx(styles.root, className)} aria-labelledby={titleId}>
+    <section className={cx(styles.root, destructive && styles.destructive, className)} aria-labelledby={titleId}>
       <header className={styles.header}>
         <h2 id={titleId} className={styles.title}>
           Unsaved changes
@@ -57,10 +57,10 @@ export function ARSModalFormUnsaved({
         </p>
       </div>
       <footer className={styles.footer}>
-        <Button variant={destructive ? 'ghost' : 'secondary'} onClick={onCancel}>
+        <Button variant="secondary" onClick={onCancel}>
           {cancelLabel}
         </Button>
-        <Button variant={destructive ? 'danger' : 'primary'} onClick={onConfirm}>
+        <Button variant={destructive ? 'danger-outline' : 'primary'} onClick={onConfirm}>
           {confirmLabel}
         </Button>
       </footer>

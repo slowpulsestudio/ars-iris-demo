@@ -83,11 +83,12 @@
   color: var(--oi-content-color-secondary);
 }
 
-/* Secondary with red text and border, as the self-service profile's certificate Remove (Figma 10320:4703). */
+/* Figma's Danger style: secondary with red text and border (both --oi-content-color-error), as the self-service
+   profile's certificate Remove (Figma 10320:4703) and the discard question's Discard changes (3718:44345). */
 .variant_danger-outline {
   background-color: var(--oi-button-background-secondary);
   color: var(--oi-content-color-error);
-  border-color: var(--oi-base-color-error);
+  border-color: var(--oi-content-color-error);
   box-shadow: var(--oi-shadow-low);
 }
 .variant_danger-outline:hover:not(:disabled) {
