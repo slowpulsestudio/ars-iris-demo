@@ -1,5 +1,5 @@
-/* Dropbox-style panel under the toast area: the toast's width, position and elevation. */
-.panel {
+/* The progress feed: the toast's width, position and elevation, under the toast area. */
+.feed {
   position: fixed;
   right: var(--oi-spacing-l);
   bottom: var(--oi-spacing-l);
@@ -34,7 +34,7 @@
 }
 
 .title,
-.summary {
+.detail {
   margin: 0;
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);
@@ -45,14 +45,14 @@
   color: var(--oi-content-color-primary);
 }
 
-.summary {
+.detail {
   color: var(--oi-content-color-secondary);
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  max-height: 40vh;
+  max-height: 50vh;
   overflow-y: auto;
   border-top: 1px solid var(--oi-border-color-muted);
 }

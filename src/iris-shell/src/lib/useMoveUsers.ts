@@ -49,9 +49,13 @@ export function useMoveUsers() {
         const origins = new Set(moving.map((u) => u.location));
         startJob({
           title: 'Moving users',
-          total: moving.length,
+          noun: 'users',
+          names: moving.map((u) => u.name),
           from: origins.size === 1 ? [...origins][0] : 'Several locations',
           to: location,
+          toName: destName,
+          // AD works through the list in serial; about a second per user keeps the progress readable.
+          tickMs: 300,
           step: (i) => updateUserRef.current(moving[i].id, { location }),
           viewHref: `#/tree/${destId}`,
         });

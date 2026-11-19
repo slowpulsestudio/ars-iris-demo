@@ -1,7 +1,9 @@
 import { Button } from '../../components/Button/Button.js';
-import { setJobsView, startJob, useJobsState } from '../../lib/jobsStore.js';
+import { directionInfo, useJobsDirection } from '../../lib/jobsDirection.js';
+import { startJob, type JobSpec } from '../../lib/jobsStore.js';
 import { addNotification, pushAlert } from '../../lib/notificationsStore.js';
 import { showToast } from '../../lib/toastStore.js';
+import { MOCK_USERS } from '../UsersPage/mockUsers.js';
 import styles from './SystemCommsTriggers.module.css';
 
 interface Trigger {
@@ -13,29 +15,29 @@ interface Trigger {
 const FROM = 'O1D.local\\Users';
 const TO = 'O1D.local\\Test OU\\Test1';
 
-/** Prototype-only buttons that fire each system communication pattern: toast, Background Job (four kinds), notification, alert, and the Jobs UI switch (panel or menu). */
+/** `count` sample user names, repeating the list with a number when it runs out. */
+function names(count: number): string[] {
+  return Array.from({ length: count }, (_, i) => {
+    const name = MOCK_USERS[i % MOCK_USERS.length].name;
+    return i < MOCK_USERS.length ? name : `${name} ${Math.floor(i / MOCK_USERS.length) + 1}`;
+  });
+}
+
+function move(count: number, extra: Partial<JobSpec> = {}): JobSpec {
+  return { title: 'Moving users', noun: 'users', names: names(count), from: FROM, to: TO, toName: 'Test1', viewHref: '#/tree/o1d-test-ou-test1', ...extra };
+}
+
+/** Prototype-only buttons that fire each system communication pattern: toast, Background Job (four kinds), notification, alert. */
 const TRIGGERS: Trigger[] = [
   { label: 'Toast', hint: 'Instant action: transient, auto-dismisses', run: () => showToast('Settings saved') },
-  {
-    label: 'Job',
-    hint: 'Heavy work that succeeds: 102 items, can be cancelled',
-    run: () => startJob({ title: 'Moving users', total: 102, from: FROM, to: TO, viewHref: '#/tree/o1d-test-ou-test1' }),
-  },
-  {
-    label: 'Job fails',
-    hint: 'Fails at item 18 and keeps a Retry state',
-    run: () => startJob({ title: 'Moving users', total: 40, from: FROM, to: TO, failAt: 17 }),
-  },
+  { label: 'Job', hint: 'AD move of 100 users that succeeds', run: () => startJob(move(100)) },
+  { label: 'Job fails', hint: 'AD move of 40 users; user 18 fails', run: () => startJob(move(40, { failAt: 17 })) },
   {
     label: 'Entra job',
-    hint: 'REST to Entra: no way to cancel',
-    run: () => startJob({ title: 'Moving users', total: 60, from: 'Entra', to: 'Entra2', cancellable: false, stepMs: 120 }),
+    hint: 'Entra: no count, can’t be stopped, fast',
+    run: () => startJob(move(60, { from: 'Entra', to: 'Entra2', toName: 'Entra2', directory: 'entra', tickMs: 10, viewHref: undefined })),
   },
-  {
-    label: 'Slow job',
-    hint: 'Runs 30 seconds: escalates to a notification when done',
-    run: () => startJob({ title: 'Moving users', total: 100, from: FROM, to: TO, stepMs: 300 }),
-  },
+  { label: 'Slow job', hint: 'Runs about 30 seconds, then escalates to a notification', run: () => startJob(move(100, { tickMs: 75 })) },
   {
     label: 'Notification',
     hint: 'External trigger: lands in the bell until read',
@@ -49,24 +51,17 @@ const TRIGGERS: Trigger[] = [
 ];
 
 export function SystemCommsTriggers() {
-  const { view } = useJobsState();
+  const info = directionInfo(useJobsDirection());
   return (
     <div className={styles.bar} role="group" aria-label="Prototype triggers for system communications">
-      <span className={styles.label}>Trigger</span>
+      <span className={styles.label} title={info.description}>
+        {info.letter}: {info.title}
+      </span>
       {TRIGGERS.map((t) => (
         <Button key={t.label} variant="ghost" size="s" title={t.hint} onClick={t.run}>
           {t.label}
         </Button>
       ))}
-      <span className={styles.label}>Jobs UI</span>
-      <Button
-        variant="secondary"
-        size="s"
-        title="Switch between the Dropbox-style panel and the Hourglass menu"
-        onClick={() => setJobsView(view === 'panel' ? 'menu' : 'panel')}
-      >
-        {view === 'panel' ? 'Panel' : 'Menu'}
-      </Button>
     </div>
   );
 }

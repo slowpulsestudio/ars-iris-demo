@@ -3,24 +3,30 @@ import { createPortal } from 'react-dom';
 import { Button } from '../../components/Button/Button.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
-import { clearFinishedJobs, setJobsPanelOpen, useJobsState } from '../../lib/jobsStore.js';
+import { DIRECTION_FEATURES, useJobsDirection } from '../../lib/jobsDirection.js';
+import { clearFinishedJobs, setFeedOpen, useJobsState } from '../../lib/jobsStore.js';
 import { useOutsideDismiss } from '../../lib/useOutsideDismiss.js';
 import { BackgroundJobItem } from './BackgroundJobItem.js';
+import { HourglassIcon } from './HourglassIcon.js';
 import styles from './JobsHeaderButton.module.css';
 
 /**
- * The Hourglass button in the top bar (Figma: Iris UI Explorations, App layout 2880:25705, Button 2880:26127), with
- * its red dot (2880:26097) while a job is running or has failed. In the menu view it opens the jobs in a popover,
- * like the notifications menu; in the panel view it shows or hides the Dropbox-style panel.
+ * The Hourglass button in the top bar (Figma: Iris UI Explorations, App layout 2880:25705, Button 2880:26127).
+ * The sand runs and the glass turns while a job is running; a red dot (2880:26097) shows while a job has failed.
+ * In A2 it opens the jobs in a popover, like the notifications menu; in B, C and D it shows or hides the feed.
+ * Not shown in A, which is toasts only.
  */
 export function JobsHeaderButton() {
-  const { jobs, view, panelOpen } = useJobsState();
+  const f = DIRECTION_FEATURES[useJobsDirection()];
+  const { jobs, feedOpen } = useJobsState();
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLSpanElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const closeMenu = useCallback(() => setOpen(false), []);
-  const menuOpen = view === 'menu' && open;
+  const menuOpen = f.popover && open;
   useOutsideDismiss(menuOpen, [wrapRef, menuRef], closeMenu);
+
+  if (!f.hourglass) return null;
 
   const running = jobs.filter((j) => j.status === 'running').length;
   const failed = jobs.filter((j) => j.status === 'failed').length;
@@ -28,16 +34,21 @@ export function JobsHeaderButton() {
   const anchor = menuOpen ? wrapRef.current?.getBoundingClientRect() : undefined;
 
   const onClick = () => {
-    if (view === 'panel') setJobsPanelOpen(!panelOpen);
-    else setOpen((v) => !v);
+    if (f.popover) setOpen((v) => !v);
+    else setFeedOpen(!feedOpen);
   };
 
   return (
     <span ref={wrapRef} className={styles.wrap}>
       <Tooltip label="Background jobs">
-        <IconButton icon="Hourglass" ariaLabel={label} aria-expanded={view === 'panel' ? panelOpen : menuOpen} onClick={onClick} />
+        <IconButton
+          icon={<HourglassIcon running={running > 0} />}
+          ariaLabel={label}
+          aria-expanded={f.popover ? menuOpen : feedOpen && jobs.length > 0}
+          onClick={onClick}
+        />
       </Tooltip>
-      {(running > 0 || failed > 0) && <span className={styles.dot} aria-hidden="true" />}
+      {failed > 0 && <span className={styles.dot} aria-hidden="true" />}
       {menuOpen &&
         createPortal(
           <div

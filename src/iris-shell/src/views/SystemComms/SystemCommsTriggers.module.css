@@ -5,8 +5,10 @@
 }
 
 .label {
-  margin-inline: var(--oi-spacing-xs);
+  margin-right: var(--oi-spacing-xs);
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);
-  color: var(--oi-content-color-tertiary);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-secondary);
+  white-space: nowrap;
 }

@@ -52,19 +52,28 @@ Each rule has an ID, what it says, where it comes from and where it is built. Wh
 
 ## System communications
 
-How the prototype tells the user something happened: toast, Background Job, notification, alert. None of it is drawn in Figma yet (see the Design update recommendations page).
+How the prototype tells the user something happened: toast, Background Job, notification, alert. None of it is drawn in Figma yet (see the Design update recommendations page). After the tech review (19 Nov 2026) the engineers recommend working through the list in serial, not tracking each object, and being able to stop if something looks bad. AD can report "24/100 completed"; Entra can't, but is fast, so it says "Changes submitted". Item level progress waits until a customer asks for it.
 
-**SYS-1. An instant action never becomes a Background Job.** Work that takes under a second or two ("Settings saved", moving one user) shows a toast that dismisses itself. A job for it would only clutter the tray.
-- Source: designer, 19 Nov 2026. Built: `lib/useMoveUsers.ts` (one user: toast; several: job).
+**SYS-1. An instant action never becomes a Background Job.** Work that takes under a second or two ("Settings saved", moving one user) shows a toast that dismisses itself.
+- Source: designer, 19 Nov 2026. Built: `lib/useMoveUsers.ts` (one user: toast; two or more: job).
 
-**SYS-2. Moving two or more users is a Background Job.** From the Users list, the users move one at a time while the table updates. Each job shows total progress and a percentage, "24/102 items moved", from and to, and Cancel. The Hourglass button in the top bar (Iris UI Explorations 2880:26127, with its red dot 2880:26097 while a job runs or has failed) is where jobs live. Two ways to show them are being tried, switched with the Jobs UI button in the top bar: a Dropbox-style panel at the bottom right under the toast area (as wide as the toast; the toast moves up above it; the Hourglass button reopens it after the X), or a list in a popover from the Hourglass button, like the notifications menu.
-- Source: designer, 19 Nov 2026. Built: `lib/jobsStore.ts`, `lib/useMoveUsers.ts`, `views/BackgroundJobs/`.
+**SYS-2. Five complexity directions are compared, picked on the welcome page.** Each adds to the one before. The MVP is B.
+- A. Toasts only: one toast for job started, complete and failed. They all dismiss themselves.
+- A2. Top bar popover: A, plus the Hourglass button (Iris UI Explorations 2880:26127) whose popover lists the jobs, like the notifications menu. Never a panel.
+- B. Progress feed (MVP): a feed under the toast area, as wide as a toast, with the toast moved up above it. It can be minimised and closed; the Hourglass reopens it. AD shows "24/100 completed" and a spinner, no bar, and Cancel.
+- C. B with an overall progress bar and Stop.
+- D. C with every object listed, each with its own bar and Cancel.
+- Every direction signs in as David Smith on the Users list with every AD user ticked, so Move is one click away.
+- Source: designer, 19 Nov 2026 (tech review). Built: `lib/jobsDirection.ts`, `lib/jobsStore.ts`, `views/BackgroundJobs/`, `views/WelcomePage/`.
 
-**SYS-3. A running or failed job never uses a toast.** A failed job keeps a Retry state on its card, which carries on from the item that failed. A finished job has View and Clear; a cancelled one keeps what already moved.
-- Source: designer, 19 Nov 2026. Built: `views/BackgroundJobs/BackgroundJobItem.tsx`.
+**SYS-3. The Hourglass shows a job is running at a glance.** While a job runs its sand falls and the glass turns over; with reduced motion it stays still. A red dot (2880:26097) shows while a job has failed. Not shown in A.
+- Source: designer, 19 Nov 2026. Built: `views/BackgroundJobs/HourglassIcon.tsx`, `JobsHeaderButton.tsx`.
 
-**SYS-4. A job escalates to a notification only when the user has likely moved on.** That is when it ran 20 seconds or more (`JOB_ESCALATE_AFTER_MS`), or, in the panel view, when it finishes or fails while the panel is closed.
+**SYS-4. A failure stops the job, except at item level.** In A to C the job stops at the failed object and says "Stopped after 18 of 40 users. Some users could not be moved." (objects aren't tracked one by one). In D the failed object is marked and the rest carry on. There is no Retry.
+- Source: designer, 19 Nov 2026 (tech review). Built: `lib/jobsStore.ts`.
+
+**SYS-5. Entra changes can't be stopped and have no count.** An Entra job says "Changes submitted" with a spinner, then "Changes applied", and "Entra changes can't be stopped." in place of Cancel or Stop.
+- Source: designer, 19 Nov 2026 (tech review). Built: `lib/jobsStore.ts` (`directory`), `views/BackgroundJobs/BackgroundJobItem.tsx`.
+
+**SYS-6. A job escalates to a notification only when the user has likely moved on.** That is when it ran 20 seconds or more (`JOB_ESCALATE_AFTER_MS`), or, in B to D, when it ends while the feed is closed.
 - Source: designer, 19 Nov 2026. Built: `lib/jobsStore.ts`, `lib/notificationsStore.ts`.
-
-**SYS-5. No Cancel where the work can't be stopped.** A job through a REST API to Entra shows "This can't be cancelled." in place of Cancel.
-- Source: designer, 19 Nov 2026. Built: `lib/jobsStore.ts` (`cancellable`), `views/SystemComms/SystemCommsTriggers.tsx` (the Entra job).

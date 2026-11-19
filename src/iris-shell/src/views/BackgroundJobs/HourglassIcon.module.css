@@ -1,0 +1,80 @@
+/* One turn of the glass is two loop beats: the sand runs for most of it, then the glass turns over.
+   At the end of a turn the full bulb is on top again, so the cycle restarts without a jump. */
+.glass {
+  display: block;
+  flex-shrink: 0;
+}
+
+.top,
+.bottom,
+.stream {
+  transform-box: view-box;
+}
+
+.glass[data-running='true'] {
+  animation: hourglass-turn calc(var(--oi-motion-duration-loop) * 2) var(--oi-motion-ease-default) infinite;
+}
+
+.top {
+  transform-origin: 12px 10.9px;
+  animation: hourglass-top calc(var(--oi-motion-duration-loop) * 2) var(--oi-motion-ease-none) infinite;
+}
+
+.bottom {
+  transform-origin: 12px 20.25px;
+  animation: hourglass-bottom calc(var(--oi-motion-duration-loop) * 2) var(--oi-motion-ease-none) infinite;
+}
+
+.stream {
+  animation: hourglass-stream calc(var(--oi-motion-duration-loop) * 2) var(--oi-motion-ease-none) infinite;
+}
+
+@keyframes hourglass-turn {
+  0%,
+  80% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes hourglass-top {
+  0% {
+    transform: scaleY(1);
+  }
+  78%,
+  100% {
+    transform: scaleY(0.02);
+  }
+}
+
+@keyframes hourglass-bottom {
+  0% {
+    transform: scaleY(0.02);
+  }
+  78%,
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes hourglass-stream {
+  0%,
+  76% {
+    opacity: 1;
+  }
+  78%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass[data-running='true'],
+  .top,
+  .bottom,
+  .stream {
+    animation: none;
+  }
+}

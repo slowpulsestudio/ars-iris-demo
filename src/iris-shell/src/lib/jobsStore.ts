@@ -1,71 +1,96 @@
 import { useSyncExternalStore } from 'react';
+import { DIRECTION_FEATURES, getJobsDirection } from './jobsDirection.js';
 import { addNotification } from './notificationsStore.js';
 import { showToast } from './toastStore.js';
 
 /**
- * jobsStore — Background Jobs: user-started heavy work (seconds to minutes) that keeps running while the
- * user does something else. A job is shown as a card while it runs, can be cancelled (when the directory
- * allows it) or retried after a failure, and stays inspectable until cleared. Instant actions never
- * become jobs; they use a toast.
+ * jobsStore — Background Jobs: user-started heavy work (seconds to minutes) that carries on while the user does
+ * something else. Instant actions never become jobs; they use a toast.
  *
- * Two ways to show them are being tried (`JobsView`): a Dropbox-style panel under the toast area, or a list
- * in a popover from the top bar's Hourglass button, like the notifications menu.
+ * As the engineers recommend, a job works through its list in serial. AD reports how many objects are done; Entra
+ * can't, so an Entra job only says its changes were submitted, and can't be stopped. How much of this the user
+ * sees depends on the complexity direction picked on the welcome page (`jobsDirection.ts`).
  *
- * The prototype simulates the work: `step(i)` runs for each item on a timer.
+ * The prototype simulates the work: each object takes a few ticks, then `step(i)` does it.
  */
 
-export type JobsView = 'panel' | 'menu';
-
 export type JobStatus = 'running' | 'done' | 'failed' | 'cancelled';
+export type JobDirectory = 'ad' | 'entra';
+export type JobItemStatus = 'queued' | 'running' | 'done' | 'failed' | 'cancelled';
+
+export interface JobItem {
+  name: string;
+  status: JobItemStatus;
+  /** 0 to 1. */
+  progress: number;
+}
 
 export interface Job {
   id: string;
+  /** e.g. "Moving users". */
   title: string;
+  /** Plural noun for the objects, e.g. "users". */
+  noun: string;
   from: string;
   to: string;
+  /** Short destination name for messages, e.g. "Test1". */
+  toName: string;
+  directory: JobDirectory;
+  items: JobItem[];
   total: number;
+  /** Objects done. */
   done: number;
+  /** Objects that failed (only item level jobs carry on past a failure). */
+  failed: number;
   status: JobStatus;
-  /** False where the directory gives no way to stop the work, e.g. REST calls to Entra. */
-  cancellable: boolean;
   error?: string;
-  /** Where the done card's View button goes. */
+  /** Where View goes once the job is complete. */
   viewHref?: string;
   startedAt: number;
 }
 
+/** Objects no longer waiting or moving: done, failed or cancelled. */
+export function processedCount(job: Job): number {
+  return job.items.filter((it) => it.status !== 'queued' && it.status !== 'running').length;
+}
+
 export interface JobSpec {
   title: string;
+  noun: string;
   from: string;
   to: string;
-  total: number;
-  cancellable?: boolean;
-  /** Time per item. */
-  stepMs?: number;
-  /** Does the work for item `index`. */
+  toName?: string;
+  directory?: JobDirectory;
+  /** One name per object. */
+  names: string[];
+  /** Time per tick; an object takes `TICKS_PER_ITEM` ticks. */
+  tickMs?: number;
+  /** Does the work for object `index`. */
   step?: (index: number) => void;
-  /** Demo: the item that fails the first time round, so Retry can be seen. */
+  /** Demo: the object that fails. */
   failAt?: number;
   viewHref?: string;
 }
 
-/** A job that ran this long, or finished while its card was dismissed, escalates to a notification. */
+/** A job that ran this long, or ended while its feed was closed, escalates to a notification. */
 export const JOB_ESCALATE_AFTER_MS = 20_000;
-const DEFAULT_STEP_MS = 60;
+const TICKS_PER_ITEM = 4;
+const DEFAULT_TICK_MS = 30;
+
+export interface JobsState {
+  jobs: Job[];
+  /** Feed directions: whether the feed is showing. Closing it hides it until the Hourglass reopens it. */
+  feedOpen: boolean;
+  /** Feed directions: the feed is folded down to its header. */
+  feedMinimised: boolean;
+}
 
 interface Runner {
   spec: JobSpec;
   timer?: number;
 }
 
-export interface JobsState {
-  jobs: Job[];
-  view: JobsView;
-  /** Panel view: whether the panel is showing. Closing it hides it until the Hourglass button reopens it. */
-  panelOpen: boolean;
-}
-
-let state: JobsState = { jobs: [], view: 'panel', panelOpen: false };
+let state: JobsState = { jobs: [], feedOpen: false, feedMinimised: false };
 const runners = new Map<string, Runner>();
 const listeners = new Set<() => void>();
 let nextId = 1;
@@ -79,11 +104,6 @@ function patch(id: string, changes: Partial<Job>) {
   setState({ jobs: state.jobs.map((j) => (j.id === id ? { ...j, ...changes } : j)) });
 }
 
-/** In the panel view, a job that ends while the panel is closed has nobody watching it. */
-function unwatched(): boolean {
-  return state.view === 'panel' && !state.panelOpen;
-}
-
 function subscribe(cb: () => void): () => void {
   listeners.add(cb);
   return () => listeners.delete(cb);
@@ -93,109 +113,137 @@ function find(id: string): Job | undefined {
   return state.jobs.find((j) => j.id === id);
 }
 
+function features() {
+  return DIRECTION_FEATURES[getJobsDirection()];
+}
+
 function stop(id: string) {
   const runner = runners.get(id);
   if (runner?.timer !== undefined) clearInterval(runner.timer);
   if (runner) runner.timer = undefined;
 }
 
-function finish(job: Job) {
-  stop(job.id);
+function escalate(job: Job, title: string, body: string, href?: string) {
   const slow = Date.now() - job.startedAt >= JOB_ESCALATE_AFTER_MS;
-  patch(job.id, { status: 'done' });
-  if (unwatched() || slow) {
-    addNotification({
-      kind: 'job',
-      title: `${job.title} finished`,
-      body: `${job.total} of ${job.total} items, to ${job.to}.`,
-      href: job.viewHref,
-    });
-  }
+  const unwatched = features().feed && !state.feedOpen;
+  if (slow || unwatched) addNotification({ kind: 'job', title, body, href });
 }
 
-function fail(job: Job, error: string) {
+function countText(job: Job, n: number): string {
+  return `${n} of ${job.total} ${job.noun}`;
+}
+
+function finish(job: Job) {
   stop(job.id);
-  patch(job.id, { status: 'failed', error });
-  if (unwatched()) {
-    addNotification({ kind: 'job', title: `${job.title} failed`, body: `${error} Open Background Jobs to retry.` });
+  patch(job.id, { status: 'done' });
+  const entra = job.directory === 'entra';
+  const message = entra
+    ? `Changes applied to ${job.total} ${job.noun}.`
+    : job.failed > 0
+      ? `Moved ${job.done} of ${job.total} ${job.noun} to ${job.toName}. ${job.failed} could not be moved.`
+      : `Moved ${job.total} ${job.noun} to ${job.toName}.`;
+  if (features().stateToasts) {
+    showToast(message, { viewHref: job.viewHref, viewLabel: 'View', tone: job.failed > 0 ? 'warning' : 'success' });
   }
+  escalate(job, `${job.title} complete`, message, job.viewHref);
+}
+
+function fail(job: Job) {
+  stop(job.id);
+  const error = `Stopped after ${countText(job, job.done)}. Some ${job.noun} could not be moved.`;
+  patch(job.id, { status: 'failed', error });
+  if (features().stateToasts) showToast(`${job.title} failed`, { tone: 'error', supportingText: error });
+  escalate(job, `${job.title} failed`, error);
+}
+
+function setItem(job: Job, index: number, changes: Partial<JobItem>): JobItem[] {
+  return job.items.map((it, i) => (i === index ? { ...it, ...changes } : it));
 }
 
 function tick(id: string) {
   const job = find(id);
   const runner = runners.get(id);
   if (!job || !runner || job.status !== 'running') return;
-  if (job.done >= job.total) {
+  const index = job.items.findIndex((it) => it.status === 'queued' || it.status === 'running');
+  if (index === -1) {
     finish(job);
     return;
   }
+  const item = job.items[index];
   const { spec } = runner;
-  if (spec.failAt === job.done) {
+  if (item.status === 'queued' && spec.failAt === index) {
     spec.failAt = undefined;
-    fail(job, `Item ${job.done + 1} could not be processed.`);
+    // Item level progress tracks each object, so one failure doesn't stop the rest.
+    if (features().items) {
+      patch(id, { items: setItem(job, index, { status: 'failed' }), failed: job.failed + 1 });
+    } else {
+      patch(id, { items: setItem(job, index, { status: 'failed' }) });
+      fail({ ...job });
+    }
     return;
   }
-  try {
-    spec.step?.(job.done);
-  } catch {
-    fail(job, `Item ${job.done + 1} could not be processed.`);
+  const progress = Math.min(1, item.progress + 1 / TICKS_PER_ITEM);
+  if (progress < 1) {
+    patch(id, { items: setItem(job, index, { status: 'running', progress }) });
     return;
   }
-  patch(id, { done: job.done + 1 });
+  spec.step?.(index);
+  patch(id, { items: setItem(job, index, { status: 'done', progress: 1 }), done: job.done + 1 });
 }
 
-function run(id: string) {
-  const runner = runners.get(id);
-  if (!runner) return;
-  stop(id);
-  runner.timer = window.setInterval(() => tick(id), runner.spec.stepMs ?? DEFAULT_STEP_MS);
-}
-
-/** Starts a job. The panel view opens its panel; the menu view tells the user with a toast, since nothing else shows. Returns its id. */
+/** Starts a job. Returns its id. */
 export function startJob(spec: JobSpec): string {
   const id = `job-${nextId++}`;
   runners.set(id, { spec: { ...spec } });
-  setState({
-    jobs: [
-      ...state.jobs,
-      {
-        id,
-        title: spec.title,
-        from: spec.from,
-        to: spec.to,
-        total: spec.total,
-        done: 0,
-        status: 'running',
-        cancellable: spec.cancellable ?? true,
-        viewHref: spec.viewHref,
-        startedAt: Date.now(),
-      },
-    ],
-    panelOpen: state.view === 'panel' ? true : state.panelOpen,
-  });
-  if (state.view === 'menu') showToast(`${spec.title}: ${spec.total} items started. Track them under Background jobs.`);
-  run(id);
+  const directory = spec.directory ?? 'ad';
+  const job: Job = {
+    id,
+    title: spec.title,
+    noun: spec.noun,
+    from: spec.from,
+    to: spec.to,
+    toName: spec.toName ?? spec.to,
+    directory,
+    items: spec.names.map((name) => ({ name, status: 'queued', progress: 0 })),
+    total: spec.names.length,
+    done: 0,
+    failed: 0,
+    status: 'running',
+    viewHref: spec.viewHref,
+    startedAt: Date.now(),
+  };
+  const f = features();
+  setState({ jobs: [...state.jobs, job], feedOpen: f.feed ? true : state.feedOpen });
+  if (f.stateToasts) {
+    showToast(directory === 'entra' ? `Changes submitted for ${job.total} ${job.noun}.` : `${job.title}: ${job.total} ${job.noun} to ${job.toName}.`, {
+      tone: 'info',
+      supportingText: f.popover ? 'Track it with Background jobs in the top bar.' : "You'll be told when it's done.",
+    });
+  }
+  const runner = runners.get(id);
+  if (runner) runner.timer = window.setInterval(() => tick(id), spec.tickMs ?? DEFAULT_TICK_MS);
   return id;
 }
 
-/** Stops the remaining items. What already moved stays moved. */
+/** Stops the objects not yet done. Those already done stay done. Not possible for Entra. */
 export function cancelJob(id: string): void {
   const job = find(id);
-  if (!job || job.status !== 'running' || !job.cancellable) return;
+  if (!job || job.status !== 'running' || job.directory === 'entra') return;
   stop(id);
-  patch(id, { status: 'cancelled' });
+  const items = job.items.map((it) => (it.status === 'queued' || it.status === 'running' ? { ...it, status: 'cancelled' as const } : it));
+  patch(id, { status: 'cancelled', items });
+  if (features().stateToasts) showToast(`${job.title} cancelled`, { tone: 'info', supportingText: `Stopped after ${countText(job, job.done)}.` });
 }
 
-/** Carries on from the item that failed. */
-export function retryJob(id: string): void {
+/** Item level (D): skips one object that hasn't been done yet. */
+export function cancelJobItem(id: string, index: number): void {
   const job = find(id);
-  if (!job || job.status !== 'failed') return;
-  patch(id, { status: 'running', error: undefined });
-  if (state.view === 'panel') setState({ panelOpen: true });
-  run(id);
+  const item = job?.items[index];
+  if (!job || !item || job.status !== 'running' || (item.status !== 'queued' && item.status !== 'running')) return;
+  patch(id, { items: setItem(job, index, { status: 'cancelled' }) });
 }
 
-/** Removes a job that isn't running from the list. */
+/** Removes a job that isn't running. */
 export function clearJob(id: string): void {
   const job = find(id);
   if (!job || job.status === 'running') return;
@@ -203,18 +251,25 @@ export function clearJob(id: string): void {
   setState({ jobs: state.jobs.filter((j) => j.id !== id) });
 }
 
-/** Removes every finished, failed or cancelled job. */
+/** Removes every job that isn't running. */
 export function clearFinishedJobs(): void {
   for (const j of state.jobs) if (j.status !== 'running') runners.delete(j.id);
   setState({ jobs: state.jobs.filter((j) => j.status === 'running') });
 }
 
-export function setJobsPanelOpen(open: boolean): void {
-  setState({ panelOpen: open });
+export function setFeedOpen(open: boolean): void {
+  setState({ feedOpen: open });
 }
 
-export function setJobsView(view: JobsView): void {
-  setState({ view, panelOpen: false });
+export function setFeedMinimised(minimised: boolean): void {
+  setState({ feedMinimised: minimised });
+}
+
+/** Stops and forgets every job, e.g. when another direction is picked on the welcome page. */
+export function resetJobs(): void {
+  for (const id of runners.keys()) stop(id);
+  runners.clear();
+  setState({ jobs: [], feedOpen: false, feedMinimised: false });
 }
 
 export function useJobsState(): JobsState {

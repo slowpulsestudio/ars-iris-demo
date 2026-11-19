@@ -8,3 +8,18 @@
   display: inline-flex;
   gap: var(--oi-spacing-s);
 }
+
+/* The direction's letter, in the space the persona avatar had (Avatar size l). */
+.letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--oi-size-l);
+  height: var(--oi-size-l);
+  border-radius: var(--oi-border-radius-max);
+  background-color: var(--oi-background-color-info);
+  color: var(--oi-content-color-info);
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: 1;
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+}
