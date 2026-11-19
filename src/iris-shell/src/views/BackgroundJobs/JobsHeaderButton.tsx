@@ -13,7 +13,7 @@ import styles from './JobsHeaderButton.module.css';
 /**
  * The Hourglass button in the top bar (Figma: Iris UI Explorations, App layout 2880:25705, Button 2880:26127).
  * The sand runs and the glass turns while a job is running; a red dot (2880:26097) shows while a job has failed.
- * In A2 it opens the jobs in a popover, like the notifications menu; in B, C and D it shows or hides the feed.
+ * In B1 it opens the jobs in a popover, like the notifications menu; in B2, C and D it shows or hides the feed.
  * Not shown in A, which is toasts only.
  */
 export function JobsHeaderButton() {

@@ -1,6 +1,9 @@
 import { Button } from '../../components/Button/Button.js';
-import { directionInfo, useJobsDirection } from '../../lib/jobsDirection.js';
-import { startJob, type JobSpec } from '../../lib/jobsStore.js';
+import { Icon } from '../../components/Icon/Icon.js';
+import { Menu } from '../../components/Menu/Menu.js';
+import { JOBS_DIRECTIONS, JOBS_START_ROUTE, directionInfo, setJobsDirection, useJobsDirection } from '../../lib/jobsDirection.js';
+import { resetJobs, startJob, type JobSpec } from '../../lib/jobsStore.js';
+import { navigate } from '../../lib/router.js';
 import { addNotification, pushAlert } from '../../lib/notificationsStore.js';
 import { showToast } from '../../lib/toastStore.js';
 import { MOCK_USERS } from '../UsersPage/mockUsers.js';
@@ -50,13 +53,44 @@ const TRIGGERS: Trigger[] = [
   },
 ];
 
+/** Switching direction clears the jobs and goes back to the Users list with every AD user ticked, ready to Move. */
+function pickDirection(id: (typeof JOBS_DIRECTIONS)[number]['id']) {
+  resetJobs();
+  setJobsDirection(id);
+  navigate(JOBS_START_ROUTE);
+}
+
 export function SystemCommsTriggers() {
-  const info = directionInfo(useJobsDirection());
+  const current = useJobsDirection();
+  const info = directionInfo(current);
   return (
     <div className={styles.bar} role="group" aria-label="Prototype triggers for system communications">
-      <span className={styles.label} title={info.description}>
-        {info.letter}: {info.title}
-      </span>
+      <Menu
+        ariaLabel="Background Jobs direction"
+        align="start"
+        topAnchor={44}
+        items={JOBS_DIRECTIONS.map((d) => ({
+          kind: 'item' as const,
+          label: `${d.letter}: ${d.title}`,
+          selected: d.id === current,
+          onSelect: () => pickDirection(d.id),
+        }))}
+        trigger={({ ref, onClick, expanded }) => (
+          <button
+            ref={ref as React.Ref<HTMLButtonElement>}
+            type="button"
+            className={styles.direction}
+            onClick={onClick}
+            aria-haspopup="menu"
+            aria-expanded={expanded}
+            aria-label={`Background Jobs direction: ${info.letter}, ${info.title}`}
+            title={info.description}
+          >
+            {info.letter}: {info.title}
+            <Icon name="CaretDown" size="12px" />
+          </button>
+        )}
+      />
       {TRIGGERS.map((t) => (
         <Button key={t.label} variant="ghost" size="s" title={t.hint} onClick={t.run}>
           {t.label}

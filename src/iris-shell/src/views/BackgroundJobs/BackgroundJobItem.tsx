@@ -66,7 +66,7 @@ function ItemRow({ job, item, index }: { job: Job; item: JobItem; index: number 
 
 /**
  * One Background Job, as much of it as the chosen direction shows: the count and a spinner ("24/100 completed")
- * from A2 and B, an overall progress bar and Stop from C, and every object in D, each with a small spinner and a
+ * from B1 and B2, an overall progress bar and Stop from C, and every object in D, each with a small spinner and a
  * Cancel on hover (D has no spinner of its own beside the job, as the rows carry it). An Entra
  * job only says its changes were submitted, and can't be stopped. Not in Figma yet (see Design update recommendations).
  */

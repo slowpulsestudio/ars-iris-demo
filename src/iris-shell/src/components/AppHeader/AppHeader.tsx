@@ -51,7 +51,7 @@ export interface AppHeaderProps {
   /** Optional control rendered at the start of the right cluster (e.g. the
    *  Identity Manager "Preview as" role switcher). */
   roleSwitcher?: ReactNode;
-  /** Centred in the bar (the prototype's system-communication triggers). Hidden when the bar is narrow. */
+  /** Centred in the bar (the prototype's system-communication triggers). The breadcrumb is cut off before it; hidden when the bar is narrow. */
   center?: ReactNode;
   /** Before the bell: the Background Jobs button. */
   jobsButton?: ReactNode;
@@ -168,7 +168,7 @@ export function AppHeader({
   });
 
   return (
-    <header className={cx(styles.header, className)}>
+    <header className={cx(styles.header, center && styles.withCenter, className)}>
       <div className={styles.left}>
         {!sidebarOpen && (
           <Menu

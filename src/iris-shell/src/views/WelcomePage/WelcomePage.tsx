@@ -1,26 +1,21 @@
+import { Badge } from '../../components/Badge/Badge.js';
 import { IconButton } from '../../components/IconButton/IconButton.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { useAppShell } from '../../lib/appShellContext.js';
-import { JOBS_DIRECTIONS, setJobsDirection, type JobsDirectionInfo } from '../../lib/jobsDirection.js';
+import { JOBS_DIRECTIONS, JOBS_START_ROUTE, setJobsDirection, type JobsDirectionInfo } from '../../lib/jobsDirection.js';
 import { resetJobs } from '../../lib/jobsStore.js';
-import { isEntraLocation } from '../../lib/directoryFilter.js';
 import { findPersona } from '../../lib/personas.js';
 import { navigate, useRoute } from '../../lib/router.js';
 import { ChoiceCard, ChoicePage } from '../ChoicePage/ChoicePage.js';
-import { MOCK_USERS } from '../UsersPage/mockUsers.js';
 import styles from './WelcomePage.module.css';
 
 /** Every direction signs in as David Smith, the admin, who can run bulk moves. */
 const DIRECTION_PERSONA_ID = 'admin-user';
 
-/** Every AD user ticked, so the selection bar shows and Move is one click away (Entra users can't be moved). */
-const START_ROUTE = `#/users?select=${MOCK_USERS.filter((u) => !isEntraLocation(u.location))
-  .map((u) => u.id)
-  .join(',')}`;
 
 /**
  * WelcomePage — the start page after the password screen. On this branch it offers one card per Background Jobs
- * complexity direction (A to D, with A2 between A and B) instead of one per persona. Picking one signs in as David
+ * complexity direction instead of one per persona: the recommended B1 and B2 as large cards on top, then A, C and D. Picking one signs in as David
  * Smith with that direction and opens the Users list with every AD user ticked, ready to Move. It also stands in for any other page until someone is
  * picked; picking there keeps the page that was asked for.
  */
@@ -34,7 +29,7 @@ export function WelcomePage() {
     resetJobs();
     setJobsDirection(direction.id);
     setPersonaId(DIRECTION_PERSONA_ID);
-    if (route.name === 'welcome') navigate(START_ROUTE);
+    if (route.name === 'welcome') navigate(JOBS_START_ROUTE);
   };
 
   return (
@@ -62,17 +57,24 @@ export function WelcomePage() {
         </span>
       }
     >
-      {JOBS_DIRECTIONS.map((direction) => (
+      {[...JOBS_DIRECTIONS.filter((d) => d.recommended), ...JOBS_DIRECTIONS.filter((d) => !d.recommended)].map((direction) => (
         <ChoiceCard
           key={direction.id}
+          wide={direction.recommended}
+          badge={
+            direction.recommended ? (
+              <Badge tone="info" strong icon="Star">
+                Recommended
+              </Badge>
+            ) : undefined
+          }
           visual={
-            <span className={styles.letter} aria-hidden="true">
-              {direction.letter}
+            <span className={direction.recommended ? `${styles.shot} ${styles.shotWide}` : styles.shot}>
+              <img src={direction.image} alt={`${direction.title}: ${direction.description}`} />
             </span>
           }
           title={direction.title}
           subtitle={`Direction ${direction.letter}`}
-          description={direction.description}
           cta={`Try ${direction.letter}`}
           onClick={() => pick(direction)}
         />

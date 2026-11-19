@@ -9,17 +9,33 @@
   gap: var(--oi-spacing-s);
 }
 
-/* The direction's letter, in the space the persona avatar had (Avatar size l). */
-.letter {
-  display: inline-flex;
-  align-items: center;
+/* The picture of the direction's component on a recessed panel the width of the card. Small cards show it at
+   the card's width from the top, so a tall component is cut off at the bottom rather than shrunk. */
+.shot {
+  display: flex;
+  align-items: flex-start;
   justify-content: center;
-  width: var(--oi-size-l);
-  height: var(--oi-size-l);
-  border-radius: var(--oi-border-radius-max);
-  background-color: var(--oi-background-color-info);
-  color: var(--oi-content-color-info);
-  font-size: var(--oi-text-body-s-font-size);
-  line-height: 1;
-  font-weight: var(--oi-text-body-s-strong-font-weight);
+  align-self: stretch;
+  height: 180px;
+  padding: var(--oi-spacing-m);
+  border-radius: var(--oi-border-radius-default);
+  background-color: var(--oi-background-color-secondary);
+  overflow: hidden;
+}
+
+.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.shotWide {
+  align-items: center;
+  height: 240px;
+}
+
+.shotWide img {
+  width: auto;
+  max-width: 100%;
+  max-height: 100%;
 }

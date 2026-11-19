@@ -47,14 +47,18 @@ interface ChoiceCardProps {
   visual: ReactNode;
   title: string;
   subtitle: string;
-  description: string;
+  description?: string;
   cta: string;
+  /** Two to a row instead of three, for the choices to look at first. */
+  wide?: boolean;
+  /** Pinned to the middle of the card's top edge, as on a pricing page (e.g. a "Recommended" Badge). Also outlines the card. */
+  badge?: ReactNode;
   onClick?: () => void;
   /** Opens this address in a new browser tab instead of calling `onClick`. */
   href?: string;
 }
 
-export function ChoiceCard({ visual, title, subtitle, description, cta, onClick, href }: ChoiceCardProps) {
+export function ChoiceCard({ visual, title, subtitle, description, cta, onClick, href, wide = false, badge }: ChoiceCardProps) {
   const body = (
     <>
       {visual}
@@ -62,7 +66,7 @@ export function ChoiceCard({ visual, title, subtitle, description, cta, onClick,
         <span className={styles.name}>{title}</span>
         <span className={styles.cardSubtitle}>{subtitle}</span>
       </span>
-      <span className={styles.description}>{description}</span>
+      {description && <span className={styles.description}>{description}</span>}
       <span className={styles.cta}>
         {cta}
         <Icon name={href ? 'ArrowSquareOut' : 'ArrowRight'} size="16px" className={styles.arrow} />
@@ -72,7 +76,8 @@ export function ChoiceCard({ visual, title, subtitle, description, cta, onClick,
   );
 
   return (
-    <li className={styles.cardItem}>
+    <li className={[styles.cardItem, wide && styles.cardItemWide, badge && styles.cardItemFeatured].filter(Boolean).join(' ')}>
+      {badge && <span className={styles.badge}>{badge}</span>}
       {href ? (
         <a className={styles.card} href={href} target="_blank" rel="noopener noreferrer">
           {body}

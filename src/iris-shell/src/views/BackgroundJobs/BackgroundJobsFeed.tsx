@@ -24,7 +24,7 @@ function summary(jobs: Job[]): { title: string; detail: string } {
 }
 
 /**
- * The progress feed (directions B, C and D): at the bottom right under the toast area, as wide as a toast, and the
+ * The progress feed (directions B2, C and D): at the bottom right under the toast area, as wide as a toast, and the
  * toast moves up above it. The down caret folds it into a one-line bar (with a thin overall bar in C and D); the X
  * closes it and the Hourglass in the top bar reopens it. It is part of the shell, so it follows the user across app
  * pages but not onto the welcome page.

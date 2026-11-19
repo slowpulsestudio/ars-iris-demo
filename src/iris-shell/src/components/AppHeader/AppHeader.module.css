@@ -8,13 +8,41 @@
   flex-shrink: 0;
   container-type: inline-size;
   container-name: appheader;
-  position: relative;
+}
+
+/* With a centre area the bar is three columns. The outer two share what's left equally, so the centre stays
+   centred and a long breadcrumb is cut off with an ellipsis before it reaches the centre. */
+.withCenter {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  column-gap: var(--oi-spacing-xxl);
+}
+
+.withCenter .left {
+  grid-column: 1;
 }
 
 .center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  grid-column: 2;
+  display: flex;
+  min-width: 0;
+}
+
+.withCenter .right {
+  grid-column: 3;
+  justify-self: end;
+}
+
+/* While the centre area shows, a trail of folders folds into the "…" menu and the current page, as it does on a
+   narrow bar, so it stays well clear of the centre. */
+@container appheader (min-width: 1281px) {
+  .withCenter .breadcrumbCollapsible .crumbs {
+    display: none;
+  }
+
+  .withCenter .breadcrumbCollapsible .crumbsCollapsed {
+    display: inline-flex;
+  }
 }
 
 @container appheader (max-width: 1280px) {

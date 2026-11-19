@@ -57,14 +57,15 @@ How the prototype tells the user something happened: toast, Background Job, noti
 **SYS-1. An instant action never becomes a Background Job.** Work that takes under a second or two ("Settings saved", moving one user) shows a toast that dismisses itself.
 - Source: designer, 19 Nov 2026. Built: `lib/useMoveUsers.ts` (one user: toast; two or more: job).
 
-**SYS-2. Five complexity directions are compared, picked on the welcome page.** Each adds to the one before. The MVP is B.
+**SYS-2. Five complexity directions are compared.** Each adds to the one before. B1 and B2 are recommended; the MVP is B2.
 - A. Toasts only: one toast for job started, complete and failed. They all dismiss themselves.
-- A2. Top bar popover: A, plus the Hourglass button (Iris UI Explorations 2880:26127) whose popover lists the jobs, like the notifications menu. Never a panel.
-- B. Progress feed (MVP): a feed under the toast area, as wide as a toast, with the toast moved up above it. The down caret folds it into a one-line bar (title and count) and the up caret expands it again; the X closes it and the Hourglass reopens it. It stays with the user across app pages but not on the welcome page. AD shows "24/100 completed" and a spinner, no bar, and Cancel.
-- C. B with an overall progress bar and Stop. The one-line bar keeps a thin overall bar under it.
-- D. C with every object listed. Each row is the object's name with, at the far right, a small spinner while it moves, a tick once moved or a warning if it failed; hovering (or focusing) a waiting or moving row swaps that for a Cancel button. The job itself has no spinner beside its title, as the rows carry it.
-- Every direction signs in as David Smith on the Users list with every AD user ticked, so Move is one click away.
-- Source: designer, 19 Nov 2026 (tech review). Built: `lib/jobsDirection.ts`, `lib/jobsStore.ts`, `views/BackgroundJobs/`, `views/WelcomePage/`.
+- B1. Top Bar Popover: A, plus the Hourglass button (Iris UI Explorations 2880:26127) whose popover lists the jobs, like the notifications menu. Never a feed.
+- B2. Progress Feed (MVP): a feed under the toast area, as wide as a toast, with the toast moved up above it. The down caret folds it into a one-line bar (title and count) and the up caret expands it again; the X closes it and the Hourglass reopens it. It stays with the user across app pages but not on the welcome page. AD shows "24/100 completed" and a spinner, no bar, and Cancel.
+- C. Progress Bar: B2 with an overall progress bar and Stop. The one-line bar keeps a thin overall bar under it.
+- D. Item Level Progress: C with every object listed. Each row is the object's name with, at the far right, a small spinner while it moves, a tick once moved or a warning if it failed; hovering (or focusing) a waiting or moving row swaps that for a Cancel button. The job itself has no spinner beside its title, as the rows carry it.
+- The welcome page offers the five as cards, each with a picture of its component: B1 and B2 large on top with a "Recommended" badge on their top edge, as on a pricing page; A, C and D small below. Each signs in as David Smith on the Users list with every AD user (64) ticked, so Move is one click away.
+- The direction's name in the middle of the top bar is a dropdown to switch to another; switching clears the jobs and goes back to that start. While that area shows, the breadcrumb folds into its "…" menu and the current page, to stay well clear of it.
+- Source: designer, 19 Nov 2026 (tech review). Built: `lib/jobsDirection.ts`, `lib/jobsStore.ts`, `views/BackgroundJobs/`, `views/SystemComms/`, `views/WelcomePage/`, `components/AppHeader/` (`center`), `views/ChoicePage/` (`wide`, `badge`), `public/directions/`.
 
 **SYS-3. The Hourglass shows a job is running at a glance.** While a job runs its sand falls and the glass turns over; with reduced motion it stays still. A red dot (2880:26097) shows while a job has failed. Not shown in A.
 - Source: designer, 19 Nov 2026. Built: `views/BackgroundJobs/HourglassIcon.tsx`, `JobsHeaderButton.tsx`.
@@ -75,5 +76,5 @@ How the prototype tells the user something happened: toast, Background Job, noti
 **SYS-5. Entra changes can't be stopped and have no count.** An Entra job says "Changes submitted" with a spinner, then "Changes applied", and "Entra changes can't be stopped." in place of Cancel or Stop.
 - Source: designer, 19 Nov 2026 (tech review). Built: `lib/jobsStore.ts` (`directory`), `views/BackgroundJobs/BackgroundJobItem.tsx`.
 
-**SYS-6. A job escalates to a notification only when the user has likely moved on.** That is when it ran 20 seconds or more (`JOB_ESCALATE_AFTER_MS`), or, in B to D, when it ends while the feed is closed.
+**SYS-6. A job escalates to a notification only when the user has likely moved on.** That is when it ran 20 seconds or more (`JOB_ESCALATE_AFTER_MS`), or, in B2 to D, when it ends while the feed is closed.
 - Source: designer, 19 Nov 2026. Built: `lib/jobsStore.ts`, `lib/notificationsStore.ts`.

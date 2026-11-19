@@ -54,8 +54,8 @@ export function useMoveUsers() {
           from: origins.size === 1 ? [...origins][0] : 'Several locations',
           to: location,
           toName: destName,
-          // AD works through the list in serial; about a second per user keeps the progress readable.
-          tickMs: 300,
+          // AD works through the list in serial; a quarter of a second per user (64 AD users ≈ 15 s) keeps it readable.
+          tickMs: 60,
           step: (i) => updateUserRef.current(moving[i].id, { location }),
           viewHref: `#/tree/${destId}`,
         });
