@@ -1,0 +1,67 @@
+.wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+/* Figma 2880:26097: 6px, error red, a 1.5px ring in the header colour, at the Hourglass's top right. */
+.dot {
+  position: absolute;
+  top: var(--oi-spacing-6);
+  right: var(--oi-spacing-6);
+  width: var(--oi-spacing-6);
+  height: var(--oi-spacing-6);
+  box-sizing: content-box;
+  border: 1.5px solid var(--oi-background-color-secondary);
+  border-radius: var(--oi-border-radius-max);
+  background-color: var(--oi-base-color-error);
+  pointer-events: none;
+}
+
+.menu {
+  position: fixed;
+  top: 48px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  width: min(calc(100vw - 2 * var(--oi-spacing-l)), 380px);
+  max-height: min(70vh, 520px);
+  background-color: var(--oi-background-color-primary);
+  border-radius: var(--oi-border-radius-l);
+  box-shadow: var(--oi-shadow-mid);
+  overflow: hidden;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--oi-spacing-m);
+  padding: var(--oi-spacing-m) var(--oi-spacing-l);
+  border-bottom: 1px solid var(--oi-border-color-muted);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.list > * + * {
+  border-top: 1px solid var(--oi-border-color-muted);
+}
+
+.empty {
+  margin: 0;
+  padding: var(--oi-spacing-xl) var(--oi-spacing-l);
+  text-align: center;
+  font-size: var(--oi-text-body-s-font-size);
+  color: var(--oi-content-color-secondary);
+}

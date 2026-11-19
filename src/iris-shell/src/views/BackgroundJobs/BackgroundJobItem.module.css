@@ -1,0 +1,134 @@
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--oi-spacing-s);
+  padding: var(--oi-spacing-m) var(--oi-spacing-l);
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--oi-spacing-m);
+}
+
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--oi-content-color-info);
+}
+
+.status_done .icon {
+  color: var(--oi-content-color-success);
+}
+
+.status_failed .icon {
+  color: var(--oi-content-color-error);
+}
+
+.status_cancelled .icon {
+  color: var(--oi-content-color-secondary);
+}
+
+.icon[data-spin='true'] {
+  animation: job-item-turn var(--oi-motion-duration-loop) var(--oi-motion-ease-none) infinite;
+}
+
+.text {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--oi-spacing-xs);
+  min-width: 0;
+}
+
+.title,
+.route,
+.count,
+.percent,
+.error,
+.note {
+  margin: 0;
+  font-size: var(--oi-text-body-s-font-size);
+  line-height: var(--oi-text-body-s-line-height);
+}
+
+.title {
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.route {
+  color: var(--oi-content-color-secondary);
+  word-break: break-word;
+}
+
+.track {
+  height: var(--oi-spacing-xs);
+  overflow: hidden;
+  border-radius: var(--oi-border-radius-max);
+  background-color: var(--oi-background-color-info);
+}
+
+.fill {
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--oi-color-blue-400);
+  transition: width var(--oi-motion-duration-default) var(--oi-motion-ease-default);
+}
+
+.status_done .fill {
+  background-color: var(--oi-content-color-success);
+}
+
+.status_failed .fill {
+  background-color: var(--oi-content-color-error);
+}
+
+.status_cancelled .fill {
+  background-color: var(--oi-content-color-secondary);
+}
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--oi-spacing-m);
+}
+
+.count {
+  color: var(--oi-content-color-secondary);
+}
+
+.percent {
+  font-weight: var(--oi-text-body-s-strong-font-weight);
+  color: var(--oi-content-color-primary);
+}
+
+.error {
+  color: var(--oi-content-color-error);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--oi-button-gap-s);
+}
+
+.note {
+  color: var(--oi-content-color-secondary);
+}
+
+@keyframes job-item-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon[data-spin='true'] {
+    animation: none;
+  }
+
+  .fill {
+    transition: none;
+  }
+}

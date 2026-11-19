@@ -203,6 +203,28 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     prototype: '#/users',
   },
   {
+    title: 'Moving several users is a Background Job',
+    file: 'move',
+    figmaNodeId: '2355:28099',
+    note: 'Figma draws one success toast with Undo and View after a move, however many objects. At the designer\'s request (rules SYS-1 to SYS-5) moving two or more users from the Users list starts a Background Job instead. The users move one at a time while the table updates. Two ways to show it are in the prototype, switched with the Jobs UI button in the top bar: a Dropbox-style panel at the bottom right under the toast area (as wide as the toast, and the toast moves up above it), or a list in a popover from the Hourglass button, like the notifications menu. Each job shows total progress and a percentage, "24/102 items moved", from and to, and Cancel, Retry or View and Clear. A failed job keeps a Retry state; a job that can\'t be stopped (Entra, REST) has no Cancel. Moving one user keeps the Figma toast.',
+    recommendation: 'Pick the panel or the menu, then draw the job item (running, failed with Retry, done, cancelled, no Cancel), the empty menu, and say from how many items a move becomes a job. The expanded version is drawn only if users ask for it.',
+    prototype: '#/users?select=isabella-clark,julian-long',
+  },
+  {
+    title: 'Hourglass button for Background Jobs',
+    note: 'The Iris UI Explorations app layout (2880:25705) adds an Hourglass icon button between Search and the bell, with a red dot at its top right (2880:26097). The prototype shows the dot while a job is running or has failed, and the bell keeps its own unread dot as the other Figma files draw it. The Figma frame has no open menu, so the menu follows the notifications menu.',
+    recommendation: 'Draw the open Background jobs menu and say when the Hourglass dot shows.',
+    prototype: '#/users',
+  },
+  {
+    title: 'Notifications panel and Alerts',
+    file: 'advancedSearch',
+    figmaNodeId: '4145:13648',
+    note: 'The Figma header draws the bell with an unread dot and nothing behind it. The prototype opens an inbox panel from the bell: unread rows, mark all read, clear, and a click that opens what the row links to. A job that finishes while its card is dismissed, runs 20 seconds or more, or fails while dismissed adds a row. An alert adds a row and also pushes a warning toast ("a copy was sent to your email"). The dot stays, as Figma draws it, though the design system doc says badge number.',
+    recommendation: 'Draw the notifications panel (rows, unread, empty), the alert push, and decide dot or number on the bell.',
+    prototype: '#/users',
+  },
+  {
     title: 'Closing a filled-in New object form asks first',
     file: 'primary',
     figmaNodeId: '3367:12947',

@@ -359,3 +359,22 @@ Where: the self-service persona's navigation: [Home](#/user-view/home), [User Pr
 - [ ] **Person card.** Built as a small shared part (avatar, name, email, role badge) used in the Request Access and Review sheets.
 - [ ] **Checked in a browser.** These screens were reworked against Figma and opened in the running app (commits b53cbd5 and c0cb03f).
 
+## Flow 13: system communications
+
+Figma: none draws this flow. The only Figma input is the Hourglass button in the Iris UI Explorations app layout ([2880:25705](https://www.figma.com/design/LImlijPCggHCIEKRMVVrkn/Iris-UI--Explorations?node-id=2880-25705)); the rest is built from your notes and the design system doc (toast, Background Jobs, notifications, alerts).
+
+Where: the **Trigger** buttons in the top bar (wide screens only) fire each pattern; the bulk Move runs from the [Users list](#/users). The **Jobs UI** button there switches between the two ideas for Background Jobs.
+
+### Compare with Figma
+
+- [ ] Hourglass button and its red dot ([Button 2880:26127](https://www.figma.com/design/LImlijPCggHCIEKRMVVrkn/Iris-UI--Explorations?node-id=2880-26127), [dot 2880:26097](https://www.figma.com/design/LImlijPCggHCIEKRMVVrkn/Iris-UI--Explorations?node-id=2880-26097), [header buttons 2880:26094](https://www.figma.com/design/LImlijPCggHCIEKRMVVrkn/Iris-UI--Explorations?node-id=2880-26094)). Prototype: [Users list](#/users), press Trigger: Job.
+- [ ] Move toast for one user ([Move User toast 2396:13581](https://www.figma.com/design/IXKXZpycHiFcKbvHMvlc9r/ARS_WebUI2_Move_Browse_Objects?node-id=2396-13581)). Moving one user still shows it. Prototype: [Users list](#/users), Move one user.
+
+### Confirm
+
+- [ ] **New: moving two or more users is a Background Job.** Figma draws one toast for several objects ([Toast 2355:28099](https://www.figma.com/design/IXKXZpycHiFcKbvHMvlc9r/ARS_WebUI2_Move_Browse_Objects?node-id=2355-28099)). You asked for a job instead (rules SYS-1 to SYS-5). Prototype: [two users ticked](#/users?select=isabella-clark,julian-long), then Move in the selection bar.
+- [ ] **New: two ideas for showing jobs.** Panel: a Dropbox-style panel at the bottom right under the toast area, as wide as the toast, with the toast moved up above it. Menu: a list in a popover from the Hourglass button, like the notifications menu. Switch with Jobs UI in the top bar. In the menu idea a toast says the job started, since nothing else shows it. Based on [Hourglass button 2880:26127](https://www.figma.com/design/LImlijPCggHCIEKRMVVrkn/Iris-UI--Explorations?node-id=2880-26127). Prototype: [Users list](#/users).
+- [ ] **New: failed, cancelled and uncancellable jobs.** A failed job keeps a Retry state that carries on from the failed item; Entra jobs have no Cancel. Trigger: Job fails and Trigger: Entra job. Based on your notes; not in Figma ([Hourglass button 2880:26127](https://www.figma.com/design/LImlijPCggHCIEKRMVVrkn/Iris-UI--Explorations?node-id=2880-26127)).
+- [ ] **New: notifications panel and alerts.** The bell opens an inbox (unread rows, mark all read, clear, rows that open a page). A job that runs 20 seconds or more, or ends with nobody watching, adds a row (Trigger: Slow job). An alert adds a row and a warning toast that says a copy was sent to email (Trigger: Alert). Not in Figma ([header buttons 2880:26094](https://www.figma.com/design/LImlijPCggHCIEKRMVVrkn/Iris-UI--Explorations?node-id=2880-26094)).
+- [ ] **Questions for the designer.** Panel or menu? From how many items does a move become a job (now 2)? Dot or number on the bell and the Hourglass? ([2880:26097](https://www.figma.com/design/LImlijPCggHCIEKRMVVrkn/Iris-UI--Explorations?node-id=2880-26097))
+

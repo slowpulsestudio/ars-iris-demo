@@ -8,6 +8,19 @@
   flex-shrink: 0;
   container-type: inline-size;
   container-name: appheader;
+  position: relative;
+}
+
+.center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@container appheader (max-width: 1100px) {
+  .center {
+    display: none;
+  }
 }
 
 .left {

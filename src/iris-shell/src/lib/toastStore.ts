@@ -1,4 +1,5 @@
 import { useCallback, useSyncExternalStore } from 'react';
+import type { ToastTone } from '../components/Toast/Toast.js';
 
 /**
  * toastStore — a global, app-wide transient toast message. Any code can call
@@ -17,6 +18,10 @@ export interface ToastOptions {
   onUndo?: () => void;
   /** Label of the View button; defaults to "View". */
   viewLabel?: string;
+  /** Defaults to success. An alert uses warning. */
+  tone?: ToastTone;
+  /** Featured icon name; defaults to the tone's icon. */
+  icon?: string;
 }
 
 interface CurrentToast extends ToastOptions {
@@ -50,6 +55,8 @@ export interface ToastController {
   viewHref?: string;
   onUndo?: () => void;
   viewLabel?: string;
+  tone?: ToastTone;
+  icon?: string;
   dismiss: () => void;
 }
 
@@ -65,6 +72,8 @@ export function useToastMessage(): ToastController {
     viewHref: last?.viewHref,
     onUndo: last?.onUndo,
     viewLabel: last?.viewLabel,
+    tone: last?.tone,
+    icon: last?.icon,
     dismiss,
   };
 }

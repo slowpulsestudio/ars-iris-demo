@@ -15,6 +15,9 @@ import { IDENTITY_ROLES, filterIdentityGroups } from '../../lib/identityNav.js';
 import { isTypingTarget } from '../../lib/keyboard.js';
 import { useCurrentUser } from '../../lib/currentUser.js';
 import { useDockPanel } from '../../lib/dockPanelStore.js';
+import { SystemCommsTriggers } from '../SystemComms/SystemCommsTriggers.js';
+import { JobsHeaderButton } from '../BackgroundJobs/JobsHeaderButton.js';
+import { NotificationsBell } from '../Notifications/NotificationsBell.js';
 import styles from './AppShell.module.css';
 
 /** Map global-nav item value → route hash. Items without a mapping are no-op. */
@@ -615,6 +618,9 @@ export function AppShell({
           aiActive={aiOpen}
           onSearch={() => setSearchOpen(true)}
           roleSwitcher={roleSwitcher}
+          center={<SystemCommsTriggers />}
+          jobsButton={<JobsHeaderButton />}
+          notifications={<NotificationsBell />}
         />
 
         <div className={styles.body} ref={bodyRef}>

@@ -7,6 +7,7 @@ import { useToastMessage } from './lib/toastStore.js';
 import { ARSMoveToast, ARSNewObjectToast } from '@ars';
 import { CommandPalette } from './components/CommandPalette/CommandPalette.js';
 import { Toast } from './components/Toast/Toast.js';
+import { BackgroundJobsPanel } from './views/BackgroundJobs/BackgroundJobsPanel.js';
 import { UsersPage } from './views/UsersPage/UsersPage.js';
 import { UserDetailPage } from './views/UserDetailPage/UserDetailPage.js';
 import { TreeListPage } from './views/TreeView/TreeListPage.js';
@@ -137,6 +138,7 @@ export default function App() {
         <AppShellProvider directoryPanel={<ARSDirectoryPanel />}>
           <RoutedPage />
           <CommandPalette />
+          <BackgroundJobsPanel />
           {toast.onUndo ? (
             <ARSMoveToast
               message={toast.message}
@@ -166,7 +168,13 @@ export default function App() {
               onDismiss={toast.dismiss}
             />
           ) : (
-            <Toast message={toast.message} supportingText={toast.supportingText} onDismiss={toast.dismiss} />
+            <Toast
+              message={toast.message}
+              supportingText={toast.supportingText}
+              tone={toast.tone}
+              icon={toast.icon}
+              onDismiss={toast.dismiss}
+            />
           )}
         </AppShellProvider>
       </DirectoryProvider>

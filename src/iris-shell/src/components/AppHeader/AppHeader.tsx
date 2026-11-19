@@ -51,6 +51,12 @@ export interface AppHeaderProps {
   /** Optional control rendered at the start of the right cluster (e.g. the
    *  Identity Manager "Preview as" role switcher). */
   roleSwitcher?: ReactNode;
+  /** Centred in the bar (the prototype's system-communication triggers). Hidden when the bar is narrow. */
+  center?: ReactNode;
+  /** Before the bell: the Background Jobs button. */
+  jobsButton?: ReactNode;
+  /** Replaces the default bell, e.g. with one that opens the notifications panel. */
+  notifications?: ReactNode;
   /** Called when "Sign out" is chosen in the user menu. Without it the item
    *  is shown but inactive. */
   onSignOut?: () => void;
@@ -73,6 +79,9 @@ export function AppHeader({
   aiActive = false,
   onSearch,
   roleSwitcher,
+  center,
+  jobsButton,
+  notifications,
   onSignOut,
   className,
 }: AppHeaderProps) {
@@ -270,15 +279,22 @@ export function AppHeader({
         </nav>
       </div>
 
+      {center && <div className={styles.center}>{center}</div>}
+
       <div className={styles.right}>
         {roleSwitcher}
         <Tooltip label="Search" shortcut={['⌘', 'K']}>
           <IconButton icon="MagnifyingGlass" ariaLabel="Search" onClick={onSearch} />
         </Tooltip>
+        {jobsButton}
         {/* Every Figma header draws an unread dot on the bell (e.g. ARS_WebUI2_Advanced-Search 4145:13648). */}
         <span className={cx(styles.bell, styles.bellWrap)}>
-          <IconButton icon="Bell" ariaLabel="Notifications, unread" />
-          <span className={styles.bellDot} aria-hidden="true" />
+          {notifications ?? (
+            <>
+              <IconButton icon="Bell" ariaLabel="Notifications, unread" />
+              <span className={styles.bellDot} aria-hidden="true" />
+            </>
+          )}
         </span>
         <Tooltip label="Ask AI" shortcut={['⌘', '/']}>
           <BorderBeam size="sm" theme="auto" active={!aiActive}>

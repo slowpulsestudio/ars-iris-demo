@@ -7,7 +7,8 @@
 .toast {
   position: fixed;
   right: var(--oi-spacing-l);
-  bottom: var(--oi-spacing-l);
+  /* Rises above the Background Jobs panel when it is showing (set by the panel). */
+  bottom: calc(var(--oi-spacing-l) + var(--oi-toast-stack-offset, 0px));
   z-index: 100;
 
   display: flex;

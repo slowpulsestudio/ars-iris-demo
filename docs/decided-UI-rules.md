@@ -49,3 +49,22 @@ Each rule has an ID, what it says, where it comes from and where it is built. Wh
 
 **TBL-3. Column head icons are 16px.** The sort, filter and leading icons in a column head are 16px, a size down from the 20px they were.
 - Source: designer, 17 Nov 2026. Built: kit `ARSSortableHeaderCell`.
+
+## System communications
+
+How the prototype tells the user something happened: toast, Background Job, notification, alert. None of it is drawn in Figma yet (see the Design update recommendations page).
+
+**SYS-1. An instant action never becomes a Background Job.** Work that takes under a second or two ("Settings saved", moving one user) shows a toast that dismisses itself. A job for it would only clutter the tray.
+- Source: designer, 19 Nov 2026. Built: `lib/useMoveUsers.ts` (one user: toast; several: job).
+
+**SYS-2. Moving two or more users is a Background Job.** From the Users list, the users move one at a time while the table updates. Each job shows total progress and a percentage, "24/102 items moved", from and to, and Cancel. The Hourglass button in the top bar (Iris UI Explorations 2880:26127, with its red dot 2880:26097 while a job runs or has failed) is where jobs live. Two ways to show them are being tried, switched with the Jobs UI button in the top bar: a Dropbox-style panel at the bottom right under the toast area (as wide as the toast; the toast moves up above it; the Hourglass button reopens it after the X), or a list in a popover from the Hourglass button, like the notifications menu.
+- Source: designer, 19 Nov 2026. Built: `lib/jobsStore.ts`, `lib/useMoveUsers.ts`, `views/BackgroundJobs/`.
+
+**SYS-3. A running or failed job never uses a toast.** A failed job keeps a Retry state on its card, which carries on from the item that failed. A finished job has View and Clear; a cancelled one keeps what already moved.
+- Source: designer, 19 Nov 2026. Built: `views/BackgroundJobs/BackgroundJobItem.tsx`.
+
+**SYS-4. A job escalates to a notification only when the user has likely moved on.** That is when it ran 20 seconds or more (`JOB_ESCALATE_AFTER_MS`), or, in the panel view, when it finishes or fails while the panel is closed.
+- Source: designer, 19 Nov 2026. Built: `lib/jobsStore.ts`, `lib/notificationsStore.ts`.
+
+**SYS-5. No Cancel where the work can't be stopped.** A job through a REST API to Entra shows "This can't be cancelled." in place of Cancel.
+- Source: designer, 19 Nov 2026. Built: `lib/jobsStore.ts` (`cancellable`), `views/SystemComms/SystemCommsTriggers.tsx` (the Entra job).
