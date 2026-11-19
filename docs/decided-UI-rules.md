@@ -60,8 +60,8 @@ How the prototype tells the user something happened: toast, Background Job, noti
 **SYS-2. Five complexity directions are compared, picked on the welcome page.** Each adds to the one before. The MVP is B.
 - A. Toasts only: one toast for job started, complete and failed. They all dismiss themselves.
 - A2. Top bar popover: A, plus the Hourglass button (Iris UI Explorations 2880:26127) whose popover lists the jobs, like the notifications menu. Never a panel.
-- B. Progress feed (MVP): a feed under the toast area, as wide as a toast, with the toast moved up above it. It can be minimised and closed; the Hourglass reopens it. AD shows "24/100 completed" and a spinner, no bar, and Cancel.
-- C. B with an overall progress bar and Stop.
+- B. Progress feed (MVP): a feed under the toast area, as wide as a toast, with the toast moved up above it. The down caret folds it into a one-line bar (title and count) and the up caret expands it again; the X closes it and the Hourglass reopens it. It stays with the user across app pages but not on the welcome page. AD shows "24/100 completed" and a spinner, no bar, and Cancel.
+- C. B with an overall progress bar and Stop. The one-line bar keeps a thin overall bar under it.
 - D. C with every object listed, each with its own bar and Cancel.
 - Every direction signs in as David Smith on the Users list with every AD user ticked, so Move is one click away.
 - Source: designer, 19 Nov 2026 (tech review). Built: `lib/jobsDirection.ts`, `lib/jobsStore.ts`, `views/BackgroundJobs/`, `views/WelcomePage/`.

@@ -17,6 +17,7 @@ import { useCurrentUser } from '../../lib/currentUser.js';
 import { useDockPanel } from '../../lib/dockPanelStore.js';
 import { SystemCommsTriggers } from '../SystemComms/SystemCommsTriggers.js';
 import { JobsHeaderButton } from '../BackgroundJobs/JobsHeaderButton.js';
+import { BackgroundJobsFeed } from '../BackgroundJobs/BackgroundJobsFeed.js';
 import { NotificationsBell } from '../Notifications/NotificationsBell.js';
 import styles from './AppShell.module.css';
 
@@ -648,6 +649,8 @@ export function AppShell({
           )}
 
           <AiPanel open={aiOpen} onClose={() => setAiOpen(false)} />
+          {/* Part of the shell, so the feed stays with the user across app pages but not on the welcome or review pages. */}
+          <BackgroundJobsFeed />
         </div>
       </div>
     </div>

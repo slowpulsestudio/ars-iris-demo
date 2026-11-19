@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { IconButton } from '../../components/IconButton/IconButton.js';
+import { cx } from '../../lib/cx.js';
 import { DIRECTION_FEATURES, useJobsDirection } from '../../lib/jobsDirection.js';
 import { processedCount, setFeedMinimised, setFeedOpen, useJobsState, type Job } from '../../lib/jobsStore.js';
 import { BackgroundJobItem } from './BackgroundJobItem.js';
@@ -24,7 +25,9 @@ function summary(jobs: Job[]): { title: string; detail: string } {
 
 /**
  * The progress feed (directions B, C and D): at the bottom right under the toast area, as wide as a toast, and the
- * toast moves up above it. It can be minimised to its header or closed; the Hourglass in the top bar reopens it.
+ * toast moves up above it. The down caret folds it into a one-line bar (with a thin overall bar in C and D); the X
+ * closes it and the Hourglass in the top bar reopens it. It is part of the shell, so it follows the user across app
+ * pages but not onto the welcome page.
  */
 export function BackgroundJobsFeed() {
   const direction = useJobsDirection();
@@ -57,6 +60,45 @@ export function BackgroundJobsFeed() {
   const done = adJobs.reduce((n, j) => n + processedCount(j), 0);
   const percent = total === 0 ? 100 : Math.round((done / total) * 100);
 
+  const bar = f.bar && total > 0 && (
+    <div
+      className={styles.total}
+      role="progressbar"
+      aria-label="Overall progress"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={percent}
+    >
+      <div className={styles.totalFill} style={{ width: `${percent}%` }} />
+    </div>
+  );
+
+  if (feedMinimised) {
+    return createPortal(
+      <section ref={ref} className={cx(styles.feed, styles.mini)} aria-label="Background jobs">
+        <div className={styles.miniRow}>
+          <span className={styles.icon}>
+            <HourglassIcon running={running} size={16} />
+          </span>
+          <p className={styles.miniText}>
+            <span className={styles.title}>{title}</span>
+            <span className={styles.detail}>{detail}</span>
+          </p>
+          <IconButton
+            icon="CaretUp"
+            ariaLabel="Expand background jobs"
+            size="s"
+            aria-expanded={false}
+            onClick={() => setFeedMinimised(false)}
+          />
+          <IconButton icon="X" ariaLabel="Close background jobs" size="s" onClick={() => setFeedOpen(false)} />
+        </div>
+        {bar}
+      </section>,
+      document.body,
+    );
+  }
+
   return createPortal(
     <section ref={ref} className={styles.feed} aria-label="Background jobs">
       <div className={styles.head}>
@@ -68,35 +110,19 @@ export function BackgroundJobsFeed() {
           <p className={styles.detail}>{detail}</p>
         </div>
         <IconButton
-          icon={feedMinimised ? 'CaretUp' : 'CaretDown'}
-          ariaLabel={feedMinimised ? 'Expand background jobs' : 'Minimise background jobs'}
+          icon="CaretDown"
+          ariaLabel="Minimise background jobs"
           size="s"
-          aria-expanded={!feedMinimised}
-          onClick={() => setFeedMinimised(!feedMinimised)}
+          aria-expanded
+          onClick={() => setFeedMinimised(true)}
         />
         <IconButton icon="X" ariaLabel="Close background jobs" size="s" onClick={() => setFeedOpen(false)} />
       </div>
-      {feedMinimised ? (
-        f.bar &&
-        total > 0 && (
-          <div
-            className={styles.total}
-            role="progressbar"
-            aria-label="Overall progress"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={percent}
-          >
-            <div className={styles.totalFill} style={{ width: `${percent}%` }} />
-          </div>
-        )
-      ) : (
-        <div className={styles.list}>
-          {jobs.map((job) => (
-            <BackgroundJobItem key={job.id} job={job} />
-          ))}
-        </div>
-      )}
+      <div className={styles.list}>
+        {jobs.map((job) => (
+          <BackgroundJobItem key={job.id} job={job} />
+        ))}
+      </div>
     </section>,
     document.body,
   );
