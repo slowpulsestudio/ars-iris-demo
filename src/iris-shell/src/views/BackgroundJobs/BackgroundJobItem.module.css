@@ -73,8 +73,7 @@
   gap: var(--oi-spacing-m);
 }
 
-.track,
-.itemTrack {
+.track {
   overflow: hidden;
   border-radius: var(--oi-border-radius-max);
   background-color: var(--oi-background-color-info);
@@ -85,8 +84,7 @@
   height: var(--oi-spacing-xs);
 }
 
-.fill,
-.itemFill {
+.fill {
   display: block;
   height: 100%;
   border-radius: inherit;
@@ -114,6 +112,7 @@
 }
 
 .items {
+  position: relative;
   display: flex;
   flex-direction: column;
   max-height: 200px;
@@ -125,48 +124,89 @@
 }
 
 .itemRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 64px 64px var(--oi-size-default);
+  display: flex;
   align-items: center;
   gap: var(--oi-spacing-s);
-  min-height: var(--oi-size-default);
+  min-height: var(--oi-size-s);
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);
 }
 
 .itemName {
+  flex: 1 1 0;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--oi-content-color-primary);
 }
 
-.itemTrack {
-  height: var(--oi-spacing-xs);
-}
-
-.itemStatus {
+.item_cancelled .itemName,
+.item_queued .itemName {
   color: var(--oi-content-color-secondary);
 }
 
-.item_done .itemFill {
-  background-color: var(--oi-content-color-success);
+/* The far-right slot: the state, or Cancel while the row is hovered or focused. */
+.itemSlot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--oi-size-s);
+  height: var(--oi-size-s);
 }
 
-.item_failed .itemStatus {
+.itemState {
+  display: inline-flex;
+}
+
+.item_done .itemState {
+  color: var(--oi-content-color-success);
+}
+
+.item_failed .itemState {
   color: var(--oi-content-color-error);
 }
 
-.item_failed .itemTrack {
-  background-color: var(--oi-background-color-error);
+.item_cancelled .itemState {
+  color: var(--oi-content-color-tertiary);
 }
 
-.item_cancelled .itemFill {
-  background-color: var(--oi-content-color-secondary);
+.itemCancel {
+  display: none;
 }
 
-.itemSpacer {
-  width: var(--oi-size-default);
+.itemCancellable:hover .itemState,
+.itemCancellable:focus-within .itemState {
+  display: none;
+}
+
+.itemCancellable:hover .itemCancel,
+.itemCancellable:focus-within .itemCancel {
+  display: inline-flex;
+}
+
+/* Keyboard users reach Cancel without hovering: it stays in the tab order, clipped until focused. */
+.itemCancellable:not(:hover):not(:focus-within) .itemSlot {
+  position: relative;
+}
+
+.itemCancellable:not(:hover):not(:focus-within) .itemCancel {
+  display: inline-flex;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .actions {
@@ -176,8 +216,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fill,
-  .itemFill {
+  .fill {
     transition: none;
   }
 }

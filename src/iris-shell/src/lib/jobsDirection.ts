@@ -7,7 +7,7 @@ import { useSyncExternalStore } from 'react';
  * - A2: the Hourglass button in the top bar, with the jobs in its popover. No panel.
  * - B (MVP): a progress feed under the toast area that can be minimised, closed and reopened from the Hourglass.
  * - C: B with an overall progress bar and Stop.
- * - D: C with every object listed, each with its own bar and Cancel.
+ * - D: C with every object listed, each with a small spinner and Cancel on hover.
  */
 export type JobsDirection = 'a' | 'a2' | 'b' | 'c' | 'd';
 
@@ -47,7 +47,7 @@ export const JOBS_DIRECTIONS: JobsDirectionInfo[] = [
     id: 'd',
     letter: 'D',
     title: 'Item level progress',
-    description: 'The feed with every object listed, each with its own progress bar and Cancel.',
+    description: 'The feed with every object listed, each with a small spinner. Hover a row to cancel it.',
   },
 ];
 

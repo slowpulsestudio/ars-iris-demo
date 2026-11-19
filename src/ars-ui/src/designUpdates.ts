@@ -206,7 +206,7 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     title: 'Moving several users is a Background Job',
     file: 'move',
     figmaNodeId: '2355:28099',
-    note: 'Figma draws one success toast with Undo and View after a move, however many objects. At the designer\'s request (rules SYS-1 to SYS-6) moving two or more users starts a Background Job that works through them in serial while the table updates. Five complexity directions are built and picked on the welcome page: A toasts only; A2 the Hourglass popover; B (MVP) a progress feed under the toast area with "24/100 completed", a spinner and Cancel; C adds an overall progress bar and Stop; D lists every object with its own bar and Cancel. Entra says "Changes submitted" and can\'t be stopped. Moving one user keeps the Figma toast.',
+    note: 'Figma draws one success toast with Undo and View after a move, however many objects. At the designer\'s request (rules SYS-1 to SYS-6) moving two or more users starts a Background Job that works through them in serial while the table updates. Five complexity directions are built and picked on the welcome page: A toasts only; A2 the Hourglass popover; B (MVP) a progress feed under the toast area with "24/100 completed", a spinner and Cancel; C adds an overall progress bar and Stop; D lists every object with a small spinner and Cancel on hover. Entra says "Changes submitted" and can\'t be stopped. Moving one user keeps the Figma toast.',
     recommendation: 'Draw direction B: the feed (running, minimised, complete, failed, cancelled, Entra), and the toast stacked above it. Draw C and D only if customers ask for them.',
     prototype: '#/users?select=isabella-clark,sophia-martinez,noah-kim,mason-patel,ethan-brooks,ava-thompson,lucas-rivera',
   },

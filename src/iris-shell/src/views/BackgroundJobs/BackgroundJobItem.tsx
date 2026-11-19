@@ -29,37 +29,45 @@ function statusText(job: Job): string {
   }
 }
 
+const ITEM_STATE = { queued: 'Waiting', running: 'Moving', done: 'Moved', failed: 'Failed', cancelled: 'Cancelled' } as const;
+
+/**
+ * One object in an item level job (D): its name, and at the far right a small spinner while it moves, a tick when
+ * moved, a warning when it failed. Hovering or focusing a waiting or moving row swaps that for a Cancel button.
+ */
 function ItemRow({ job, item, index }: { job: Job; item: JobItem; index: number }) {
-  const active = item.status === 'queued' || item.status === 'running';
-  const label = { queued: 'Waiting', running: 'Moving', done: 'Moved', failed: 'Failed', cancelled: 'Cancelled' }[item.status];
+  const cancellable = job.status === 'running' && (item.status === 'queued' || item.status === 'running');
   return (
-    <li className={cx(styles.itemRow, styles[`item_${item.status}`])}>
+    <li className={cx(styles.itemRow, styles[`item_${item.status}`], cancellable && styles.itemCancellable)}>
       <span className={styles.itemName} title={item.name}>
         {item.name}
       </span>
-      <span
-        className={styles.itemTrack}
-        role="progressbar"
-        aria-label={`${item.name}: ${label}`}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(item.progress * 100)}
-      >
-        <span className={styles.itemFill} style={{ width: `${item.progress * 100}%` }} />
+      <span className={styles.srOnly}>{ITEM_STATE[item.status]}</span>
+      <span className={styles.itemSlot}>
+        <span className={styles.itemState} aria-hidden="true">
+          {item.status === 'running' && <Spinner size="s" label={`Moving ${item.name}`} />}
+          {item.status === 'done' && <Icon name="Check" size="16px" />}
+          {item.status === 'failed' && <Icon name="WarningCircle" size="16px" />}
+          {item.status === 'cancelled' && <Icon name="Minus" size="16px" />}
+        </span>
+        {cancellable && (
+          <IconButton
+            className={styles.itemCancel}
+            icon="X"
+            ariaLabel={`Cancel ${item.name}`}
+            size="s"
+            onClick={() => cancelJobItem(job.id, index)}
+          />
+        )}
       </span>
-      <span className={styles.itemStatus}>{label}</span>
-      {active && job.status === 'running' ? (
-        <IconButton icon="X" ariaLabel={`Cancel ${item.name}`} size="s" onClick={() => cancelJobItem(job.id, index)} />
-      ) : (
-        <span className={styles.itemSpacer} aria-hidden="true" />
-      )}
     </li>
   );
 }
 
 /**
  * One Background Job, as much of it as the chosen direction shows: the count and a spinner ("24/100 completed")
- * from A2 and B, an overall progress bar and Stop from C, and every object with its own bar and Cancel in D. An Entra
+ * from A2 and B, an overall progress bar and Stop from C, and every object in D, each with a small spinner and a
+ * Cancel on hover (D has no spinner of its own beside the job, as the rows carry it). An Entra
  * job only says its changes were submitted, and can't be stopped. Not in Figma yet (see Design update recommendations).
  */
 export function BackgroundJobItem({ job }: { job: Job }) {
@@ -71,9 +79,11 @@ export function BackgroundJobItem({ job }: { job: Job }) {
   return (
     <div className={cx(styles.job, styles[`status_${job.status}`])} role="group" aria-label={job.title}>
       <div className={styles.head}>
-        <span className={styles.icon}>
-          {running ? <Spinner size="s" label="Running" /> : <Icon name={DONE_ICON[job.status]} size="16px" aria-hidden />}
-        </span>
+        {!(running && f.items) && (
+          <span className={styles.icon}>
+            {running ? <Spinner size="s" label="Running" /> : <Icon name={DONE_ICON[job.status]} size="16px" aria-hidden />}
+          </span>
+        )}
         <div className={styles.text}>
           <p className={styles.title}>{title}</p>
           <p className={styles.route}>
