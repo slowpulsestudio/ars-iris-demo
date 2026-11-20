@@ -21,6 +21,8 @@ export interface JobsDirectionInfo {
   description: string;
   /** Recommended directions get the larger cards on the welcome page. */
   recommended: boolean;
+  /** 1 (simplest) to 5; the letters and numbers run in this order. */
+  complexity: number;
   /** Picture of the direction's component, in public/directions/. */
   image: string;
 }
@@ -32,38 +34,43 @@ export const JOBS_DIRECTIONS: JobsDirectionInfo[] = [
     title: 'Toasts only',
     description: 'One toast for each state change: job started, job complete, job failed.',
     recommended: false,
+    complexity: 1,
     image: '/directions/a-toasts-only.png',
   },
   {
     id: 'b1',
     letter: 'B1',
-    title: 'Top Bar Popover',
+    title: 'Top bar: popover only',
     description: 'The Hourglass in the top bar shows a job is running; click it to see the job in a popover.',
     recommended: true,
+    complexity: 2,
     image: '/directions/b1-top-bar-popover.png',
   },
   {
     id: 'b2',
     letter: 'B2',
-    title: 'Progress Feed (MVP)',
+    title: 'Bottom tray: simple',
     description: 'A feed under the toast area with "24/100 completed" and a spinner. Minimise, close, reopen from the Hourglass.',
     recommended: true,
+    complexity: 3,
     image: '/directions/b2-progress-feed.png',
   },
   {
     id: 'c',
     letter: 'C',
-    title: 'Progress Bar',
+    title: 'Bottom tray: overall progress',
     description: 'The feed with an overall progress bar and Stop.',
     recommended: false,
+    complexity: 4,
     image: '/directions/c-progress-bar.png',
   },
   {
     id: 'd',
     letter: 'D',
-    title: 'Item Level Progress',
+    title: 'Bottom tray: item progress',
     description: 'The feed with every object listed, each with a small spinner. Hover a row to cancel it.',
     recommended: false,
+    complexity: 5,
     image: '/directions/d-item-level-progress.png',
   },
 ];

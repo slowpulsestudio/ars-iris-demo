@@ -14,7 +14,8 @@
    centred and a long breadcrumb is cut off with an ellipsis before it reaches the centre. */
 .withCenter {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  /* The right cluster never shrinks below its content; the left (breadcrumb) gives way first. */
+  grid-template-columns: minmax(0, 1fr) auto minmax(max-content, 1fr);
   column-gap: var(--oi-spacing-xxl);
 }
 
@@ -34,7 +35,8 @@
 }
 
 /* While the centre area shows, a trail of folders folds into the "…" menu and the current page, as it does on a
-   narrow bar, so it stays well clear of the centre. */
+   narrow bar, so it stays well clear of the centre. When the bar gets tight the breadcrumb goes altogether: the
+   centre area matters more (see SystemCommsTriggers for what folds next). */
 @container appheader (min-width: 641px) {
   .withCenter .breadcrumbCollapsible .crumbs {
     display: none;
@@ -42,6 +44,12 @@
 
   .withCenter .breadcrumbCollapsible .crumbsCollapsed {
     display: inline-flex;
+  }
+}
+
+@container appheader (max-width: 1320px) {
+  .withCenter .breadcrumb {
+    display: none;
   }
 }
 

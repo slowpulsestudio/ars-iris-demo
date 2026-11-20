@@ -46,7 +46,7 @@ export function ChoicePage({ title, subtitle, topStart, topEnd, children }: Choi
 interface ChoiceCardProps {
   visual: ReactNode;
   title: string;
-  subtitle: string;
+  subtitle: ReactNode;
   description?: string;
   cta: string;
   /** Two to a row instead of three, for the choices to look at first. */

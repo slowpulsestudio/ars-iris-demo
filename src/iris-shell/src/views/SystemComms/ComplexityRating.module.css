@@ -1,0 +1,14 @@
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-2);
+  vertical-align: middle;
+}
+
+.on {
+  color: var(--oi-content-color-brand);
+}
+
+.off {
+  color: var(--oi-content-color-disabled);
+}

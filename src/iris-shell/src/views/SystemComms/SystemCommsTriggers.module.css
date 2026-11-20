@@ -42,7 +42,8 @@
   display: none;
 }
 
-@container appheader (max-width: 1320px) {
+/* Only once the breadcrumb has gone (AppHeader, 1320px) and there's still no room. */
+@container appheader (max-width: 1120px) {
   .inline {
     display: none;
   }

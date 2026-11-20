@@ -79,11 +79,6 @@ export function BackgroundJobItem({ job }: { job: Job }) {
   return (
     <div className={cx(styles.job, styles[`status_${job.status}`])} role="group" aria-label={job.title}>
       <div className={styles.head}>
-        {!(running && f.items) && (
-          <span className={styles.icon}>
-            {running ? <Spinner size="s" label="Running" /> : <Icon name={DONE_ICON[job.status]} size="16px" aria-hidden />}
-          </span>
-        )}
         <div className={styles.text}>
           <p className={styles.title}>{title}</p>
           <p className={styles.route}>
@@ -93,6 +88,12 @@ export function BackgroundJobItem({ job }: { job: Job }) {
             {statusText(job)}
           </p>
         </div>
+        {/* The job's state sits at the far right, like each object's in D. */}
+        {!(running && f.items) && (
+          <span className={styles.icon}>
+            {running ? <Spinner size="s" label="Running" /> : <Icon name={DONE_ICON[job.status]} size="16px" aria-hidden />}
+          </span>
+        )}
       </div>
       {f.bar && !entra && (
         <div className={styles.bar}>

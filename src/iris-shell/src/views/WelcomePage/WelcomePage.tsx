@@ -7,6 +7,7 @@ import { resetJobs } from '../../lib/jobsStore.js';
 import { findPersona } from '../../lib/personas.js';
 import { navigate, useRoute } from '../../lib/router.js';
 import { ChoiceCard, ChoicePage } from '../ChoicePage/ChoicePage.js';
+import { ComplexityRating } from '../SystemComms/ComplexityRating.js';
 import styles from './WelcomePage.module.css';
 
 /** Every direction signs in as David Smith, the admin, who can run bulk moves. */
@@ -74,7 +75,12 @@ export function WelcomePage() {
             </span>
           }
           title={direction.title}
-          subtitle={`Direction ${direction.letter}`}
+          subtitle={
+            <span className={styles.meta}>
+              Direction {direction.letter}
+              <ComplexityRating value={direction.complexity} />
+            </span>
+          }
           cta={`Try ${direction.letter}`}
           onClick={() => pick(direction)}
         />

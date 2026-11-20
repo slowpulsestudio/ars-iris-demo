@@ -71,7 +71,7 @@ export function SystemCommsTriggers() {
         topAnchor={44}
         items={JOBS_DIRECTIONS.map((d) => ({
           kind: 'item' as const,
-          label: `${d.letter}: ${d.title}`,
+          label: `${d.letter} · ${d.title} · complexity ${d.complexity}/5`,
           selected: d.id === current,
           onSelect: () => pickDirection(d.id),
         }))}
@@ -86,7 +86,7 @@ export function SystemCommsTriggers() {
             aria-label={`Background Jobs direction: ${info.letter}, ${info.title}`}
             title={info.description}
           >
-            {info.letter}: {info.title}
+            {info.letter} · {info.title}
             <Icon name="CaretDown" size="12px" />
           </button>
         )}
