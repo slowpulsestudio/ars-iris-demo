@@ -289,9 +289,20 @@ export function isCopyDestination(nodeId: string): boolean {
   return !NOT_MOVE_DESTINATIONS.has(nodeId);
 }
 
-/** Whether objects and folders can be moved into `nodeId`: nothing is moved into Entra ID either. */
-export function isMoveDestination(nodeId: string): boolean {
+/** The groupings above the domains: they hold domains, never objects. */
+const DIRECTORY_TIERS = new Set(['managed-directories', 'active-directories']);
+
+/** Whether `nodeId` shows in the Move sheet's tree: everything but Access templates, Managed units and Entra ID. */
+export function showsInMoveTree(nodeId: string): boolean {
   return isCopyDestination(nodeId) && !isSelfOrDescendant(nodeId, 'entra-directories');
+}
+
+/**
+ * Whether objects and folders can be moved into `nodeId`: a domain (e.g. O3D.local) or a folder in one. Managed
+ * directories and Active Directory can be opened in the Move sheet but not chosen, and nothing is moved into Entra ID.
+ */
+export function isMoveDestination(nodeId: string): boolean {
+  return showsInMoveTree(nodeId) && !DIRECTORY_TIERS.has(nodeId);
 }
 
 /**

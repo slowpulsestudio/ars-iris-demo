@@ -43,6 +43,9 @@ Each rule has an ID, what it says, where it comes from and where it is built. Wh
 **LST-4. The Move and Copy sheets start at Managed directories.** Access templates and Managed units are not destinations, in the sheets or by dragging in the left panel.
 - Source: designer.
 
+**LST-7. Objects move into a domain or a folder in one, never into the folders above the domains.** Managed directories and Active Directory can be opened in the Move sheet, but ticking them leaves Move off until a domain (e.g. O3D.local) or a folder in one is ticked. The same goes for users, groups and OUs, from every Move: the lists, the object pages, the Tree view and dragging onto the left panel. So every moved AD object keeps a real Location such as `O3D.local\Test OU`.
+- Source: designer, 20 Nov 2026. Built: `isMoveDestination` and `showsInMoveTree` in `lib/directoryData.ts`, used by `views/MoveObjectSheet/`.
+
 **LST-5. The breadcrumb shows the whole path** on Tree view pages, each folder opening its list.
 - Source: designer.
 

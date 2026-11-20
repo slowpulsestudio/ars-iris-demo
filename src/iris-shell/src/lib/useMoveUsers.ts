@@ -51,9 +51,8 @@ export function useMoveUsers() {
           title: 'Moving users',
           noun: 'users',
           names: moving.map((u) => u.name),
-          from: origins.size === 1 ? [...origins][0] || 'Unknown location' : 'Several locations',
-          // A folder above the domains (e.g. Active Directory itself) has no Location path; show where it is in the tree.
-          to: location || path.map((n) => n.name).join(' / '),
+          from: origins.size === 1 ? [...origins][0] : 'Several locations',
+          to: location,
           toName: destName,
           // AD works through the list in serial; a quarter of a second per user (64 AD users ≈ 15 s) keeps it readable.
           tickMs: 60,
