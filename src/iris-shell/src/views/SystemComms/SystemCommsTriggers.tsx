@@ -91,11 +91,35 @@ export function SystemCommsTriggers() {
           </button>
         )}
       />
-      {TRIGGERS.map((t) => (
-        <Button key={t.label} variant="ghost" size="s" title={t.hint} onClick={t.run}>
-          {t.label}
-        </Button>
-      ))}
+      <span className={styles.inline}>
+        {TRIGGERS.map((t) => (
+          <Button key={t.label} variant="ghost" size="s" title={t.hint} onClick={t.run}>
+            {t.label}
+          </Button>
+        ))}
+      </span>
+      {/* When the top bar is too narrow for the buttons, they fold into a menu. */}
+      <span className={styles.compact}>
+        <Menu
+          ariaLabel="Triggers"
+          align="start"
+          topAnchor={44}
+          items={TRIGGERS.map((t) => ({ kind: 'item' as const, label: t.label, onSelect: t.run }))}
+          trigger={({ ref, onClick, expanded }) => (
+            <button
+              ref={ref as React.Ref<HTMLButtonElement>}
+              type="button"
+              className={styles.direction}
+              onClick={onClick}
+              aria-haspopup="menu"
+              aria-expanded={expanded}
+            >
+              Triggers
+              <Icon name="CaretDown" size="12px" />
+            </button>
+          )}
+        />
+      </span>
     </div>
   );
 }

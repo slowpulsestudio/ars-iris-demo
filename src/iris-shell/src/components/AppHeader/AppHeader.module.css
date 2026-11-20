@@ -35,7 +35,7 @@
 
 /* While the centre area shows, a trail of folders folds into the "…" menu and the current page, as it does on a
    narrow bar, so it stays well clear of the centre. */
-@container appheader (min-width: 1281px) {
+@container appheader (min-width: 641px) {
   .withCenter .breadcrumbCollapsible .crumbs {
     display: none;
   }
@@ -45,7 +45,7 @@
   }
 }
 
-@container appheader (max-width: 1280px) {
+@container appheader (max-width: 640px) {
   .center {
     display: none;
   }

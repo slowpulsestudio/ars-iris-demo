@@ -32,6 +32,26 @@
   box-shadow: var(--oi-focus-ring);
 }
 
+.inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oi-spacing-xs);
+}
+
+.compact {
+  display: none;
+}
+
+@container appheader (max-width: 1320px) {
+  .inline {
+    display: none;
+  }
+
+  .compact {
+    display: inline-flex;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .direction {
     transition: none;
