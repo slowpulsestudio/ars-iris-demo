@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { BrandLogo } from '../../components/BrandLogo/BrandLogo.js';
 import { Icon } from '../../components/Icon/Icon.js';
 import { useFixedTheme } from '../../lib/useTheme.js';
@@ -10,6 +10,8 @@ interface ChoicePageProps {
   /** Controls pinned to the page's top-left and top-right corners. */
   topStart?: ReactNode;
   topEnd?: ReactNode;
+  /** Cards to a row (default 3); the page widens to fit them. */
+  columns?: number;
   /** `ChoiceCard`s. */
   children: ReactNode;
 }
@@ -19,13 +21,21 @@ interface ChoicePageProps {
  * a heading and a row of big choice cards. Used by the welcome page and the
  * Storybooks page, which always show in the dark theme.
  */
-export function ChoicePage({ title, subtitle, topStart, topEnd, children }: ChoicePageProps) {
+export function ChoicePage({ title, subtitle, topStart, topEnd, columns = 3, children }: ChoicePageProps) {
   useFixedTheme('dark');
   return (
     <div className={styles.page}>
       {topStart && <div className={styles.topStart}>{topStart}</div>}
       {topEnd && <div className={styles.topEnd}>{topEnd}</div>}
-      <main className={styles.content}>
+      <main
+        className={styles.content}
+        style={
+          {
+            '--choice-columns': columns,
+            '--choice-max-width': `calc(${columns} * 296px + ${columns - 1} * var(--oi-spacing-xl))`,
+          } as CSSProperties
+        }
+      >
         <header className={styles.intro}>
           <span className={styles.product}>
             <BrandLogo size="32px" />
@@ -49,7 +59,7 @@ interface ChoiceCardProps {
   subtitle: ReactNode;
   description?: string;
   cta: string;
-  /** Two to a row instead of three, for the choices to look at first. */
+  /** Half a row, on a row of its own, for the choice to look at first. */
   wide?: boolean;
   /** Pinned to the middle of the card's top edge, as on a pricing page (e.g. a "Recommended" Badge). Also outlines the card. */
   badge?: ReactNode;

@@ -28,7 +28,7 @@
 .content {
   margin: 0 auto;
   width: 100%;
-  max-width: 936px;
+  max-width: var(--choice-max-width, 936px);
   display: flex;
   flex-direction: column;
   gap: var(--oi-spacing-xxl);
@@ -69,7 +69,7 @@
   color: var(--oi-content-color-secondary);
 }
 
-/* ── Cards: three to a row, any shorter row centred ── */
+/* ── Cards: three to a row (`columns` sets it), any shorter row centred ── */
 .cards {
   list-style: none;
   margin: 0;
@@ -82,12 +82,14 @@
 
 .cardItem {
   display: flex;
-  flex: 0 0 calc((100% - 2 * var(--oi-spacing-xl)) / 3);
+  flex: 0 0 calc((100% - (var(--choice-columns, 3) - 1) * var(--oi-spacing-xl)) / var(--choice-columns, 3));
   min-width: 0;
 }
 
+/* Half a row, centred on a row of its own: the side margins fill the rest so nothing sits beside it. */
 .cardItemWide {
   flex-basis: calc((100% - var(--oi-spacing-xl)) / 2);
+  margin-inline: calc(25% + var(--oi-spacing-xl) / 4);
 }
 
 /* A featured card, as on a pricing page: a brand outline and a badge on the middle of its top edge. */
@@ -210,5 +212,6 @@
 @media (max-width: 900px) {
   .cardItem {
     flex-basis: 100%;
+    margin-inline: 0;
   }
 }

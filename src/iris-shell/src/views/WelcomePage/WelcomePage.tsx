@@ -36,6 +36,7 @@ export function WelcomePage() {
   return (
     <ChoicePage
       title="Welcome"
+      columns={4}
       subtitle={`Choose a Background Jobs direction to try. Each signs in as ${persona?.name ?? 'the admin'} on the Users list with every AD user ticked: choose Move in the selection bar and pick a folder. The top bar has triggers for the other cases.`}
       topEnd={
         <span className={styles.topActions}>
@@ -77,11 +78,11 @@ export function WelcomePage() {
           title={direction.title}
           subtitle={
             <span className={styles.meta}>
-              Direction {direction.letter}
+              Option {direction.letter}
               <ComplexityRating value={direction.complexity} />
             </span>
           }
-          cta={`Try ${direction.letter}`}
+          cta={`Option ${direction.letter}`}
           onClick={() => pick(direction)}
         />
       ))}
