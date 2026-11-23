@@ -21,9 +21,9 @@ import { ResetPasswordModal } from '../ObjectModals/ResetPasswordModal.js';
 import { DeleteObjectModal } from '../ObjectModals/DeleteObjectModal.js';
 import { ComingSoonModal } from '../ObjectModals/ComingSoonModal.js';
 import { inDirectories, isEntraLocation, useDirectoryFilter } from '../../lib/directoryFilter.js';
-import { sampleDates, type FilterRow } from '../../lib/listFilters.js';
+import { sampleAddedAt, sampleDates, type FilterRow } from '../../lib/listFilters.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
-import { fieldColumns, useColumnSettings } from '../ListFilters/useColumnSettings.js';
+import { ADDED_TO_LOCATION, fieldColumns, useColumnSettings } from '../ListFilters/useColumnSettings.js';
 import { useColumnSort, type SortColumn } from '../ListFilters/useColumnSort.js';
 import { rowFields, type FilterFieldDef } from '../../lib/advancedFilter.js';
 import { MoveObjectSheet } from '../MoveObjectSheet/MoveObjectSheet.js';
@@ -154,6 +154,7 @@ export function UsersPage() {
         sortColumns,
       ),
       { label: 'Object ID', value: (u: User) => u.objectId },
+      { label: ADDED_TO_LOCATION, value: (u: User) => u.locationAddedAt ?? sampleAddedAt(u.id), dateTime: true },
     ],
     [sortColumns],
   );

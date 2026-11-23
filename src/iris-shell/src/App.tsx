@@ -159,6 +159,7 @@ export default function App() {
             <ARSNewObjectToast
               message={toast.message}
               supportingText={toast.supportingText}
+              viewLabel={toast.viewLabel}
               onView={() => {
                 if (toast.viewHref) navigate(toast.viewHref);
                 toast.dismiss();

@@ -6,6 +6,8 @@ export interface ARSNewObjectToastProps {
   message: string | null;
   supportingText?: string;
   onView?: () => void;
+  /** The View button's text. */
+  viewLabel?: string;
   onDismiss: () => void;
   durationMs?: number;
 }
@@ -14,7 +16,7 @@ export interface ARSNewObjectToastProps {
  * ARS_New_Object_Toast — the Iris Toast confirming a created object, with
  * View and Dismiss. Figma: 4029:38684.
  */
-export function ARSNewObjectToast({ message, supportingText, onView, onDismiss, durationMs }: ARSNewObjectToastProps) {
+export function ARSNewObjectToast({ message, supportingText, onView, viewLabel = 'View', onDismiss, durationMs }: ARSNewObjectToastProps) {
   return (
     <Toast
       message={message}
@@ -25,7 +27,7 @@ export function ARSNewObjectToast({ message, supportingText, onView, onDismiss, 
       actions={
         <>
           <Button variant="secondary" size="s" onClick={onView}>
-            View
+            {viewLabel}
           </Button>
           <Button variant="ghost" size="s" onClick={onDismiss}>
             Dismiss

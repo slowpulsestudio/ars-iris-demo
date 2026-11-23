@@ -16,14 +16,14 @@ import { navigate } from '../../lib/router.js';
 import { cx } from '../../lib/cx.js';
 import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
 import { useDirectory } from '../../lib/directoryStore.js';
-import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
+import { OBJECT_TYPE_META, getAddedToLocation, type DirectoryObject } from '../../lib/directoryData.js';
 import { useFavorites } from '../../lib/useFavorites.js';
 import { useAnchoredMenu } from '../../lib/useAnchoredMenu.js';
 import { canMoveItem, moveEntries, type MoveEntry, type MoveItem } from '../../lib/moveObjects.js';
 import { endObjectDrag, startObjectDrag } from '../../lib/objectDrag.js';
-import { sampleDates, sampleTags, type FilterRow } from '../../lib/listFilters.js';
+import { sampleAddedAt, sampleDates, sampleTags, type FilterRow } from '../../lib/listFilters.js';
 import { useAdvancedFilter } from '../ListFilters/useAdvancedFilter.js';
-import { fieldColumns, useColumnSettings } from '../ListFilters/useColumnSettings.js';
+import { ADDED_TO_LOCATION, fieldColumns, useColumnSettings } from '../ListFilters/useColumnSettings.js';
 import { useColumnSort, type SortColumn } from '../ListFilters/useColumnSort.js';
 import { renderArsFilterTag } from '../ListFilters/arsFilterTag.js';
 import { rowFields } from '../../lib/advancedFilter.js';
@@ -181,7 +181,13 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
     return showSelected ? matching.filter((o) => selected.has(o.id)) : matching;
   }, [lf.filtered, query, showSelected, selected]);
   const sort = useColumnSort(rows, TREE_SORT_COLUMNS, lf, () => setPage(1));
-  const extraColumns = useMemo(() => fieldColumns(filterFields, TREE_SORT_COLUMNS), [filterFields]);
+  const extraColumns = useMemo(
+    () => [
+      ...fieldColumns(filterFields, TREE_SORT_COLUMNS),
+      { label: ADDED_TO_LOCATION, value: (o: DirectoryObject) => getAddedToLocation(o.id) ?? sampleAddedAt(o.id), dateTime: true },
+    ],
+    [filterFields],
+  );
   const columns = useColumnSettings(extraColumns);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));

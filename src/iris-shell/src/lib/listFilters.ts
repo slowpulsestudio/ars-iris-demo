@@ -39,6 +39,15 @@ export function sampleDates(id: string): Pick<FilterRow, 'activeDaysAgo' | 'crea
   return { activeDaysAgo: h % 150, createdDaysAgo: 30 + ((h >>> 3) % 700) };
 }
 
+/** A sample date and time an object arrived in its folder, for objects never moved: fixed for a given id. */
+export function sampleAddedAt(id: string): string {
+  const h = hash(id);
+  const day = new Date(Date.now() - (30 + ((h >>> 3) % 700)) * 86_400_000).toISOString().slice(0, 10);
+  const hour = String(8 + (h % 10)).padStart(2, '0');
+  const minute = String((h >>> 7) % 60).padStart(2, '0');
+  return `${day}T${hour}:${minute}:00`;
+}
+
 const SAMPLE_TAGS = ['Security', 'Compliance', 'Finance', 'HR', 'Engineering', 'Helpdesk', 'Marketing', 'Operations', 'Platform', 'Sales'];
 
 /** Sample tags for lists that have none: two, fixed for a given id. */

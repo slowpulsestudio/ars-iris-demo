@@ -56,18 +56,18 @@ export function useMoveUsers() {
           toName: destName,
           // AD works through the list in serial; a quarter of a second per user (64 AD users ≈ 15 s) keeps it readable.
           tickMs: 60,
-          step: (i) => updateUserRef.current(moving[i].id, { location }),
-          viewHref: `#/tree/${destId}`,
+          step: (i) => updateUserRef.current(moving[i].id, { location, locationAddedAt: new Date().toISOString() }),
+          viewHref: `#/users?select=${moving.map((u) => u.id).join(',')}`,
         });
         return moving;
       }
-      const before = moving.map((u) => ({ id: u.id, location: u.location }));
-      moving.forEach((u) => updateUser(u.id, { location }));
+      const before = moving.map((u) => ({ id: u.id, location: u.location, locationAddedAt: u.locationAddedAt }));
+      moving.forEach((u) => updateUser(u.id, { location, locationAddedAt: new Date().toISOString() }));
       announceMoved({
         names: moving.map((u) => u.name),
         typeLabel: 'User',
         destName,
-        undo: () => before.forEach((b) => updateUser(b.id, { location: b.location })),
+        undo: () => before.forEach((b) => updateUser(b.id, { location: b.location, locationAddedAt: b.locationAddedAt })),
         viewHref: moving.length === 1 ? `#/users/${moving[0].id}` : `#/tree/${destId}`,
       });
       return moving;

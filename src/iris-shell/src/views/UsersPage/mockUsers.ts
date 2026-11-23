@@ -27,6 +27,8 @@ export interface User {
   tags: string[];
   /** Directory path shown in the Location column of the list. */
   location: string;
+  /** When the user arrived in its Location (ISO date and time); set when moved. */
+  locationAddedAt?: string;
 }
 
 type UserSeed = Omit<User, 'tags' | 'location'>;

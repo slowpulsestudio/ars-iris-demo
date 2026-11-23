@@ -10,7 +10,12 @@ export interface ExtraColumn<T> {
   value: (item: T) => string | string[];
   /** The value is a `YYYY-MM-DD` date, shown as the lists draw dates ("10/24/23"). */
   date?: boolean;
+  /** The value is an ISO date and time, shown as "10/24/23, 9:41 AM". */
+  dateTime?: boolean;
 }
+
+/** The column, hidden at first, for when an object arrived in its current folder; moving objects there lets a mistaken move be reversed by hand. */
+export const ADDED_TO_LOCATION = 'When added here';
 
 export interface ColumnSettings<T> {
   /** For the table's `columnSettings` prop. */
@@ -21,10 +26,13 @@ export interface ColumnSettings<T> {
 
 const dateFormat = new Intl.DateTimeFormat('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' });
 
+const dateTimeFormat = new Intl.DateTimeFormat('en-US', { dateStyle: 'short', timeStyle: 'short' });
+
 function asText<T>(column: ExtraColumn<T>, item: T): string {
   const value = column.value(item);
   if (Array.isArray(value)) return value.join(', ');
   if (column.date && value) return dateFormat.format(new Date(`${value}T00:00:00`));
+  if (column.dateTime && value) return dateTimeFormat.format(new Date(value));
   return value;
 }
 

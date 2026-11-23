@@ -323,6 +323,13 @@ export function canMoveNode(nodeId: string, newParentId: string | null): boolean
  * the move happened. Mutates the raw tree in place, reindexes, and notifies
  * subscribers so the sidebar re-renders.
  */
+/** When each moved object arrived in its current folder (ISO date and time); objects never moved have none. */
+const addedToLocation = new Map<string, string>();
+
+export function getAddedToLocation(id: string): string | undefined {
+  return addedToLocation.get(id);
+}
+
 export function moveNode(nodeId: string, newParentId: string | null): boolean {
   if (!canMoveNode(nodeId, newParentId)) return false;
   const node = nodeById.get(nodeId)!;
@@ -340,6 +347,7 @@ export function moveNode(nodeId: string, newParentId: string | null): boolean {
     TREE.push(node);
   }
 
+  addedToLocation.set(nodeId, new Date().toISOString());
   reindex();
   treeVersion += 1;
   listeners.forEach((l) => l());
@@ -703,6 +711,7 @@ export function moveObject(fromNodeId: string, objectId: string, toNodeId: strin
     parentId: toNodeId,
     details: { ...object.details, location },
   });
+  addedToLocation.set(objectId, new Date().toISOString());
   treeVersion += 1;
   listeners.forEach((l) => l());
   return i;
