@@ -64,6 +64,7 @@
 
 .subtitle {
   margin: 0;
+  max-width: 936px;
   font-size: var(--oi-text-body-s-font-size);
   line-height: var(--oi-text-body-s-line-height);
   color: var(--oi-content-color-secondary);

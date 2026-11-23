@@ -4,7 +4,6 @@ import { Tooltip } from '../../components/Tooltip/Tooltip.js';
 import { useAppShell } from '../../lib/appShellContext.js';
 import { JOBS_DIRECTIONS, JOBS_START_ROUTE, setJobsDirection, type JobsDirectionInfo } from '../../lib/jobsDirection.js';
 import { resetJobs } from '../../lib/jobsStore.js';
-import { findPersona } from '../../lib/personas.js';
 import { navigate, useRoute } from '../../lib/router.js';
 import { ChoiceCard, ChoicePage } from '../ChoicePage/ChoicePage.js';
 import { ComplexityRating } from '../SystemComms/ComplexityRating.js';
@@ -24,8 +23,6 @@ export function WelcomePage() {
   const route = useRoute();
   const { setPersonaId } = useAppShell();
 
-  const persona = findPersona(DIRECTION_PERSONA_ID);
-
   const pick = (direction: JobsDirectionInfo) => {
     resetJobs();
     setJobsDirection(direction.id);
@@ -37,7 +34,7 @@ export function WelcomePage() {
     <ChoicePage
       title="Welcome"
       columns={4}
-      subtitle={`Choose a Background Jobs direction to try. Each signs in as ${persona?.name ?? 'the admin'} on the Users list with every AD user ticked: choose Move in the selection bar and pick a folder. The top bar has triggers for the other cases.`}
+      subtitle="Here are the Background Jobs directions from simplest to most complex"
       topEnd={
         <span className={styles.topActions}>
           <Tooltip label="Design review" placement="bottom">
