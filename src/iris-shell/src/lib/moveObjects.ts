@@ -50,7 +50,7 @@ export function folderForUserLocation(location: string, tree: DirectoryNodeView[
   return found?.id ?? null;
 }
 
-/** Shows the "moved" toast; Undo reverses it, and View opens the object (one) or the folder with the moved objects ticked (several), so a move can be undone by hand. */
+/** Shows the "moved" toast; Undo reverses it, and View opens the object (one) or the folder with the moved objects ticked and shown on their own (several), so a move can be undone by hand. */
 export function announceMoved(opts: {
   names: string[];
   /** Object class of a single object, e.g. "User". */
@@ -119,7 +119,7 @@ export function moveEntries(entries: MoveEntry[], destId: string, destName: stri
     typeLabel: done[0].typeLabel,
     destName,
     undo,
-    viewHref: moved.length === 1 && only.isContainer ? `#/tree/${only.id}` : moved.length === 1 ? `#/tree/${destId}/${only.id}` : `#/tree/${destId}?select=${moved.map((m) => m.id).join(',')}`,
+    viewHref: moved.length === 1 && only.isContainer ? `#/tree/${only.id}` : moved.length === 1 ? `#/tree/${destId}/${only.id}` : `#/tree/${destId}?show=selected&select=${moved.map((m) => m.id).join(',')}`,
   });
   return moved;
 }

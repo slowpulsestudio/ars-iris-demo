@@ -59,8 +59,8 @@ export function useMoveUsers() {
           // Toasts only (A) has no progress to watch, so it runs four times as fast.
           tickMs: getJobsDirection() === 'a' ? 15 : 60,
           step: (i) => updateUserRef.current(moving[i].id, { location, locationAddedAt: new Date().toISOString() }),
-          // The destination's users, with the ones that moved ticked, so a mistaken move can be undone by hand.
-          viewHref: `#/users?filter=Location~${encodeURIComponent(location)}&select=${moving.map((u) => u.id).join(',')}`,
+          // The moved users, ticked and shown on their own (Show selected), so a mistaken move can be undone by hand.
+          viewHref: `#/users?show=selected&select=${moving.map((u) => u.id).join(',')}`,
         });
         return moving;
       }

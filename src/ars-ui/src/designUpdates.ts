@@ -206,8 +206,8 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     title: 'Move toast: View in destination, and undo by hand',
     file: 'move',
     figmaNodeId: '2355:28099',
-    note: 'Figma labels the toast button View after a move of several objects. At the designer\'s request it says View in destination, and opens the destination with the moved objects already ticked. The list\'s table settings gain a column, hidden at first, When added here, so a move can be undone by hand: select the ticked objects and Move them back.',
-    recommendation: 'Rename the button View in destination, and draw the destination with the moved rows ticked and the extra column shown.',
+    note: 'Figma labels the toast button View after a move of several objects. At the designer\'s request it says View in destination, and opens the destination with the moved objects already ticked and Show selected on, so only they show. The action bar keeps its Show selected toggle with several ticked (Figma has it on the one-selected bar only), so the whole list is one click away. The list\'s table settings gain a column, hidden at first, When added here, so a move can be undone by hand: select the ticked objects and Move them back.',
+    recommendation: 'Rename the button View in destination, and draw the destination with the moved rows ticked, Show selected on in the several-selected action bar, and the extra column shown.',
     prototype: '#/users?select=isabella-clark,sophia-martinez,noah-kim',
   },
   {

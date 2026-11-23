@@ -11,6 +11,7 @@ import { replaceHash, subscribeHash } from './router.js';
  *   dialog   the open dialog or side sheet (`delete`, `move`, `create`)
  *   target   the row a dialog is about (an object or request id)
  *   select   the ticked rows, comma-separated ids
+ *   show     `selected`: a list shows only its ticked rows (the action bar's Show selected)
  *   view     a sub-view of a tab (`members-of`)
  *   sort     the column a list is sorted by: `display-name.asc`, `name.desc`
  *   request, modal, sheet   the self-service screens
@@ -77,6 +78,12 @@ export function useHashTab(tabs: string[]): [string, (label: string) => void] {
 }
 
 /** The ticked rows (`select=a,b`) and a setter. */
+/** The action bar's Show selected, kept in the address (`?show=selected`) so a link can open a list showing only its ticked rows. */
+export function useHashShowSelected(): [boolean, (on: boolean) => void] {
+  const [value, set] = useHashParam('show');
+  return [value === 'selected', (on) => set(on ? 'selected' : null)];
+}
+
 export function useHashSelection(): [Set<string>, (next: Set<string>) => void] {
   const [value, set] = useHashParam('select');
   const selected = useMemo(() => new Set(value ? value.split(',').filter(Boolean) : []), [value]);

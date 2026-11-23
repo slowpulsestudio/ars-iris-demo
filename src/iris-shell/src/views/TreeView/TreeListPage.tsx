@@ -14,7 +14,7 @@ import { NEW_OBJECT_MENU } from '@ars/components/ARSNewObjectMenu/ARSNewObjectMe
 import { AppShell } from '../AppShell/AppShell.js';
 import { navigate } from '../../lib/router.js';
 import { cx } from '../../lib/cx.js';
-import { setHashParams, useHashParam, useHashSelection } from '../../lib/hashState.js';
+import { setHashParams, useHashParam, useHashSelection, useHashShowSelected } from '../../lib/hashState.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { OBJECT_TYPE_META, getAddedToLocation, type DirectoryObject } from '../../lib/directoryData.js';
 import { useFavorites } from '../../lib/useFavorites.js';
@@ -91,7 +91,7 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
   const [selected, setSelectedSet] = useHashSelection();
   const setSelected = (next: Set<string> | ((s: Set<string>) => Set<string>)) =>
     setSelectedSet(typeof next === 'function' ? next(selected) : next);
-  const [showSelected, setShowSelected] = useState(false);
+  const [showSelected, setShowSelected] = useHashShowSelected();
 
   // The open dialog and what it is about live in the address
   // (?select=a,b&dialog=delete&target=a, or ?dialog=create&type=User).
@@ -118,12 +118,11 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
   const createMenu = useAnchoredMenu();
   const pageMenu = useAnchoredMenu();
 
-  // Reset transient view state when the selected node changes. (The ticked rows are in the address,
-  // which a move to another folder replaces.)
+  // Reset transient view state when the selected node changes. (The ticked rows and Show selected are in the
+  // address, which a move to another folder replaces.)
   useEffect(() => {
     setQuery('');
     setPage(1);
-    setShowSelected(false);
   }, [nodeId]);
 
   const nodeName = getNodeName(nodeId);
@@ -429,6 +428,7 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
         totalCount={allRows.length}
         showTotal
         showSelected={showSelected}
+        showToggle
         onShowSelectedChange={setShowSelected}
         layout="inline"
         onAction={onBarAction}

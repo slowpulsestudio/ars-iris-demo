@@ -27,6 +27,8 @@ export interface ARSActionBarProps {
   showTotal?: boolean;
   /** The "Show selected" toggle (variants 2 and Variant3); uncontrolled unless set. */
   showSelected?: boolean;
+  /** Shows the "Show selected" toggle on the Default variant too, so a list opened showing only its ticked rows can show them all again. */
+  showToggle?: boolean;
   onShowSelectedChange?: (on: boolean) => void;
   /** Called with the label of the pressed action and its button. */
   onAction?: (label: string, event: MouseEvent<HTMLButtonElement>) => void;
@@ -51,6 +53,7 @@ export function ARSActionBar({
   totalCount = 122,
   showTotal,
   showSelected,
+  showToggle,
   onShowSelectedChange,
   onAction,
   onDismiss,
@@ -75,7 +78,7 @@ export function ARSActionBar({
       selectedCount={selectedCount}
       totalCount={isDefault && !showTotal ? undefined : totalCount}
       toggle={
-        isDefault
+        isDefault && !showToggle
           ? undefined
           : {
               label: 'Show selected',
