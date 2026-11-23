@@ -72,34 +72,6 @@
   transition: width var(--oi-motion-duration-default) var(--oi-motion-ease-default);
 }
 
-/* Minimised: one line, the title and count side by side, cut off with an ellipsis. */
-.miniRow {
-  display: flex;
-  align-items: center;
-  gap: var(--oi-spacing-s);
-  padding: var(--oi-spacing-xs) var(--oi-spacing-xs) var(--oi-spacing-xs) var(--oi-spacing-m);
-}
-
-.miniText {
-  display: flex;
-  flex: 1 1 0;
-  align-items: baseline;
-  gap: var(--oi-spacing-s);
-  min-width: 0;
-  margin: 0;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.miniText .title {
-  flex-shrink: 0;
-}
-
-.miniText .detail {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .totalFill {
     transition: none;

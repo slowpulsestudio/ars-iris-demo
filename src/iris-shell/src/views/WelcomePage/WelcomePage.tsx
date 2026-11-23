@@ -16,7 +16,7 @@ const DIRECTION_PERSONA_ID = 'admin-user';
 
 /**
  * WelcomePage — the start page after the password screen. On this branch it offers one card per Background Jobs
- * complexity direction instead of one per persona: the recommended B1 and B2 as large cards on top, then A, C and D. Picking one signs in as David
+ * complexity direction instead of one per persona: the recommended A as a large card on top, then B to E. Picking one signs in as David
  * Smith with that direction and opens the Users list with every AD user ticked, ready to Move. It also stands in for any other page until someone is
  * picked; picking there keeps the page that was asked for.
  */

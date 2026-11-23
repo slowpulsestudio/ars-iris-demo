@@ -10,14 +10,15 @@ import styles from './BackgroundJobItem.module.css';
 
 const DONE_ICON = { done: 'CheckCircle', failed: 'WarningCircle', cancelled: 'Info' } as const;
 
-function statusText(job: Job): string {
+function statusText(job: Job, count: boolean): string | null {
   const entra = job.directory === 'entra';
   switch (job.status) {
     case 'running':
-      return entra ? 'Changes submitted' : `${job.done}/${job.total} completed`;
+      return entra ? 'Changes submitted' : count ? `${job.done}/${job.total} completed` : null;
     case 'done':
     {
       if (entra) return 'Changes applied';
+      if (!count) return null;
       const skipped = job.items.filter((it) => it.status === 'cancelled').length;
       const extra = [job.failed > 0 && `${job.failed} failed`, skipped > 0 && `${skipped} cancelled`].filter(Boolean).join(', ');
       return `${job.done}/${job.total} completed${extra ? `, ${extra}` : ''}`;
@@ -27,6 +28,11 @@ function statusText(job: Job): string {
     case 'failed':
       return job.error ?? 'Failed';
   }
+}
+
+/** "Moving users" as "Moving 100 users", for the directions that don't show a count. */
+export function titleWithTotal(job: Job): string {
+  return job.title.replace(job.noun, `${job.total} ${job.noun}`);
 }
 
 const ITEM_STATE = { queued: 'Waiting', running: 'Moving', done: 'Moved', failed: 'Failed', cancelled: 'Cancelled' } as const;
@@ -65,9 +71,9 @@ function ItemRow({ job, item, index }: { job: Job; item: JobItem; index: number 
 }
 
 /**
- * One Background Job, as much of it as the chosen direction shows: the count and a spinner ("24/100 completed")
- * from B1 and B2, an overall progress bar and Stop from C, and every object in D, each with a small spinner and a
- * Cancel on hover (D has no spinner of its own beside the job, as the rows carry it). An Entra
+ * One Background Job, as much of it as the chosen direction shows: the total in the title and a spinner
+ * ("Moving 100 users") in B and C, the count ("24/100 completed") and a spinner from D, an overall progress bar and Stop from D, and every object in E, each with a small spinner and a
+ * Cancel on hover (E has no spinner of its own beside the job, as the rows carry it). An Entra
  * job only says its changes were submitted, and can't be stopped. Not in Figma yet (see Design update recommendations).
  */
 export function BackgroundJobItem({ job }: { job: Job }) {
@@ -75,7 +81,9 @@ export function BackgroundJobItem({ job }: { job: Job }) {
   const entra = job.directory === 'entra';
   const running = job.status === 'running';
   const percent = job.total === 0 ? 100 : Math.round((processedCount(job) / job.total) * 100);
-  const title = job.status === 'failed' ? `${job.title} failed` : job.status === 'done' ? `${job.title} complete` : job.title;
+  const name = f.count ? job.title : titleWithTotal(job);
+  const title = job.status === 'failed' ? `${name} failed` : job.status === 'done' ? `${name} complete` : name;
+  const status = statusText(job, f.count);
   return (
     <div className={cx(styles.job, styles[`status_${job.status}`])} role="group" aria-label={job.title}>
       <div className={styles.head}>
@@ -84,11 +92,13 @@ export function BackgroundJobItem({ job }: { job: Job }) {
           <p className={styles.route}>
             {job.from} <span aria-hidden="true">→</span> {job.to}
           </p>
-          <p className={styles.status} aria-live="polite">
-            {statusText(job)}
-          </p>
+          {status && (
+            <p className={styles.status} aria-live="polite">
+              {status}
+            </p>
+          )}
         </div>
-        {/* The job's state sits at the far right, like each object's in D. */}
+        {/* The job's state sits at the far right, like each object's in E. */}
         {!(running && f.items) && (
           <span className={styles.icon}>
             {running ? <Spinner size="s" label="Running" /> : <Icon name={DONE_ICON[job.status]} size="16px" aria-hidden />}
@@ -126,7 +136,7 @@ export function BackgroundJobItem({ job }: { job: Job }) {
         {running && entra && <span className={styles.note}>Entra changes can't be stopped.</span>}
         {job.status === 'done' && job.viewHref && (
           <Button variant="secondary" size="s" onClick={() => navigate(job.viewHref ?? '')}>
-            View
+            View in destination
           </Button>
         )}
         {!running && (

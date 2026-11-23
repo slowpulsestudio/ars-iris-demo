@@ -143,7 +143,7 @@ function finish(job: Job) {
       ? `Moved ${job.done} of ${job.total} ${job.noun} to ${job.toName}. ${job.failed} could not be moved.`
       : `Moved ${job.total} ${job.noun} to ${job.toName}.`;
   if (features().stateToasts) {
-    showToast(message, { viewHref: job.viewHref, viewLabel: 'View', tone: job.failed > 0 ? 'warning' : 'success' });
+    showToast(message, { viewHref: job.viewHref, viewLabel: 'View in destination', tone: job.failed > 0 ? 'warning' : 'success' });
   }
   escalate(job, `${job.title} complete`, message, job.viewHref);
 }
