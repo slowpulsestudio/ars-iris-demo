@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import type { User } from '../views/UsersPage/mockUsers.js';
 import { isMoveDestination } from './directoryData.js';
 import { useDirectory } from './directoryStore.js';
+import { getJobsDirection } from './jobsDirection.js';
 import { startJob } from './jobsStore.js';
 import { announceMoved, folderForUserLocation, userLocationFor } from './moveObjects.js';
 import { useUsers } from './usersStore.js';
@@ -55,9 +56,11 @@ export function useMoveUsers() {
           to: location,
           toName: destName,
           // AD works through the list in serial; a quarter of a second per user (64 AD users ≈ 15 s) keeps it readable.
-          tickMs: 60,
+          // Toasts only (A) has no progress to watch, so it runs four times as fast.
+          tickMs: getJobsDirection() === 'a' ? 15 : 60,
           step: (i) => updateUserRef.current(moving[i].id, { location, locationAddedAt: new Date().toISOString() }),
-          viewHref: `#/users?select=${moving.map((u) => u.id).join(',')}`,
+          // The destination's users, with the ones that moved ticked, so a mistaken move can be undone by hand.
+          viewHref: `#/users?filter=Location~${encodeURIComponent(location)}&select=${moving.map((u) => u.id).join(',')}`,
         });
         return moving;
       }
