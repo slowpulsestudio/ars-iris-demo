@@ -1,4 +1,4 @@
-import { useMemo, type CSSProperties, type HTMLAttributes } from 'react';
+import { memo, useMemo, type CSSProperties, type HTMLAttributes } from 'react';
 import manifest from '../../icons/manifest.json';
 import styles from './Icon.module.css';
 import { cx } from '../../lib/cx.js';
@@ -27,8 +27,11 @@ export interface IconProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'title'
  * The SVG sources use `currentColor` for strokes/fills, so colour is driven
  * purely by the surrounding text colour. Size is set via the `size` prop
  * (a CSS length) and applied to width/height of the host element.
+ *
+ * Memoised: React resets the SVG markup on every render, which removes the icon under the pointer between mouse
+ * down and up, so a click on an icon button is lost while its parent re-renders often (e.g. a running job).
  */
-export function Icon({ name, size = '20px', title, className, ...rest }: IconProps) {
+export const Icon = memo(function Icon({ name, size = '20px', title, className, ...rest }: IconProps) {
   const svg = ICONS_BY_NAME[name];
 
   // Inject role/aria attributes into the raw svg string when a title is given.
@@ -59,7 +62,7 @@ export function Icon({ name, size = '20px', title, className, ...rest }: IconPro
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
-}
+});
 
 function escapeXml(s: string): string {
   return String(s)
