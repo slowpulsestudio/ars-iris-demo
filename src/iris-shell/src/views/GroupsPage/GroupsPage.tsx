@@ -75,7 +75,7 @@ export function GroupsPage() {
   const [targetParam] = useHashParam('target');
   const createKind = dialog === 'new-group' ? 'AD' : dialog === 'new-entra-group' ? 'Entra' : null;
   const createMenu = useAnchoredMenu();
-  const closeDialog = () => setHashParams({ dialog: null, target: null });
+  const closeDialog = () => setHashParams({ dialog: null, target: null, step: null, sheet: null });
   const [removedTags, setRemovedTags] = useState<Map<string, Set<string>>>(() => new Map());
   const [rowGroup, setRowGroup] = useState<DirectoryObject | null>(null);
   const rowMenu = useAnchoredMenu();

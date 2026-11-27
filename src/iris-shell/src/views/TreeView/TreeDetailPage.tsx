@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { AppShell } from '../AppShell/AppShell.js';
 import { navigate } from '../../lib/router.js';
+import { setHashParams, useHashParam } from '../../lib/hashState.js';
 import { isTypingTarget } from '../../lib/keyboard.js';
 import { useDirectory } from '../../lib/directoryStore.js';
 import { OBJECT_TYPE_META, type DirectoryObject } from '../../lib/directoryData.js';
@@ -72,17 +73,19 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
   const object = getObject(nodeId, objectId);
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
 
-  const [tab, setTab] = useState(PRIMARY_TAB);
-  const [resetOpen, setResetOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [moveOpen, setMoveOpen] = useState(false);
+  const [tabParam] = useHashParam('tab');
+  const [dialog] = useHashParam('dialog');
+  const tabs = object ? tabsForType(object.type) : [];
+  const tab = tabs.find((item) => item.value === tabParam)?.value ?? PRIMARY_TAB;
+  const setTab = (next: string) => setHashParams({ tab: next === PRIMARY_TAB ? null : next, dialog: null });
+  const resetOpen = dialog === 'reset-password' && object?.type === 'contact';
+  const deleteOpen = dialog === 'delete';
+  const setResetOpen = (open: boolean) => setHashParams({ dialog: open ? 'reset-password' : null });
+  const setDeleteOpen = (open: boolean) => setHashParams({ dialog: open ? 'delete' : null });
+  const setMoveOpen = (open: boolean) => setHashParams({ dialog: open ? 'move' : null });
   // Entra has no location, so nothing in an Entra tenant is moved.
   const inEntra = getPath(nodeId).some((n) => n.id === 'entra-directories');
-
-  // Reset to the primary tab whenever the object changes.
-  useEffect(() => {
-    setTab(PRIMARY_TAB);
-  }, [objectId]);
+  const moveOpen = dialog === 'move' && !inEntra;
 
   const siblings = getSiblings(nodeId);
   const idx = siblings.findIndex((s) => s.id === objectId);
@@ -133,7 +136,6 @@ export function TreeDetailPage({ nodeId, objectId }: TreeDetailPageProps) {
 
   const meta = OBJECT_TYPE_META[object.type];
   const pathTail = getPath(nodeId).slice(-2).map((n) => n.name).join(' / ');
-  const tabs = tabsForType(object.type);
   const canReset = object.type === 'user' || object.type === 'contact';
 
   const moveItem = { id: object.id, nodeId, isContainer: false };

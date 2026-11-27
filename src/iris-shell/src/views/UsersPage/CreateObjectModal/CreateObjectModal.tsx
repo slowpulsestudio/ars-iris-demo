@@ -6,6 +6,7 @@ import {
   type ARSNewObjectValues,
 } from '@ars';
 import { useDirectory } from '../../../lib/directoryStore.js';
+import { setHashParams, useHashParam } from '../../../lib/hashState.js';
 import { useStepFlow } from '../../../lib/useStepFlow.js';
 import type { StepperStepItem } from '../../../components/Stepper/Stepper.js';
 import { NewObjectOverlay } from '../../NewObjectOverlay/NewObjectOverlay.js';
@@ -61,7 +62,9 @@ export function CreateObjectModal({
     () => new Set(['User must change password at next login']),
   );
   const [destinationId, setDestinationId] = useState<string | null>(locationId);
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [sheetParam] = useHashParam('sheet');
+  const sheetOpen = open && !entra && !folderStep && sheetParam === 'select-folder';
+  const setSheetOpen = (next: boolean) => setHashParams({ sheet: next ? 'select-folder' : null });
 
   // The fields Figma marks Required; step 1 is complete once all have a value.
   const generalComplete = [
@@ -72,7 +75,7 @@ export function CreateObjectModal({
     values.userLogonName,
     values.preWindows2000,
   ].every((v) => v.trim() !== '');
-  const { step, steps, goTo, reset, last } = useStepFlow(stepItems, generalComplete);
+  const { step, steps, goTo, reset, last } = useStepFlow(stepItems, generalComplete, open);
 
   // Reset the flow whenever the modal (re)opens.
   useEffect(() => {
@@ -80,7 +83,6 @@ export function CreateObjectModal({
       reset();
       setValues(ARS_EMPTY_NEW_OBJECT_VALUES);
       setDestinationId(locationId);
-      setSheetOpen(false);
     }
   }, [open, locationId, reset]);
 
@@ -141,6 +143,7 @@ export function CreateObjectModal({
             stepContents={stepContents}
             footerVariant={step > 0 ? '2' : generalComplete ? '1_complete' : '1'}
             ctaLabel={!last && step > 0 ? 'Save and continue →' : undefined}
+            ctaDisabled={!generalComplete}
             onClose={requestClose}
             onBack={() => goTo(step - 1)}
             onContinue={last ? create : () => goTo(step + 1)}

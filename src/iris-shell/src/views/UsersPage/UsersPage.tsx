@@ -113,7 +113,7 @@ export function UsersPage() {
   const comingSoonUser = dialog === 'deprovision' || dialog === 'deactivate' ? (targets[0] ?? null) : null;
   const moveTargets = dialog === 'move' ? targets : null;
   const createTarget = dialog === 'create' && typeParam ? { type: typeParam, icon: createIconFor(typeParam) } : null;
-  const closeDialog = () => setHashParams({ dialog: null, target: null, type: null });
+  const closeDialog = () => setHashParams({ dialog: null, target: null, type: null, step: null, sheet: null });
   const openDialog = (name: string, ids: string[] = []) =>
     setHashParams({ dialog: name, target: ids.length ? ids.join(',') : null, type: null });
 

@@ -9,12 +9,13 @@ import { replaceHash, subscribeHash } from './router.js';
  *   tab      the active tab, as a slug (`general`, `user-details`)
  *   edit     the card being edited (`general`, `ownership`)
  *   dialog   the open dialog or side sheet (`delete`, `move`, `create`)
+ *   step     the active step of a New object dialog (`account`, `exchange`, `folder`)
  *   target   the row a dialog is about (an object or request id)
  *   select   the ticked rows, comma-separated ids
  *   show     `selected`: a list shows only its ticked rows (the action bar's Show selected)
  *   view     a sub-view of a tab (`members-of`)
  *   sort     the column a list is sorted by: `display-name.asc`, `name.desc`
- *   request, modal, sheet   the self-service screens
+ *   request, modal, sheet   nested side sheets and self-service screens
  */
 
 /** `User Details` -> `user-details`. */
@@ -70,6 +71,8 @@ export function useHashTab(tabs: string[]): [string, (label: string) => void] {
         dialog: null,
         target: null,
         view: null,
+        step: null,
+        sheet: null,
         sort: null,
       }),
     [tabs],

@@ -23,6 +23,7 @@ export interface ARSModalNewObjectFooterProps {
   /** Replaces the step count; `null` hides it (flows without steps). */
   stepLabel?: string | null;
   ctaLabel?: string;
+  ctaDisabled?: boolean;
   onBack?: () => void;
   onCta?: () => void;
   /** A ghost "Discard" before the main action, at the designer's request (not in Figma); shown when set. */
@@ -38,6 +39,7 @@ export function ARSModalNewObjectFooter({
   variant = '1',
   stepLabel,
   ctaLabel,
+  ctaDisabled = false,
   onBack,
   onCta,
   onDiscard,
@@ -58,7 +60,7 @@ export function ARSModalNewObjectFooter({
               Discard
             </Button>
           )}
-          <Button disabled={variant === '1'} onClick={onCta}>
+          <Button disabled={variant === '1' || ctaDisabled} onClick={onCta}>
             {ctaLabel ?? CTA_LABEL[variant]}
           </Button>
         </div>

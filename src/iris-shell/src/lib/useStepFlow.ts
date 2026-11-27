@@ -1,25 +1,28 @@
 import { useCallback, useState } from 'react';
 import type { StepperStepItem } from '../components/Stepper/Stepper.js';
+import { setHashParams, useHashParam } from './hashState.js';
 
 /**
- * The steps of a New object form: the step on screen, and which steps can be clicked. Nothing past the first
- * step opens until it is complete; after that, every step reached so far and the one after it can be clicked.
+ * The steps of a New object form. A link can open any step; normal navigation still requires the first
+ * step to be complete before advancing.
  */
-export function useStepFlow(items: StepperStepItem[], firstComplete: boolean) {
-  const [step, setStep] = useState(0);
+export function useStepFlow(items: StepperStepItem[], firstComplete: boolean, open: boolean) {
+  const [stepParam] = useHashParam('step');
+  const requestedStep = open ? items.findIndex((item) => item.id === stepParam) : -1;
+  const step = requestedStep < 0 ? 0 : requestedStep;
   const [furthest, setFurthest] = useState(0);
 
   const goTo = useCallback((index: number) => {
-    setStep(index);
+    if (index < 0 || index >= items.length) return;
+    setHashParams({ step: index === 0 ? null : items[index].id });
     setFurthest((f) => Math.max(f, index));
-  }, []);
+  }, [items]);
 
   const reset = useCallback(() => {
-    setStep(0);
     setFurthest(0);
   }, []);
 
-  const steps = items.map((s, i) => ({ ...s, disabled: i > 0 && (!firstComplete || i > furthest + 1) }));
+  const steps = items.map((s, i) => ({ ...s, disabled: i > 0 && i !== step && (!firstComplete || i > Math.max(furthest, step) + 1) }));
 
   return { step, steps, goTo, reset, last: step === items.length - 1 };
 }

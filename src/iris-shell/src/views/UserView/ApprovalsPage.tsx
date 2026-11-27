@@ -1,4 +1,4 @@
-import { useMemo, useState, type Ref } from 'react';
+import { useEffect, useMemo, useState, type Ref } from 'react';
 import { ARSPagination } from '@ars';
 import { AppShell } from '../AppShell/AppShell.js';
 import { cx } from '../../lib/cx.js';
@@ -93,15 +93,15 @@ export function ApprovalsPage() {
   const [tabParam] = useHashParam('tab');
   const tab = TABS.find((t) => slug(t.value) === tabParam)?.value ?? TABS[0].value;
   const setTab = (next: string) =>
-    setHashParams({ tab: next === TABS[0].value ? null : slug(next), request: null, modal: null, view: null });
+    setHashParams({ tab: next === TABS[0].value ? null : slug(next), request: null, modal: null, target: null, view: null });
   const [openId] = useHashParam('request');
   // Opening another request starts on Request info; Request steps is `view=steps`.
   const setOpenId = (id: string | null) =>
-    setHashParams(id ? { request: id, view: null } : { request: null, modal: null, view: null });
+    setHashParams(id ? { request: id, view: null } : { request: null, modal: null, target: null, view: null });
   const [actionParam] = useHashParam('modal');
   const action = (['approve', 'deny', 'escalate'] as const).find((a) => a === actionParam) ?? null;
-  const setAction = (next: Action | null) => setHashParams({ modal: next });
   const [viewParam] = useHashParam('view');
+  const [targetParam] = useHashParam('target');
   const sheetTab = viewParam === 'steps' ? SHEET_TABS[1] : SHEET_TABS[0];
   const setSheetTab = (next: string) => setHashParams({ view: next === SHEET_TABS[1] ? 'steps' : null });
   const [page, setPage] = useState(1);
@@ -109,13 +109,17 @@ export function ApprovalsPage() {
   const [draft, setDraft] = useState('');
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Set<RowKey>>(new Set());
-  // Requests a row menu or the selection bar acts on; the open request otherwise.
-  const [targetIds, setTargetIds] = useState<string[] | null>(null);
   const [comment, setComment] = useState('');
   const [message, setMessage] = useState('');
   const [showErrors, setShowErrors] = useState(false);
   const [approvedToday, setApprovedToday] = useState(12);
   const [rejectedToday, setRejectedToday] = useState(1);
+
+  useEffect(() => {
+    setComment('');
+    setMessage('');
+    setShowErrors(false);
+  }, [actionParam, targetParam, openId]);
 
   const pendingCount = requests.filter((r) => r.status === 'Pending').length;
   const shown = useMemo(() => {
@@ -130,10 +134,10 @@ export function ApprovalsPage() {
   const pageCount = Math.max(1, Math.ceil(shown.length / pageSize));
   const safePage = Math.min(page, pageCount);
   const open = requests.find((r) => r.id === openId) ?? null;
-  const targets = targetIds
-    ? requests.filter((r) => targetIds.includes(r.id))
+  const targets = targetParam
+    ? requests.filter((r) => targetParam.split(',').includes(r.id) && r.status === 'Pending')
     : open
-      ? [open]
+      ? (open.status === 'Pending' ? [open] : [])
       : [];
   const selectedPending = requests.filter((r) => selected.has(r.id) && r.status === 'Pending');
 
@@ -141,13 +145,11 @@ export function ApprovalsPage() {
     setComment('');
     setMessage('');
     setShowErrors(false);
-    setTargetIds(ids);
-    setAction(next);
+    setHashParams({ modal: next, target: ids?.join(',') ?? null });
   };
 
   const closeAction = () => {
-    setAction(null);
-    setTargetIds(null);
+    setHashParams({ modal: null, target: null });
   };
 
   const decide = (status: RequestStatus) => {
@@ -173,8 +175,7 @@ export function ApprovalsPage() {
     if (status === 'Approved') setApprovedToday((n) => n + ids.size);
     else setRejectedToday((n) => n + ids.size);
     setSelected(new Set());
-    setTargetIds(null);
-    setHashParams({ modal: null, request: null });
+    setHashParams({ modal: null, request: null, target: null, view: null });
     showToast(status === 'Approved' ? 'Request approved' : 'Request denied', {
       supportingText: targets.length === 1 ? `${targets[0].id} · ${targets[0].object}` : `${targets.length} requests`,
     });

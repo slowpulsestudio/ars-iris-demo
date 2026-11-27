@@ -98,7 +98,7 @@ export function TreeListPage({ nodeId, inFavorites = false }: TreeListPageProps)
   const [dialog] = useHashParam('dialog');
   const [targetParam] = useHashParam('target');
   const [typeParam] = useHashParam('type');
-  const closeDialog = () => setHashParams({ dialog: null, target: null, type: null });
+  const closeDialog = () => setHashParams({ dialog: null, target: null, type: null, step: null, sheet: null });
   const openDialog = (name: string, ids: string[] = []) =>
     setHashParams({ dialog: name, target: ids.length ? ids.join(',') : null, type: null });
 

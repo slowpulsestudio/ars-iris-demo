@@ -27,6 +27,7 @@ export interface ARSNewObjectTemplateProps {
   /** Footer variant; follows the step by default. */
   footerVariant?: ARSModalNewObjectFooterVariant;
   ctaLabel?: string;
+  ctaDisabled?: boolean;
   /** Sizes the body to each step's content instead of Figma's fixed height. */
   fitContent?: boolean;
   /** Replaces the form, as Figma's content slot does. */
@@ -56,6 +57,7 @@ export function ARSNewObjectTemplate({
   onStepSelect,
   footerVariant = '1',
   ctaLabel,
+  ctaDisabled,
   fitContent = false,
   children,
   stepContents,
@@ -95,6 +97,7 @@ export function ARSNewObjectTemplate({
         // Figma's footer counts two steps; a flow with its own steps counts those.
         stepLabel={!hasSteps ? null : steps ? `Step ${activeIndex + 1} of ${steps.length}` : undefined}
         ctaLabel={ctaLabel}
+        ctaDisabled={ctaDisabled}
         onBack={onBack}
         onCta={onContinue}
         onDiscard={onDiscard}

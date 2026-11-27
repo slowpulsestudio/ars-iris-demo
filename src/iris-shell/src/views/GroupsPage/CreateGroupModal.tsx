@@ -93,7 +93,7 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
   const name = form.name.trim();
   const generalComplete = ad ? !!name && !!form.groupName.trim() : !!name;
   const stepItems = STEPS[kind];
-  const { step, steps, goTo, reset, last } = useStepFlow(stepItems, generalComplete);
+  const { step, steps, goTo, reset, last } = useStepFlow(stepItems, generalComplete, open);
 
   useEffect(() => {
     if (open) {
@@ -235,6 +235,7 @@ export function CreateGroupModal({ open, onClose, kind, locationId }: CreateGrou
           stepContents={stepContents}
           footerVariant={step > 0 ? '2' : generalComplete ? '1_complete' : '1'}
           ctaLabel={last ? 'Create group →' : step > 0 ? 'Save and continue →' : undefined}
+          ctaDisabled={!generalComplete}
           onClose={requestClose}
           onBack={() => goTo(step - 1)}
           onContinue={() => (last ? create() : goTo(step + 1))}
