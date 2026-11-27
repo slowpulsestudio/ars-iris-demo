@@ -99,12 +99,12 @@ export const DESIGN_UPDATES: DesignUpdateEntry[] = [
     prototype: '#/groups?dialog=new-entra-group',
   },
   {
-    title: 'Select folder step in New AD Group',
+    title: 'Select folder step in New AD User and New AD Group',
     file: 'groups',
     figmaNodeId: '2109:10097',
-    note: 'Figma puts a "Select destination folder" button on New AD Group\'s General step, which opens the Select folder side sheet. At the designer\'s request the folder is picked in a last step instead, Select folder, drawn as the CRUD file\'s New User step (3651:20393): General, Exchange options, Select folder. The tree of Managed directories and Active Directory opens at the destination, and Select makes the ticked folder the destination. Entra groups have no location, so they have no folder step.',
-    recommendation: 'Draw the Select folder step in the Groups file and take the folder button off General.',
-    prototype: '#/groups?dialog=new-group',
+    note: 'Figma puts a "Select destination folder" button on New AD Group\'s General step, which opens the Select folder side sheet. At the designer\'s request the folder is picked in a last step instead, Select folder, drawn as the CRUD file\'s New User step (3651:20393): General, Exchange options, Select folder. The tree of Managed directories and Active Directory opens at the destination. Figma draws Cancel and Select on the New AD User step (3651:20467), but in both New AD User and New AD Group selecting a folder immediately makes it the destination, with no Select or Cancel buttons. Entra groups have no location, so they have no folder step.',
+    recommendation: 'Draw the Select folder step in the Groups file and take the folder button off General. Update the shared step to show that selecting a folder applies it immediately, without Select or Cancel buttons.',
+    prototype: '#/users?dialog=create&type=AD+User',
   },
   {
     title: 'Advanced filter Panel on the lists, Bar in the Add Member modal',
